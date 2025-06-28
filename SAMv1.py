@@ -1117,6 +1117,14 @@ if trades:
     toon_alle = st.toggle("Toon alle trades", value=False)
     df_display = df_display if toon_alle or len(df_display) <= 12 else df_display.iloc[-12:]
 
+    # Afronding van 'Open prijs' en 'Sluit prijs' op basis van type asset
+    if selected_tab == "🌐 Crypto":
+        df_display["Open prijs"] = df_display["Open prijs"].map("{:.3f}".format)
+        df_display["Sluit prijs"] = df_display["Sluit prijs"].map("{:.3f}".format)
+    else:
+        df_display["Open prijs"] = df_display["Open prijs"].map("{:.2f}".format)
+        df_display["Sluit prijs"] = df_display["Sluit prijs"].map("{:.2f}".format)
+    
     # ✅ Laatste stap: toon als tabel
     geldige_kolommen = [col for col in kleurbare_kolommen if df_display[col].notna().any()]
     
