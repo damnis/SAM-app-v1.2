@@ -354,7 +354,7 @@ def determine_advice(df, threshold):
 
     # 🔁 NIEUWE ADVIESLOGICA OP BASIS VAN TRAIL (directionele voortgang)
     df["Advies"] = np.nan
-    df["SAM_diff"] = df["SAM"] - df["SAM"].shift(1)
+    df["SAM_diff"] = df["TrendChange"] - df["TrendChange"].shift(1) # of verschil in SAM
     df["Richting"] = np.sign(df["SAM_diff"])
     df["Trail"] = 0
     huidige_trend = 0
