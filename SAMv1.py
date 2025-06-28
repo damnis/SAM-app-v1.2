@@ -1,7 +1,3 @@
-import sys
-import streamlit as st
-
-st.write(f"Python versie in gebruik: {sys.version}")
 import streamlit as st
 import yfinance as yf
 import pandas as pd
@@ -9,7 +5,7 @@ import ta
 import numpy as np
 import matplotlib.pyplot as plt
 from ta.trend import ADXIndicator
-from ta.momentum import TRIXIndicator
+#from ta.momentum import TRIXIndicator
 
 print("TA version:", ta.__version__)
 
@@ -289,24 +285,43 @@ def calculate_sam(df):
 #    from ta.momentum import TRIXIndicator
 
     # --- SAMX op basis van TRIX ---
-    close_series = df["Close"].squeeze()
-    trix_ind = TRIXIndicator(close=close_series, window=15)
+    # --- SAMX: handmatige TRIX-berekening en interpretatie ---
+    def calculate_trix(series, period=15):
+        ema1 = series.ewm(span=period, adjust=False).mean()
+        ema2 = ema1.ewm(span=period, adjust=False).mean()
+        ema3 = ema2.ewm(span=period, adjust=False).mean()
+        trix = (ema3 - ema3.shift(1)) / ema3.shift(1) * 100
+        return trix
 
-    df["TRIX"] = trix_ind.trix()
+    df["TRIX"] = calculate_trix(df["Close"], period=15)
     df["TRIX_PREV"] = df["TRIX"].shift(1)
-    df["SAMX"] = 0.0  # Standaardwaarde
+    df["SAMX"] = 0.0
 
     # Sterke opwaartse trend
     df.loc[(df["TRIX"] > 0) & (df["TRIX"] > df["TRIX_PREV"]), "SAMX"] = 0.75
-
     # Zwakke opwaartse trend
     df.loc[(df["TRIX"] > 0) & (df["TRIX"] <= df["TRIX_PREV"]), "SAMX"] = 0.5
-
     # Sterke neerwaartse trend
     df.loc[(df["TRIX"] < 0) & (df["TRIX"] < df["TRIX_PREV"]), "SAMX"] = -0.75
-
     # Zwakke neerwaartse trend
     df.loc[(df["TRIX"] < 0) & (df["TRIX"] >= df["TRIX_PREV"]), "SAMX"] = -0.5
+
+    # --- SAMX op basis van TRIX - werkt niet met ta
+#    close_series = df["Close"].squeeze()
+ #   trix_ind = TRIXIndicator(close=close_series, window=15)
+
+  #  df["TRIX"] = trix_ind.trix()
+#    df["TRIX_PREV"] = df["TRIX"].shift(1)
+#    df["SAMX"] = 0.0  # Standaardwaarde
+
+    # Sterke opwaartse trend
+#    df.loc[(df["TRIX"] > 0) & (df["TRIX"] > df["TRIX_PREV"]), "SAMX"] = 0.75
+    # Zwakke opwaartse trend
+#    df.loc[(df["TRIX"] > 0) & (df["TRIX"] <= df["TRIX_PREV"]), "SAMX"] = 0.5
+    # Sterke neerwaartse trend
+#    df.loc[(df["TRIX"] < 0) & (df["TRIX"] < df["TRIX_PREV"]), "SAMX"] = -0.75
+    # Zwakke neerwaartse trend
+#    df.loc[(df["TRIX"] < 0) & (df["TRIX"] >= df["TRIX_PREV"]), "SAMX"] = -0.5
 
     # SAMX OUD
 #    df["Momentum"] = df["Close"] - df["Close"].shift(3)
