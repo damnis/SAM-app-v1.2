@@ -1108,7 +1108,7 @@ if trades:
     df_trades["SAM-% Verkoop"] = df_trades.apply(
         lambda row: row["Rendement (%)"] if row["Type"] == "Verkopen" else None, axis=1)
     df_trades["Markt-%"] = df_trades.apply(
-        lambda row: round(((row["Sluit prijs"] - row["Open prijs"]) / row["Open prijs"]) * 100, 2), axis=1)
+        lambda row: (((row["Sluit prijs"] - row["Open prijs"]) / row["Open prijs"]) * 100, 2), axis=1)
 
     df_trades = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})
     df_trades = df_trades[[
