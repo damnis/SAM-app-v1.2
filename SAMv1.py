@@ -716,11 +716,13 @@ if toon_koersgrafiek:
     ax.set_xlabel("Datum")
     ax.legend()
     fig.tight_layout()
+    st.subheader("Koersgrafiek")
 
     st.pyplot(fig)
 
 
 # --- Grafiek met SAM en Trend ---
+st.subheader("Grafiek met SAM en Trend")
 
 # Bepaal de weergaveperiode op basis van interval
 grafiek_periode = bepaal_grafiekperiode(interval)
