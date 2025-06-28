@@ -639,43 +639,72 @@ st.markdown(
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 
-# ⏱ Filter de data op basis van gekozen periode
-# Bepaal de weergaveperiode op basis van interval
-grafiek_periode = bepaal_grafiekperiode(interval)
+# ⏱ gecompliceerde koersgrafiek werkt niet geheel
+# bepaal data weeergaveperiode op basis van interval
+#grafiek_periode = bepaal_grafiekperiode(interval)
 
 # Bepaal cutoff-datum
-cutoff_datum = df.index.max() - grafiek_periode
+#cutoff_datum = df.index.max() - grafiek_periode
 
 # Filter alleen grafiekdata
 #df_grafiek = df[df.index >= cutoff_datum].copy()
 
 #cutoff_datum = datetime.now() - bepaal_grafiekperiode(interval)
-df_filtered = df[df.index >= cutoff_datum]
+#df_filtered = df[df.index >= cutoff_datum]
 
 # 🖼️ Toggle voor grafiek
-if st.toggle("📊 Toon koersgrafiek"):
-    fig = go.Figure(data=[
-        go.Candlestick(
-            x=df_filtered.index,
-            open=df_filtered["Open"],
-            high=df_filtered["High"],
-            low=df_filtered["Low"],
-            close=df_filtered["Close"],
-            increasing_line_color='green',
-            decreasing_line_color='red',
-            name='Koers'
-        )
-    ])
+#if st.toggle("📊 Toon koersgrafiek"):
+ #   fig = go.Figure(data=[
+#        go.Candlestick(
+ #           x=df_filtered.index,
+#            open=df_filtered["Open"],
+ #           high=df_filtered["High"],
+  #          low=df_filtered["Low"],
+  #          close=df_filtered["Close"],
+ #           increasing_line_color='green',
+ #           decreasing_line_color='red',
+#            name='Koers'
+#        )
+#    ])
 
-    fig.update_layout(
-        xaxis_title="Datum",
-        yaxis_title="Koers",
-        xaxis_rangeslider_visible=False,
-        height=400,
-        margin=dict(l=10, r=10, t=10, b=10)
-    )
+ #   fig.update_layout(
+ #       xaxis_title="Datum",
+ #       yaxis_title="Koers",
+ #       xaxis_rangeslider_visible=False,
+ #       height=400,
+ #       margin=dict(l=10, r=10, t=10, b=10)
+#    )
 
-    st.plotly_chart(fig, use_container_width=True)
+#    st.plotly_chart(fig, use_container_width=True)
+
+# simpele koersgrafiek
+# --- 📊 Toggle voor koersgrafiek ---
+toon_koersgrafiek = st.checkbox("Toon koersgrafiek", value=False)
+
+if toon_koersgrafiek:
+    
+    # --- 📈 Gekleurde koersgrafiek met bars ---
+    # Bepaal de weergaveperiode op basis van interval
+    grafiek_periode = bepaal_grafiekperiode(interval)
+    # Bepaal cutoff-datum
+    cutoff_datum = df.index.max() - grafiek_periode
+    # Filter alleen koersdata
+    df_koers = df[df.index >= cutoff_datum].copy()
+    # Bereken koersverandering
+    df_koers["Close_diff"] = df_koers["Close"].diff()
+    # Instellen kleuren: groen bij stijging, rood bij daling of geen verandering
+    kleuren = df_koers["Close_diff"].apply(lambda x: "green" if x > 0 else ("red" if x < 0 else "gray"))
+    # Plot de staafgrafiek
+    fig, ax = plt.subplots(figsize=(10, 3))
+    ax.bar(df_koers.index, df_koers["Close"], color=kleuren, width=0.8)
+
+    ax.set_title("Slotkoers per dag")
+    ax.set_ylabel("Prijs")
+    ax.grid(True, linestyle="--", linewidth=0.5, alpha=0.6)
+
+    fig.tight_layout()
+    st.pyplot(fig)
+
 
 # --- Grafiek met SAM en Trend ---
 
