@@ -1,0 +1,6 @@
+streamlit
+pandas
+numpy
+matplotlib
+yfinance
+ta==0.10.2
