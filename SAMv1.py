@@ -52,7 +52,7 @@ def bepaal_grafiekperiode(interval):
     elif interval == "4h":
         return timedelta(days=60)
     elif interval == "1d":
-        return timedelta(days=1080)
+        return timedelta(days=108)
     else:
         return timedelta(weeks=260)  # bijv. bij weekly/monthly data
 # periode voor koersgrafiek 
@@ -600,7 +600,7 @@ interval_mapping = {
 interval = interval_mapping[interval_optie]
 
 # de gevoeligheid slider
-thresh = st.slider("Gevoeligheid van trendverandering", 0.01, 0.5, 0.1, step=0.02)
+thresh = st.slider("Gevoeligheid van trendverandering", 0.01, 1.5, 0.15, step=0.02)
 
 # Berekening
 df = fetch_data(ticker, interval)
