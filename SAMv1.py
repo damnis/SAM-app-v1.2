@@ -347,14 +347,30 @@ def calculate_sam(df):
 # --- Advies en rendementen ---
 def determine_advice(df, threshold):
     df = df.copy()
-    df["Trend"] = df["SAM"].rolling(window=12).mean() # cruciaal oorspronkelijk 3, maar sam 12
+
+    # Trendberekening behouden, eventueel elders nog gebruikt
+    df["Trend"] = df["SAM"].rolling(window=12).mean()
     df["TrendChange"] = df["Trend"] - df["Trend"].shift(1)
 
+    # 🔁 NIEUWE ADVIESLOGICA OP BASIS VAN TRAIL (directionele voortgang)
     df["Advies"] = np.nan
-    df.loc[df["TrendChange"] > threshold, "Advies"] = "Kopen"
-    df.loc[df["TrendChange"] < -threshold, "Advies"] = "Verkopen"
+    df["SAM_diff"] = df["SAM"] - df["SAM"].shift(1)
+    df["Richting"] = np.sign(df["SAM_diff"])
+    df["Trail"] = 0
+    huidige_trend = 0
+
+    for i in range(1, len(df)):
+        if df.loc[df.index[i], "Richting"] == df.loc[df.index[i - 1], "Richting"] and df.loc[df.index[i], "Richting"] != 0:
+            huidige_trend += 1
+        else:
+            huidige_trend = 1 if df.loc[df.index[i], "Richting"] != 0 else 0
+        df.loc[df.index[i], "Trail"] = huidige_trend
+
+    df.loc[(df["Richting"] == 1) & (df["Trail"] >= threshold), "Advies"] = "Kopen"
+    df.loc[(df["Richting"] == -1) & (df["Trail"] >= threshold), "Advies"] = "Verkopen"
     df["Advies"] = df["Advies"].ffill()
 
+    # 🧩 Groepeer voor berekening rendement
     df["AdviesGroep"] = (df["Advies"] != df["Advies"].shift()).cumsum()
     rendementen = []
     sam_rendementen = []
@@ -369,13 +385,10 @@ def determine_advice(df, threshold):
         eind = None
 
         if i < len(groepen) - 1:
-            # Eerste koers van volgende groep
             eind = groepen[i + 1][1]["Close"].iloc[0]
         else:
-            # Laatste koers van deze groep
             eind = groep["Close"].iloc[-1]
 
-        # ✅ Veiligheid: omzetting en check
         try:
             start = float(start)
             eind = float(eind)
@@ -389,24 +402,84 @@ def determine_advice(df, threshold):
             markt_rendement = 0.0
             sam_rendement = 0.0
 
-        # 🔁 Voeg altijd exacte lengte toe
         rendementen.extend([markt_rendement] * len(groep))
         sam_rendementen.extend([sam_rendement] * len(groep))
 
-    # ✅ Laatste check: gelijke lengte
     if len(rendementen) != len(df):
         raise ValueError(f"Lengte mismatch: rendementen={len(rendementen)}, df={len(df)}")
 
     df["Markt-%"] = rendementen
     df["SAM-%"] = sam_rendementen
 
-    # Huidig advies bepalen
     if "Advies" in df.columns and df["Advies"].notna().any():
         huidig_advies = df["Advies"].dropna().iloc[-1]
     else:
         huidig_advies = "Niet beschikbaar"
 
     return df, huidig_advies
+    
+#def determine_advice(df, threshold):
+#    df = df.copy()
+#    df["Trend"] = df["SAM"].rolling(window=12).mean() # cruciaal oorspronkelijk 3, maar sam 12
+#    df["TrendChange"] = df["Trend"] - df["Trend"].shift(1)
+
+#    df["Advies"] = np.nan
+ #   df.loc[df["TrendChange"] > threshold, "Advies"] = "Kopen"
+#    df.loc[df["TrendChange"] < -threshold, "Advies"] = "Verkopen"
+#    df["Advies"] = df["Advies"].ffill()
+
+#    df["AdviesGroep"] = (df["Advies"] != df["Advies"].shift()).cumsum()
+#    rendementen = []
+#    sam_rendementen = []
+
+#    groepen = list(df.groupby("AdviesGroep"))
+
+#    for i in range(len(groepen)):
+#        _, groep = groepen[i]
+#        advies = groep["Advies"].iloc[0]
+
+#        start = groep["Close"].iloc[0]
+ #       eind = None
+
+#        if i < len(groepen) - 1:
+#            # Eerste koers van volgende groep
+ #           eind = groepen[i + 1][1]["Close"].iloc[0]
+ #       else:
+  #          # Laatste koers van deze groep
+ #           eind = groep["Close"].iloc[-1]
+
+ #       # ✅ Veiligheid: omzetting en check
+ #       try:
+ #           start = float(start)
+ #           eind = float(eind)
+ #           if start != 0.0:
+ #               markt_rendement = (eind - start) / start
+  #              sam_rendement = markt_rendement if advies == "Kopen" else -markt_rendement
+ #           else:
+#                markt_rendement = 0.0
+#                sam_rendement = 0.0
+#        except Exception:
+#            markt_rendement = 0.0
+ #           sam_rendement = 0.0
+
+ #       # 🔁 Voeg altijd exacte lengte toe
+#        rendementen.extend([markt_rendement] * len(groep))
+#        sam_rendementen.extend([sam_rendement] * len(groep))
+
+    # ✅ Laatste check: gelijke lengte
+#    if len(rendementen) != len(df):
+#        raise ValueError(f"Lengte mismatch: rendementen={len(rendementen)}, df={len(df)}")
+
+#    df["Markt-%"] = rendementen
+#    df["SAM-%"] = sam_rendementen
+
+    # Huidig advies bepalen
+#    if "Advies" in df.columns and df["Advies"].notna().any():
+ #       huidig_advies = df["Advies"].dropna().iloc[-1]
+#    else:
+#        huidig_advies = "Niet beschikbaar"
+#
+#    return df, huidig_advies
     
 # --- Streamlit UI ---
 st.title("SAM Trading Indicator")
@@ -600,7 +673,8 @@ interval_mapping = {
 interval = interval_mapping[interval_optie]
 
 # de gevoeligheid slider
-thresh = st.slider("Gevoeligheid van trendverandering", 0.01, 0.5, 0.1, step=0.02)
+thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
+#thresh = st.slider("Gevoeligheid van trendverandering", 0.01, 0.5, 0.1, step=0.02)
 
 # Berekening
 df = fetch_data(ticker, interval)
