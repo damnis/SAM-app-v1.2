@@ -52,7 +52,7 @@ def bepaal_grafiekperiode(interval):
     elif interval == "4h":
         return timedelta(days=60)
     elif interval == "1d":
-        return timedelta(days=120)
+        return timedelta(days=1080)
     else:
         return timedelta(weeks=260)  # bijv. bij weekly/monthly data
 # periode voor koersgrafiek 
@@ -64,7 +64,7 @@ def bepaal_grafiekperiode2(interval):
     elif interval == "4h":
         return timedelta(days=60)
     elif interval == "1d":
-        return timedelta(days=1200)
+        return timedelta(days=1080)
     else:
         return timedelta(weeks=260)  # bijv. bij weekly/monthly data
 
