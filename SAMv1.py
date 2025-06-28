@@ -348,19 +348,15 @@ def calculate_sam(df):
 def determine_advice(df, threshold):
     df = df.copy()
 
-    # Trendberekening behouden, eventueel elders nog gebruikt
+    # 🧮 Trendberekening over SAM
     df["Trend"] = df["SAM"].rolling(window=10).mean()
     df["TrendChange"] = df["Trend"] - df["Trend"].shift(1)
-
-    # 🔁 NIEUWE ADVIESLOGICA OP BASIS VAN TRAIL (directionele voortgang)
-    df["Advies"] = np.nan
-    df["SAM_diff"] = df["TrendChange"] - df["TrendChange"].shift(1) # of verschil in SAM
-    df["Richting"] = np.sign(df["SAM_diff"])
+    df["Richting"] = np.sign(df["TrendChange"])
     df["Trail"] = 0
+    df["Advies"] = np.nan
+
+    # 🔁 Bereken Trail (opeenvolgende richting-versterking)
     huidige_trend = 0
-    
-   # df.at[df.index[i], "Trail"] = huidige_trend
-    
     for i in range(1, len(df)):
         huidige = df["Richting"].iloc[i]
         vorige = df["Richting"].iloc[i - 1]
@@ -368,24 +364,18 @@ def determine_advice(df, threshold):
         if huidige == vorige and huidige != 0:
             huidige_trend += 1
         elif huidige != 0:
-            huidige_trend = 1  # begin nieuwe richting
+            huidige_trend = 1
         else:
             huidige_trend = 0
 
         df.at[df.index[i], "Trail"] = huidige_trend
-    
-#    for i in range(1, len(df)):
-#        if df.loc[df.index[i], "Richting"] == df.loc[df.index[i - 1], "Richting"] and df.loc[df.index[i], "Richting"] != 0:
-#            huidige_trend += 1
- #       else:
- #           huidige_trend = 1 if df.loc[df.index[i], "Richting"] != 0 else 0
- #       df.loc[df.index[i], "Trail"] = huidige_trend
 
+    # 🟢🔴 Advies op basis van richting én trail
     df.loc[(df["Richting"] == 1) & (df["Trail"] >= threshold), "Advies"] = "Kopen"
     df.loc[(df["Richting"] == -1) & (df["Trail"] >= threshold), "Advies"] = "Verkopen"
     df["Advies"] = df["Advies"].ffill()
 
-    # 🧩 Groepeer voor berekening rendement
+    # 📊 Bereken rendementen op basis van adviesgroepering
     df["AdviesGroep"] = (df["Advies"] != df["Advies"].shift()).cumsum()
     rendementen = []
     sam_rendementen = []
@@ -397,8 +387,6 @@ def determine_advice(df, threshold):
         advies = groep["Advies"].iloc[0]
 
         start = groep["Close"].iloc[0]
-        eind = None
-
         if i < len(groepen) - 1:
             eind = groepen[i + 1][1]["Close"].iloc[0]
         else:
@@ -420,19 +408,22 @@ def determine_advice(df, threshold):
         rendementen.extend([markt_rendement] * len(groep))
         sam_rendementen.extend([sam_rendement] * len(groep))
 
+    # ✅ Consistentiecontrole
     if len(rendementen) != len(df):
         raise ValueError(f"Lengte mismatch: rendementen={len(rendementen)}, df={len(df)}")
 
     df["Markt-%"] = rendementen
     df["SAM-%"] = sam_rendementen
 
+    # 🏁 Huidig advies bepalen
     if "Advies" in df.columns and df["Advies"].notna().any():
         huidig_advies = df["Advies"].dropna().iloc[-1]
     else:
         huidig_advies = "Niet beschikbaar"
 
     return df, huidig_advies
-    
+
+
 #def determine_advice(df, threshold):
 #    df = df.copy()
 #    df["Trend"] = df["SAM"].rolling(window=12).mean() # cruciaal oorspronkelijk 3, maar sam 12
