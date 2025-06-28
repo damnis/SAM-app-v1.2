@@ -719,13 +719,6 @@ advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies =
 
 # Titel met kleur en grootte tonen
 st.markdown(
-#    f"""
-#    <h3>SAM-indicator en trend voor <span style='color:#3366cc'>{ticker_name} - ${last:.2f}</span></h3>
-#    <h2 style='color:{advies_kleur}'>Huidig advies: {huidig_advies}</h2>
-#    """,
-#    unsafe_allow_html=True
-#)
-#st.markdown(
     f"""
     <h3>SAM-indicator en trend voor <span style='color:#3366cc'>{ticker_name}</span></h3>
     <h2 style='color:{advies_kleur}'>Huidig advies: {huidig_advies}</h2>
@@ -796,7 +789,7 @@ if toon_koersgrafiek:
     ax.plot(df_koers.index, df_koers["MA30"], color="orange", linewidth=1.0, label="MA(30)")
     ax.plot(df_koers.index, df_koers["MA150"], color="pink", linewidth=1.0, label="MA(150)")
 
-    ax.set_title(f"📈 Koersgrafiek van {ticker_name}")
+    ax.set_title(f"Koersgrafiek van {ticker_name}")
     ax.set_ylabel("Close")
     ax.set_xlabel("Datum")
     ax.legend()
@@ -818,16 +811,35 @@ cutoff_datum = df.index.max() - grafiek_periode
 # Filter alleen grafiekdata
 df_grafiek = df[df.index >= cutoff_datum].copy()
 
-# --- Grafiek met SAM en Trend ---
-fig, ax1 = plt.subplots(figsize=(10, 4))
-ax1.bar(df_grafiek.index, df_grafiek["SAM"], color="lightblue", label="SAM")
-ax1.axhline(y=0, color="black", linewidth=1, linestyle="--")  # nullijn
-ax2 = ax1.twinx()
-ax2.plot(df_grafiek.index, df_grafiek["Trend"], color="red", label="Trend")
-ax1.set_ylabel("SAM")
-ax2.set_ylabel("Trend")
+# --- Grafiek met SAM en Trend (aangepast) ---
+fig, ax = plt.subplots(figsize=(10, 4))
+
+# ✅ Kleuren voor SAM afhankelijk van positief/negatief
+kleuren = ["green" if val >= 0 else "red" for val in df_grafiek["SAM"]]
+# ✅ Bars voor SAM
+ax.bar(df_grafiek.index, df_grafiek["SAM"], color=kleuren, label="SAM")
+# ✅ Trendlijn (zelfde as)
+ax.plot(df_grafiek.index, df_grafiek["Trend"], color="blue", linewidth=2, label="Trend")
+# ✅ Nullijn
+ax.axhline(y=0, color="black", linewidth=1, linestyle="--")
+# ✅ Titel en labels
+ax.set_title("📊 SAM-indicator en Trendlijn")
+ax.set_ylabel("Waarde")
+# ✅ Legenda toevoegen
+ax.legend()
+
 fig.tight_layout()
 st.pyplot(fig)
+# --- Grafiek met SAM en Trend ---
+#fig, ax1 = plt.subplots(figsize=(10, 4))
+#ax1.bar(df_grafiek.index, df_grafiek["SAM"], color="lightblue", label="SAM")
+#ax1.axhline(y=0, color="black", linewidth=1, linestyle="--")  # nullijn
+#ax2 = ax1.twinx()
+#ax2.plot(df_grafiek.index, df_grafiek["Trend"], color="red", label="Trend")
+#ax1.set_ylabel("SAM")
+#ax2.set_ylabel("Trend")
+#fig.tight_layout()
+#st.pyplot(fig)
 
 # --- Tabel met signalen en rendement ---
 st.subheader("Laatste signalen en rendement")
