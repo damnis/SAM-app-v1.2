@@ -684,16 +684,24 @@ toon_koersgrafiek = st.checkbox("Toon koersgrafiek", value=False)
 if toon_koersgrafiek:
     
     # --- 📈 Gekleurde koersgrafiek met bars ---
+
     # Bepaal de weergaveperiode op basis van interval
     grafiek_periode = bepaal_grafiekperiode(interval)
+
     # Bepaal cutoff-datum
     cutoff_datum = df.index.max() - grafiek_periode
+
     # Filter alleen koersdata
     df_koers = df[df.index >= cutoff_datum].copy()
+
     # Bereken koersverandering
     df_koers["Close_diff"] = df_koers["Close"].diff()
+
     # Instellen kleuren: groen bij stijging, rood bij daling of geen verandering
-    kleuren = df_koers["Close_diff"].apply(lambda x: "green" if x > 0 else ("red" if x < 0 else "gray"))
+    kleuren = df_koers["Close_diff"].apply(
+        lambda x: "green" if x > 0 else ("red" if x < 0 else "gray")
+    ).tolist()  # 🔧 converteer naar Python-lijst!
+
     # Plot de staafgrafiek
     fig, ax = plt.subplots(figsize=(10, 3))
     ax.bar(df_koers.index, df_koers["Close"], color=kleuren, width=0.8)
@@ -704,7 +712,6 @@ if toon_koersgrafiek:
 
     fig.tight_layout()
     st.pyplot(fig)
-
 
 # --- Grafiek met SAM en Trend ---
 
