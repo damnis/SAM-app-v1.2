@@ -349,7 +349,7 @@ def determine_advice(df, threshold):
     df = df.copy()
 
     # Trendberekening behouden, eventueel elders nog gebruikt
-    df["Trend"] = df["SAM"].rolling(window=12).mean()
+    df["Trend"] = df["SAM"].rolling(window=15).mean()
     df["TrendChange"] = df["Trend"] - df["Trend"].shift(1)
 
     # 🔁 NIEUWE ADVIESLOGICA OP BASIS VAN TRAIL (directionele voortgang)
@@ -836,7 +836,7 @@ st.subheader("Laatste signalen en rendement")
 kolommen = ["Close", "Advies", "SAM", "Trend", "Markt-%", "SAM-%"]
 #tabel = df[kolommen].dropna().tail(30).round(3).copy()
 tabel = df[kolommen].dropna().copy()
-tabel = tabel.sort_index(ascending=False).head(10) # lengte tabel hier!
+tabel = tabel.sort_index(ascending=False).head(15) # lengte tabel hier!
 
 # Datumkolom aanmaken vanuit index
 if not isinstance(tabel.index, pd.DatetimeIndex):
@@ -1158,6 +1158,9 @@ else:
 
     
 
+
+
+# wit
     
 
 
