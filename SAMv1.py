@@ -359,7 +359,7 @@ def determine_advice(df, threshold):
     df["Trail"] = 0
     huidige_trend = 0
     
-    df.at[df.index[i], "Trail"] = huidige_trend
+   # df.at[df.index[i], "Trail"] = huidige_trend
     
     for i in range(1, len(df)):
         huidige = df["Richting"].iloc[i]
