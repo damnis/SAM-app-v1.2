@@ -678,38 +678,32 @@ from datetime import datetime, timedelta
 #    st.plotly_chart(fig, use_container_width=True)
 
 # simpele koersgrafiek
-# 📊 Toggle voor koersgrafiek
-# 📊 Toggle voor koersgrafiek
-toon_koersgrafiek = st.checkbox("Toon koersgrafiek", value=False)
+import matplotlib.pyplot as plt
+
+# ⏳ Toggle voor koersgrafiek
+toon_koersgrafiek = st.toggle("📉 Toon koersgrafiek", value=False)
 
 if toon_koersgrafiek:
-
-    # Periode en filtering
+    # 📅 Bepaal grafiekperiode
     grafiek_periode = bepaal_grafiekperiode(interval)
     cutoff_datum = df.index.max() - grafiek_periode
     df_koers = df[df.index >= cutoff_datum].copy()
 
-    # ✅ Zorg dat Close een Series is met numerieke waarden
-    close_series = pd.to_numeric(df_koers["Close"], errors="coerce")
+    # ✅ Zorg dat Close een Series is
+    close_series = df_koers["Close"].squeeze()
+    close_shifted = close_series.shift(1)
 
-    # Koersverandering en kleuren
-    close_diff = close_series.diff()
-    kleuren = close_diff.apply(
-        lambda x: "green" if x > 0 else ("red" if x < 0 else "gray")
-    ).fillna("gray").astype(str).tolist()
+    # 🟥🟩 Kleur afhankelijk van stijging/daling
+    kleuren = ["green" if c >= p else "red" for c, p in zip(close_series, close_shifted)]
 
-    # Plot
-    fig, ax = plt.subplots(figsize=(10, 3))
-    ax.bar(
-        df_koers.index.to_numpy(),
-        close_series.to_numpy(),
-        color=kleuren,
-        width=0.8
-    )
-    ax.set_title("Slotkoers per dag")
-    ax.set_ylabel("Prijs")
-    ax.grid(True, linestyle="--", linewidth=0.5, alpha=0.6)
+    # 📊 Plot aanmaken
+    fig, ax = plt.subplots(figsize=(10, 4))
+    ax.bar(df_koers.index, close_series, color=kleuren, width=0.8)
+    ax.set_title("Koersgrafiek")
+    ax.set_ylabel("Close")
+    ax.set_xlabel("Datum")
     fig.tight_layout()
+
     st.pyplot(fig)
 
 
