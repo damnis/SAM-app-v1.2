@@ -5,6 +5,7 @@ import ta
 import numpy as np
 import matplotlib.pyplot as plt
 from ta.trend import ADXIndicator
+import plotly.graph_objects as go
 #from ta.momentum import TRIXIndicator
 
 # --- Functie om data op te halen ---
@@ -67,7 +68,6 @@ def calculate_sam(df):
         return series.rolling(window).apply(lambda x: np.dot(x, weights)/weights.sum(), raw=True)
     
     # --- SAMK: candlestick score op basis van patronen Open/Close ---
-
     df["c1"] = df["Close"] > df["Open"]
     df["c2"] = df["Close"].shift(1) > df["Open"].shift(1)
     df["c3"] = df["Close"] > df["Close"].shift(1)
@@ -78,7 +78,6 @@ def calculate_sam(df):
     df["c8"] = df["Close"].shift(1) < df["Close"].shift(2)
 
     df["SAMK"] = 0.0  # standaard
-
     # Positieve patronen
     df.loc[
         (df["SAMK"] == 0.0) & (df["c1"] & df["c2"] & df["c3"] & df["c4"]).fillna(False),
@@ -599,11 +598,11 @@ df = calculate_sam(df)
 df, huidig_advies = determine_advice(df, threshold=thresh)
 #df, huidig_advies = determine_advice(df, threshold=thresh)
 # debugging tools
-st.subheader("🔍 SAM Debug-tabel (laatste 8 rijen)")
-st.dataframe(
-    df[["Close", "SAMK", "SAMG", "SAMT", "SAMD", "SAMM", "SAMX", "SAM"]].tail(180),
-    use_container_width=True
-)
+#st.subheader("🔍 SAM Debug-tabel (laatste 8 rijen)")
+#st.dataframe(
+#    df[["Close", "SAMK", "SAMG", "SAMT", "SAMD", "SAMM", "SAMX", "SAM"]].tail(180),
+#    use_container_width=True
+#)
 #st.caption(f"SAM-componenten gemiddeld: "
 #           f"SAMK={df['SAMK'].mean():+.2f}, "
  #          f"SAMG={df['SAMG'].mean():+.2f}, "
@@ -639,6 +638,33 @@ st.markdown(
 
 import matplotlib.pyplot as plt
 import streamlit as st
+
+# 📉 Toggle voor koersgrafiek
+show_chart = st.toggle("📊 Toon koersgrafiek", value=True)
+
+if show_chart:
+    st.subheader("📈 Koersgrafiek")
+
+    fig = go.Figure(data=[
+        go.Candlestick(
+            x=df.index,
+            open=df["Open"],
+            high=df["High"],
+            low=df["Low"],
+            close=df["Close"],
+            increasing_line_color="green",
+            decreasing_line_color="red",
+            showlegend=False
+        )
+    ])
+    fig.update_layout(
+        xaxis_title="Datum",
+        yaxis_title="Koers",
+        xaxis_rangeslider_visible=False,
+        height=400,
+        margin=dict(l=10, r=10, t=10, b=10)
+    )
+    st.plotly_chart(fig, use_container_width=True)
 
 # --- Grafiek met SAM en Trend ---
 
