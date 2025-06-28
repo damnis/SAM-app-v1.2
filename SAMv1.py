@@ -647,10 +647,10 @@ grafiek_periode = bepaal_grafiekperiode(interval)
 cutoff_datum = df.index.max() - grafiek_periode
 
 # Filter alleen grafiekdata
-df_grafiek = df[df.index >= cutoff_datum].copy()
+#df_grafiek = df[df.index >= cutoff_datum].copy()
 
 #cutoff_datum = datetime.now() - bepaal_grafiekperiode(interval)
-#df_filtered = df[df.index >= cutoff_datum]
+df_filtered = df[df.index >= cutoff_datum]
 
 # 🖼️ Toggle voor grafiek
 if st.toggle("📊 Toon koersgrafiek"):
