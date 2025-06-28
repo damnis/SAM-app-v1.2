@@ -796,7 +796,7 @@ if toon_koersgrafiek:
     ax.plot(df_koers.index, df_koers["MA30"], color="orange", linewidth=1.0, label="MA(30)")
     ax.plot(df_koers.index, df_koers["MA150"], color="pink", linewidth=1.0, label="MA(150)")
 
-    ax.set_title("📈 Koers met MA(30) en MA(150)")
+    ax.set_title(f"📈 Koersgrafiek van {ticker_name}")
     ax.set_ylabel("Close")
     ax.set_xlabel("Datum")
     ax.legend()
