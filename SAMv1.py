@@ -636,27 +636,28 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-import matplotlib.pyplot as plt
-import streamlit as st
+import plotly.graph_objects as go
+from datetime import datetime, timedelta
 
-# 📉 Toggle voor koersgrafiek
-show_chart = st.toggle("📊 Toon koersgrafiek", value=True)
+# ⏱ Filter de data op basis van gekozen periode
+cutoff_datum = datetime.now() - bepaal_grafiekperiode(interval)
+df_filtered = df[df.index >= cutoff_datum]
 
-if show_chart:
-    st.subheader("📈 Koersgrafiek")
-
+# 🖼️ Toggle voor grafiek
+if st.toggle("📊 Toon koersgrafiek"):
     fig = go.Figure(data=[
         go.Candlestick(
-            x=df.index,
-            open=df["Open"],
-            high=df["High"],
-            low=df["Low"],
-            close=df["Close"],
-            increasing_line_color="green",
-            decreasing_line_color="red",
-            showlegend=False
+            x=df_filtered.index,
+            open=df_filtered["Open"],
+            high=df_filtered["High"],
+            low=df_filtered["Low"],
+            close=df_filtered["Close"],
+            increasing_line_color='green',
+            decreasing_line_color='red',
+            name='Koers'
         )
     ])
+
     fig.update_layout(
         xaxis_title="Datum",
         yaxis_title="Koers",
@@ -664,6 +665,7 @@ if show_chart:
         height=400,
         margin=dict(l=10, r=10, t=10, b=10)
     )
+
     st.plotly_chart(fig, use_container_width=True)
 
 # --- Grafiek met SAM en Trend ---
@@ -803,8 +805,6 @@ if "Advies" not in df_signalen.columns:
 ##--- Toevoeging: Backtestfunctie ---
 
 from datetime import date
-import pandas as pd
-import streamlit as st
 
 # âœ… Zorg dat de index datetime is
 df = df.copy()
