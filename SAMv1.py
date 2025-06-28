@@ -1,3 +1,7 @@
+import sys
+import streamlit as st
+
+st.write(f"Python versie in gebruik: {sys.version}")
 import streamlit as st
 import yfinance as yf
 import pandas as pd
