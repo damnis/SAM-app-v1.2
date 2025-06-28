@@ -450,7 +450,7 @@ dow_tickers = {
     'DOW': 'Dow', 'RTX': 'RTX Corp.', 'WBA': 'Walgreens Boots'
 }
 nasdaq_tickers = {
-    'MSFT': 'Microsoft', 'PACHU': 'PACHU', 'NVDA': 'NVIDIA', 'AAPL': 'Apple', 'AMZN': 'Amazon', 'META': 'Meta',
+    'MSFT': 'Microsoft', 'NVDA': 'NVIDIA', 'AAPL': 'Apple', 'AMZN': 'Amazon', 'META': 'Meta',
     'NFLX': 'Netflix', 'GOOG': 'Google', 'GOOGL': 'Alphabet', 'TSLA': 'Tesla', 'CSCO': 'Cisco',
     'INTC': 'Intel', 'ADBE': 'Adobe', 'CMCSA': 'Comcast', 'PEP': 'PepsiCo', 'COST': 'Costco',
     'AVGO': 'Broadcom', 'QCOM': 'Qualcomm', 'TMUS': 'T-Mobile', 'TXN': 'Texas Instruments',
@@ -600,7 +600,7 @@ interval_mapping = {
 interval = interval_mapping[interval_optie]
 
 # de gevoeligheid slider
-thresh = st.slider("Gevoeligheid van trendverandering", 0.01, 1.5, 0.15, step=0.02)
+thresh = st.slider("Gevoeligheid van trendverandering", 0.01, 0.5, 0.1, step=0.02)
 
 # Berekening
 df = fetch_data(ticker, interval)
