@@ -358,13 +358,24 @@ def determine_advice(df, threshold):
     df["Richting"] = np.sign(df["SAM_diff"])
     df["Trail"] = 0
     huidige_trend = 0
-
+    
     for i in range(1, len(df)):
-        if df.loc[df.index[i], "Richting"] == df.loc[df.index[i - 1], "Richting"] and df.loc[df.index[i], "Richting"] != 0:
+        huidige = df["Richting"].iloc[i]
+        vorige = df["Richting"].iloc[i - 1]
+
+        if huidige == vorige and huidige != 0:
             huidige_trend += 1
         else:
-            huidige_trend = 1 if df.loc[df.index[i], "Richting"] != 0 else 0
-        df.loc[df.index[i], "Trail"] = huidige_trend
+            huidige_trend = 1 if huidige != 0 else 0
+
+        df.at[df.index[i], "Trail"] = huidige_trend
+    
+#    for i in range(1, len(df)):
+#        if df.loc[df.index[i], "Richting"] == df.loc[df.index[i - 1], "Richting"] and df.loc[df.index[i], "Richting"] != 0:
+#            huidige_trend += 1
+ #       else:
+ #           huidige_trend = 1 if df.loc[df.index[i], "Richting"] != 0 else 0
+ #       df.loc[df.index[i], "Trail"] = huidige_trend
 
     df.loc[(df["Richting"] == 1) & (df["Trail"] >= threshold), "Advies"] = "Kopen"
     df.loc[(df["Richting"] == -1) & (df["Trail"] >= threshold), "Advies"] = "Verkopen"
