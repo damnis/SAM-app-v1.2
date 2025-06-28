@@ -679,6 +679,7 @@ from datetime import datetime, timedelta
 
 # simpele koersgrafiek
 # 📊 Toggle voor koersgrafiek
+# 📊 Toggle voor koersgrafiek
 toon_koersgrafiek = st.checkbox("Toon koersgrafiek", value=False)
 
 if toon_koersgrafiek:
@@ -688,31 +689,30 @@ if toon_koersgrafiek:
     cutoff_datum = df.index.max() - grafiek_periode
     df_koers = df[df.index >= cutoff_datum].copy()
 
-    # Converteer naar float om vreemde datatypes te voorkomen
-    df_koers["Close"] = pd.to_numeric(df_koers["Close"], errors="coerce")
+    # ✅ Zorg dat Close een Series is met numerieke waarden
+    close_series = pd.to_numeric(df_koers["Close"], errors="coerce")
 
-    # Koersverandering en kleurencode
-    df_koers["Close_diff"] = df_koers["Close"].diff()
-    kleuren = df_koers["Close_diff"].apply(
+    # Koersverandering en kleuren
+    close_diff = close_series.diff()
+    kleuren = close_diff.apply(
         lambda x: "green" if x > 0 else ("red" if x < 0 else "gray")
     ).fillna("gray").astype(str).tolist()
 
-    # Controle: zijn er evenveel kleuren als datapunten?
-    if len(kleuren) != len(df_koers):
-        st.error("Aantal kleuren komt niet overeen met aantal datapunten.")
-    else:
-        fig, ax = plt.subplots(figsize=(10, 3))
-        ax.bar(
-            df_koers.index.to_numpy(),
-            df_koers["Close"].to_numpy(),
-            color=kleuren,
-            width=0.8
-        )
-        ax.set_title("Slotkoers per dag")
-        ax.set_ylabel("Prijs")
-        ax.grid(True, linestyle="--", linewidth=0.5, alpha=0.6)
-        fig.tight_layout()
-        st.pyplot(fig)
+    # Plot
+    fig, ax = plt.subplots(figsize=(10, 3))
+    ax.bar(
+        df_koers.index.to_numpy(),
+        close_series.to_numpy(),
+        color=kleuren,
+        width=0.8
+    )
+    ax.set_title("Slotkoers per dag")
+    ax.set_ylabel("Prijs")
+    ax.grid(True, linestyle="--", linewidth=0.5, alpha=0.6)
+    fig.tight_layout()
+    st.pyplot(fig)
+
+
 # --- Grafiek met SAM en Trend ---
 
 # Bepaal de weergaveperiode op basis van interval
