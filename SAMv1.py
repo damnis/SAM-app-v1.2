@@ -822,6 +822,8 @@ ax.bar(df_grafiek.index, df_grafiek["SAM"], color=kleuren, label="SAM")
 ax.plot(df_grafiek.index, df_grafiek["Trend"], color="blue", linewidth=2, label="Trend")
 # ✅ Nullijn
 ax.axhline(y=0, color="black", linewidth=1, linestyle="--")
+# ✅ Geforceerde y-as
+ax.set_ylim(-4.5, 4.5)
 # ✅ Titel en labels
 ax.set_title("📊 SAM-indicator en Trendlijn")
 ax.set_ylabel("Waarde")
@@ -830,6 +832,7 @@ ax.legend()
 
 fig.tight_layout()
 st.pyplot(fig)
+
 # --- Grafiek met SAM en Trend ---
 #fig, ax1 = plt.subplots(figsize=(10, 4))
 #ax1.bar(df_grafiek.index, df_grafiek["SAM"], color="lightblue", label="SAM")
