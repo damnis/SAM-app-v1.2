@@ -367,8 +367,8 @@ def determine_advice(df, threshold):
 
         if huidige == vorige and huidige != 0:
             huidige_trend += 1
-            elif huidige != 0:
-        huidige_trend = 1  # begin nieuwe richting
+        elif huidige != 0:
+            huidige_trend = 1  # begin nieuwe richting
         else:
             huidige_trend = 0
 
