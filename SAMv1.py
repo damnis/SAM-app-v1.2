@@ -349,7 +349,7 @@ def determine_advice(df, threshold):
     df = df.copy()
 
     # Trendberekening behouden, eventueel elders nog gebruikt
-    df["Trend"] = df["SAM"].rolling(window=15).mean()
+    df["Trend"] = df["SAM"].rolling(window=10).mean()
     df["TrendChange"] = df["Trend"] - df["Trend"].shift(1)
 
     # 🔁 NIEUWE ADVIESLOGICA OP BASIS VAN TRAIL (directionele voortgang)
@@ -359,14 +359,18 @@ def determine_advice(df, threshold):
     df["Trail"] = 0
     huidige_trend = 0
     
+    df.at[df.index[i], "Trail"] = huidige_trend
+    
     for i in range(1, len(df)):
         huidige = df["Richting"].iloc[i]
         vorige = df["Richting"].iloc[i - 1]
 
         if huidige == vorige and huidige != 0:
             huidige_trend += 1
+            elif huidige != 0:
+        huidige_trend = 1  # begin nieuwe richting
         else:
-            huidige_trend = 1 if huidige != 0 else 0
+            huidige_trend = 0
 
         df.at[df.index[i], "Trail"] = huidige_trend
     
