@@ -1139,9 +1139,14 @@ if trades:
     toon_alle = st.toggle("Toon alle trades", value=False)
     df_display = df_trades if toon_alle or len(df_trades) <= 12 else df_trades.iloc[-12:]
 
-    styler = df_display.style.format({col: "{:+.2f}%" for col in kleurbare_kolommen})
-    styler = styler.applymap(kleur_positief_negatief, subset=kleurbare_kolommen)
+    geldige_kolommen = [col for col in kleurbare_kolommen if df_display[col].notna().any()]
+    styler = df_display.style.format({col: "{:+.2f}%" for col in geldige_kolommen})
+    styler = styler.applymap(kleur_positief_negatief, subset=geldige_kolommen)
     st.dataframe(styler, use_container_width=True)
+
+ #   styler = df_display.style.format({col: "{:+.2f}%" for col in kleurbare_kolommen})
+ #   styler = styler.applymap(kleur_positief_negatief, subset=kleurbare_kolommen)
+  #  st.dataframe(styler, use_container_width=True)
 else:
     st.info("ℹ️ Geen trades gevonden binnen de geselecteerde periode.")
     
