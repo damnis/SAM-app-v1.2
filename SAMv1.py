@@ -780,14 +780,14 @@ if toon_koersgrafiek:
     df_koers = df[df.index >= cutoff_datum].copy()
 
     # ✅ Moving Averages berekenen
-    df_koers["MA30"] = df_koers["Close"].rolling(window=30).mean()
-    df_koers["MA150"] = df_koers["Close"].rolling(window=150).mean()
+    df_koers["MA35"] = df_koers["Close"].rolling(window=35).mean()
+    df_koers["MA80"] = df_koers["Close"].rolling(window=80).mean()
 
     # 📊 Plot met lijnen
     fig, ax = plt.subplots(figsize=(10, 4))
     ax.plot(df_koers.index, df_koers["Close"], color="black", linewidth=2.0, label="Koers")
-    ax.plot(df_koers.index, df_koers["MA30"], color="orange", linewidth=1.0, label="MA(30)")
-    ax.plot(df_koers.index, df_koers["MA150"], color="pink", linewidth=1.0, label="MA(150)")
+    ax.plot(df_koers.index, df_koers["MA35"], color="orange", linewidth=1.0, label="MA(35)")
+    ax.plot(df_koers.index, df_koers["MA80"], color="pink", linewidth=1.0, label="MA(80)")
 
     ax.set_title(f"Koersgrafiek van {ticker_name}")
     ax.set_ylabel("Close")
