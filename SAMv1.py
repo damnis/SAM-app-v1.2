@@ -678,40 +678,34 @@ from datetime import datetime, timedelta
 #    st.plotly_chart(fig, use_container_width=True)
 
 # simpele koersgrafiek
-# --- 📊 Toggle voor koersgrafiek ---
+# 📊 Toggle voor koersgrafiek
 toon_koersgrafiek = st.checkbox("Toon koersgrafiek", value=False)
 
 if toon_koersgrafiek:
-    
-    # --- 📈 Gekleurde koersgrafiek met bars ---
 
-    # Bepaal de weergaveperiode op basis van interval
+    # Periode en filtering
     grafiek_periode = bepaal_grafiekperiode(interval)
-
-    # Bepaal cutoff-datum
     cutoff_datum = df.index.max() - grafiek_periode
-
-    # Filter alleen koersdata
     df_koers = df[df.index >= cutoff_datum].copy()
 
-    # Bereken koersverandering
+    # Koersverandering en kleurenlijst
     df_koers["Close_diff"] = df_koers["Close"].diff()
-
-    # Instellen kleuren: groen bij stijging, rood bij daling of geen verandering
     kleuren = df_koers["Close_diff"].apply(
         lambda x: "green" if x > 0 else ("red" if x < 0 else "gray")
-    ).tolist()  # 🔧 converteer naar Python-lijst!
+    ).fillna("gray").tolist()
 
-    # Plot de staafgrafiek
+    # 📈 Plot
     fig, ax = plt.subplots(figsize=(10, 3))
-    ax.bar(df_koers.index, df_koers["Close"], color=kleuren, width=0.8)
 
-    ax.set_title("Slotkoers per dag")
-    ax.set_ylabel("Prijs")
-    ax.grid(True, linestyle="--", linewidth=0.5, alpha=0.6)
-
-    fig.tight_layout()
-    st.pyplot(fig)
+    if len(kleuren) != len(df_koers):
+        st.error("Lengte van kleurenlijst komt niet overeen met aantal datapunten.")
+    else:
+        ax.bar(df_koers.index, df_koers["Close"], color=kleuren, width=0.8)
+        ax.set_title("Slotkoers per dag")
+        ax.set_ylabel("Prijs")
+        ax.grid(True, linestyle="--", linewidth=0.5, alpha=0.6)
+        fig.tight_layout()
+        st.pyplot(fig)
 
 # --- Grafiek met SAM en Trend ---
 
