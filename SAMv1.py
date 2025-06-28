@@ -689,19 +689,20 @@ if toon_koersgrafiek:
     cutoff_datum = df.index.max() - grafiek_periode
     df_koers = df[df.index >= cutoff_datum].copy()
 
-    # ✅ Zorg dat Close een Series is
-    close_series = df_koers["Close"].squeeze()
-    close_shifted = close_series.shift(1)
+    # ✅ Moving Averages berekenen
+    df_koers["MA30"] = df_koers["Close"].rolling(window=30).mean()
+    df_koers["MA150"] = df_koers["Close"].rolling(window=150).mean()
 
-    # 🟥🟩 Kleur afhankelijk van stijging/daling
-    kleuren = ["green" if c >= p else "red" for c, p in zip(close_series, close_shifted)]
-
-    # 📊 Plot aanmaken
+    # 📊 Plot met lijnen
     fig, ax = plt.subplots(figsize=(10, 4))
-    ax.bar(df_koers.index, close_series, color=kleuren, width=0.8)
-    ax.set_title("Koersgrafiek")
+    ax.plot(df_koers.index, df_koers["Close"], color="black", linewidth=2.0, label="Koers")
+    ax.plot(df_koers.index, df_koers["MA30"], color="orange", linewidth=1.0, label="MA(30)")
+    ax.plot(df_koers.index, df_koers["MA150"], color="pink", linewidth=1.0, label="MA(150)")
+
+    ax.set_title("📈 Koers met MA(30) en MA(150)")
     ax.set_ylabel("Close")
     ax.set_xlabel("Datum")
+    ax.legend()
     fig.tight_layout()
 
     st.pyplot(fig)
