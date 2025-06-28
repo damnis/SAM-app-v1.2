@@ -1,7 +1,3 @@
-import ta
-import streamlit as st
-
-st.write(f"ta-versie in gebruik: {ta.__version__}")
 import streamlit as st
 import yfinance as yf
 import pandas as pd
