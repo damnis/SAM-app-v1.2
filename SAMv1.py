@@ -640,8 +640,17 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 
 # ⏱ Filter de data op basis van gekozen periode
-cutoff_datum = datetime.now() - bepaal_grafiekperiode(interval)
-df_filtered = df[df.index >= cutoff_datum]
+# Bepaal de weergaveperiode op basis van interval
+grafiek_periode = bepaal_grafiekperiode(interval)
+
+# Bepaal cutoff-datum
+cutoff_datum = df.index.max() - grafiek_periode
+
+# Filter alleen grafiekdata
+df_grafiek = df[df.index >= cutoff_datum].copy()
+
+#cutoff_datum = datetime.now() - bepaal_grafiekperiode(interval)
+#df_filtered = df[df.index >= cutoff_datum]
 
 # 🖼️ Toggle voor grafiek
 if st.toggle("📊 Toon koersgrafiek"):
@@ -697,7 +706,7 @@ st.subheader("Laatste signalen en rendement")
 kolommen = ["Close", "Advies", "SAM", "Trend", "Markt-%", "SAM-%"]
 #tabel = df[kolommen].dropna().tail(30).round(3).copy()
 tabel = df[kolommen].dropna().copy()
-tabel = tabel.sort_index(ascending=False).head(20)
+tabel = tabel.sort_index(ascending=False).head(10) # lengte tabel hier!
 
 # Datumkolom aanmaken vanuit index
 if not isinstance(tabel.index, pd.DatetimeIndex):
