@@ -4,4 +4,3 @@ numpy
 matplotlib
 yfinance
 git+https://github.com/bukosabino/ta.git
-sys
