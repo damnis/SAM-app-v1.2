@@ -43,8 +43,20 @@ def fetch_data(ticker, interval):
     return df
 
 from datetime import timedelta
-
+# periode voor SAM grafiek 
 def bepaal_grafiekperiode(interval):
+    if interval == "15m":
+        return timedelta(days=30)
+    elif interval == "1h":
+        return timedelta(days=5)
+    elif interval == "4h":
+        return timedelta(days=60)
+    elif interval == "1d":
+        return timedelta(days=120)
+    else:
+        return timedelta(weeks=260)  # bijv. bij weekly/monthly data
+# periode voor koersgrafiek 
+def bepaal_grafiekperiode2(interval):
     if interval == "15m":
         return timedelta(days=5)
     elif interval == "1h":
@@ -52,7 +64,7 @@ def bepaal_grafiekperiode(interval):
     elif interval == "4h":
         return timedelta(days=60)
     elif interval == "1d":
-        return timedelta(days=120)
+        return timedelta(days=1200)
     else:
         return timedelta(weeks=260)  # bijv. bij weekly/monthly data
 
@@ -685,7 +697,7 @@ toon_koersgrafiek = st.toggle("📉 Toon koersgrafiek", value=False)
 
 if toon_koersgrafiek:
     # 📅 Bepaal grafiekperiode
-    grafiek_periode = bepaal_grafiekperiode(interval)
+    grafiek_periode = bepaal_grafiekperiode2(interval)
     cutoff_datum = df.index.max() - grafiek_periode
     df_koers = df[df.index >= cutoff_datum].copy()
 
