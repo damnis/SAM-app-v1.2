@@ -50,7 +50,7 @@ def bepaal_grafiekperiode(interval):
     elif interval == "1h":
         return timedelta(days=5)
     elif interval == "4h":
-        return timedelta(days=60)
+        return timedelta(days=90)
     elif interval == "1d":
         return timedelta(days=180)
     else:
@@ -62,7 +62,7 @@ def bepaal_grafiekperiode2(interval):
     elif interval == "1h":
         return timedelta(days=5)
     elif interval == "4h":
-        return timedelta(days=60)
+        return timedelta(days=90)
     elif interval == "1d":
         return timedelta(days=180)
     else:
@@ -790,6 +790,12 @@ if toon_koersgrafiek:
 
     # Beperk x-as op koersperiode
     ax.set_xlim(df_koers.index.min(), df_koers.index.max())
+
+    # ➕ Kleine marge op y-as (2%)
+    koers_min = df_koers["Close"].min()
+    koers_max = df_koers["Close"].max()
+    marge = (koers_max - koers_min) * 0.02  # 2% marge
+    ax.set_ylim(koers_min - marge, koers_max + marge)
 
     # Opmaak
     ax.set_title(f"Koersgrafiek van {ticker_name}")
