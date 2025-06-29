@@ -591,14 +591,31 @@ thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2,
 #thresh = st.slider("Gevoeligheid van trendverandering", 0.01, 0.5, 0.1, step=0.02)
 
 # Berekening
-df = fetch_data(ticker, interval)
+# ✅ Gecombineerde functie met cache
+@st.cache_data(ttl=900)  # Cache 15 minuten
+def get_sam_met_advies(ticker, interval, threshold):
+    df = fetch_data(ticker, interval)
+    if df.empty or "Close" not in df.columns or "Open" not in df.columns:
+        return None, None  # Signaal dat data niet bruikbaar is
+    df = calculate_sam(df)
+    df, huidig_advies = determine_advice(df, threshold=threshold)
+    return df, huidig_advies
 
-if df.empty:
+# ✅ Gebruik en foutafhandeling
+df, huidig_advies = get_sam_met_advies(ticker, interval, thresh)
+
+if df is None or df.empty:
     st.error("❌ Geen geldige data opgehaald. Kies een andere ticker of interval.")
     st.stop()
-df = calculate_sam(df)
+
+#df = fetch_data(ticker, interval)
+
+#if df.empty:
+#    st.error("❌ Geen geldige data opgehaald. Kies een andere ticker of interval.")
+#    st.stop()
+#df = calculate_sam(df)
 #df = determine_advice(df, threshold=thresh)
-df, huidig_advies = determine_advice(df, threshold=thresh)
+#df, huidig_advies = determine_advice(df, threshold=thresh)
 
 # debugging tools
 #st.subheader("🔍 SAM Debug-tabel (laatste 8 rijen)")
