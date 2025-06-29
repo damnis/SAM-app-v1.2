@@ -46,25 +46,25 @@ from datetime import timedelta
 # periode voor SAM grafiek 
 def bepaal_grafiekperiode(interval):
     if interval == "15m":
-        return timedelta(days=30)
+        return timedelta(days=7)
     elif interval == "1h":
         return timedelta(days=5)
     elif interval == "4h":
         return timedelta(days=60)
     elif interval == "1d":
-        return timedelta(days=108)
+        return timedelta(days=180)
     else:
         return timedelta(weeks=260)  # bijv. bij weekly/monthly data
 # periode voor koersgrafiek 
 def bepaal_grafiekperiode2(interval):
     if interval == "15m":
-        return timedelta(days=5)
+        return timedelta(days=7)
     elif interval == "1h":
         return timedelta(days=5)
     elif interval == "4h":
         return timedelta(days=60)
     elif interval == "1d":
-        return timedelta(days=1080)
+        return timedelta(days=180)
     else:
         return timedelta(weeks=260)  # bijv. bij weekly/monthly data
 
