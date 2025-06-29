@@ -23,7 +23,13 @@ def fetch_data(ticker, interval):
         period = "25y"
 
     # Data ophalen
-    df = yf.download(ticker, interval=interval, period=period)
+    # 📥 Data ophalen en cachen
+    @st.cache_data(ttl=900)  # Cache 15 minuten
+    def fetch_data(ticker, interval, period="1y"):
+        df = yf.download(ticker, interval=interval, period=period)
+        return df
+    
+#    df = yf.download(ticker, interval=interval, period=period)
 
     # Verwijder rijen zonder volume of zonder koersverandering
     df = df[
