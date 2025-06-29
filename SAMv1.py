@@ -702,14 +702,14 @@ col1, col2 = st.columns([1, 2])
 with col1:
     st.markdown(
     f"""
-    <h2>Advies voor:</h2>
+    <h5>Advies voor:</h5>
     """,
     unsafe_allow_html=True
 )
 with col2:
     st.markdown(
     f"""
-    <h2><span style='color:#3366cc'>{ticker_name}</span></h2>
+    <h4><span style='color:#3366cc'>{ticker_name}</span</h4>
     """,
     unsafe_allow_html=True
     )
@@ -719,7 +719,7 @@ col1, col2 = st.columns([1, 1])
 with col1:
     st.markdown(
     f"""
-    <h2 style='color:{advies_kleur}'>Huidig advies:</h2>
+    <h5 style='color:{advies_kleur}'>Huidig advies:</h5>
     """,
     unsafe_allow_html=True
 )
