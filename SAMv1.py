@@ -9,6 +9,8 @@ import plotly.graph_objects as go
 #from ta.momentum import TRIXIndicator
 
 # --- Functie om data op te halen ---
+# 📥 Cachen van data per combinatie van ticker/interval (15 minuten geldig)
+@st.cache_data(ttl=900)
 def fetch_data(ticker, interval):
     # Intervalspecifieke periode instellen
     if interval == "15m":
@@ -23,13 +25,7 @@ def fetch_data(ticker, interval):
         period = "25y"
 
     # Data ophalen
-    # 📥 Data ophalen en cachen
-    @st.cache_data(ttl=900)  # Cache 15 minuten
-    def fetch_data(ticker, interval, period="1y"):
-        df = yf.download(ticker, interval=interval, period=period)
-        return df
-    
-#    df = yf.download(ticker, interval=interval, period=period)
+    df = yf.download(ticker, interval=interval, period=period)
 
     # Verwijder rijen zonder volume of zonder koersverandering
     df = df[
