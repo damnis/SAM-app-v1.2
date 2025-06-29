@@ -24,6 +24,13 @@ def fetch_data(ticker, interval):
     else:
         period = "25y"
 
+#    df = fetch_data(ticker, interval)
+
+# ❌ Stop de app als de DataFrame leeg is
+if df.empty or "Close" not in df.columns or "Open" not in df.columns:
+    st.error("❌ Geen geldige koersdata opgehaald. Probeer een andere ticker of interval.")
+    st.stop()
+    
     # Data ophalen
     df = yf.download(ticker, interval=interval, period=period)
 
