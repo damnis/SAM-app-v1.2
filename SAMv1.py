@@ -629,7 +629,19 @@ interval = interval_mapping[interval_optie]
 with st.container():
     st.markdown("### ⚙️ Adviesgevoeligheid")
     thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
-    
+with st.expander("ℹ️ Uitleg over de gevoeligheid van het advies"):
+    st.markdown(
+        """
+        <div style='color:#444; font-size:15px;'>
+        De **gevoeligheidsslider** bepaalt hoeveel opeenvolgende perioden met dezelfde trendrichting
+        nodig zijn voordat een **advies** (Kopen of Verkopen) wordt afgegeven.<br><br>
+        - Een **lagere waarde** (bijv. 1 of 2) geeft sneller advies, maar is gevoeliger voor ruis.<br>
+        - Een **hogere waarde** (bijv. 4 of 5) vereist meer bevestiging van de trend, en geeft dus minder maar vaak betrouwbaardere signalen.<br><br>
+        De standaardwaarde is **2**.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )    
 #with st.container():
 #    st.markdown(
 #        """
