@@ -1005,6 +1005,7 @@ df_signalen = df_signalen[df_signalen[advies_col].isin(["Kopen", "Verkopen"])].c
 
 # 🔄 Backtestfunctie
 
+#def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
 def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
     rendementen = []
     trades = []
@@ -1031,15 +1032,17 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
                 else:
                     rendement = (entry_price - sluit_close) / entry_price * 100
 
-                rendementen.append(rendement)
-                trades.append({
-                    "Type": entry_type,
-                    "Open datum": entry_date.date(),
-                    "Open prijs": entry_price,
-                    "Sluit datum": sluit_datum.date(),
-                    "Sluit prijs": sluit_close,
-                    "Rendement (%)": rendement
-                })
+                # 🔁 Nieuw: filter dummy-trade
+                if entry_price != sluit_close and entry_date != sluit_datum:
+                    rendementen.append(rendement)
+                    trades.append({
+                        "Type": entry_type,
+                        "Open datum": entry_date.date(),
+                        "Open prijs": entry_price,
+                        "Sluit datum": sluit_datum.date(),
+                        "Sluit prijs": sluit_close,
+                        "Rendement (%)": rendement
+                    })
 
                 # Mogelijk nieuwe trade openen
                 if mapped_type == "Beide" or advies == mapped_type:
@@ -1067,19 +1070,20 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
         else:
             rendement = (entry_price - laatste_koers) / entry_price * 100
 
-        rendementen.append(rendement)
-        trades.append({
-            "Type": entry_type,
-            "Open datum": entry_date.date(),
-            "Open prijs": entry_price,
-            "Sluit datum": laatste_datum.date(),
-            "Sluit prijs": laatste_koers,
-            "Rendement (%)": rendement
-        })
+        # 🔁 Nieuw: filter dummy-trade (ook laatste)
+        if entry_price != laatste_koers and entry_date != laatste_datum:
+            rendementen.append(rendement)
+            trades.append({
+                "Type": entry_type,
+                "Open datum": entry_date.date(),
+                "Open prijs": entry_price,
+                "Sluit datum": laatste_datum.date(),
+                "Sluit prijs": laatste_koers,
+                "Rendement (%)": rendement
+            })
 
     sam_rendement = sum(rendementen) if rendementen else 0.0
     return sam_rendement, trades, rendementen
-    
 
 # ✅ 4. Berekening
 sam_rendement, trades, rendementen = bereken_sam_rendement(df_signalen, signaalkeuze, close_col)
