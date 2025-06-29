@@ -598,14 +598,12 @@ selected_ticker = st.selectbox(
 ticker = selected_ticker
 ticker_name = dropdown_dict[ticker][1]
 
-
 # --- Live koers opnieuw ophalen voor de geselecteerde ticker ---
 try:
     live_data = yf.download(ticker, period="1d", interval="1d", progress=False)
     last = live_data["Close"].iloc[-1]
 except Exception:
     last = 0.0  # fallback
-
 
 # --- Andere instellingen ---
 # --- Intervalopties ---
@@ -636,11 +634,11 @@ with col2:
     with st.expander("ℹ️ Uitleg over de gevoeligheid van het advies"):
         st.markdown(
             """
-            <div style='color:#444; font-size:15px;'>
+            <div style='color:#444; font-size:12px;'>
             De **gevoeligheidsslider** bepaalt hoeveel opeenvolgende perioden met dezelfde trendrichting
             nodig zijn voordat een **advies** (Kopen of Verkopen) wordt afgegeven.<br><br>
             - Een **lagere waarde** (bijv. 1 of 2) geeft sneller advies, maar is gevoeliger voor ruis.<br>
-            - Een **hogere waarde** (bijv. 4 of 5) vereist meer bevestiging van de trend, en geeft dus minder maar vaak betrouwbaardere signalen.<br><br>
+            - Een **hogere waarde** (bijv. 3 of 4) vereist meer bevestiging van de trend, en geeft dus minder maar vaak betrouwbaardere signalen.<br><br>
             De standaardwaarde is **2**.
             </div>
             """,
@@ -700,7 +698,7 @@ if df is None or df.empty:
 advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies == "Verkopen" else "gray"
 
 # Titel met kleur en grootte tonen - indicator
-col1, col2 = st.columns([1, 1])
+col1, col2 = st.columns([1, 2])
 with col1:
     st.markdown(
     f"""
