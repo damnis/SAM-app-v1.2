@@ -458,6 +458,9 @@ def determine_advice(df, threshold):
 # --- Streamlit UI ---
 #st.title("SAM Trading Indicator")
 # Titel met kleur en grootte tonen
+# Kleur bepalen op basis van advies
+advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies == "Verkopen" else "gray"
+
 st.markdown(
     f"""
     <h1>SAM Trading Indicator<span style='color:#3366cc'>   </span></h1>
@@ -672,7 +675,7 @@ if df is None or df.empty:
 # Grafieken
 
 # Kleur bepalen op basis van advies
-advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies == "Verkopen" else "gray"
+#advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies == "Verkopen" else "gray"
 
 # Titel met kleur en grootte tonen
 st.markdown(
