@@ -1134,7 +1134,7 @@ if trades:
     df_display = df_display.rename(columns={"Rendement (%)": "SAM-% tot."})
     df_display = df_display[[
         "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
-        "SAM","Trend","Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
+        "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
 
     # Succes-analyses
     aantal_trades = len(df_display)
