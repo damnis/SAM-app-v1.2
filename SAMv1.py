@@ -785,8 +785,8 @@ if toon_koersgrafiek:
     ax.plot(df_koers.index, df_koers["Close"], color="black", linewidth=2.0, label="Koers")
 
     # Plot MA-lijnen vanuit volledige dataset
-    ax.plot(df.index, df["MA35"], color="orange", linewidth=1.0, label="MA(30)")
-    ax.plot(df.index, df["MA80"], color="pink", linewidth=1.0, label="MA(150)")
+    ax.plot(df.index, df["MA30"], color="orange", linewidth=1.0, label="MA(30)")
+    ax.plot(df.index, df["MA150"], color="pink", linewidth=1.0, label="MA(150)")
 
     # Beperk x-as op koersperiode
     ax.set_xlim(df_koers.index.min(), df_koers.index.max())
