@@ -12,11 +12,9 @@ from ta.trend import ADXIndicator
 
 # --- Functie om data op te halen ---
 # 📥 Cachen van data per combinatie van ticker/interval (15 minuten geldig)
-# ✅ Gecachete datadownload via yfinance (15 min cache)
 @st.cache_data(ttl=900)
 def fetch_data_cached(ticker, interval, period):
     return yf.download(ticker, interval=interval, period=period)
-
 
 # ✅ Wrapper-functie met schoonmaak + fallback
 def fetch_data(ticker, interval):
@@ -55,8 +53,6 @@ def fetch_data(ticker, interval):
         df[col] = df[col].fillna(method="ffill").fillna(method="bfill")
 
     return df
-
-
 
 # periode voor SAM grafiek 
 def bepaal_grafiekperiode(interval):
@@ -147,13 +143,6 @@ def calculate_sam(df):
         "SAMK"
     ] = -0.25
     
-#    df["c1"] = df["Close"] > df["Open"]
-#    df["c2"] = df["Close"].shift(1) > df["Open"].shift(1)
-#    df["c3"] = df["Close"].shift(2) > df["Open"].shift(2)
-#    df["c4"] = df["Close"].shift(3) > df["Open"].shift(3)
-#    df["c5"] = df["Close"].shift(4) > df["Open"].shift(4)
-#    df["c6"] = df["Close"].shift(1) < df["Open"].shift(1)
-#    df["c7"] = df["Close"].shift(2) < df["Open"].shift(2)
 
     # SAMK oud
 #    df["SAMK"] = 0
@@ -438,100 +427,18 @@ def determine_advice(df, threshold):
 
     return df, huidig_advies
 
-
-#def determine_advice(df, threshold):
-#    df = df.copy()
-#    df["Trend"] = df["SAM"].rolling(window=12).mean() # cruciaal oorspronkelijk 3, maar sam 12
-#    df["TrendChange"] = df["Trend"] - df["Trend"].shift(1)
-
-#    df["Advies"] = np.nan
- #   df.loc[df["TrendChange"] > threshold, "Advies"] = "Kopen"
-#    df.loc[df["TrendChange"] < -threshold, "Advies"] = "Verkopen"
-#    df["Advies"] = df["Advies"].ffill()
-
-#    df["AdviesGroep"] = (df["Advies"] != df["Advies"].shift()).cumsum()
-#    rendementen = []
-#    sam_rendementen = []
-
-#    groepen = list(df.groupby("AdviesGroep"))
-
-#    for i in range(len(groepen)):
-#        _, groep = groepen[i]
-#        advies = groep["Advies"].iloc[0]
-
-#        start = groep["Close"].iloc[0]
- #       eind = None
-
-#        if i < len(groepen) - 1:
-#            # Eerste koers van volgende groep
- #           eind = groepen[i + 1][1]["Close"].iloc[0]
- #       else:
-  #          # Laatste koers van deze groep
- #           eind = groep["Close"].iloc[-1]
-
- #       # ✅ Veiligheid: omzetting en check
- #       try:
- #           start = float(start)
- #           eind = float(eind)
- #           if start != 0.0:
- #               markt_rendement = (eind - start) / start
-  #              sam_rendement = markt_rendement if advies == "Kopen" else -markt_rendement
- #           else:
-#                markt_rendement = 0.0
-#                sam_rendement = 0.0
-#        except Exception:
-#            markt_rendement = 0.0
- #           sam_rendement = 0.0
-
- #       # 🔁 Voeg altijd exacte lengte toe
-#        rendementen.extend([markt_rendement] * len(groep))
-#        sam_rendementen.extend([sam_rendement] * len(groep))
-
-    # ✅ Laatste check: gelijke lengte
-#    if len(rendementen) != len(df):
-#        raise ValueError(f"Lengte mismatch: rendementen={len(rendementen)}, df={len(df)}")
-
-#    df["Markt-%"] = rendementen
-#    df["SAM-%"] = sam_rendementen
-
-    # Huidig advies bepalen
-#    if "Advies" in df.columns and df["Advies"].notna().any():
- #       huidig_advies = df["Advies"].dropna().iloc[-1]
-#    else:
-#        huidig_advies = "Niet beschikbaar"
-#
-#    return df, huidig_advies
-    
+   
 # --- Streamlit UI ---
 st.title("SAM Trading Indicator")
 
 # --- Volledige tickerlijsten ---
 aex_tickers = {
-    "ABN.AS": "ABN AMRO",
-    "ADYEN.AS": "Adyen",
-    "AGN.AS": "Aegon",
-    "AD.AS": "Ahold Delhaize",
-    "AKZA.AS": "Akzo Nobel",
-    "MT.AS": "ArcelorMittal",
-    "ASM.AS": "ASMI",
-    "ASML.AS": "ASML",
-    "ASRNL.AS": "ASR Nederland",
-    "BESI.AS": "BESI",
-    "DSFIR.AS": "DSM-Firmenich",
-    "GLPG.AS": "Galapagos",
-    "HEIA.AS": "Heineken",
-    "IMCD.AS": "IMCD",
-    "INGA.AS": "ING Groep",
-    "TKWY.AS": "Just Eat Takeaway",
-    "KPN.AS": "KPN",
-    "NN.AS": "NN Group",
-    "PHIA.AS": "Philips",
-    "PRX.AS": "Prosus",
-    "RAND.AS": "Randstad",
-    "REN.AS": "Relx",
-    "SHELL.AS": "Shell",
-    "UNA.AS": "Unilever",
-    "WKL.AS": "Wolters Kluwer"
+"ABN.AS": "ABN AMRO", "ADYEN.AS": "Adyen", "AGN.AS": "Aegon", "AD.AS": "Ahold Delhaize", 
+"AKZA.AS": "Akzo Nobel", "MT.AS": "ArcelorMittal", "ASM.AS": "ASMI", "ASML.AS": "ASML", "ASRNL.AS": "ASR Nederland",
+"BESI.AS": "BESI", "DSFIR.AS": "DSM-Firmenich", "GLPG.AS": "Galapagos", "HEIA.AS": "Heineken", 
+"IMCD.AS": "IMCD", "INGA.AS": "ING Groep", "TKWY.AS": "Just Eat Takeaway", "KPN.AS": "KPN",
+"NN.AS": "NN Group", "PHIA.AS": "Philips", "PRX.AS": "Prosus", "RAND.AS": "Randstad",
+"REN.AS": "Relx", "SHELL.AS": "Shell", "UNA.AS": "Unilever", "WKL.AS": "Wolters Kluwer"
 }
 
 dow_tickers = {
@@ -552,19 +459,9 @@ nasdaq_tickers = {
 }
 
 ustech_tickers = {
-    "SMCI": "Super Micro Computer",
-    "PLTR": "Palantir",
-    "ORCL": "Oracle",
-    "SNOW": "Snowflake",
-    "NVDA": "NVIDIA",
-    "AMD": "AMD",
-    "MDB": "MongoDB",
-    "DDOG": "Datadog",
-    "CRWD": "CrowdStrike",
-    "ZS": "Zscaler",
-    "TSLA": "Tesla",
-    "AAPL": "Apple",
-    "GOOGL": "Alphabet (GOOGL)",
+    "SMCI": "Super Micro Computer", "PLTR": "Palantir", "ORCL": "Oracle", "SNOW": "Snowflake",
+    "NVDA": "NVIDIA", "AMD": "AMD", "MDB": "MongoDB", "DDOG": "Datadog", "CRWD": "CrowdStrike",
+    "ZS": "Zscaler", "TSLA": "Tesla", "AAPL": "Apple", "GOOGL": "Alphabet (GOOGL)",
     "MSFT": "Microsoft"
 }
 eurostoxx_tickers = {
@@ -612,7 +509,6 @@ valutasymbool = {
     "🌐 Crypto": "",  # Geen symbool
 }.get(selected_tab, "")
 
-#- Data ophalen voor dropdown live view ---
 #def get_live_ticker_data(tickers_dict):
 # --- Data ophalen voor dropdown live view ---
 def get_live_ticker_data(tickers_dict):
@@ -663,10 +559,6 @@ ticker = selected_ticker
 ticker_name = dropdown_dict[ticker][1]
 
 
-# --- Opgehaalde waarden ---
-#ticker = selected_ticker
-#ticker_name = dropdown_dict[ticker][1]
-
 # --- Live koers opnieuw ophalen voor de geselecteerde ticker ---
 try:
     live_data = yf.download(ticker, period="1d", interval="1d", progress=False)
@@ -705,9 +597,8 @@ if df.empty:
     st.stop()
 df = calculate_sam(df)
 #df = determine_advice(df, threshold=thresh)
-#df, huidig_advies = determine_advice(df, threshold=thresh)
 df, huidig_advies = determine_advice(df, threshold=thresh)
-#df, huidig_advies = determine_advice(df, threshold=thresh)
+
 # debugging tools
 #st.subheader("🔍 SAM Debug-tabel (laatste 8 rijen)")
 #st.dataframe(
@@ -724,9 +615,6 @@ df, huidig_advies = determine_advice(df, threshold=thresh)
   #         f"SAM totaal={df['SAM'].mean():+.2f}")
 
 # Grafieken
-#st.subheader(f"SAM-indicator en trend voor {ticker}")
-# Huidige advies ophalen
-# huidig_advies = df["Advies"].dropna().iloc[-1]
 
 # Kleur bepalen op basis van advies
 advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies == "Verkopen" else "gray"
@@ -781,7 +669,6 @@ st.markdown(
 # simpele koersgrafiek
 import matplotlib.pyplot as plt
 
-# ⏳ Toggle voor koersgrafiek
 # ⏳ Toggle voor koersgrafiek
 toon_koersgrafiek = st.toggle("📉 Toon koersgrafiek", value=False)
 
@@ -868,7 +755,7 @@ ax.legend()
 fig.tight_layout()
 st.pyplot(fig)
 
-# --- Grafiek met SAM en Trend ---
+# --- Grafiek met SAM en Trend  - oud ---
 #fig, ax1 = plt.subplots(figsize=(10, 4))
 #ax1.bar(df_grafiek.index, df_grafiek["SAM"], color="lightblue", label="SAM")
 #ax1.axhline(y=0, color="black", linewidth=1, linestyle="--")  # nullijn
@@ -917,13 +804,6 @@ tabel = tabel.rename(columns={
     "SAM-% weergave": "SAM-%",
     "Trend Weergave": "Trend"
 })
-
-#tabel["SAM"] = tabel["SAM"].map("{:.2f}".format)
-#tabel["Trend"] = tabel["Trend"].map("{:.3f}".format)
-
-#tabel["Markt-%"] = (tabel["Markt-%"].astype(float) * 100).map("{:+.2f}%".format)
-#tabel["SAM-%"] = (tabel["SAM-%"].astype(float) * 100).map("{:+.2f}%".format)
-
 
 # HTML-rendering
 html = """
@@ -983,19 +863,14 @@ st.markdown(html, unsafe_allow_html=True)
 
 
 
-## 📊 3. Backtestfunctie: sluit op close van nieuw signaal
-# ✅ 1. Data inladen of ontvangen (voorbeeld)
-# ✅ 2. Data voorbereiden voor backtest (vereist kolom 'Advies')
+## 📊 Backtestfunctie: sluit op close van nieuw signaal
+# ✅ 0.Data voorbereiden voor advies')
 df_signalen = df.copy()
 if "Advies" not in df_signalen.columns:
     st.error("Kolom 'Advies' ontbreekt in de data.")
     st.stop()
 
                 
-# 📊 3. Backtestfunctie: sluit op close van nieuw signaal
-# ✅ Zorg dat de index datetime is
-from datetime import date
-
 st.subheader("Vergelijk Marktrendement en SAM-rendement")
 
 # 📅 1. Datumkeuze
@@ -1200,14 +1075,20 @@ else:
     st.info("ℹ️ Geen trades gevonden binnen de geselecteerde periode.")
     
     
-    #geldige_kolommen = [col for col in kleurbare_kolommen if df_display[col].notna().any()]
-#    for col in geldige_kolommen:
-#        df_display[col] = df_display[col].map("{:+.2f}%".format)
 
-#    styler = df_display.style.applymap(kleur_positief_negatief, subset=geldige_kolommen)
-#    st.dataframe(styler, use_container_width=True)
-#else:
-#    st.info("ℹ️ Geen trades gevonden binnen de geselecteerde periode.")
+
+
+
+
+
+
+
+
+
+
+
+
+# wit
 
 
 
