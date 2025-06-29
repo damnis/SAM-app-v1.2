@@ -390,11 +390,11 @@ def determine_advice(df, threshold):
         df.at[df.index[i], "Trail"] = huidige_trend
 
     # ✅ Eerst advies op basis van sterke trendwaarde
-    df.loc[df["Trend"] > 2, "Advies"] = "Kopen"
-    df.loc[df["Trend"] < -2, "Advies"] = "Verkopen"
+#    df.loc[df["Trend"] > 2, "Advies"] = "Kopen"
+ #   df.loc[df["Trend"] < -2, "Advies"] = "Verkopen"
 
-#    df.loc[df["SAM"] > 2, "Advies"] = "Kopen"
-#    df.loc[df["SAM"] < -2, "Advies"] = "Verkopen"
+ #   df.loc[df["SAM"] > 2, "Advies"] = "Kopen"
+ #   df.loc[df["SAM"] < -2, "Advies"] = "Verkopen"
 
     # ✅ Daarna alleen nog trailing advies als er nog geen advies is
     mask_koop = (df["Richting"] == 1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
