@@ -997,7 +997,7 @@ if len(df_valid) >= 2 and df_valid.iloc[0] != 0.0:
 # ✅ Signaalkeuze geforceerd op Beide
 signaalkeuze = "Beide"
 advice_col = "Advies"
-df_signalen = df_period[df_period[advice_col].isin(["Kopen", "Verkopen"])]
+df_signalen = df_period[df_period[advice_col].isin(["Kopen", "Verkopen"])].copy()
 
 # 🔄 Backtestfunctie
 
