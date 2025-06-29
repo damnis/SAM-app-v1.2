@@ -630,7 +630,8 @@ col1, col2 = st.columns([2, 1])  # Pas verhouding aan als je wilt
 
 with col1:
     st.markdown("### ⚙️ Adviesgevoeligheid")
-
+    thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
+    
 with col2:
     with st.expander("ℹ️ Uitleg over de gevoeligheid van het advies"):
         st.markdown(
@@ -646,9 +647,7 @@ with col2:
             unsafe_allow_html=True
         )
 
-
-    thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
-    
+  
 #thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
 #thresh = st.slider("Gevoeligheid van trendverandering", 0.01, 0.5, 0.1, step=0.02)
 
@@ -701,14 +700,23 @@ if df is None or df.empty:
 advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies == "Verkopen" else "gray"
 
 # Titel met kleur en grootte tonen
-st.markdown(
+col1, col2 = st.columns([1, 1])
+with col1:
+    st.markdown(
     f"""
     <h3>SAM-indicator en trend voor <span style='color:#3366cc'>{ticker_name}</span></h3>
-    <h2 style='color:{advies_kleur}'>Huidig advies: {huidig_advies}</h2>
+    <h2 style='color:{advies_kleur}'>Huidig advies:</h2>
     """,
     unsafe_allow_html=True
 )
-
+with col2:
+    st.markdown(
+    f"""
+    <h1><span style='color:#3366cc'>{ticker_name}</span></h1>
+    <h2 style='color:{advies_kleur}'>{huidig_advies}</h2>
+    """,
+    unsafe_allow_html=True
+    )
 # ⏱ gecompliceerde koersgrafiek werkt niet geheel
 # bepaal data weeergaveperiode op basis van interval
 #grafiek_periode = bepaal_grafiekperiode(interval)
