@@ -19,19 +19,23 @@ def fetch_data_cached(ticker, interval, period):
 
 # ✅ Wrapper-functie met schoonmaak + fallback
 def fetch_data(ticker, interval):
-    # 📅 Interval naar periode
+    # 📅 Interval naar periode (maximale periode per interval volgens Yahoo Finance)
     if interval == "15m":
-        period = "30d"
+        period = "30d"     # Max voor 15m = 60d, maar 30d is veiliger/snelle laadtijd
     elif interval == "1h":
-        period = "720d"
+        period = "720d"    # Max voor 1h = ±730d (2 jaar)
     elif interval == "4h":
-        period = "360d"
+        period = "360d"    # Max voor 4h = ±730d (gedeeld over 6 candles per dag)
     elif interval == "1d":
-        period = "20y"
+        period = "20y"     # Max voor 1d = 20y
+    elif interval == "1wk":
+        period = "20y"     # Max voor 1wk = 20y
+    elif interval == "1mo":
+        period = "25y"  # maximaal bij maanddata = 25y
     else:
-        period = "25y"
+        period = "25y"     # Fallback (bijv. voor '1mo' of onbekend)
 
-    # 📥 Ophalen via gecachete functie
+        # 📥 Ophalen via gecachete functie
     df = fetch_data_cached(ticker, interval, period)
 
     # 🛡️ Check op geldige data
@@ -55,18 +59,22 @@ def fetch_data(ticker, interval):
 
     return df
 
-# periode voor SAM grafiek 
+# 📆 Periode voor SAM-grafiek op basis van interval
 def bepaal_grafiekperiode(interval):
     if interval == "15m":
-        return timedelta(days=7)
+        return timedelta(days=7)        # 7 dagen à ~96 candles per dag = ±672 punten
     elif interval == "1h":
-        return timedelta(days=5)
+        return timedelta(days=5)        # 5 dagen à ~7 candles = ±35 punten
     elif interval == "4h":
-        return timedelta(days=90)
+        return timedelta(days=90)       # 3 maanden à ~6 candles per week
     elif interval == "1d":
-        return timedelta(days=180)
+        return timedelta(days=180)      # 6 maanden à 1 candle per dag
+    elif interval == "1wk":
+        return timedelta(weeks=104)     # 2 jaar aan weekly candles (104 candles)
+    elif interval == "1mo":
+        return timedelta(weeks=520)     # 10 jaar aan monthly candles (120 candles)
     else:
-        return timedelta(weeks=260)  # bijv. bij weekly/monthly data
+        return timedelta(weeks=260)     # Fallback = 5 jaar
 # periode voor koersgrafiek 
 #def bepaal_grafiekperiode2(interval):
 #    if interval == "15m":
