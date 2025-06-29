@@ -383,9 +383,18 @@ def determine_advice(df, threshold):
 
         df.at[df.index[i], "Trail"] = huidige_trend
 
-    # 🟢🔴 Advies op basis van richting én trail
-    df.loc[(df["Richting"] == 1) & (df["Trail"] >= threshold), "Advies"] = "Kopen"
-    df.loc[(df["Richting"] == -1) & (df["Trail"] >= threshold), "Advies"] = "Verkopen"
+    # ✅ Eerst advies op basis van sterke trendwaarde
+    df.loc[df["Trend"] > 2, "Advies"] = "Kopen"
+    df.loc[df["Trend"] < -2, "Advies"] = "Verkopen"
+
+    # ✅ Daarna alleen nog trailing advies als er nog geen advies is
+    mask_koop = (df["Richting"] == 1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
+    mask_verkoop = (df["Richting"] == -1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
+
+    df.loc[mask_koop, "Advies"] = "Kopen"
+    df.loc[mask_verkoop, "Advies"] = "Verkopen"
+
+    # 🔄 Advies forward fillen
     df["Advies"] = df["Advies"].ffill()
 
     # 📊 Bereken rendementen op basis van adviesgroepering
@@ -421,7 +430,7 @@ def determine_advice(df, threshold):
         rendementen.extend([markt_rendement] * len(groep))
         sam_rendementen.extend([sam_rendement] * len(groep))
 
-    # ✅ Consistentiecontrole
+    # ✅ Controle
     if len(rendementen) != len(df):
         raise ValueError(f"Lengte mismatch: rendementen={len(rendementen)}, df={len(df)}")
 
