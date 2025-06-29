@@ -772,18 +772,26 @@ if toon_koersgrafiek:
     # 📅 Bepaal grafiekperiode
     grafiek_periode = bepaal_grafiekperiode2(interval)
     cutoff_datum = df.index.max() - grafiek_periode
-    df_koers = df[df.index >= cutoff_datum].copy()
+    df_koers = df[df.index >= cutoff_datum].copy()  # Alleen koers in periode
 
-    # ✅ Moving Averages berekenen
-    df_koers["MA35"] = df_koers["Close"].rolling(window=35).mean()
-    df_koers["MA80"] = df_koers["Close"].rolling(window=80).mean()
+    # ✅ Bereken MA's op de volledige dataset
+    df["MA30"] = df["Close"].rolling(window=30).mean()
+    df["MA150"] = df["Close"].rolling(window=150).mean()
 
     # 📊 Plot met lijnen
     fig, ax = plt.subplots(figsize=(10, 4))
-    ax.plot(df_koers.index, df_koers["Close"], color="black", linewidth=2.0, label="Koers")
-    ax.plot(df_koers.index, df_koers["MA35"], color="orange", linewidth=1.0, label="MA(35)")
-    ax.plot(df_koers.index, df_koers["MA80"], color="pink", linewidth=1.0, label="MA(80)")
 
+    # Plot koers alleen voor gekozen periode
+    ax.plot(df_koers.index, df_koers["Close"], color="black", linewidth=2.0, label="Koers")
+
+    # Plot MA-lijnen vanuit volledige dataset
+    ax.plot(df.index, df["MA35"], color="orange", linewidth=1.0, label="MA(30)")
+    ax.plot(df.index, df["MA80"], color="pink", linewidth=1.0, label="MA(150)")
+
+    # Beperk x-as op koersperiode
+    ax.set_xlim(df_koers.index.min(), df_koers.index.max())
+
+    # Opmaak
     ax.set_title(f"Koersgrafiek van {ticker_name}")
     ax.set_ylabel("Close")
     ax.set_xlabel("Datum")
@@ -792,7 +800,6 @@ if toon_koersgrafiek:
     st.subheader("Koersgrafiek")
 
     st.pyplot(fig)
-
 
 # --- Grafiek met SAM en Trend ---
 st.subheader("Grafiek met SAM en Trend")
