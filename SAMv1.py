@@ -704,7 +704,7 @@ col1, col2 = st.columns([1, 1])
 with col1:
     st.markdown(
     f"""
-    <h3>SAM-indicator en trend voor <span style='color:#3366cc'>{ticker_name}</span></h3>
+    <h2>SAM-indicator en trend voor:</h2>
     <h2 style='color:{advies_kleur}'>Huidig advies:</h2>
     """,
     unsafe_allow_html=True
@@ -712,8 +712,8 @@ with col1:
 with col2:
     st.markdown(
     f"""
-    <h1><span style='color:#3366cc'>{ticker_name}</span></h1>
-    <h2 style='color:{advies_kleur}'>{huidig_advies}</h2>
+    <h3><span style='color:#3366cc'>{ticker_name}</span></h3>
+    <h1 style='color:{advies_kleur}'>{huidig_advies}</h1>
     """,
     unsafe_allow_html=True
     )
