@@ -56,17 +56,17 @@ def bepaal_grafiekperiode(interval):
     else:
         return timedelta(weeks=260)  # bijv. bij weekly/monthly data
 # periode voor koersgrafiek 
-def bepaal_grafiekperiode2(interval):
-    if interval == "15m":
-        return timedelta(days=7)
-    elif interval == "1h":
-        return timedelta(days=5)
-    elif interval == "4h":
-        return timedelta(days=90)
-    elif interval == "1d":
-        return timedelta(days=180)
-    else:
-        return timedelta(weeks=260)  # bijv. bij weekly/monthly data
+#def bepaal_grafiekperiode2(interval):
+#    if interval == "15m":
+#        return timedelta(days=7)
+ #   elif interval == "1h":
+ #       return timedelta(days=5)
+ #   elif interval == "4h":
+ #       return timedelta(days=90)
+#    elif interval == "1d":
+#        return timedelta(days=180)
+ #   else:
+  #      return timedelta(weeks=260)  # bijv. bij weekly/monthly data
 
 
 # --- SAM Indicatorberekeningen ---
@@ -770,7 +770,7 @@ toon_koersgrafiek = st.toggle("📉 Toon koersgrafiek", value=False)
 
 if toon_koersgrafiek:
     # 📅 Bepaal grafiekperiode
-    grafiek_periode = bepaal_grafiekperiode2(interval)
+    grafiek_periode = bepaal_grafiekperiode(interval)
     cutoff_datum = df.index.max() - grafiek_periode
     df_koers = df[df.index >= cutoff_datum].copy()  # Alleen koers in periode
 
