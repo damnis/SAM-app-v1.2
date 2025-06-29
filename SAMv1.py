@@ -990,7 +990,7 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
                         "Open prijs": entry_price,
                         "Sluit datum": sluit_datum.date(),
                         "Sluit prijs": sluit_close,
-                        "Rendement (%)": rendement
+                        "Rendement (%)": rendement,
                         "SAM": df.loc[open_datum, "SAM"] if open_datum in df.index else None,
                         "Trend": df.loc[open_datum, "Trend"] if open_datum in df.index else None,
                     })
