@@ -698,7 +698,7 @@ if df is None or df.empty:
 advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies == "Verkopen" else "gray"
 
 # Titel met kleur en grootte tonen - indicator
-col1, col2 = st.columns([1, 2])
+col1, col2 = st.columns([1, 4])
 with col1:
     st.markdown(
     f"""
@@ -715,7 +715,7 @@ with col2:
     )
 
 # Titel met kleur en grootte tonen - advies
-col1, col2 = st.columns([1, 1])
+col1, col2 = st.columns([1, 4])
 with col1:
     st.markdown(
     f"""
@@ -726,7 +726,7 @@ with col1:
 with col2:
     st.markdown(
     f"""
-    <h2 style='color:{advies_kleur}'>{huidig_advies}</h2>
+    <h4 style='color:{advies_kleur}'>{huidig_advies}</h4>
     """,
     unsafe_allow_html=True
     )
