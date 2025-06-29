@@ -68,11 +68,11 @@ def bepaal_grafiekperiode(interval):
     elif interval == "4h":
         return timedelta(days=90)       # 3 maanden à ~6 candles per week
     elif interval == "1d":
-        return timedelta(days=180)      # 6 maanden à 1 candle per dag
+        return timedelta(days=360)      # 180=6 maanden à 1 candle per dag
     elif interval == "1wk":
-        return timedelta(weeks=104)     # 2 jaar aan weekly candles (104 candles)
+        return timedelta(weeks=104)     # 104=2 jaar aan weekly candles (104 candles)
     elif interval == "1mo":
-        return timedelta(weeks=520)     # 10 jaar aan monthly candles (120 candles)
+        return timedelta(weeks=520)     # 520=0 jaar aan monthly candles (120 candles)
     else:
         return timedelta(weeks=260)     # Fallback = 5 jaar
 # periode voor koersgrafiek 
@@ -362,7 +362,7 @@ def determine_advice(df, threshold):
     df = df.copy()
 
     # 🧮 Trendberekening over SAM
-    df["Trend"] = df["SAM"].rolling(window=10).mean()
+    df["Trend"] = df["SAM"].rolling(window=10).mean()  # hier Trend sam ingeven default:12
     df["TrendChange"] = df["Trend"] - df["Trend"].shift(1)
     df["Richting"] = np.sign(df["TrendChange"])
     df["Trail"] = 0
@@ -703,8 +703,6 @@ st.markdown(
 #    st.plotly_chart(fig, use_container_width=True)
 
 # simpele koersgrafiek
-import matplotlib.pyplot as plt
-
 # ⏳ Toggle voor koersgrafiek
 toon_koersgrafiek = st.toggle("📉 Toon koersgrafiek", value=False)
 
