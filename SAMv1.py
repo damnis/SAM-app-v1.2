@@ -362,7 +362,8 @@ def determine_advice(df, threshold):
     df = df.copy()
 
     # 🧮 Trendberekening over SAM
-    df["Trend"] = df["SAM"].rolling(window=12).mean()  # hier Trend sam ingeven default:12
+    df["Trend"] = weighted_moving_average(df["SAM"], 12)  # wma zoals hoort
+ #   df["Trend"] = df["SAM"].rolling(window=12).mean()  # hier Trend sam ingeven default:12
     df["TrendChange"] = df["Trend"] - df["Trend"].shift(1)
     df["Richting"] = np.sign(df["TrendChange"])
     df["Trail"] = 0
