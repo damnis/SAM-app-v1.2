@@ -456,7 +456,17 @@ def determine_advice(df, threshold):
 
    
 # --- Streamlit UI ---
-st.title("SAM Trading Indicator")
+#st.title("SAM Trading Indicator")
+# Titel met kleur en grootte tonen
+st.markdown(
+    f"""
+    <h1>SAM Trading Indicator<span style='color:#3366cc'>   </span></h1>
+    <h2 style='color:{advies_kleur}'>SIMPLE ALERT MONITOR</h2>
+    """,
+    unsafe_allow_html=True
+)
+
+
 
 # --- Volledige tickerlijsten ---
 aex_tickers = {
