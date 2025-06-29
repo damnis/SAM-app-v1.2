@@ -700,10 +700,11 @@ advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies =
 # Titel met kleur en grootte tonen - indicator
 col1, col2 = st.columns([1, 4])
 with col1:
-    st.markdown(
-    f"""
-    <h5>Advies voor:</h5>
-    """,
+    st.markdown("### Advies voor:")
+#    st.markdown(
+#    f"""
+#    Advies voor:
+#    """,
     unsafe_allow_html=True
 )
 with col2:
@@ -717,16 +718,17 @@ with col2:
 # Titel met kleur en grootte tonen - advies
 col1, col2 = st.columns([1, 4])
 with col1:
-    st.markdown(
-    f"""
-    <h5 style='color:{advies_kleur}'>Huidig advies:</h5>
-    """,
+    st.markdown("### Huidig advies:")
+#    st.markdown(
+#    f"""
+#    <h5 style='color:{advies_kleur}'>Huidig advies:</h5>
+#    """,
     unsafe_allow_html=True
 )
 with col2:
     st.markdown(
     f"""
-    <h4 style='color:{advies_kleur}'>{huidig_advies}</h4>
+    <h2 style='color:{advies_kleur}'>{huidig_advies}</h2>
     """,
     unsafe_allow_html=True
     )
