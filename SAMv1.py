@@ -100,7 +100,7 @@ def calculate_sam(df):
 
     # Basiskolommen
     # --- SAMG op basis van Weighted Moving Averages + Crossovers nodig ---
-  #  def weighted_moving_average(series, window):
+  #  def weighted_moving_average(series, window):  # reeds gedefinieerd 
   #      weights = np.arange(1, window + 1)
   #      return series.rolling(window).apply(lambda x: np.dot(x, weights)/weights.sum(), raw=True)
     
