@@ -3,16 +3,24 @@ import yfinance as yf
 import pandas as pd
 import ta
 import numpy as np
+import plotly.graph_objects as go
+from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from ta.trend import ADXIndicator
-import plotly.graph_objects as go
+#from datetime import timedelta
 #from ta.momentum import TRIXIndicator
 
 # --- Functie om data op te halen ---
 # 📥 Cachen van data per combinatie van ticker/interval (15 minuten geldig)
+# ✅ Gecachete datadownload via yfinance (15 min cache)
 @st.cache_data(ttl=900)
+def fetch_data_cached(ticker, interval, period):
+    return yf.download(ticker, interval=interval, period=period)
+
+
+# ✅ Wrapper-functie met schoonmaak + fallback
 def fetch_data(ticker, interval):
-    # Intervalspecifieke periode instellen
+    # 📅 Interval naar periode
     if interval == "15m":
         period = "30d"
     elif interval == "1h":
@@ -24,34 +32,32 @@ def fetch_data(ticker, interval):
     else:
         period = "25y"
 
-#    df = fetch_data(ticker, interval)
+    # 📥 Ophalen via gecachete functie
+    df = fetch_data_cached(ticker, interval, period)
 
-    # ❌ Stop de app als de DataFrame leeg is
+    # 🛡️ Check op geldige data
     if df.empty or "Close" not in df.columns or "Open" not in df.columns:
-        st.error("❌ Geen geldige koersdata opgehaald. Probeer een andere ticker of interval.")
-        st.stop()
-    
-    # Data ophalen
-    df = yf.download(ticker, interval=interval, period=period)
+        return pd.DataFrame()
 
-    # Verwijder rijen zonder volume of zonder koersverandering
+    # 🧹 Verwijder irrelevante of foutieve rijen
     df = df[
         (df["Volume"] > 0) &
         ((df["Open"] != df["Close"]) | (df["High"] != df["Low"]))
     ]
 
-    # Zorg dat de index datetime is en verwijder ongeldige datums
+    # 🕓 Zorg dat index datetime is
     if not isinstance(df.index, pd.DatetimeIndex):
         df.index = pd.to_datetime(df.index, errors="coerce")
     df = df[~df.index.isna()]
 
-    # Vul ontbrekende waarden op met vorige/volgende geldige waarde
+    # 🔁 Vul NaN's op per kolom
     for col in ["Close", "Open", "High", "Low", "Volume"]:
         df[col] = df[col].fillna(method="ffill").fillna(method="bfill")
 
     return df
 
-from datetime import timedelta
+
+
 # periode voor SAM grafiek 
 def bepaal_grafiekperiode(interval):
     if interval == "15m":
@@ -693,6 +699,10 @@ thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2,
 
 # Berekening
 df = fetch_data(ticker, interval)
+
+if df.empty:
+    st.error("❌ Geen geldige data opgehaald. Kies een andere ticker of interval.")
+    st.stop()
 df = calculate_sam(df)
 #df = determine_advice(df, threshold=thresh)
 #df, huidig_advies = determine_advice(df, threshold=thresh)
@@ -729,9 +739,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-import plotly.graph_objects as go
-from datetime import datetime, timedelta
 
 # ⏱ gecompliceerde koersgrafiek werkt niet geheel
 # bepaal data weeergaveperiode op basis van interval
