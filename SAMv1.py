@@ -836,6 +836,7 @@ fig, ax = plt.subplots(figsize=(10, 4))
 kleuren = ["green" if val >= 0 else "red" for val in df_grafiek["SAM"]]
 # ✅ Bars voor SAM
 ax.bar(df_grafiek.index, df_grafiek["SAM"], color=kleuren, label="SAM")
+ax.set_xlim(df_grafiek.index.min(), df_grafiek.index.max())
 # ✅ Trendlijn (zelfde as)
 ax.plot(df_grafiek.index, df_grafiek["Trend"], color="blue", linewidth=2, label="Trend")
 # ✅ Nullijn
