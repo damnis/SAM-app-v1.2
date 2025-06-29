@@ -794,10 +794,10 @@ if toon_koersgrafiek:
     # ➕ Kleine marge op y-as (2%)
     koers_values = pd.to_numeric(df_koers["Close"], errors="coerce").dropna()
     if not koers_values.empty:
-    koers_min = koers_values.min()
-    koers_max = koers_values.max()
-    marge = (koers_max - koers_min) * 0.02
-    ax.set_ylim(koers_min - marge, koers_max + marge)
+        koers_min = koers_values.min()
+        koers_max = koers_values.max()
+        marge = (koers_max - koers_min) * 0.02
+        ax.set_ylim(koers_min - marge, koers_max + marge)
     
 
     # Opmaak
