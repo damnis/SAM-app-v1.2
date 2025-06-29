@@ -710,7 +710,7 @@ with col1:
 with col2:
     st.markdown(
     f"""
-    <h4><span style='color:#3366cc'>{ticker_name}</span</h4>
+    <h3><span style='color:#3366cc'>{ticker_name}</span</h3>
     """,
     unsafe_allow_html=True
    )
