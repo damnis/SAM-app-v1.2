@@ -4,9 +4,10 @@ import pandas as pd
 import ta
 import numpy as np
 import plotly.graph_objects as go
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import matplotlib.pyplot as plt
 from ta.trend import ADXIndicator
+#from datetime import date
 #from datetime import timedelta
 #from ta.momentum import TRIXIndicator
 
