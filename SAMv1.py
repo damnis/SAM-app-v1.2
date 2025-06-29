@@ -16,6 +16,11 @@ from ta.trend import ADXIndicator
 @st.cache_data(ttl=900)
 def fetch_data_cached(ticker, interval, period):
     return yf.download(ticker, interval=interval, period=period)
+def weighted_moving_average(series, window):
+    weights = np.arange(1, window + 1)
+    return series.rolling(window).apply(lambda x: np.dot(x, weights) / weights.sum(), raw=True)
+
+
 
 # ✅ Wrapper-functie met schoonmaak + fallback
 def fetch_data(ticker, interval):
@@ -95,9 +100,9 @@ def calculate_sam(df):
 
     # Basiskolommen
     # --- SAMG op basis van Weighted Moving Averages + Crossovers nodig ---
-    def weighted_moving_average(series, window):
-        weights = np.arange(1, window + 1)
-        return series.rolling(window).apply(lambda x: np.dot(x, weights)/weights.sum(), raw=True)
+  #  def weighted_moving_average(series, window):
+  #      weights = np.arange(1, window + 1)
+  #      return series.rolling(window).apply(lambda x: np.dot(x, weights)/weights.sum(), raw=True)
     
     # --- SAMK: candlestick score op basis van patronen Open/Close ---
     df["c1"] = df["Close"] > df["Open"]
@@ -358,9 +363,6 @@ def calculate_sam(df):
     
 
 # --- Advies en rendementen ---
-def weighted_moving_average(series, window):
-    weights = np.arange(1, window + 1)
-    return series.rolling(window).apply(lambda x: np.dot(x, weights) / weights.sum(), raw=True)
 def determine_advice(df, threshold):
     df = df.copy()
 
