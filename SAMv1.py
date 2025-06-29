@@ -997,7 +997,11 @@ if len(df_valid) >= 2 and df_valid.iloc[0] != 0.0:
 # ✅ Signaalkeuze geforceerd op Beide
 signaalkeuze = "Beide"
 advice_col = "Advies"
-df_signalen = df_period[df_period[advice_col].isin(["Kopen", "Verkopen"])].copy()
+
+# Vind eerste rij waar 'Trail' >= threshold en dan pas beginnen
+eerste_valid_index = df_period.index[df_period["Trail"] >= threshold][0]
+df_signalen = df_period.loc[eerste_valid_index:]
+df_signalen = df_signalen[df_signalen[advies_col].isin(["Kopen", "Verkopen"])].copy()
 
 # 🔄 Backtestfunctie
 
