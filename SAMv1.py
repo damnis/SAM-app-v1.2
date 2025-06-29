@@ -601,7 +601,7 @@ thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2,
 # Berekening
 # ✅ Gecombineerde functie met cache
 @st.cache_data(ttl=900)  # Cache 15 minuten
-def get_sam_met_advies(ticker, interval, threshold):
+def advies_wordt_geladen(ticker, interval, threshold):
     df = fetch_data(ticker, interval)
     if df.empty or "Close" not in df.columns or "Open" not in df.columns:
         return None, None  # Signaal dat data niet bruikbaar is
@@ -610,7 +610,8 @@ def get_sam_met_advies(ticker, interval, threshold):
     return df, huidig_advies
 
 # ✅ Gebruik en foutafhandeling
-df, huidig_advies = get_sam_met_advies(ticker, interval, thresh)
+df, huidig_advies = advies_wordt_geladen(ticker, interval, thresh)
+#df, huidig_advies = get_sam_met_advies(ticker, interval, thresh)
 
 if df is None or df.empty:
     st.error("❌ Geen geldige data opgehaald. Kies een andere ticker of interval.")
@@ -973,7 +974,7 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
                 else:
                     rendement = (entry_price - sluit_close) / entry_price * 100
 
-                # 🔁 Nieuw: filter dummy-trade
+                # Nieuw: filter dummy-trade
                 if entry_price != sluit_close and entry_date != sluit_datum:
                     rendementen.append(rendement)
                     trades.append({
@@ -1011,7 +1012,7 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
         else:
             rendement = (entry_price - laatste_koers) / entry_price * 100
 
-        # 🔁 Nieuw: filter dummy-trade (ook laatste)
+        # Nieuw: filter dummy-trade (ook laatste)
         if entry_price != laatste_koers and entry_date != laatste_datum:
             rendementen.append(rendement)
             trades.append({
