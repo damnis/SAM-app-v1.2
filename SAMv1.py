@@ -836,7 +836,7 @@ ax.axhline(y=0, color="black", linewidth=1, linestyle="--")
 # ✅ Geforceerde y-as
 ax.set_ylim(-4.5, 4.5)
 # ✅ Titel en labels
-ax.set_title("📊 SAM-indicator en Trendlijn")
+ax.set_title("SAM-indicator en Trendlijn")
 ax.set_ylabel("Waarde")
 # ✅ Legenda toevoegen
 ax.legend()
@@ -1127,7 +1127,7 @@ if trades:
 
     df_display = df_display.rename(columns={"Rendement (%)": "SAM-% tot."})
     df_display = df_display[[
-        "Type", "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
+        "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
         "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
 
     # Succes-analyses
