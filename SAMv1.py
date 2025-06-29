@@ -1126,7 +1126,7 @@ if trades:
     # Kopie voor weergave
     df_display = df_trades.copy()
 
-    # Formatteringskolommen
+   # Formatteringskolommen
     for col in ["Markt-%", "Rendement (%)", "SAM-% Koop", "SAM-% Verkoop"]:
         if col in df_display.columns:
             df_display[col] = df_display[col].astype(float)
