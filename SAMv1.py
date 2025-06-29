@@ -705,15 +705,15 @@ with col1:
 #    f"""
 #    Advies voor:
 #    """,
-    unsafe_allow_html=True
-)
+#    unsafe_allow_html=True
+#)
 with col2:
     st.markdown(
     f"""
     <h4><span style='color:#3366cc'>{ticker_name}</span</h4>
     """,
     unsafe_allow_html=True
-    )
+   )
 
 # Titel met kleur en grootte tonen - advies
 col1, col2 = st.columns([1, 4])
@@ -723,8 +723,8 @@ with col1:
 #    f"""
 #    <h5 style='color:{advies_kleur}'>Huidig advies:</h5>
 #    """,
-    unsafe_allow_html=True
-)
+ #   unsafe_allow_html=True
+#)
 with col2:
     st.markdown(
     f"""
