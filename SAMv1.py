@@ -464,7 +464,7 @@ def determine_advice(df, threshold):
 st.markdown(
     f"""
     <h1>SAM Trading Indicator<span style='color:#3366cc'>   </span></h1>
-    <h2>SIMPLE ALERT MONITOR</h2>
+    <h5>Simple Alert Monitor</h5>
     """,
     unsafe_allow_html=True
 )
