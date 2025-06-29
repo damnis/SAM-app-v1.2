@@ -699,12 +699,28 @@ if df is None or df.empty:
 # Kleur bepalen op basis van advies
 advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies == "Verkopen" else "gray"
 
-# Titel met kleur en grootte tonen
+# Titel met kleur en grootte tonen - indicator
 col1, col2 = st.columns([1, 1])
 with col1:
     st.markdown(
     f"""
-    <h2>SAM-indicator en trend voor:</h2>
+    <h2>Advies voor:</h2>
+    """,
+    unsafe_allow_html=True
+)
+with col2:
+    st.markdown(
+    f"""
+    <h2><span style='color:#3366cc'>{ticker_name}</span></h2>
+    """,
+    unsafe_allow_html=True
+    )
+
+# Titel met kleur en grootte tonen - advies
+col1, col2 = st.columns([1, 1])
+with col1:
+    st.markdown(
+    f"""
     <h2 style='color:{advies_kleur}'>Huidig advies:</h2>
     """,
     unsafe_allow_html=True
@@ -712,11 +728,11 @@ with col1:
 with col2:
     st.markdown(
     f"""
-    <h3><span style='color:#3366cc'>{ticker_name}</span></h3>
-    <h1 style='color:{advies_kleur}'>{huidig_advies}</h1>
+    <h2 style='color:{advies_kleur}'>{huidig_advies}</h2>
     """,
     unsafe_allow_html=True
     )
+
 # ⏱ gecompliceerde koersgrafiek werkt niet geheel
 # bepaal data weeergaveperiode op basis van interval
 #grafiek_periode = bepaal_grafiekperiode(interval)
