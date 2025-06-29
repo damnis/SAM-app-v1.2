@@ -996,7 +996,7 @@ if len(df_valid) >= 2 and df_valid.iloc[0] != 0.0:
 
 # ✅ Signaalkeuze geforceerd op Beide
 signaalkeuze = "Beide"
-advice_col = "Advies"
+advies_col = "Advies"
 
 # Vind eerste rij waar 'Trail' >= threshold en dan pas beginnen
 eerste_valid_index = df_period.index[df_period["Trail"] >= thresh][0]
