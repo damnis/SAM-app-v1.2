@@ -999,7 +999,7 @@ signaalkeuze = "Beide"
 advice_col = "Advies"
 
 # Vind eerste rij waar 'Trail' >= threshold en dan pas beginnen
-eerste_valid_index = df_period.index[df_period["Trail"] >= threshold][0]
+eerste_valid_index = df_period.index[df_period["Trail"] >= thresh][0]
 df_signalen = df_period.loc[eerste_valid_index:]
 df_signalen = df_signalen[df_signalen[advies_col].isin(["Kopen", "Verkopen"])].copy()
 
