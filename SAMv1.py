@@ -626,7 +626,7 @@ interval_mapping = {
 interval = interval_mapping[interval_optie]
 
 # de gevoeligheid slider
-col1, col2 = st.columns([1, 2])  # Pas verhouding aan als je wilt
+col1, col2 = st.columns([2, 1])  # Pas verhouding aan als je wilt
 
 with col1:
     st.markdown("### ⚙️ Adviesgevoeligheid")
@@ -645,23 +645,7 @@ with col2:
             """,
             unsafe_allow_html=True
         )
-#with st.container():
-#    st.markdown(
-#        """
-#        <div style='
- #           background-color: #f0f2f6;
- #           border-radius: 12px;
-   #         padding: 20px 25px;
-  #          margin-top: 25px;
-  #          margin-bottom: 25px;
-  #          box-shadow: 0 4px 8px rgba(0,0,0,0.05);
- #       '>
-  #          <h3 style='margin-bottom:10px; color:#2c3e50;'>⚙️ Instellingen voor Adviesgevoeligheid</h3>
-  #          <p style='margin-top:0; color:#6c757d;'>Kies hoe sterk de trend moet zijn voordat een advies volgt. Hogere waarde betekent meer bevestiging vereist.</p>
-  #      </div>
-  #      """,
-   #     unsafe_allow_html=True
- #   )
+
 
     thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
     
@@ -1188,7 +1172,23 @@ else:
 
 
 # wit
-
+#with st.container():
+#    st.markdown(
+#        """
+#        <div style='
+ #           background-color: #f0f2f6;
+ #           border-radius: 12px;
+   #         padding: 20px 25px;
+  #          margin-top: 25px;
+  #          margin-bottom: 25px;
+  #          box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+ #       '>
+  #          <h3 style='margin-bottom:10px; color:#2c3e50;'>⚙️ Instellingen voor Adviesgevoeligheid</h3>
+  #          <p style='margin-top:0; color:#6c757d;'>Kies hoe sterk de trend moet zijn voordat een advies volgt. Hogere waarde betekent meer bevestiging vereist.</p>
+  #      </div>
+  #      """,
+   #     unsafe_allow_html=True
+ #   )
 
 
 
