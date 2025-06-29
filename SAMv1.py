@@ -793,12 +793,19 @@ if toon_koersgrafiek:
 
     # ➕ Kleine marge op y-as (2%)
     koers_values = pd.to_numeric(df_koers["Close"], errors="coerce").dropna()
+    # Zorg dat 'Close' een Series is (bij dubbele kolomnamen of MultiIndex)
+    if isinstance(df_koers["Close"], pd.DataFrame):
+        close_series = df_koers["Close"].iloc[:, 0]
+    else:
+        close_series = df_koers["Close"]
+
+    koers_values = pd.to_numeric(close_series, errors="coerce").dropna()
+
     if not koers_values.empty:
         koers_min = koers_values.min()
         koers_max = koers_values.max()
         marge = (koers_max - koers_min) * 0.02
         ax.set_ylim(koers_min - marge, koers_max + marge)
-    
 
     # Opmaak
     ax.set_title(f"Koersgrafiek van {ticker_name}")
