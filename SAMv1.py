@@ -405,7 +405,7 @@ def determine_advice(df, threshold, risk_aversion=False):
                     df.at[df.index[i], "Advies"] = "Kopen"
 
             elif trend_nu < 0.1 and trend_nu < trend_vorige:
-                if (trend_nu > trend_eerder * 1.5) or (all(sam_3 > 0)):
+                if (trend_nu > trend_eerder / 1.5) or (all(sam_3 > 0)):
                     df.at[df.index[i], "Advies"] = "Kopen"
                 else:
                     df.at[df.index[i], "Advies"] = "Verkopen"
