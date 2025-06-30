@@ -362,12 +362,11 @@ def calculate_sam(df):
     
 
 # --- Advies en rendementen ---
-def determine_advice(df, threshold):
+def determine_advice(df, threshold, risk_aversion=False):
     df = df.copy()
 
     # 🧮 Trendberekening over SAM
-    df["Trend"] = weighted_moving_average(df["SAM"], 12)  # wma zoals hoort
- #   df["Trend"] = df["SAM"].rolling(window=12).mean()  # hier Trend sam ingeven default:12
+    df["Trend"] = weighted_moving_average(df["SAM"], 12)
     df["TrendChange"] = df["Trend"] - df["Trend"].shift(1)
     df["Richting"] = np.sign(df["TrendChange"])
     df["Trail"] = 0
@@ -388,16 +387,17 @@ def determine_advice(df, threshold):
 
         df.at[df.index[i], "Trail"] = huidige_trend
 
-    # ✅ Eerst advies op basis van sterke trendwaarde
-#    df.loc[df["Trend"] > 2, "Advies"] = "Kopen"
- #   df.loc[df["Trend"] < -2, "Advies"] = "Verkopen"
+    # ✅ Voorfilter op basis van risk_aversion
+    if risk_aversion:
+        df["RiskFilter_Koop"] = df["Trend"] >= -0.1
+        df["RiskFilter_Verkoop"] = df["Trend"] <= 1.8
+    else:
+        df["RiskFilter_Koop"] = True
+        df["RiskFilter_Verkoop"] = True
 
- #   df.loc[df["SAM"] > 2, "Advies"] = "Kopen"
- #   df.loc[df["SAM"] < -2, "Advies"] = "Verkopen"
-
-    # ✅ Daarna alleen nog trailing advies als er nog geen advies is
-    mask_koop = (df["Richting"] == 1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
-    mask_verkoop = (df["Richting"] == -1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
+    # ✅ Signaal op basis van richting, trail en eventueel risk filters
+    mask_koop = (df["Richting"] == 1) & (df["Trail"] >= threshold) & (df["Advies"].isna()) & df["RiskFilter_Koop"]
+    mask_verkoop = (df["Richting"] == -1) & (df["Trail"] >= threshold) & (df["Advies"].isna()) & df["RiskFilter_Verkoop"]
 
     df.loc[mask_koop, "Advies"] = "Kopen"
     df.loc[mask_verkoop, "Advies"] = "Verkopen"
@@ -405,13 +405,12 @@ def determine_advice(df, threshold):
     # 🔄 Advies forward fillen
     df["Advies"] = df["Advies"].ffill()
 
-    # 📊 Bereken rendementen op basis van adviesgroepering
+    # 📊 Bereken rendementen op basis van adviesgroepen
     df["AdviesGroep"] = (df["Advies"] != df["Advies"].shift()).cumsum()
     rendementen = []
     sam_rendementen = []
 
     groepen = list(df.groupby("AdviesGroep"))
-
     for i in range(len(groepen)):
         _, groep = groepen[i]
         advies = groep["Advies"].iloc[0]
@@ -814,22 +813,39 @@ with col2:
 
 # Berekening
 # ✅ Gecombineerde functie met cache
-@st.cache_data(ttl=900)  # Cache 15 minuten
-def advies_wordt_geladen(ticker, interval, threshold):
+# ✅ Keuzeoptie in de app
+risk_aversion = st.toggle("Voorzichtig advies (risk aversion)", value=False)
+
+# ✅ Gecombineerde functie met cache + risk_aversion
+@st.cache_data(ttl=900)
+def advies_wordt_geladen(ticker, interval, threshold, risk_aversion):
     df = fetch_data(ticker, interval)
     if df.empty or "Close" not in df.columns or "Open" not in df.columns:
-        return None, None  # Signaal dat data niet bruikbaar is
+        return None, None
     df = calculate_sam(df)
-    df, huidig_advies = determine_advice(df, threshold=threshold)
+    df, huidig_advies = determine_advice(df, threshold=threshold, risk_aversion=risk_aversion)
     return df, huidig_advies
 
 # ✅ Gebruik en foutafhandeling
-df, huidig_advies = advies_wordt_geladen(ticker, interval, thresh)
-#df, huidig_advies = get_sam_met_advies(ticker, interval, thresh)
+df, huidig_advies = advies_wordt_geladen(ticker, interval, thresh, risk_aversion)
 
-if df is None or df.empty:
-    st.error("❌ Geen geldige data opgehaald. Kies een andere ticker of interval.")
-    st.stop()
+
+#@st.cache_data(ttl=900)  # Cache 15 minuten
+#def advies_wordt_geladen(ticker, interval, threshold):
+#    df = fetch_data(ticker, interval)
+#    if df.empty or "Close" not in df.columns or "Open" not in df.columns:
+#        return None, None  # Signaal dat data niet bruikbaar is
+#    df = calculate_sam(df)
+#    df, huidig_advies = determine_advice(df, threshold=threshold)
+ #   return df, huidig_advies
+
+# ✅ Gebruik en foutafhandeling
+#df, huidig_advies = advies_wordt_geladen(ticker, interval, thresh)
+#df, huidig_advies = get_sam_met_advies(ticker, interval, thresh)
+#df, huidig_advies = advies_wordt_geladen(df, threshold=thresh, risk_aversion=risk_aversion)
+#if df is None or df.empty:
+#    st.error("❌ Geen geldige data opgehaald. Kies een andere ticker of interval.")
+#    st.stop()
 
 #df = fetch_data(ticker, interval)
 
