@@ -469,7 +469,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 # Simple Alert Monitor 
-col1, col2 = st.columns([1, 1])  # Pas verhouding aan als je wilt
+col1, col2 = st.columns([9, 6])  # Pas verhouding aan als je wilt
 
 with col1:
     st.markdown(
@@ -479,7 +479,7 @@ with col1:
         unsafe_allow_html=True 
     )    
 with col2:
-    with st.expander("ℹ️ Uitleg over de werking van SAM Trading Indicator"):
+    with st.expander("ℹ️ Uitleg SAM Trading Indicator"):
         st.markdown(
             """
             <div style='color:#444; font-size:12px;'>
@@ -646,14 +646,14 @@ interval_mapping = {
 interval = interval_mapping[interval_optie]
 
 # de gevoeligheid slider
-col1, col2 = st.columns([2, 1])  # Pas verhouding aan als je wilt
+col1, col2 = st.columns([9, 6])  # Pas verhouding aan als je wilt
 
 with col1:
     st.markdown("### ⚙️ Adviesgevoeligheid")
     thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
     
 with col2:
-    with st.expander("ℹ️ Uitleg over de gevoeligheid van het advies"):
+    with st.expander("ℹ️ Uitleg Adviesgevoeligheid"):
         st.markdown(
             """
             <div style='color:#444; font-size:12px;'>
