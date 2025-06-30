@@ -717,28 +717,65 @@ interval = interval_mapping[interval_optie]
 # -------
 
 # 📌 Titel en uitleg als toggle (zelfde stijl als eerder)
-# 📌 Titel en uitleg als toggle (zelfde stijl als eerder)
 st.markdown("""
-<div style='display: flex; justify-content: space-between; align-items: flex-start; max-width: 900px; margin-bottom: 10px;'>
-  <div style='flex: 1; padding-right: 20px;'>
+<style>
+.sam-uitleg details[open] {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90vw;
+  max-width: 700px;
+  z-index: 999;
+  background-color: #f9f9f9;
+  padding: 1em;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-radius: 10px;
+}
+</style>
+
+<div class="sam-uitleg" style='display: flex; justify-content: space-between; align-items: top;'>
+  <div style='flex: 1;'>
     <h4 style='margin-bottom: 10px;'>⚙️ Adviesgevoeligheid</h4>
   </div>
-  <div style='flex: 1;'>
+  <div style='flex: 1; text-align: right;'>
     <details>
-      <summary style='cursor: pointer; font-weight: bold; color: #555;'>ℹ️ Uitleg Adviesgevoeligheid</summary>
-      <div style='margin-top: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 8px;'>
-        <p style='font-size: 13px; color: #333; text-align: left;'>
+      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg SAM Trading Indicator</summary>
+      <div style='margin-top: 10px;'>
+        <p style='font-size: 13px; color: #333; text-align: left'>
         De gevoeligheidsslider bepaalt hoeveel opeenvolgende perioden met dezelfde trendrichting
         nodig zijn voordat een advies wordt afgegeven.<br><br>
         - Een lagere waarde (**1 of 2**) geeft sneller advieswijzigingen, maar is gevoeliger voor ruis.<br>
         - Een hogere waarde (**3 t/m 5**) geeft minder maar betrouwbaardere signalen.<br><br>
         De standaardwaarde is <strong>2</strong>.
-        </p>
+        </p>   
       </div>
     </details>
   </div>
 </div>
 """, unsafe_allow_html=True)
+# 📌 Titel en uitleg als toggle (zelfde stijl als eerder) werkt niet
+#st.markdown("""
+#<div style='display: flex; justify-content: space-between; align-items: flex-start; max-width: 900px; margin-bottom: 10px;'>
+#  <div style='flex: 1; padding-right: 20px;'>
+ #   <h4 style='margin-bottom: 10px;'>⚙️ Adviesgevoeligheid</h4>
+#  </div>
+#  <div style='flex: 1;'>
+#    <details>
+#      <summary style='cursor: pointer; font-weight: bold; color: #555;'>ℹ️ Uitleg Adviesgevoeligheid</summary>
+#      <div style='margin-top: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 8px;'>
+ #       <p style='font-size: 13px; color: #333; text-align: left;'>
+ #       De gevoeligheidsslider bepaalt hoeveel opeenvolgende perioden met dezelfde trendrichting
+  #      nodig zijn voordat een advies wordt afgegeven.<br><br>
+ #       - Een lagere waarde (**1 of 2**) geeft sneller advieswijzigingen, maar is gevoeliger voor ruis.<br>
+ #       - Een hogere waarde (**3 t/m 5**) geeft minder maar betrouwbaardere signalen.<br><br>
+  #      De standaardwaarde is <strong>2</strong>.
+ #       </p>
+ #     </div>
+#    </details>
+#  </div>
+#</div>
+#""", unsafe_allow_html=True)
 
 # 📌 Slider in kolommen, links met max 50% breedte
 col1, col2 = st.columns([1, 1])
