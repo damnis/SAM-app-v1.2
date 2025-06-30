@@ -767,37 +767,8 @@ with col2:
  #           unsafe_allow_html=True
   #      )
 
-  # 📌 Titel en uitleg als toggle (zelfde stijl als eerder)
+  #
 
-st.markdown("""
-<div style='display: flex; justify-content: space-between; align-items: flex-start; max-width: 900px; margin-bottom: 10px;'>
-  <div style='flex: 1; padding-right: 20px;'>
-    <h4 style='margin-bottom: 10px;'>⚙️ Adviesgevoeligheid</h4>
-  </div>
-  <div style='flex: 1;'>
-    <details>
-      <summary style='cursor: pointer; font-weight: bold; color: #555;'>ℹ️ Uitleg Adviesgevoeligheid</summary>
-      <div style='margin-top: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 8px;'>
-        <p style='font-size: 13px; color: #333; text-align: left;'>
-        De gevoeligheidsslider bepaalt hoeveel opeenvolgende perioden met dezelfde trendrichting
-        nodig zijn voordat een advies wordt afgegeven.<br><br>
-        - Een lagere waarde (**1 of 2**) geeft sneller advieswijzigingen, maar is gevoeliger voor ruis.<br>
-        - Een hogere waarde (**3 t/m 5**) geeft minder maar betrouwbaardere signalen.<br><br>
-        De standaardwaarde is <strong>2</strong>.
-        </p>
-      </div>
-    </details>
-  </div>
-</div>
-""", unsafe_allow_html=True)
-
-# 📌 Slider in kolommen, links met max 50% breedte
-col1, col2 = st.columns([1, 1])
-with col1:
-    thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
-with col2:
-    pass  # lege kolom, zodat slider links blijft
-    
 #thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
 #thresh = st.slider("Gevoeligheid van trendverandering", 0.01, 0.5, 0.1, step=0.02)
 
