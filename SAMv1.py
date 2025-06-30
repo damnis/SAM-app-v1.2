@@ -474,7 +474,7 @@ col1, col2 = st.columns([1, 1])  # Pas verhouding aan als je wilt
 with col1:
     st.markdown(
         f"""
-        <h5>Simple Alert Monitor</h5>)
+        <h5>Simple Alert Monitor</h5>
         """,
         unsafe_allow_html=True 
     )    
@@ -657,11 +657,11 @@ with col2:
         st.markdown(
             """
             <div style='color:#444; font-size:12px;'>
-            De **gevoeligheidsslider** bepaalt hoeveel opeenvolgende perioden met dezelfde trendrichting
-            nodig zijn voordat een **advies** (Kopen of Verkopen) wordt afgegeven.<br><br>
-            - Een **lagere waarde** (bijv. 1 of 2) geeft sneller advies, maar is gevoeliger voor ruis.<br>
-            - Een **hogere waarde** (bijv. 3 of 4) vereist meer bevestiging van de trend, en geeft dus minder maar vaak betrouwbaardere signalen.<br><br>
-            De standaardwaarde is **2**.
+            De gevoeligheidsslider bepaalt hoeveel opeenvolgende perioden met dezelfde trendrichting
+            nodig zijn voordat een advies wordt afgegeven.<br>
+            Een lagere waarde (1 of 2) geeft sneller advies wijzigingen, maar is gevoeliger voor ruis.
+            Een hogere waarde (3 of 4) geeft dus minder maar vaak betrouwbaardere adviezen.<br>
+            De standaardwaarde is 2.
             </div>
             """,
             unsafe_allow_html=True
