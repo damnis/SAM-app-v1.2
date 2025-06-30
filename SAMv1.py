@@ -470,51 +470,32 @@ st.markdown(
 # Simple Alert Monitor met responsive uitleg
 st.markdown("""
 <style>
-/* Zorg dat uitleg over volledige breedte verschijnt bij openklappen */
-.sam-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1em;
-}
-.sam-title {
-  flex: 1;
-}
-.sam-uitleg {
-  flex: 1;
-  position: relative;
-}
 .sam-uitleg details[open] {
   position: absolute;
   top: 0;
-  left: -50vw;
-  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90vw;
+  max-width: 700px;
   z-index: 999;
   background-color: #f9f9f9;
   padding: 1em;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   border-radius: 10px;
 }
-.sam-uitleg summary {
-  font-weight: bold;
-  cursor: pointer;
-  color: #555;
-  text-align: right;
-}
 </style>
 
-<div class='sam-container'>
-  <div class='sam-title'>
+<div class="sam-uitleg" style='display: flex; justify-content: space-between; align-items: top;'>
+  <div style='flex: 1;'>
     <h5 style='margin: 0;'>Simple Alert Monitor</h5>
   </div>
-  <div class='sam-uitleg'>
+  <div style='flex: 1; text-align: right;'>
     <details>
-      <summary>ℹ️ Uitleg SAM Trading Indicator</summary>
-      <div>
+      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg SAM Trading Indicator</summary>
+      <div style='margin-top: 10px;'>
         <p style='font-size: 13px; color: #333; text-align: left'>
         Gebruik de <strong>SAM Trading Indicator</strong> door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
-        de trendlijn. De groene en rode SAM waarden (vaak perioden) geven het momentum weer...
-        <br><br>
+        de trendlijn. De groene en rode SAM waarden (vaak perioden) geven het momentum weer...<br><br>
         Het advies is hiervan afgeleid en kan bijgesteld worden door de gevoeligheid aan te passen.<br>
         De indicator is oorspronkelijk bedoeld voor de <strong>middellange termijn belegger</strong>.
         </p>
