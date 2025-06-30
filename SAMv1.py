@@ -461,39 +461,61 @@ def determine_advice(df, threshold):
 #advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies == "Verkopen" else "gray"
 
 # SAM TITLE
-st.markdown(
-    f"""
-    <h1>SAM Trading Indicator<span style='color:#3366cc'>   </span></h1>
-    """,
-    unsafe_allow_html=True
-)
-# Simple Alert Monitor 
-col1, col2 = st.columns([9, 6])  # Pas verhouding aan als je wilt
+st.markdown("""
+<div style='display: flex; justify-content: space-between; align-items: center;'>
+  <div style='flex: 1;'>
+    <h5 style='margin: 0;'>Simple Alert Monitor</h5>
+  </div>
+  <div style='flex: 1; text-align: right;'>
+    <details>
+      <summary style='cursor: pointer; font-weight: bold; color: #555;'>ℹ️ Uitleg SAM Trading Indicator</summary>
+      <div style='margin-top: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 8px;'>
+        <p style='font-size: 13px; color: #333;'>
+        Gebruik de <strong>SAM Trading Indicator</strong> door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
+        de trendlijn. De groene en rode SAM waarden (vaak perioden) geven het momentum weer...
+        <br><br>
+        Het advies is hiervan afgeleid en kan bijgesteld worden door de gevoeligheid aan te passen.<br>
+        De indicator is oorspronkelijk bedoeld voor de <strong>middellange termijn belegger</strong>.
+        </p>
+      </div>
+    </details>
+  </div>
+</div>
+""", unsafe_allow_html=True)
 
-with col1:
-    st.markdown(
-        f"""
-        <h5>Simple Alert Monitor</h5>
-        """,
-        unsafe_allow_html=True 
-    )    
-with col2:
-    with st.expander("ℹ️ Uitleg SAM Trading Indicator"):
-        st.markdown(
-            """
-            <div style='color:#444; font-size:12px;'>
-            Gebruik de SAM Trading Indicator door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
-            de trendlijn. De groene en rode SAM waarden (vaak perioden) geven het momentum weer, dus pas op voor aankoopbeslissingen
-            in een rode periode en wees niet te snel met verkopen als het duidelijk groen is. Kleine trend wijzigingen
-            zouden anders uw resultaat negatief kunnen beïnvloeden.<br>
-            Het advies is hiervan afgeleid en kan bijgesteld worden door de gevoeligheid aan te passen. Maar dit blijkt een model en slechts een benadering
-            van de juiste beslissing. Blijf de blauwe lijn (die vrij geleidelijk omhoog en omlaag gaat) zelf goed volgen.<br>
-            De indicator is oorspronkelijk bedoeld voor de middellange termijn belegger en beslissingen op 'week' basis,
-            maar kan ook voor korte intervallen gebruikt worden.
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+#st.markdown(
+#    f"""
+#    <h1>SAM Trading Indicator<span style='color:#3366cc'>   </span></h1>
+#    """,
+#    unsafe_allow_html=True
+##)
+# Simple Alert Monitor 
+#col1, col2 = st.columns([9, 6])  # Pas verhouding aan als je wilt
+
+#with col1:
+#    st.markdown(
+  #      f"""
+  #      <h5>Simple Alert Monitor</h5>
+   #     """,
+ #       unsafe_allow_html=True 
+#    )    
+#with col2:
+#    with st.expander("ℹ️ Uitleg SAM Trading Indicator"):
+  #      st.markdown(
+  #          """
+   #         <div style='color:#444; font-size:12px;'>
+    #        Gebruik de SAM Trading Indicator door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
+    #        de trendlijn. De groene en rode SAM waarden (vaak perioden) geven het momentum weer, dus pas op voor aankoopbeslissingen
+    #        in een rode periode en wees niet te snel met verkopen als het duidelijk groen is. Kleine trend wijzigingen
+    #        zouden anders uw resultaat negatief kunnen beïnvloeden.<br>
+   #         Het advies is hiervan afgeleid en kan bijgesteld worden door de gevoeligheid aan te passen. Maar dit blijkt een model en slechts een benadering
+  #          van de juiste beslissing. Blijf de blauwe lijn (die vrij geleidelijk omhoog en omlaag gaat) zelf goed volgen.<br>
+    #        De indicator is oorspronkelijk bedoeld voor de middellange termijn belegger en beslissingen op 'week' basis,
+   #         maar kan ook voor korte intervallen gebruikt worden.
+     #       </div>
+    #        """,
+    #        unsafe_allow_html=True
+   #     )
 
 
 # --- Volledige tickerlijsten ---
