@@ -461,6 +461,13 @@ def determine_advice(df, threshold):
 #advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies == "Verkopen" else "gray"
 
 # SAM TITLE
+st.markdown(
+    f"""
+    <h1>SAM Trading Indicator<span style='color:#3366cc'>   </span></h1>
+    """,
+    unsafe_allow_html=True
+)
+# Simple Alert Monitor 
 st.markdown("""
 <div style='display: flex; justify-content: space-between; align-items: center;'>
   <div style='flex: 1;'>
