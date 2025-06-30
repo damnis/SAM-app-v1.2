@@ -716,26 +716,69 @@ interval_mapping = {
 interval = interval_mapping[interval_optie]
 
 # de gevoeligheid slider
-col1, col2 = st.columns([9, 6])  # Pas verhouding aan als je wilt
+st.markdown("""
+<style>
+.gevoeligheid-uitleg details[open] {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90vw;
+  max-width: 700px;
+  z-index: 999;
+  background-color: #f9f9f9;
+  padding: 1em;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-radius: 10px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Adviesgevoeligheid en Slider
+col1, col2 = st.columns([9, 6])
 
 with col1:
     st.markdown("### ⚙️ Adviesgevoeligheid")
     thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
-    
+
 with col2:
-    with st.expander("ℹ️ Uitleg Adviesgevoeligheid"):
-        st.markdown(
-            """
-            <div style='color:#444; font-size:12px;'>
-            De gevoeligheidsslider bepaalt hoeveel opeenvolgende perioden met dezelfde trendrichting
-            nodig zijn voordat een advies wordt afgegeven.<br>
-            Een lagere waarde (1 of 2) geeft sneller advies wijzigingen, maar is gevoeliger voor ruis.
-            Een hogere waarde (3 of 4) geeft dus minder maar vaak betrouwbaardere adviezen.<br>
-            De standaardwaarde is 2.
+    st.markdown("""
+    <div class="gevoeligheid-uitleg" style='text-align: right;'>
+        <details>
+            <summary style='cursor: pointer; font-weight: bold; color: #555;'>ℹ️ Uitleg Adviesgevoeligheid</summary>
+            <div style='margin-top: 10px;'>
+                <p style='font-size: 13px; color: #333; text-align: left'>
+                De <strong>gevoeligheidsslider</strong> bepaalt hoeveel opeenvolgende perioden met dezelfde trendrichting
+                nodig zijn voordat een advies wordt afgegeven.<br><br>
+                - Een <strong>lagere waarde</strong> (1 of 2) geeft sneller advieswijzigingen, maar is gevoeliger voor ruis.<br>
+                - Een <strong>hogere waarde</strong> (3 of 4) vereist meer bevestiging van de trend en geeft dus minder, maar vaak betrouwbaardere adviezen.<br><br>
+                De standaardwaarde is <strong>2</strong>.
+                </p>
             </div>
-            """,
-            unsafe_allow_html=True
-        )
+        </details>
+    </div>
+    """, unsafe_allow_html=True)
+ # oud   
+#col1, col2 = st.columns([9, 6])  # Pas verhouding aan als je wilt
+
+#with col1:
+ #   st.markdown("### ⚙️ Adviesgevoeligheid")
+#    thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
+    
+#with col2:
+#    with st.expander("ℹ️ Uitleg Adviesgevoeligheid"):
+  #      st.markdown(
+   #         """
+#            <div style='color:#444; font-size:12px;'>
+ #           De gevoeligheidsslider bepaalt hoeveel opeenvolgende perioden met dezelfde trendrichting
+ #           nodig zijn voordat een advies wordt afgegeven.<br>
+  #          Een lagere waarde (1 of 2) geeft sneller advies wijzigingen, maar is gevoeliger voor ruis.
+ #           Een hogere waarde (3 of 4) geeft dus minder maar vaak betrouwbaardere adviezen.<br>
+   #         De standaardwaarde is 2.
+   #         </div>
+  #          """,
+ #           unsafe_allow_html=True
+  #      )
 
   
 #thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
