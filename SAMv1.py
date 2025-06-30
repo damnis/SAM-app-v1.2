@@ -461,14 +461,36 @@ def determine_advice(df, threshold):
 # Kleur bepalen op basis van advies
 #advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies == "Verkopen" else "gray"
 
+# SAM TITLE
 st.markdown(
     f"""
     <h1>SAM Trading Indicator<span style='color:#3366cc'>   </span></h1>
-    <h5>Simple Alert Monitor</h5>
     """,
     unsafe_allow_html=True
 )
+# Simple Alert Monitor 
+col1, col2 = st.columns([1, 1])  # Pas verhouding aan als je wilt
 
+with col1:
+    st.markdown(
+        f"""
+        <h5>Simple Alert Monitor</h5>)
+        """,
+        unsafe_allow_html=True 
+    
+with col2:
+    with st.expander("ℹ️ Uitleg over de werking van SAM Trading Indicator"):
+        st.markdown(
+            """
+            <div style='color:#444; font-size:12px;'>
+            Gebruik de SAM Trading Indicator door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
+            de trendlijn. Het advies is hiervan afgeleid en kan beïnvloedt worden door de gevoeligheid aan te passen.
+            de indicator is oorspronkelijk bedoeld voor de middellange termijn belegger en beslissingen op 'week' basis,
+            maar kan ook voor korte intervallen gebruikt worden.
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 
 # --- Volledige tickerlijsten ---
@@ -556,7 +578,7 @@ def get_live_ticker_data(tickers_dict):
     data = yf.download(tickers, period="1d", interval="1d", progress=False, group_by='ticker')
     result = []
 
-    for ticker in tickers:
+    fo1r ticker in tickers:
         try:
             last = data[ticker]['Close'].iloc[-1]
             prev = data[ticker]['Open'].iloc[-1]
@@ -772,8 +794,8 @@ with col2:
 #    st.plotly_chart(fig, use_container_width=True)
 
 # simpele koersgrafiek
-# ⏳ Toggle voor koersgrafiek
-toon_koersgrafiek = st.toggle("📉 Toon koersgrafiek", value=False)
+# ⏳ Toggle voor koersgrafiekb>📈 "📉  Voorbeeld:</b>
+toon_koersgrafiek = st.toggle("📈 Toon koersgrafiek", value=False)
 
 if toon_koersgrafiek:
     # 📅 Bepaal grafiekperiode
