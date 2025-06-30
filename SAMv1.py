@@ -487,7 +487,7 @@ st.markdown("""
 .sam-uitleg details[open] {
   position: absolute;
   top: 0;
-  left: 0;
+  left: -50vw;
   width: 100vw;
   z-index: 999;
   background-color: #f9f9f9;
