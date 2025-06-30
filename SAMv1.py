@@ -477,7 +477,7 @@ with col1:
         <h5>Simple Alert Monitor</h5>)
         """,
         unsafe_allow_html=True 
-    
+    )    
 with col2:
     with st.expander("ℹ️ Uitleg over de werking van SAM Trading Indicator"):
         st.markdown(
