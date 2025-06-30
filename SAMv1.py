@@ -578,7 +578,7 @@ def get_live_ticker_data(tickers_dict):
     data = yf.download(tickers, period="1d", interval="1d", progress=False, group_by='ticker')
     result = []
 
-    fo1r ticker in tickers:
+    for ticker in tickers:
         try:
             last = data[ticker]['Close'].iloc[-1]
             prev = data[ticker]['Open'].iloc[-1]
