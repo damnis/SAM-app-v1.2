@@ -398,14 +398,14 @@ def determine_advice(df, threshold, risk_aversion=False):
             trend_eerder = df["Trend"].iloc[i - 2]
             sam_3 = df["SAM"].iloc[i - 2:i + 1]
 
-            if trend_nu >= -0.1:
-                if (trend_nu < trend_eerder * 0.5) or (all(sam_3 < 0)):
+            if trend_nu >= -0.1 and trend_nu > trend_vorige:
+                if (trend_nu < trend_eerder * 0.6) or (all(sam_3 < 0)):
                     df.at[df.index[i], "Advies"] = "Verkopen"
                 else:
                     df.at[df.index[i], "Advies"] = "Kopen"
 
-            elif trend_nu < 0.1:
-                if (trend_nu > trend_eerder * 2) or (all(sam_3 > 0)):
+            elif trend_nu < 0.1 and trend_nu < trend_vorige:
+                if (trend_nu > trend_eerder * 1.5) or (all(sam_3 > 0)):
                     df.at[df.index[i], "Advies"] = "Kopen"
                 else:
                     df.at[df.index[i], "Advies"] = "Verkopen"
