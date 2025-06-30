@@ -486,9 +486,10 @@ with col2:
             Gebruik de SAM Trading Indicator door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
             de trendlijn. De groene en rode SAM waarden (vaak perioden) geven het momentum weer, dus pas op voor aankoopbeslissingen
             in een rode periode en wees niet te snel met verkopen als het duidelijk groen is. Kleine trend wijzigingen
-            zouden anders uw resultaat negatief kunnen beïnvloeden. <br>
-            Het advies is hiervan afgeleid en kan bijgesteld worden door de gevoeligheid aan te passen.
-            de indicator is oorspronkelijk bedoeld voor de middellange termijn belegger en beslissingen op 'week' basis,
+            zouden anders uw resultaat negatief kunnen beïnvloeden.<br>
+            Het advies is hiervan afgeleid en kan bijgesteld worden door de gevoeligheid aan te passen. Maar dit blijkt een model en slechts een benadering
+            van de juiste beslissing. Blijf de blauwe lijn (die vrij geleidelijk omhoog en omlaag gaat) zelf goed volgen.<br>
+            De indicator is oorspronkelijk bedoeld voor de middellange termijn belegger en beslissingen op 'week' basis,
             maar kan ook voor korte intervallen gebruikt worden.
             </div>
             """,
