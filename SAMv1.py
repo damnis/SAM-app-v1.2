@@ -196,12 +196,11 @@ def calculate_sam(df):
     df.loc[
         (df["WMA18_shifted"] < df["WMA35_shifted"]) & (df["WMA18"] > df["WMA35"]),
         "SAMG"
-    ] = 1.0
-
+    ] = 0.75 # oorspronkelijk 1.0, uit in nieuwere sam versie
     df.loc[
         (df["WMA18_shifted"] > df["WMA35_shifted"]) & (df["WMA18"] < df["WMA35"]),
         "SAMG"
-    ] = -1.0
+    ] = -0.75 # zie vorige
 
 #  samg oud
 #    df["Change"] = df["Close"].pct_change()
@@ -263,9 +262,9 @@ def calculate_sam(df):
     epsilonpos = 30.0  # sterke richting
     df["SAMD"] = 0.0
     # 1️⃣ Sterke positieve richting
-    df.loc[(df["DI_PLUS"] > epsilonpos) & (df["DI_MINUS"] <= epsilonneg), "SAMD"] = 1.0
+    df.loc[(df["DI_PLUS"] > epsilonpos) & (df["DI_MINUS"] <= epsilonneg), "SAMD"] = 0.75 # was 1.0
     # 2️⃣ Sterke negatieve richting
-    df.loc[(df["DI_MINUS"] > epsilonpos) & (df["DI_PLUS"] <= epsilonneg), "SAMD"] = -1.0
+    df.loc[(df["DI_MINUS"] > epsilonpos) & (df["DI_PLUS"] <= epsilonneg), "SAMD"] = -0.75 # was -1.0
     # 3️⃣ Lichte positieve richting
     df.loc[(df["DI_PLUS"] > df["DI_MINUS"]) & (df["DI_MINUS"] > epsilonneg), "SAMD"] = 0.5
     # 4️⃣ Lichte negatieve richting
