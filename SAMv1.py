@@ -475,9 +475,9 @@ st.markdown("""
   </div>
   <div style='flex: 1; text-align: right;'>
     <details>
-      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: left;'>ℹ️ Uitleg SAM Trading Indicator</summary>
+      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg SAM Trading Indicator</summary>
       <div style='margin-top: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 8px;'>
-        <p style='font-size: 13px; color: #333;'>
+        <p style='font-size: 13px; color: #333; text-align: left'>
         Gebruik de <strong>SAM Trading Indicator</strong> door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
         de trendlijn. De groene en rode SAM waarden (vaak perioden) geven het momentum weer...
         <br><br>
