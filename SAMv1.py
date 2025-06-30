@@ -473,7 +473,7 @@ st.markdown("""
   <div style='flex: 1;'>
     <h5 style='margin: 0;'>Simple Alert Monitor</h5>
   </div>
-  <div style='flex: 1; text-align: right;'>
+  <div style='flex: 1; text-align: left;'>
     <details>
       <summary style='cursor: pointer; font-weight: bold; color: #555;'>ℹ️ Uitleg SAM Trading Indicator</summary>
       <div style='margin-top: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 8px;'>
