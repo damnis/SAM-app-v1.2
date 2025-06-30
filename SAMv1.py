@@ -717,6 +717,7 @@ interval = interval_mapping[interval_optie]
 # -------
 
 # 📌 Titel en uitleg als toggle (zelfde stijl als eerder)
+# 📌 Titel en uitleg als toggle (zelfde stijl als eerder)
 st.markdown("""
 <div style='display: flex; justify-content: space-between; align-items: flex-start; max-width: 900px; margin-bottom: 10px;'>
   <div style='flex: 1; padding-right: 20px;'>
@@ -745,8 +746,10 @@ with col1:
     thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
 with col2:
     pass  # lege kolom, zodat slider links blijft
- # oud   
+
+# oude
 #col1, col2 = st.columns([9, 6])  # Pas verhouding aan als je wilt
+
 
 #with col1:
  #   st.markdown("### ⚙️ Adviesgevoeligheid")
