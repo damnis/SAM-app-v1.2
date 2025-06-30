@@ -469,7 +469,7 @@ st.markdown(
 )
 # Simple Alert Monitor 
 st.markdown("""
-<div style='display: flex; justify-content: space-between; align-items: center;'>
+<div style='display: flex; justify-content: space-between; align-items: top;'>
   <div style='flex: 1;'>
     <h5 style='margin: 0;'>Simple Alert Monitor</h5>
   </div>
