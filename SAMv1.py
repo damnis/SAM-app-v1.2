@@ -361,43 +361,62 @@ def calculate_sam(df):
     return df
     
 
-# --- Advies en rendementen ---
-def determine_advice(df, threshold, risk_aversion=False):
-    df = df.copy()
+#--- Advies en rendementen ---
 
-    # 🧮 Trendberekening over SAM
-    df["Trend"] = weighted_moving_average(df["SAM"], 12)
-    df["TrendChange"] = df["Trend"] - df["Trend"].shift(1)
-    df["Richting"] = np.sign(df["TrendChange"])
-    df["Trail"] = 0
-    df["Advies"] = np.nan
+def determine_advice(df, threshold, risk_aversion=False): df = df.copy()
 
-    # 🔁 Bereken Trail (opeenvolgende richting-versterking)
-    huidige_trend = 0
-    for i in range(1, len(df)):
-        huidige = df["Richting"].iloc[i]
-        vorige = df["Richting"].iloc[i - 1]
+# 🧮 Trendberekening over SAM
+df["Trend"] = weighted_moving_average(df["SAM"], 12)
+df["TrendChange"] = df["Trend"] - df["Trend"].shift(1)
+df["Richting"] = np.sign(df["TrendChange"])
+df["Trail"] = 0
+df["Advies"] = np.nan
 
-        if huidige == vorige and huidige != 0:
-            huidige_trend += 1
-        elif huidige != 0:
-            huidige_trend = 1
-        else:
-            huidige_trend = 0
+# 🔁 Bereken Trail (opeenvolgende richting-versterking)
+huidige_trend = 0
+for i in range(1, len(df)):
+    huidige = df["Richting"].iloc[i]
+    vorige = df["Richting"].iloc[i - 1]
 
-        df.at[df.index[i], "Trail"] = huidige_trend
-
-    # ✅ Voorfilter op basis van risk_aversion
-    if risk_aversion:
-        df["RiskFilter_Koop"] = df["Trend"] >= -0.1
-        df["RiskFilter_Verkoop"] = df["Trend"] <= 1.8
+    if huidige == vorige and huidige != 0:
+        huidige_trend += 1
+    elif huidige != 0:
+        huidige_trend = 1
     else:
-        df["RiskFilter_Koop"] = True
-        df["RiskFilter_Verkoop"] = True
+        huidige_trend = 0
 
-    # ✅ Signaal op basis van richting, trail en eventueel risk filters
-    mask_koop = (df["Richting"] == 1) & (df["Trail"] >= threshold) & (df["Advies"].isna()) & df["RiskFilter_Koop"]
-    mask_verkoop = (df["Richting"] == -1) & (df["Trail"] >= threshold) & (df["Advies"].isna()) & df["RiskFilter_Verkoop"]
+    df.at[df.index[i], "Trail"] = huidige_trend
+
+# ✅ Advieslogica bij risk_aversion
+if risk_aversion:
+    df["Advies"] = df["Advies"].astype(object)
+
+    for i in range(2, len(df)):
+        trend_nu = df["Trend"].iloc[i]
+        trend_vorige = df["Trend"].iloc[i - 1]
+        trend_eerder = df["Trend"].iloc[i - 2]
+        sam_3 = df["SAM"].iloc[i - 2:i + 1]
+
+        # Starten met koopconditie
+        if trend_nu >= -0.1:
+            if (trend_nu < trend_eerder * 0.5) or (all(sam_3 < 0)):
+                df.at[df.index[i], "Advies"] = "Verkopen"
+            else:
+                df.at[df.index[i], "Advies"] = "Kopen"
+
+        # Starten met verkoopconditie
+        elif trend_nu < 0.1:
+            if (trend_nu > trend_eerder * 2) or (all(sam_3 > 0)):
+                df.at[df.index[i], "Advies"] = "Kopen"
+            else:
+                df.at[df.index[i], "Advies"] = "Verkopen"
+
+    df["Advies"] = df["Advies"].ffill()
+
+else:
+    # Standaard trail-based advies
+    mask_koop = (df["Richting"] == 1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
+    mask_verkoop = (df["Richting"] == -1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
 
     df.loc[mask_koop, "Advies"] = "Kopen"
     df.loc[mask_verkoop, "Advies"] = "Verkopen"
@@ -405,52 +424,54 @@ def determine_advice(df, threshold, risk_aversion=False):
     # 🔄 Advies forward fillen
     df["Advies"] = df["Advies"].ffill()
 
-    # 📊 Bereken rendementen op basis van adviesgroepen
-    df["AdviesGroep"] = (df["Advies"] != df["Advies"].shift()).cumsum()
-    rendementen = []
-    sam_rendementen = []
+# 📊 Bereken rendementen op basis van adviesgroepering
+df["AdviesGroep"] = (df["Advies"] != df["Advies"].shift()).cumsum()
+rendementen = []
+sam_rendementen = []
 
-    groepen = list(df.groupby("AdviesGroep"))
-    for i in range(len(groepen)):
-        _, groep = groepen[i]
-        advies = groep["Advies"].iloc[0]
+groepen = list(df.groupby("AdviesGroep"))
 
-        start = groep["Close"].iloc[0]
-        if i < len(groepen) - 1:
-            eind = groepen[i + 1][1]["Close"].iloc[0]
+for i in range(len(groepen)):
+    _, groep = groepen[i]
+    advies = groep["Advies"].iloc[0]
+
+    start = groep["Close"].iloc[0]
+    if i < len(groepen) - 1:
+        eind = groepen[i + 1][1]["Close"].iloc[0]
+    else:
+        eind = groep["Close"].iloc[-1]
+
+    try:
+        start = float(start)
+        eind = float(eind)
+        if start != 0.0:
+            markt_rendement = (eind - start) / start
+            sam_rendement = markt_rendement if advies == "Kopen" else -markt_rendement
         else:
-            eind = groep["Close"].iloc[-1]
-
-        try:
-            start = float(start)
-            eind = float(eind)
-            if start != 0.0:
-                markt_rendement = (eind - start) / start
-                sam_rendement = markt_rendement if advies == "Kopen" else -markt_rendement
-            else:
-                markt_rendement = 0.0
-                sam_rendement = 0.0
-        except Exception:
             markt_rendement = 0.0
             sam_rendement = 0.0
+    except Exception:
+        markt_rendement = 0.0
+        sam_rendement = 0.0
 
-        rendementen.extend([markt_rendement] * len(groep))
-        sam_rendementen.extend([sam_rendement] * len(groep))
+    rendementen.extend([markt_rendement] * len(groep))
+    sam_rendementen.extend([sam_rendement] * len(groep))
 
-    # ✅ Controle
-    if len(rendementen) != len(df):
-        raise ValueError(f"Lengte mismatch: rendementen={len(rendementen)}, df={len(df)}")
+# ✅ Controle
+if len(rendementen) != len(df):
+    raise ValueError(f"Lengte mismatch: rendementen={len(rendementen)}, df={len(df)}")
 
-    df["Markt-%"] = rendementen
-    df["SAM-%"] = sam_rendementen
+df["Markt-%"] = rendementen
+df["SAM-%"] = sam_rendementen
 
-    # 🏁 Huidig advies bepalen
-    if "Advies" in df.columns and df["Advies"].notna().any():
-        huidig_advies = df["Advies"].dropna().iloc[-1]
-    else:
-        huidig_advies = "Niet beschikbaar"
+# 🏁 Huidig advies bepalen
+if "Advies" in df.columns and df["Advies"].notna().any():
+    huidig_advies = df["Advies"].dropna().iloc[-1]
+else:
+    huidig_advies = "Niet beschikbaar"
 
-    return df, huidig_advies
+return df, huidig_advies
+
 
    
 # --- Streamlit UI ---
