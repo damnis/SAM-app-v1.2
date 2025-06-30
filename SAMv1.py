@@ -473,9 +473,9 @@ st.markdown("""
   <div style='flex: 1;'>
     <h5 style='margin: 0;'>Simple Alert Monitor</h5>
   </div>
-  <div style='flex: 1; text-align: left;'>
+  <div style='flex: 1; text-align: right;'>
     <details>
-      <summary style='cursor: pointer; font-weight: bold; color: #555;'>ℹ️ Uitleg SAM Trading Indicator</summary>
+      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: left;'>ℹ️ Uitleg SAM Trading Indicator</summary>
       <div style='margin-top: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 8px;'>
         <p style='font-size: 13px; color: #333;'>
         Gebruik de <strong>SAM Trading Indicator</strong> door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
