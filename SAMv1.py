@@ -735,6 +735,26 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Adviesgevoeligheid en Slider
+# Styling voor gecentreerde uitleg die uitschuift
+st.markdown("""
+<style>
+.gevoeligheid-uitleg details[open] {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90vw;
+  max-width: 700px;
+  z-index: 999;
+  background-color: #f9f9f9;
+  padding: 1em;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-radius: 10px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Kolommen: links slider, rechts samenvouwbare uitlegknop
 col1, col2 = st.columns([9, 6])
 
 with col1:
@@ -743,7 +763,7 @@ with col1:
 
 with col2:
     st.markdown("""
-    <div class="gevoeligheid-uitleg" style='text-align: right;'>
+    <div class="gevoeligheid-uitleg" style='text-align: left;'>
         <details>
             <summary style='cursor: pointer; font-weight: bold; color: #555;'>ℹ️ Uitleg Adviesgevoeligheid</summary>
             <div style='margin-top: 10px;'>
@@ -758,6 +778,7 @@ with col2:
         </details>
     </div>
     """, unsafe_allow_html=True)
+    
  # oud   
 #col1, col2 = st.columns([9, 6])  # Pas verhouding aan als je wilt
 
