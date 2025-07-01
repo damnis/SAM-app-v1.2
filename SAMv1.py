@@ -388,9 +388,10 @@ def calculate_sat(df):
     df["SAT_Stage"] = df["SAT_Stage"].astype(float)
     df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
     return df
-st.write("MA150 laatste waarden:", df["MA150"].tail())
-st.write("MA30 laatste waarden:", df["MA30"].tail())
-st.write("SAT_Stage laatste waarden:", df["SAT_Stage"].tail())    
+    
+#st.write("MA150 laatste waarden:", df["MA150"].tail())
+#st.write("MA30 laatste waarden:", df["MA30"].tail())
+#st.write("SAT_Stage laatste waarden:", df["SAT_Stage"].tail())    
 
 
 def determine_advice(df, threshold, risk_aversion=False):
