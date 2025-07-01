@@ -332,23 +332,6 @@ def calculate_sam(df):
     # Zwakke neerwaartse trend
     df.loc[(df["TRIX"] < 0) & (df["TRIX"] >= df["TRIX_PREV"]), "SAMX"] = -0.5
 
-    # --- SAMX op basis van TRIX - werkt niet met ta
-#    close_series = df["Close"].squeeze()
- #   trix_ind = TRIXIndicator(close=close_series, window=15)
-
-  #  df["TRIX"] = trix_ind.trix()
-#    df["TRIX_PREV"] = df["TRIX"].shift(1)
-#    df["SAMX"] = 0.0  # Standaardwaarde
-
-    # Sterke opwaartse trend
-#    df.loc[(df["TRIX"] > 0) & (df["TRIX"] > df["TRIX_PREV"]), "SAMX"] = 0.75
-    # Zwakke opwaartse trend
-#    df.loc[(df["TRIX"] > 0) & (df["TRIX"] <= df["TRIX_PREV"]), "SAMX"] = 0.5
-    # Sterke neerwaartse trend
-#    df.loc[(df["TRIX"] < 0) & (df["TRIX"] < df["TRIX_PREV"]), "SAMX"] = -0.75
-    # Zwakke neerwaartse trend
-#    df.loc[(df["TRIX"] < 0) & (df["TRIX"] >= df["TRIX_PREV"]), "SAMX"] = -0.5
-
     # SAMX OUD
 #    df["Momentum"] = df["Close"] - df["Close"].shift(3)
 #    df["SAMX"] = 0
@@ -531,46 +514,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Simple Alert Monitor 
-#st.markdown("""
-#<div style='display: flex; justify-content: space-between; align-items: top;'>
-#  <div style='flex: 1;'>
-#    <h5 style='margin: 0;'>Simple Alert Monitor</h5>
-#  </div>
-#  <div style='flex: 1; text-align: right;'>
-  #  <details>
-  #    <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg SAM Trading Indicator</summary>
-   #   <div style='margin-top: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 8px;'>
-   #     <p style='font-size: 13px; color: #333; text-align: left'>
-     #   Gebruik de <strong>SAM Trading Indicator</strong> door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
-   #     de trendlijn. De groene en rode SAM waarden (vaak perioden) geven het momentum weer...
-  #      <br><br>
-   #     Het advies is hiervan afgeleid en kan bijgesteld worden door de gevoeligheid aan te passen.<br>
-   #     De indicator is oorspronkelijk bedoeld voor de <strong>middellange termijn belegger</strong>.
- #       </p>
-#      </div>
-  #  </details>
-#  </div>
-#</div>
-#""", unsafe_allow_html=True)
 
-#st.markdown(
-#    f"""
-#    <h1>SAM Trading Indicator<span style='color:#3366cc'>   </span></h1>
-#    """,
-#    unsafe_allow_html=True
-##)
-# Simple Alert Monitor 
-#col1, col2 = st.columns([9, 6])  # Pas verhouding aan als je wilt
 
-#with col1:
-#    st.markdown(
-  #      f"""
-  #      <h5>Simple Alert Monitor</h5>
-   #     """,
- #       unsafe_allow_html=True 
-#    )    
-#with col2:
 #    with st.expander("ℹ️ Uitleg SAM Trading Indicator"):
   #      st.markdown(
   #          """
@@ -780,28 +725,6 @@ st.markdown("""
   </div>
 </div>
 """, unsafe_allow_html=True)
-# 📌 Titel en uitleg als toggle (zelfde stijl als eerder) werkt niet
-#st.markdown("""
-#<div style='display: flex; justify-content: space-between; align-items: flex-start; max-width: 900px; margin-bottom: 10px;'>
-#  <div style='flex: 1; padding-right: 20px;'>
- #   <h4 style='margin-bottom: 10px;'>⚙️ Adviesgevoeligheid</h4>
-#  </div>
-#  <div style='flex: 1;'>
-#    <details>
-#      <summary style='cursor: pointer; font-weight: bold; color: #555;'>ℹ️ Uitleg Adviesgevoeligheid</summary>
-#      <div style='margin-top: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 8px;'>
- #       <p style='font-size: 13px; color: #333; text-align: left;'>
- #       De gevoeligheidsslider bepaalt hoeveel opeenvolgende perioden met dezelfde trendrichting
-  #      nodig zijn voordat een advies wordt afgegeven.<br><br>
- #       - Een lagere waarde (**1 of 2**) geeft sneller advieswijzigingen, maar is gevoeliger voor ruis.<br>
- #       - Een hogere waarde (**3 t/m 5**) geeft minder maar betrouwbaardere signalen.<br><br>
-  #      De standaardwaarde is <strong>2</strong>.
- #       </p>
- #     </div>
-#    </details>
-#  </div>
-#</div>
-#""", unsafe_allow_html=True)
 
 # 📌 Slider in kolommen, links met max 50% breedte
 col1, col2 = st.columns([1, 1])
@@ -810,33 +733,6 @@ with col1:
 with col2:
     pass  # lege kolom, zodat slider links blijft
 
-# oude
-#col1, col2 = st.columns([9, 6])  # Pas verhouding aan als je wilt
-
-
-#with col1:
- #   st.markdown("### ⚙️ Adviesgevoeligheid")
-#    thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
-    
-#with col2:
-#    with st.expander("ℹ️ Uitleg Adviesgevoeligheid"):
-  #      st.markdown(
-   #         """
-#            <div style='color:#444; font-size:12px;'>
- #           De gevoeligheidsslider bepaalt hoeveel opeenvolgende perioden met dezelfde trendrichting
- #           nodig zijn voordat een advies wordt afgegeven.<br>
-  #          Een lagere waarde (1 of 2) geeft sneller advies wijzigingen, maar is gevoeliger voor ruis.
- #           Een hogere waarde (3 of 4) geeft dus minder maar vaak betrouwbaardere adviezen.<br>
-   #         De standaardwaarde is 2.
-   #         </div>
-  #          """,
- #           unsafe_allow_html=True
-  #      )
-
-  #
-
-#thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
-#thresh = st.slider("Gevoeligheid van trendverandering", 0.01, 0.5, 0.1, step=0.02)
 
 # Berekening
 # ✅ Gecombineerde functie met cache
