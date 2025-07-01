@@ -389,6 +389,8 @@ def determine_advice(df, threshold, risk_aversion=False):
         df.at[df.index[i], "Trail"] = huidige_trend
 
     # ✅ Advieslogica bij risk_aversion
+ #   if risk_aversion:
+    # ✅ Advieslogica bij risk_aversion
     if risk_aversion:
         df["Advies"] = df["Advies"].astype(object)
 
@@ -398,27 +400,26 @@ def determine_advice(df, threshold, risk_aversion=False):
             trend_eerder = df["Trend"].iloc[i - 2]
             sam_3 = df["SAM"].iloc[i - 2:i + 1]
 
-            if trend_nu >= -0.0 and trend_nu > trend_vorige:
-                if (trend_nu < trend_eerder * 0.6) or (all(sam_3 < 0)):
+            # 🔹 Situatie 1: Trend is positief en stijgend
+            if trend_nu >= 0.0 and trend_nu > trend_vorige:
+             # Als huidige trend meer dan 40% verzwakt t.o.v. 2 perioden geleden, of 3 rode SAM's → verkoop
+                if trend_nu < trend_eerder * 0.6 or all(sam_3 < 0):
                     df.at[df.index[i], "Advies"] = "Verkopen"
                 else:
                     df.at[df.index[i], "Advies"] = "Kopen"
 
+         # 🔹 Situatie 2: Trend is negatief en daalt verder
             elif trend_nu < 0.0 and trend_nu < trend_vorige:
-                if (trend_nu > trend_eerder / 1.75) or (all(sam_3 > 0)):
+            # Als trend plots veel minder negatief is geworden (afzwakking), of 3 groene SAM's → koop
+                if trend_nu > abs(trend_eerder) * 0.25 or all(sam_3 > 0):
                     df.at[df.index[i], "Advies"] = "Kopen"
                 else:
                     df.at[df.index[i], "Advies"] = "Verkopen"
 
+    # 🔄 Vul ontbrekende adviezen aan met vorige advies
         df["Advies"] = df["Advies"].ffill()
-
-    else:
-        mask_koop = (df["Richting"] == 1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
-        mask_verkoop = (df["Richting"] == -1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
-
-        df.loc[mask_koop, "Advies"] = "Kopen"
-        df.loc[mask_verkoop, "Advies"] = "Verkopen"
-        df["Advies"] = df["Advies"].ffill()
+    
+    #----
 
     # 📊 Bereken rendementen op basis van adviesgroepering
     df["AdviesGroep"] = (df["Advies"] != df["Advies"].shift()).cumsum()
