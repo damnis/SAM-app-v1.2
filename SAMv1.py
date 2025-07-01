@@ -381,7 +381,7 @@ def calculate_sat(df):
             stage = 1 
         elif (ma150 > ma150_prev and close > ma150 and ma30 > close) or \
              (close > ma150 and ma30 < ma30_prev and ma30 > close):
-            stage = -1(
+            stage = -1
         else:
             stage = stage_prev
 
