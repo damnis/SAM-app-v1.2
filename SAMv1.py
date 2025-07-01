@@ -394,6 +394,7 @@ def determine_advice(df, threshold, risk_aversion=False):
             (ma150 > ma150_prev and close > ma150 and ma30 > close)
             or (close > ma150 and ma30 < ma30_prev and ma30 > close)
         ):
+
             stage = -1
         elif ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev:
             stage = 1
