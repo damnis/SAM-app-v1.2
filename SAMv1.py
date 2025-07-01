@@ -380,7 +380,8 @@ def calculate_sat(df):
         elif ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev:
             stage = 2
 
-        df.iat[i, df.columns.get_loc("SAT_Stage")] = stage
+    #    df.iat[i, df.columns.get_loc("SAT_Stage")] = stage
+        df.at[df.index[i], "SAT_Stage"] = stage
 
     df["SAT_Stage"] = df["SAT_Stage"].astype(float)
     df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
