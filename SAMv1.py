@@ -1381,11 +1381,11 @@ if trades:
 
 # ✅ Dynamisch SAM-rendement afhankelijk van signaalkeuze
 if signaalkeuze == "Koop":
-    metric_sam_rendement = SAM-% Koop 
+    metric_sam_rendement = rendement_koop 
 elif signaalkeuze == "Verkoop":
-    metric_sam_rendement = SAM-% Verkoop 
+    metric_sam_rendement = rendement_verkoop 
 else:  # Beide
-    metric_sam_rendement = SAM-% tot.
+    metric_sam_rendement = rendement_totaal 
 col2.metric(
     "📊 SAM-rendement",
     f"{metric_sam_rendement:+.2f}%" if isinstance(metric_sam_rendement, (int, float)) else "n.v.t."
