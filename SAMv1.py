@@ -369,21 +369,38 @@ def calculate_sat(df):
         stage_prev = safe_float(df["SAT_Stage"].iloc[i - 1]) if i > 1 else 0.0
         stage = stage_prev  # start met vorige stage-waarde
 
-        if (ma150 > ma150_prev and close > ma150 and ma30 > close) or \
-           (close > ma150 and ma30 < ma30_prev and ma30 > close):
-            stage = -1
-        elif ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev:
-            stage = 1
-        elif ma150 > close and ma150 > ma150_prev:
-            stage = -1
+        if ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev:
+            stage = 2  
         elif ma150 > close and ma150 < ma150_prev:
             stage = -2
+        elif ma150 > close and ma150 > ma150_prev:
+            stage = -1
         elif ma150 < close and ma150 < ma150_prev and ma30 > ma30_prev:
             stage = 1
-        elif ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev:
-            stage = 2
+        elif ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev:
+            stage = 1 
+        elif (ma150 > ma150_prev and close > ma150 and ma30 > close) or \
+             (close > ma150 and ma30 < ma30_prev and ma30 > close):
+            stage = -1(
         else:
             stage = stage_prev
+
+        
+#        if (ma150 > ma150_prev and close > ma150 and ma30 > close) or \
+ #          (close > ma150 and ma30 < ma30_prev and ma30 > close):
+#            stage = -1
+ #       elif ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev:
+  #          stage = 1
+    #    elif ma150 > close and ma150 > ma150_prev:
+  #          stage = -1
+  #      elif ma150 > close and ma150 < ma150_prev:
+ #           stage = -2
+ #       elif ma150 < close and ma150 < ma150_prev and ma30 > ma30_prev:
+ #           stage = 1
+ #       elif ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev:
+ #           stage = 2
+ #       else:
+#            stage = stage_prev
 
         df.at[df.index[i], "SAT_Stage"] = stage
 
