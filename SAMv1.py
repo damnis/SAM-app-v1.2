@@ -345,18 +345,27 @@ def calculate_sam(df):
     
 
  #--- Advies en rendementen ---
+# ✅ Helperfunctie voor veilige conversie naar float
+def safe_float(val):
+    try:
+        return float(val) if pd.notna(val) else 0.0
+    except:
+        return 0.0
+
+# ✅ Verbeterde SAT-berekening
 def calculate_sat(df):
     df["MA150"] = df["Close"].rolling(window=150).mean()
     df["MA30"] = df["Close"].rolling(window=30).mean()
-    df["SAT_Stage"] = np.nan
+    df["SAT_Stage"] = np.nan  # eerst lege kolom
 
     for i in range(1, len(df)):
-        ma150 = float(df["MA150"].iloc[i]) if pd.notna(df["MA150"].iloc[i]) else 0.0
-        ma150_prev = float(df["MA150"].iloc[i - 1]) if pd.notna(df["MA150"].iloc[i - 1]) else 0.0
-        ma30 = float(df["MA30"].iloc[i]) if pd.notna(df["MA30"].iloc[i]) else 0.0
-        ma30_prev = float(df["MA30"].iloc[i - 1]) if pd.notna(df["MA30"].iloc[i - 1]) else 0.0
-        close = float(df["Close"].iloc[i]) if pd.notna(df["Close"].iloc[i]) else 0.0
-        stage = float(df["SAT_Stage"].iloc[i - 1]) if i > 1 and pd.notna(df["SAT_Stage"].iloc[i - 1]) else 0.0
+        ma150 = safe_float(df["MA150"].iloc[i])
+        ma150_prev = safe_float(df["MA150"].iloc[i - 1])
+        ma30 = safe_float(df["MA30"].iloc[i])
+        ma30_prev = safe_float(df["MA30"].iloc[i - 1])
+        close = safe_float(df["Close"].iloc[i])
+        stage_prev = safe_float(df["SAT_Stage"].iloc[i - 1]) if i > 1 else 0.0
+        stage = stage_prev  # start met vorige stage-waarde
 
         if (ma150 > ma150_prev and close > ma150 and ma30 > close) or (close > ma150 and ma30 < ma30_prev and ma30 > close):
             stage = -1
@@ -376,6 +385,7 @@ def calculate_sat(df):
     df["SAT_Stage"] = df["SAT_Stage"].astype(float)
     df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
     return df
+    
 
 
 def determine_advice(df, threshold, risk_aversion=False):
