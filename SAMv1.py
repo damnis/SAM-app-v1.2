@@ -1344,8 +1344,6 @@ sam_rendement, trades, rendementen = bereken_sam_rendement(df_signalen, signaalk
 # ✅ 5. Visueel weergeven
 col1, col2 = st.columns(2)
 col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
-#col2.metric("📊 SAM-rendement", f"{sam_rendement:+.2f}%" if isinstance(sam_rendement, (int, float)) else "n.v.t.")
-
 
 if trades:
     df_trades = pd.DataFrame(trades)
@@ -1385,14 +1383,13 @@ if trades:
     elif signaalkeuze == "Verkoop":
         metric_sam_rendement = rendement_verkoop 
     else:  # Beide
-        metric_sam_rendement = rendement_totaal 
-   col2.metric(
+        metric_sam_rendement = rendement_totaal
 
-       
-    "📊 SAM-rendement",
-    f"{metric_sam_rendement:+.2f}%" if isinstance(metric_sam_rendement, (int, float)) else "n.v.t."
-)   
-    
+    col2.metric(
+        "📊 SAM-rendement",
+        f"{metric_sam_rendement:+.2f}%" if isinstance(metric_sam_rendement, (int, float)) else "n.v.t."
+    )
+
     st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
     st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
     st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
@@ -1428,38 +1425,7 @@ else:
     st.info("ℹ️ Geen trades gevonden binnen de geselecteerde periode.")
     
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-# wit
-#with st.container():
-#    st.markdown(
-#        """
-#        <div style='
- #           background-color: #f0f2f6;
- #           border-radius: 12px;
-   #         padding: 20px 25px;
-  #          margin-top: 25px;
-  #          margin-bottom: 25px;
-  #          box-shadow: 0 4px 8px rgba(0,0,0,0.05);
- #       '>
-  #          <h3 style='margin-bottom:10px; color:#2c3e50;'>⚙️ Instellingen voor Adviesgevoeligheid</h3>
-  #          <p style='margin-top:0; color:#6c757d;'>Kies hoe sterk de trend moet zijn voordat een advies volgt. Hogere waarde betekent meer bevestiging vereist.</p>
-  #      </div>
-  #      """,
-   #     unsafe_allow_html=True
- #   )
-
+    
 
 
 
