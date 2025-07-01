@@ -345,7 +345,38 @@ def calculate_sam(df):
     
 
 #--- Advies en rendementen ---
+def calculate_sat(df):
+    df["MA150"] = df["Close"].rolling(window=150).mean()
+    df["MA30"] = df["Close"].rolling(window=30).mean()
+    df["SAT_Stage"] = np.nan
 
+    for i in range(1, len(df)):
+        ma150 = float(df["MA150"].iloc[i]) if pd.notna(df["MA150"].iloc[i]) else 0.0
+        ma150_prev = float(df["MA150"].iloc[i - 1]) if pd.notna(df["MA150"].iloc[i - 1]) else 0.0
+        ma30 = float(df["MA30"].iloc[i]) if pd.notna(df["MA30"].iloc[i]) else 0.0
+        ma30_prev = float(df["MA30"].iloc[i - 1]) if pd.notna(df["MA30"].iloc[i - 1]) else 0.0
+        close = float(df["Close"].iloc[i]) if pd.notna(df["Close"].iloc[i]) else 0.0
+        stage = float(df["SAT_Stage"].iloc[i - 1]) if i > 1 and pd.notna(df["SAT_Stage"].iloc[i - 1]) else 0.0
+
+        if (ma150 > ma150_prev and close > ma150 and ma30 > close) or (close > ma150 and ma30 < ma30_prev and ma30 > close):
+            stage = -1
+        elif ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev:
+            stage = 1
+        elif ma150 > close and ma150 > ma150_prev:
+            stage = -1
+        elif ma150 > close and ma150 < ma150_prev:
+            stage = -2
+        elif ma150 < close and ma150 < ma150_prev and ma30 > ma30_prev:
+            stage = 1
+        elif ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev:
+            stage = 2
+
+        df.iat[i, df.columns.get_loc("SAT_Stage")] = stage
+
+    df["SAT_Stage"] = df["SAT_Stage"].astype(float)
+    df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
+    return df
+    
 def determine_advice(df, threshold, risk_aversion=False):
     df = df.copy()
 
@@ -373,42 +404,6 @@ def determine_advice(df, threshold, risk_aversion=False):
 
     
     # ✅ Advieslogica bij risk_aversion
-    # ✅ Advieslogica bij risk_aversion
-    if risk_aversion:
-        # 📈 Bereken SAT-ma's
-        df["MA150"] = df["Close"].rolling(window=150).mean()
-        df["MA30"] = df["Close"].rolling(window=30).mean()
-
-        # 📊 Bereken SAT_Stage
-        df["SAT_Stage"] = None
-
-        for i in range(1, len(df)):
-            ma150 = float(df["MA150"].iloc[i]) if pd.notna(df["MA150"].iloc[i]) else 0.0
-            ma150_prev = float(df["MA150"].iloc[i - 1]) if pd.notna(df["MA150"].iloc[i - 1]) else 0.0
-            ma30 = float(df["MA30"].iloc[i]) if pd.notna(df["MA30"].iloc[i]) else 0.0
-            ma30_prev = float(df["MA30"].iloc[i - 1]) if pd.notna(df["MA30"].iloc[i - 1]) else 0.0
-            close = float(df["Close"].iloc[i]) if pd.notna(df["Close"].iloc[i]) else 0.0
-
-            stage = float(df["SAT_Stage"].iloc[i - 1]) if i > 1 and pd.notna(df["SAT_Stage"].iloc[i - 1]) else 0.0
-
-            if (ma150 > ma150_prev and close > ma150 and ma30 > close) or (close > ma150 and ma30 < ma30_prev and ma30 > close):
-                stage = -1
-            elif ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev:
-                stage = 1
-            elif ma150 > close and ma150 > ma150_prev:
-                stage = -1
-            elif ma150 > close and ma150 < ma150_prev:
-                stage = -2
-            elif ma150 < close and ma150 < ma150_prev and ma30 > ma30_prev:
-                stage = 1
-            elif ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev:
-                stage = 2
-
-            df.iat[i, df.columns.get_loc("SAT_Stage")] = stage
-
-        df["SAT_Stage"] = df["SAT_Stage"].astype(float)
-        df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
-
         # ⬇️ Advieslogica gebaseerd op SAT_Trend
         df["Advies"] = df["Advies"].astype(object)
 
@@ -810,9 +805,11 @@ def advies_wordt_geladen(ticker, interval, threshold, risk_aversion):
     if df.empty or "Close" not in df.columns or "Open" not in df.columns:
         return None, None
     df = calculate_sam(df)
+    if risk_aversion:
+        df = calculate_sat(df)  # Hier SAT berekenen vóór determine_advice()
     df, huidig_advies = determine_advice(df, threshold=threshold, risk_aversion=risk_aversion)
     return df, huidig_advies
-
+    
 # ✅ Gebruik en foutafhandeling
 df, huidig_advies = advies_wordt_geladen(ticker, interval, thresh, risk_aversion)
 
