@@ -95,6 +95,7 @@ def bepaal_grafiekperiode(interval):
 
 
 # --- SAM Indicatorberekeningen ---
+@st.cache_data(ttl=900)
 def calculate_sam(df):
     df = df.copy()
 
@@ -353,6 +354,7 @@ def safe_float(val):
         return 0.0
 
 # ✅ Verbeterde SAT-berekening
+@st.cache_data(ttl=900)
 def calculate_sat(df):
     df["MA150"] = df["Close"].rolling(window=150).mean()
     df["MA30"] = df["Close"].rolling(window=30).mean()
@@ -386,7 +388,9 @@ def calculate_sat(df):
     df["SAT_Stage"] = df["SAT_Stage"].astype(float)
     df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
     return df
-    
+st.write("MA150 laatste waarden:", df["MA150"].tail())
+st.write("MA30 laatste waarden:", df["MA30"].tail())
+st.write("SAT_Stage laatste waarden:", df["SAT_Stage"].tail())    
 
 
 def determine_advice(df, threshold, risk_aversion=False):
