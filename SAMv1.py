@@ -1195,7 +1195,7 @@ html += "</tbody></table>"
 # ✅ 11. Weergave in Streamlit
 st.markdown(html, unsafe_allow_html=True)
 
-st.write("DEBUG signaalkeuze boven Backtest:", signaalkeuze)
+#st.write("DEBUG signaalkeuze boven Backtest:", signaalkeuze)
 
 ## 📊 Backtestfunctie: sluit op close van nieuw signaal
 # ✅ 0.Data voorbereiden voor advies')
