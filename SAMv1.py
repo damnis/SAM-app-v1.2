@@ -1098,12 +1098,12 @@ tabel["Markt-%"] = tabel["Markt-%"].astype(float) * 100
 tabel["SAM-%"] = tabel["SAM-%"].astype(float) * 100
 
 # SAM-% aanpassen op basis van filter (alle andere kolommen blijven staan)
-if signaal_filter == "Koop":
+if signaal_keuze == "Koop":
     tabel["SAM-%"] = tabel.apply(
-        lambda row: row["SAM-%"] if row["Advies"] == "Kopen" else 0.0, axis=1)
-elif signaal_filter == "Verkoop":
+        lambda row: row["SAM-%"] if row["Advies"] == "Kopen" else 0.00, axis=1)
+elif signaal_keuze == "Verkoop":
     tabel["SAM-%"] = tabel.apply(
-        lambda row: row["SAM-%"] if row["Advies"] == "Verkopen" else 0.0, axis=1)
+        lambda row: row["SAM-%"] if row["Advies"] == "Verkopen" else 0.00, axis=1)
 # bij 'Beide' hoeft niets te gebeuren
 
 # ✅ Daarna afzonderlijke kolommen voor weergave formatteren
