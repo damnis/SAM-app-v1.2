@@ -755,7 +755,7 @@ st.markdown("""
   </div>
   <div style='flex: 1; text-align: right;'>
     <details>
-      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg SAM Trading Indicator</summary>
+      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg Adviesgevoeligheid</summary>
       <div style='margin-top: 10px;'>
         <p style='font-size: 13px; color: #333; text-align: left'>
         De gevoeligheidsslider bepaalt hoeveel opeenvolgende perioden met dezelfde trendrichting
@@ -1011,7 +1011,7 @@ ax.axhline(y=0, color="gray", linewidth=1, linestyle="--")
 
 # ✅ As-instellingen
 ax.set_xlim(df_sat.index.min(), df_sat.index.max())
-ax.set_ylim(-3.5, 3.5)
+ax.set_ylim(-2.25, 2.25)
 ax.set_ylabel("Waarde")
 ax.set_title("SAT-indicator en Trendlijn")
 
