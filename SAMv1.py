@@ -863,31 +863,6 @@ signaal_keuze = st.radio(
     index=0,
     horizontal=True
 )
-#@st.cache_data(ttl=900)  # Cache 15 minuten
-#def advies_wordt_geladen(ticker, interval, threshold):
-#    df = fetch_data(ticker, interval)
-#    if df.empty or "Close" not in df.columns or "Open" not in df.columns:
-#        return None, None  # Signaal dat data niet bruikbaar is
-#    df = calculate_sam(df)
-#    df, huidig_advies = determine_advice(df, threshold=threshold)
- #   return df, huidig_advies
-
-# ✅ Gebruik en foutafhandeling
-#df, huidig_advies = advies_wordt_geladen(ticker, interval, thresh)
-#df, huidig_advies = get_sam_met_advies(ticker, interval, thresh)
-#df, huidig_advies = advies_wordt_geladen(df, threshold=thresh, risk_aversion=risk_aversion)
-#if df is None or df.empty:
-#    st.error("❌ Geen geldige data opgehaald. Kies een andere ticker of interval.")
-#    st.stop()
-
-#df = fetch_data(ticker, interval)
-
-#if df.empty:
-#    st.error("❌ Geen geldige data opgehaald. Kies een andere ticker of interval.")
-#    st.stop()
-#df = calculate_sam(df)
-#df = determine_advice(df, threshold=thresh)
-#df, huidig_advies = determine_advice(df, threshold=thresh)
 
 # debugging tools
 #st.subheader("🔍 SAM Debug-tabel (laatste 8 rijen)")
@@ -1069,20 +1044,6 @@ ax.legend()
 
 fig.tight_layout()
 st.pyplot(fig)
-
-# --- Grafiek met SAM en Trend  - oud ---
-#fig, ax1 = plt.subplots(figsize=(10, 4))
-#ax1.bar(df_grafiek.index, df_grafiek["SAM"], color="lightblue", label="SAM")
-#ax1.axhline(y=0, color="black", linewidth=1, linestyle="--")  # nullijn
-#ax2 = ax1.twinx()
-#ax2.plot(df_grafiek.index, df_grafiek["Trend"], color="red", label="Trend")
-#ax1.set_ylabel("SAM")
-#ax2.set_ylabel("Trend")
-#fig.tight_layout()
-#st.pyplot(fig)
-
-    
-# --- Tabel met signalen en rendement ---
 
     
 # --- Tabel met signalen en rendement ---
@@ -1448,7 +1409,16 @@ else:
  #               entry_date = datum
  #               continue
 #  else:  
-
+#-- Grafiek met SAM en Trend  - oud ---
+#fig, ax1 = plt.subplots(figsize=(10, 4))
+#ax1.bar(df_grafiek.index, df_grafiek["SAM"], color="lightblue", label="SAM")
+#ax1.axhline(y=0, color="black", linewidth=1, linestyle="--")  # nullijn
+#ax2 = ax1.twinx()
+#ax2.plot(df_grafiek.index, df_grafiek["Trend"], color="red", label="Trend")
+#ax1.set_ylabel("SAM")
+#ax2.set_ylabel("Trend")
+#fig.tight_layout()
+#st.pyplot(fig)
 
 
 
