@@ -1344,8 +1344,6 @@ sam_rendement, trades, rendementen = bereken_sam_rendement(df_signalen, signaal_
 
 # ✅ 5. Visueel weergeven
 # ✅ 5.0 Visuele SAM-analyse & rendementsoverzicht
-col1, col2 = st.columns(2)
-col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
 
 if trades:
     df_trades = pd.DataFrame(trades)
@@ -1376,6 +1374,8 @@ if trades:
         metric_sam_rendement = rendement_verkoop
     else:
         metric_sam_rendement = rendement_totaal
+    col1, col2 = st.columns(2)
+    col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
 
     col2.metric(
         "📊 SAM-rendement",
