@@ -1358,17 +1358,7 @@ if trades:
     # Kopie voor weergave
     df_display = df_trades.copy()
 
- # ✅ Dynamisch SAM-rendement afhankelijk van signaalkeuze
-if signaalkeuze == "Koop":
-    metric_sam_rendement = SAM-% Koop 
-elif signaalkeuze == "Verkoop":
-    metric_sam_rendement = SAM-% Verkoop 
-else:  # Beide
-    metric_sam_rendement = SAM-% tot.
-
-
-    
-   # Formatteringskolommen
+    # Formatteringskolommen
     for col in ["Markt-%", "Rendement (%)", "SAM-% Koop", "SAM-% Verkoop"]:
         if col in df_display.columns:
             df_display[col] = df_display[col].astype(float)
@@ -1389,6 +1379,13 @@ else:  # Beide
     aantal_succesvol_koop = (df_display["SAM-% Koop"] > 0).sum()
     aantal_succesvol_verkoop = (df_display["SAM-% Verkoop"] > 0).sum()
 
+# ✅ Dynamisch SAM-rendement afhankelijk van signaalkeuze
+if signaalkeuze == "Koop":
+    metric_sam_rendement = SAM-% Koop 
+elif signaalkeuze == "Verkoop":
+    metric_sam_rendement = SAM-% Verkoop 
+else:  # Beide
+    metric_sam_rendement = SAM-% tot.
 col2.metric(
     "📊 SAM-rendement",
     f"{metric_sam_rendement:+.2f}%" if isinstance(metric_sam_rendement, (int, float)) else "n.v.t."
