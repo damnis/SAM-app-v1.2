@@ -344,150 +344,150 @@ def calculate_sam(df):
     return df
     
 
- 
-#--- Advies en rendementen --- def calculate_sat(df): df["MA150"] = df["Close"].rolling(window=150).mean() df["MA30"] = df["Close"].rolling(window=30).mean() df["SAT_Stage"] = np.nan
+ #--- Advies en rendementen ---
+def calculate_sat(df):
+    df["MA150"] = df["Close"].rolling(window=150).mean()
+    df["MA30"] = df["Close"].rolling(window=30).mean()
+    df["SAT_Stage"] = np.nan
 
-for i in range(1, len(df)):
-    ma150 = float(df["MA150"].iloc[i]) if pd.notna(df["MA150"].iloc[i]) else 0.0
-    ma150_prev = float(df["MA150"].iloc[i - 1]) if pd.notna(df["MA150"].iloc[i - 1]) else 0.0
-    ma30 = float(df["MA30"].iloc[i]) if pd.notna(df["MA30"].iloc[i]) else 0.0
-    ma30_prev = float(df["MA30"].iloc[i - 1]) if pd.notna(df["MA30"].iloc[i - 1]) else 0.0
-    close = float(df["Close"].iloc[i]) if pd.notna(df["Close"].iloc[i]) else 0.0
-    stage = float(df["SAT_Stage"].iloc[i - 1]) if i > 1 and pd.notna(df["SAT_Stage"].iloc[i - 1]) else 0.0
+    for i in range(1, len(df)):
+        ma150 = float(df["MA150"].iloc[i]) if pd.notna(df["MA150"].iloc[i]) else 0.0
+        ma150_prev = float(df["MA150"].iloc[i - 1]) if pd.notna(df["MA150"].iloc[i - 1]) else 0.0
+        ma30 = float(df["MA30"].iloc[i]) if pd.notna(df["MA30"].iloc[i]) else 0.0
+        ma30_prev = float(df["MA30"].iloc[i - 1]) if pd.notna(df["MA30"].iloc[i - 1]) else 0.0
+        close = float(df["Close"].iloc[i]) if pd.notna(df["Close"].iloc[i]) else 0.0
+        stage = float(df["SAT_Stage"].iloc[i - 1]) if i > 1 and pd.notna(df["SAT_Stage"].iloc[i - 1]) else 0.0
 
-    if (ma150 > ma150_prev and close > ma150 and ma30 > close) or (close > ma150 and ma30 < ma30_prev and ma30 > close):
-        stage = -1
-    elif ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev:
-        stage = 1
-    elif ma150 > close and ma150 > ma150_prev:
-        stage = -1
-    elif ma150 > close and ma150 < ma150_prev:
-        stage = -2
-    elif ma150 < close and ma150 < ma150_prev and ma30 > ma30_prev:
-        stage = 1
-    elif ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev:
-        stage = 2
+        if (ma150 > ma150_prev and close > ma150 and ma30 > close) or (close > ma150 and ma30 < ma30_prev and ma30 > close):
+            stage = -1
+        elif ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev:
+            stage = 1
+        elif ma150 > close and ma150 > ma150_prev:
+            stage = -1
+        elif ma150 > close and ma150 < ma150_prev:
+            stage = -2
+        elif ma150 < close and ma150 < ma150_prev and ma30 > ma30_prev:
+            stage = 1
+        elif ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev:
+            stage = 2
 
-    df.iat[i, df.columns.get_loc("SAT_Stage")] = stage
+        df.iat[i, df.columns.get_loc("SAT_Stage")] = stage
 
-df["SAT_Stage"] = df["SAT_Stage"].astype(float)
-df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
-return df
+    df["SAT_Stage"] = df["SAT_Stage"].astype(float)
+    df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
+    return df
 
-def determine_advice(df, threshold, risk_aversion=False): df = df.copy()
 
-# 🧮 Trendberekening over SAM
-df["Trend"] = weighted_moving_average(df["SAM"], 12)
-df["TrendChange"] = df["Trend"] - df["Trend"].shift(1)
-df["Richting"] = np.sign(df["TrendChange"])
-df["Trail"] = 0
-df["Advies"] = np.nan
+def determine_advice(df, threshold, risk_aversion=False):
+    df = df.copy()
 
-# 🔁 Bereken Trail (opeenvolgende richting-versterking)
-huidige_trend = 0
-for i in range(1, len(df)):
-    huidige = df["Richting"].iloc[i]
-    vorige = df["Richting"].iloc[i - 1]
+    # 🧮 Trendberekening over SAM
+    df["Trend"] = weighted_moving_average(df["SAM"], 12)
+    df["TrendChange"] = df["Trend"] - df["Trend"].shift(1)
+    df["Richting"] = np.sign(df["TrendChange"])
+    df["Trail"] = 0
+    df["Advies"] = np.nan
 
-    if huidige == vorige and huidige != 0:
-        huidige_trend += 1
-    elif huidige != 0:
-        huidige_trend = 1
-    else:
-        huidige_trend = 0
+    # 🔁 Bereken Trail (opeenvolgende richting-versterking)
+    huidige_trend = 0
+    for i in range(1, len(df)):
+        huidige = df["Richting"].iloc[i]
+        vorige = df["Richting"].iloc[i - 1]
 
-    df.at[df.index[i], "Trail"] = huidige_trend
-
-if risk_aversion:
-    df = calculate_sat(df)
-
-    # ⬇️ Advieslogica gebaseerd op SAT_Trend
-    df["Advies"] = df["Advies"].astype(object)
-
-    for i in range(2, len(df)):
-        trend_sam = df["Trend"].iloc[i]
-        trend_nu = df["SAT_Trend"].iloc[i]
-        trend_vorige = df["SAT_Trend"].iloc[i - 1]
-        trend_eerder = df["SAT_Trend"].iloc[i - 2]
-        sam_3 = df["SAM"].iloc[i - 2:i + 1]
-
-        # 🔹 Positieve trend
-        if trend_nu >= 0.0 or all(sam_3 > 0):
-            if all(sam_3 < 0) or trend_sam < 0:
-                df.at[df.index[i], "Advies"] = "Verkopen"
-            else:
-                df.at[df.index[i], "Advies"] = "Kopen"
-
-        # 🔹 Negatieve trend
-        elif trend_nu < 0.0 or all(sam_3 < 0):
-            if all(sam_3 > 0) or trend_sam > 0:
-                df.at[df.index[i], "Advies"] = "Kopen"
-            else:
-                df.at[df.index[i], "Advies"] = "Verkopen"
-
-    df["Advies"] = df["Advies"].ffill()
-
-else:
-    # Standaard trail-based advies
-    mask_koop = (df["Richting"] == 1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
-    mask_verkoop = (df["Richting"] == -1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
-
-    df.loc[mask_koop, "Advies"] = "Kopen"
-    df.loc[mask_verkoop, "Advies"] = "Verkopen"
-
-    df["Advies"] = df["Advies"].ffill()
-
-# 📊 Bereken rendementen op basis van adviesgroepering
-df["AdviesGroep"] = (df["Advies"] != df["Advies"].shift()).cumsum()
-rendementen = []
-sam_rendementen = []
-
-groepen = list(df.groupby("AdviesGroep"))
-
-for i in range(len(groepen)):
-    _, groep = groepen[i]
-    advies = groep["Advies"].iloc[0]
-
-    start = groep["Close"].iloc[0]
-    if i < len(groepen) - 1:
-        eind = groepen[i + 1][1]["Close"].iloc[0]
-    else:
-        eind = groep["Close"].iloc[-1]
-
-    try:
-        start = float(start)
-        eind = float(eind)
-        if start != 0.0:
-            markt_rendement = (eind - start) / start
-            sam_rendement = markt_rendement if advies == "Kopen" else -markt_rendement
+        if huidige == vorige and huidige != 0:
+            huidige_trend += 1
+        elif huidige != 0:
+            huidige_trend = 1
         else:
+            huidige_trend = 0
+
+        df.at[df.index[i], "Trail"] = huidige_trend
+
+    # ✅ Advieslogica
+    if risk_aversion:
+        df = calculate_sat(df)
+        df["Advies"] = df["Advies"].astype(object)
+
+        for i in range(2, len(df)):
+            trend_sam = df["Trend"].iloc[i]
+            trend_nu = df["SAT_Trend"].iloc[i]
+            trend_vorige = df["SAT_Trend"].iloc[i - 1]
+            trend_eerder = df["SAT_Trend"].iloc[i - 2]
+            sam_3 = df["SAM"].iloc[i - 2:i + 1]
+
+            # 🔹 Positieve trend
+            if trend_nu >= 0.0 or all(sam_3 > 0):
+                if all(sam_3 < 0) or trend_sam < 0:
+                    df.at[df.index[i], "Advies"] = "Verkopen"
+                else:
+                    df.at[df.index[i], "Advies"] = "Kopen"
+
+            # 🔹 Negatieve trend
+            elif trend_nu < 0.0 or all(sam_3 < 0):
+                if all(sam_3 > 0) or trend_sam > 0:
+                    df.at[df.index[i], "Advies"] = "Kopen"
+                else:
+                    df.at[df.index[i], "Advies"] = "Verkopen"
+
+        df["Advies"] = df["Advies"].ffill()
+    else:
+        mask_koop = (df["Richting"] == 1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
+        mask_verkoop = (df["Richting"] == -1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
+
+        df.loc[mask_koop, "Advies"] = "Kopen"
+        df.loc[mask_verkoop, "Advies"] = "Verkopen"
+        df["Advies"] = df["Advies"].ffill()
+
+    # 📊 Bereken rendementen op basis van adviesgroepering
+    df["AdviesGroep"] = (df["Advies"] != df["Advies"].shift()).cumsum()
+    rendementen = []
+    sam_rendementen = []
+
+    groepen = list(df.groupby("AdviesGroep"))
+
+    for i in range(len(groepen)):
+        _, groep = groepen[i]
+        advies = groep["Advies"].iloc[0]
+
+        start = groep["Close"].iloc[0]
+        if i < len(groepen) - 1:
+            eind = groepen[i + 1][1]["Close"].iloc[0]
+        else:
+            eind = groep["Close"].iloc[-1]
+
+        try:
+            start = float(start)
+            eind = float(eind)
+            if start != 0.0:
+                markt_rendement = (eind - start) / start
+                sam_rendement = markt_rendement if advies == "Kopen" else -markt_rendement
+            else:
+                markt_rendement = 0.0
+                sam_rendement = 0.0
+        except Exception:
             markt_rendement = 0.0
             sam_rendement = 0.0
-    except Exception:
-        markt_rendement = 0.0
-        sam_rendement = 0.0
 
-    rendementen.extend([markt_rendement] * len(groep))
-    sam_rendementen.extend([sam_rendement] * len(groep))
+        rendementen.extend([markt_rendement] * len(groep))
+        sam_rendementen.extend([sam_rendement] * len(groep))
 
-if len(rendementen) != len(df):
-    raise ValueError(f"Lengte mismatch: rendementen={len(rendementen)}, df={len(df)}")
+    if len(rendementen) != len(df):
+        raise ValueError(f"Lengte mismatch: rendementen={len(rendementen)}, df={len(df)}")
 
-df["Markt-%"] = rendementen
-df["SAM-%"] = sam_rendementen
+    df["Markt-%"] = rendementen
+    df["SAM-%"] = sam_rendementen
 
-if "Advies" in df.columns and df["Advies"].notna().any():
-    huidig_advies = df["Advies"].dropna().iloc[-1]
-else:
-    huidig_advies = "Niet beschikbaar"
+    if "Advies" in df.columns and df["Advies"].notna().any():
+        huidig_advies = df["Advies"].dropna().iloc[-1]
+    else:
+        huidig_advies = "Niet beschikbaar"
 
-return df, huidig_advies
-
+    return df, huidig_advies
+    
+#--- Advies en rendement EINDE
 
 
-
-
-   
+  
 # --- Streamlit UI ---
 #st.title("SAM Trading Indicator")
 # Titel met kleur en grootte tonen
