@@ -753,7 +753,7 @@ def advies_wordt_geladen(ticker, interval, threshold, risk_aversion):
 df, huidig_advies = advies_wordt_geladen(ticker, interval, thresh, risk_aversion)
 
 # Keuze welke adviezen worden meegenomen in SAM-rendement
-signaal_keuze = st.radio(
+signaalkeuze = st.radio(
     "Toon SAM-rendement voor:",
     options=["Beide", "Koop", "Verkoop"],
     index=0,
@@ -972,12 +972,12 @@ tabel["SAM-%"] = tabel["SAM-%"].astype(float) * 100
 tabel["Advies"] = tabel["Advies"].astype(str)
 
 # ✅ 6. Filter SAM-% op basis van signaalkeuze
-if signaal_keuze == "Koop":
+if signaalkeuze == "Koop":
     tabel["SAM-%"] = [
         sam if adv == "Kopen" else 0.0
         for sam, adv in zip(tabel["SAM-%"], tabel["Advies"])
     ]
-elif signaal_keuze == "Verkoop":
+elif signaalkeuze == "Verkoop":
     tabel["SAM-%"] = [
         sam if adv == "Verkopen" else 0.0
         for sam, adv in zip(tabel["SAM-%"], tabel["Advies"])
