@@ -1360,6 +1360,13 @@ if trades:
     rendement_totaal = df_trades["Rendement (%)"].sum()
     rendement_koop = df_trades["SAM-% Koop"].sum(skipna=True)
     rendement_verkoop = df_trades["SAM-% Verkoop"].sum(skipna=True)
+    # ✅ 5.3 Statistieken tonen + tabel
+    aantal_trades = len(df_trades)
+    aantal_koop = df_trades["SAM-% Koop"].notna().sum()
+    aantal_verkoop = df_trades["SAM-% Verkoop"].notna().sum()
+    aantal_succesvol = (df_trades["Rendement (%)"] > 0).sum()
+    aantal_succesvol_koop = (df_trades["SAM-% Koop"] > 0).sum()
+    aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
 
     st.write("📌 Geselecteerde signaalkeuze:", signaalkeuze)
     
@@ -1376,12 +1383,12 @@ if trades:
     )
 
     # ✅ 5.3 Statistieken tonen + tabel
-    aantal_trades = len(df_trades)
-    aantal_koop = df_trades["SAM-% Koop"].notna().sum()
-    aantal_verkoop = df_trades["SAM-% Verkoop"].notna().sum()
-    aantal_succesvol = (df_trades["Rendement (%)"] > 0).sum()
-    aantal_succesvol_koop = (df_trades["SAM-% Koop"] > 0).sum()
-    aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
+#    aantal_trades = len(df_trades)
+#    aantal_koop = df_trades["SAM-% Koop"].notna().sum()
+#    aantal_verkoop = df_trades["SAM-% Verkoop"].notna().sum()
+#    aantal_succesvol = (df_trades["Rendement (%)"] > 0).sum()
+#    aantal_succesvol_koop = (df_trades["SAM-% Koop"] > 0).sum()
+#    aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
 
     st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
     st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
