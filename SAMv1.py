@@ -373,6 +373,7 @@ def determine_advice(df, threshold, risk_aversion=False):
 
     
     # ✅ Advieslogica bij risk_aversion
+    # ✅ Advieslogica bij risk_aversion
     if risk_aversion:
         # 📈 Bereken SAT-ma's
         df["MA150"] = df["Close"].rolling(window=150).mean()
@@ -382,18 +383,15 @@ def determine_advice(df, threshold, risk_aversion=False):
         df["SAT_Stage"] = None
 
         for i in range(1, len(df)):
-            ma150 = df["MA150"].iloc[i]
-            ma150_prev = df["MA150"].iloc[i - 1]
-            ma30 = df["MA30"].iloc[i]
-            ma30_prev = df["MA30"].iloc[i - 1]
-            close = df["Close"].iloc[i]
+            ma150 = float(df["MA150"].iloc[i]) if pd.notna(df["MA150"].iloc[i]) else 0.0
+            ma150_prev = float(df["MA150"].iloc[i - 1]) if pd.notna(df["MA150"].iloc[i - 1]) else 0.0
+            ma30 = float(df["MA30"].iloc[i]) if pd.notna(df["MA30"].iloc[i]) else 0.0
+            ma30_prev = float(df["MA30"].iloc[i - 1]) if pd.notna(df["MA30"].iloc[i - 1]) else 0.0
+            close = float(df["Close"].iloc[i]) if pd.notna(df["Close"].iloc[i]) else 0.0
 
-            stage = df["SAT_Stage"].iloc[i - 1] if i > 1 else 0  # fallback voor eerste rij
+            stage = float(df["SAT_Stage"].iloc[i - 1]) if i > 1 and pd.notna(df["SAT_Stage"].iloc[i - 1]) else 0.0
 
-            if (
-                (ma150 > ma150_prev and close > ma150 and ma30 > close)
-                or (close > ma150 and ma30 < ma30_prev and ma30 > close)
-            ):
+            if (ma150 > ma150_prev and close > ma150 and ma30 > close) or (close > ma150 and ma30 < ma30_prev and ma30 > close):
                 stage = -1
             elif ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev:
                 stage = 1
@@ -435,7 +433,7 @@ def determine_advice(df, threshold, risk_aversion=False):
                 else:
                     df.at[df.index[i], "Advies"] = "Verkopen"
 
-        # 🔄 Vul ontbrekende adviezen aan met vorige advies
+        # 🔄 Vul ontbrekende adviezen aan
         df["Advies"] = df["Advies"].ffill()
         
     # ✅ Advieslogica bij risk_aversion
