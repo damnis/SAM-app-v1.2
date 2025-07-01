@@ -783,14 +783,11 @@ def advies_wordt_geladen(ticker, interval, threshold, risk_aversion):
     if df.empty or "Close" not in df.columns or "Open" not in df.columns:
         return None, None
 
-    # ✅ Altijd SAM berekenen
+    # ✅ Altijd SAM en SAT berekenen
     df = calculate_sam(df)
+    df = calculate_sat(df)
 
-    # ✅ Alleen SAT berekenen indien risk_aversion actief is
-    if risk_aversion:
-        df = calculate_sat(df)
-
-    # ✅ Advies bepalen
+    # ✅ Advies bepalen op basis van risk_aversion
     df, huidig_advies = determine_advice(df, threshold=threshold, risk_aversion=risk_aversion)
 
     return df, huidig_advies
