@@ -845,7 +845,13 @@ def advies_wordt_geladen(ticker, interval, threshold, risk_aversion):
 # ✅ Gebruik en foutafhandeling
 df, huidig_advies = advies_wordt_geladen(ticker, interval, thresh, risk_aversion)
 
-
+# Keuze welke adviezen worden meegenomen in SAM-rendement
+signaalkeuze = st.radio(
+    "Toon SAM-rendement voor:",
+    options=["Beide", "Koop", "Verkoop"],
+    index=0,
+    horizontal=True
+)
 #@st.cache_data(ttl=900)  # Cache 15 minuten
 #def advies_wordt_geladen(ticker, interval, threshold):
 #    df = fetch_data(ticker, interval)
