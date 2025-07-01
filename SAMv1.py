@@ -1338,8 +1338,9 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
 
 # ✅ 4. Berekening
 #sam_rendement, trades, rendementen = bereken_sam_rendement(df, signaalkeuze, close_col)
+sam_rendement, trades, rendementen = bereken_sam_rendement(df_signalen, signaal_type=signaalkeuze, close_col=close_col)
 
-sam_rendement, trades, rendementen = bereken_sam_rendement(df_signalen, signaalkeuze, close_col)
+#sam_rendement, trades, rendementen = bereken_sam_rendement(df_signalen, signaalkeuze, close_col)
 
 # ✅ 5. Visueel weergeven
 # ✅ 5.0 Visuele SAM-analyse & rendementsoverzicht
