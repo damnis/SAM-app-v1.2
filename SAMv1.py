@@ -1101,7 +1101,7 @@ if len(df_valid) >= 2 and df_valid.iloc[0] != 0.0:
     marktrendement = ((koers_eind - koers_start) / koers_start) * 100
 
 # ✅ Signaalkeuze geforceerd op Beide
-signaalkeuze = "Beide"
+#signaalkeuze = "Beide"
 advies_col = "Advies"
 
 # Vind eerste rij waar 'Trail' >= threshold en dan pas beginnen
