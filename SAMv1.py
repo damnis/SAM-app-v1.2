@@ -1072,6 +1072,8 @@ st.pyplot(fig)
 
     
 # --- Tabel met signalen en rendement ---
+
+    
 # --- Tabel met signalen en rendement ---
 st.subheader("Laatste signalen en rendement")
 
