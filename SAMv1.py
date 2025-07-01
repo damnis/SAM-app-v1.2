@@ -1195,7 +1195,7 @@ html += "</tbody></table>"
 # ✅ 11. Weergave in Streamlit
 st.markdown(html, unsafe_allow_html=True)
 
-
+st.write("DEBUG signaalkeuze boven Backtest:", signaalkeuze)
 
 ## 📊 Backtestfunctie: sluit op close van nieuw signaal
 # ✅ 0.Data voorbereiden voor advies')
@@ -1360,6 +1360,8 @@ if trades:
     rendement_koop = df_trades["SAM-% Koop"].sum(skipna=True)
     rendement_verkoop = df_trades["SAM-% Verkoop"].sum(skipna=True)
 
+    st.write("📌 Geselecteerde signaalkeuze:", signaalkeuze)
+    
     if signaalkeuze == "Koop":
         metric_sam_rendement = rendement_koop
     elif signaalkeuze == "Verkoop":
