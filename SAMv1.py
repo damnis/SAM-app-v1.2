@@ -1148,6 +1148,81 @@ html = """
         background-color: #eef2f7;
     }
     tr:hover td {
+# --- Tabel met signalen en rendement ---
+st.subheader("Laatste signalen en rendement")
+
+# ✅ 1. Kolommen selecteren en rijen voorbereiden
+kolommen = ["Close", "Advies", "SAM", "Trend", "Markt-%", "SAM-%"]
+tabel = df[kolommen].dropna().copy()
+tabel = tabel.sort_index(ascending=False).head(180)  # Lengte tabel
+
+# ✅ 2. Datumkolom toevoegen vanuit index
+if not isinstance(tabel.index, pd.DatetimeIndex):
+    tabel.index = pd.to_datetime(tabel.index, errors="coerce")
+tabel = tabel[~tabel.index.isna()]
+tabel["Datum"] = tabel.index.strftime("%d-%m-%Y")
+
+# ✅ 3. Kolomvolgorde instellen
+tabel = tabel[["Datum"] + kolommen]
+
+# ✅ 4. Close kolom afronden afhankelijk van tab
+if selected_tab == "🌐 Crypto":
+    tabel["Close"] = tabel["Close"].map("{:.3f}".format)
+else:
+    tabel["Close"] = tabel["Close"].map("{:.2f}".format)
+
+# ✅ 5. Markt- en SAM-rendement in procenten omzetten
+tabel["Markt-%"] = tabel["Markt-%"].astype(float) * 100
+tabel["SAM-%"] = tabel["SAM-%"].astype(float) * 100
+
+# ✅ 6. Filter SAM-% op basis van signaalkeuze
+if signaal_keuze == "Koop":
+    tabel["SAM-%"] = tabel.apply(
+        lambda row: row["SAM-%"] if str(row.get("Advies", "")) == "Kopen" else 0.0, axis=1)
+elif signaal_keuze == "Verkoop":
+    tabel["SAM-%"] = tabel.apply(
+        lambda row: row["SAM-%"] if str(row.get("Advies", "")) == "Verkopen" else 0.0, axis=1)
+# Bij 'Beide' gebeurt niets
+
+# ✅ 7. Afronden en formatteren van kolommen voor weergave
+tabel["Markt-% weergave"] = tabel["Markt-%"].map("{:+.2f}%".format)
+tabel["SAM-% weergave"] = tabel["SAM-%"].map("{:+.2f}%".format)
+tabel["Trend Weergave"] = tabel["Trend"].map("{:+.3f}".format)
+
+# ✅ 8. Tabel opnieuw samenstellen en hernoemen voor display
+tabel = tabel[["Datum", "Close", "Advies", "SAM", "Trend Weergave", "Markt-% weergave", "SAM-% weergave"]]
+tabel = tabel.rename(columns={
+    "Markt-% weergave": "Markt-%",
+    "SAM-% weergave": "SAM-%",
+    "Trend Weergave": "Trend"
+})
+
+# ✅ 9. HTML-rendering
+html = """
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+    }
+    th {
+        background-color: #004080;
+        color: white;
+        padding: 6px;
+        text-align: center;
+    }
+    td {
+        border: 1px solid #ddd;
+        padding: 6px;
+        text-align: right;
+        background-color: #f9f9f9;
+        color: #222222;
+    }
+    tr:nth-child(even) td {
+        background-color: #eef2f7;
+    }
+    tr:hover td {
         background-color: #d0e4f5;
     }
 </style>
@@ -1166,7 +1241,7 @@ html = """
     <tbody>
 """
 
-# Voeg rijen toe aan de tabel
+# ✅ 10. Rijen toevoegen aan de HTML-tabel
 for _, row in tabel.iterrows():
     html += "<tr>"
     for value in row:
@@ -1175,7 +1250,7 @@ for _, row in tabel.iterrows():
 
 html += "</tbody></table>"
 
-#Weergave in Streamlit
+# ✅ 11. Weergave in Streamlit
 st.markdown(html, unsafe_allow_html=True)
 
 
