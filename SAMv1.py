@@ -802,13 +802,22 @@ risk_aversion = st.toggle("Voorzichtig advies (risk aversion)", value=False)
 @st.cache_data(ttl=900)
 def advies_wordt_geladen(ticker, interval, threshold, risk_aversion):
     df = fetch_data(ticker, interval)
+
     if df.empty or "Close" not in df.columns or "Open" not in df.columns:
         return None, None
+
+    # ✅ Altijd SAM berekenen
     df = calculate_sam(df)
+
+    # ✅ Alleen SAT berekenen indien risk_aversion actief is
     if risk_aversion:
-        df = calculate_sat(df)  # Hier SAT berekenen vóór determine_advice()
+        df = calculate_sat(df)
+
+    # ✅ Advies bepalen
     df, huidig_advies = determine_advice(df, threshold=threshold, risk_aversion=risk_aversion)
+
     return df, huidig_advies
+    
     
 # ✅ Gebruik en foutafhandeling
 df, huidig_advies = advies_wordt_geladen(ticker, interval, thresh, risk_aversion)
