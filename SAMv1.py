@@ -1347,11 +1347,11 @@ col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktren
 #col2.metric("📊 SAM-rendement", f"{sam_rendement:+.2f}%" if isinstance(sam_rendement, (int, float)) else "n.v.t.")
 # ✅ Dynamisch SAM-rendement afhankelijk van signaalkeuze
 if signaalkeuze == "Koop":
-    metric_sam_rendement = rendement_koop
+    metric_sam_rendement = SAM-% Koop 
 elif signaalkeuze == "Verkoop":
-    metric_sam_rendement = rendement_verkoop
+    metric_sam_rendement = SAM-% Verkoop 
 else:  # Beide
-    metric_sam_rendement = rendement_totaal
+    metric_sam_rendement = SAM-% tot.
 
 col2.metric(
     "📊 SAM-rendement",
