@@ -388,8 +388,7 @@ def determine_advice(df, threshold, risk_aversion=False):
 
         df.at[df.index[i], "Trail"] = huidige_trend
 
-    # ✅ Advieslogica bij risk_aversion
- #   if risk_aversion:
+    
     # ✅ Advieslogica bij risk_aversion
     if risk_aversion:
         df["Advies"] = df["Advies"].astype(object)
@@ -420,6 +419,16 @@ def determine_advice(df, threshold, risk_aversion=False):
         df["Advies"] = df["Advies"].ffill()
     
     #----
+    else:
+    # Standaard trail-based advies
+    mask_koop = (df["Richting"] == 1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
+    mask_verkoop = (df["Richting"] == -1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
+
+    df.loc[mask_koop, "Advies"] = "Kopen"
+    df.loc[mask_verkoop, "Advies"] = "Verkopen"
+
+    # 🔄 Advies forward fillen
+    df["Advies"] = df["Advies"].ffill()
 
     # 📊 Bereken rendementen op basis van adviesgroepering
     df["AdviesGroep"] = (df["Advies"] != df["Advies"].shift()).cumsum()
