@@ -1345,18 +1345,7 @@ sam_rendement, trades, rendementen = bereken_sam_rendement(df_signalen, signaalk
 col1, col2 = st.columns(2)
 col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
 #col2.metric("📊 SAM-rendement", f"{sam_rendement:+.2f}%" if isinstance(sam_rendement, (int, float)) else "n.v.t.")
-# ✅ Dynamisch SAM-rendement afhankelijk van signaalkeuze
-if signaalkeuze == "Koop":
-    metric_sam_rendement = SAM-% Koop 
-elif signaalkeuze == "Verkoop":
-    metric_sam_rendement = SAM-% Verkoop 
-else:  # Beide
-    metric_sam_rendement = SAM-% tot.
 
-col2.metric(
-    "📊 SAM-rendement",
-    f"{metric_sam_rendement:+.2f}%" if isinstance(metric_sam_rendement, (int, float)) else "n.v.t."
-)
 
 if trades:
     df_trades = pd.DataFrame(trades)
@@ -1369,6 +1358,19 @@ if trades:
     # Kopie voor weergave
     df_display = df_trades.copy()
 
+ # ✅ Dynamisch SAM-rendement afhankelijk van signaalkeuze
+if signaalkeuze == "Koop":
+    metric_sam_rendement = SAM-% Koop 
+elif signaalkeuze == "Verkoop":
+    metric_sam_rendement = SAM-% Verkoop 
+else:  # Beide
+    metric_sam_rendement = SAM-% tot.
+
+col2.metric(
+    "📊 SAM-rendement",
+    f"{metric_sam_rendement:+.2f}%" if isinstance(metric_sam_rendement, (int, float)) else "n.v.t."
+)   
+    
    # Formatteringskolommen
     for col in ["Markt-%", "Rendement (%)", "SAM-% Koop", "SAM-% Verkoop"]:
         if col in df_display.columns:
