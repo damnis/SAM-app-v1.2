@@ -1101,14 +1101,19 @@ else:
 tabel["Markt-%"] = tabel["Markt-%"].astype(float) * 100
 tabel["SAM-%"] = tabel["SAM-%"].astype(float) * 100
 
+tabel["Advies"] = tabel["Advies"].astype(str)
+
 # ✅ 6. Filter SAM-% op basis van signaalkeuze
 if signaal_keuze == "Koop":
-    tabel["SAM-%"] = tabel.apply(
-        lambda row: row["SAM-%"] if str(row.get("Advies", "")) == "Kopen" else 0.0, axis=1)
+    tabel["SAM-%"] = [
+        sam if adv == "Kopen" else 0.0
+        for sam, adv in zip(tabel["SAM-%"], tabel["Advies"])
+    ]
 elif signaal_keuze == "Verkoop":
-    tabel["SAM-%"] = tabel.apply(
-        lambda row: row["SAM-%"] if str(row.get("Advies", "")) == "Verkopen" else 0.0, axis=1)
-# Bij 'Beide' gebeurt niets
+    tabel["SAM-%"] = [
+        sam if adv == "Verkopen" else 0.0
+        for sam, adv in zip(tabel["SAM-%"], tabel["Advies"])
+    ]# Bij 'Beide' gebeurt niets
 
 # ✅ 7. Afronden en formatteren van kolommen voor weergave
 tabel["Markt-% weergave"] = tabel["Markt-%"].map("{:+.2f}%".format)
