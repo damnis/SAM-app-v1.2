@@ -846,7 +846,7 @@ def advies_wordt_geladen(ticker, interval, threshold, risk_aversion):
 df, huidig_advies = advies_wordt_geladen(ticker, interval, thresh, risk_aversion)
 
 # Keuze welke adviezen worden meegenomen in SAM-rendement
-signaalkeuze = st.radio(
+signaal_keuze = st.radio(
     "Toon SAM-rendement voor:",
     options=["Beide", "Koop", "Verkoop"],
     index=0,
