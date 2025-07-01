@@ -1366,10 +1366,7 @@ elif signaalkeuze == "Verkoop":
 else:  # Beide
     metric_sam_rendement = SAM-% tot.
 
-col2.metric(
-    "📊 SAM-rendement",
-    f"{metric_sam_rendement:+.2f}%" if isinstance(metric_sam_rendement, (int, float)) else "n.v.t."
-)   
+
     
    # Formatteringskolommen
     for col in ["Markt-%", "Rendement (%)", "SAM-% Koop", "SAM-% Verkoop"]:
@@ -1392,6 +1389,11 @@ col2.metric(
     aantal_succesvol_koop = (df_display["SAM-% Koop"] > 0).sum()
     aantal_succesvol_verkoop = (df_display["SAM-% Verkoop"] > 0).sum()
 
+col2.metric(
+    "📊 SAM-rendement",
+    f"{metric_sam_rendement:+.2f}%" if isinstance(metric_sam_rendement, (int, float)) else "n.v.t."
+)   
+    
     st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
     st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
     st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
