@@ -1342,90 +1342,81 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
 sam_rendement, trades, rendementen = bereken_sam_rendement(df_signalen, signaalkeuze, close_col)
 
 # ✅ 5. Visueel weergeven
+# ✅ 5.1 - Kolommen SAM-% berekenen en dataframe opbouwen
+df_trades = pd.DataFrame(trades)
+
+df_trades["SAM-% Koop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Kopen" else None, axis=1)
+df_trades["SAM-% Verkoop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Verkopen" else None, axis=1)
+df_trades["Markt-%"] = df_trades.apply(
+    lambda row: ((row["Sluit prijs"] - row["Open prijs"]) / row["Open prijs"]) * 100, axis=1
+)
+
+# ✅ 5.2 - Kopie maken voor display en formattering voorbereiden
+df_display = df_trades.copy()
+for col in ["Markt-%", "Rendement (%)", "SAM-% Koop", "SAM-% Verkoop"]:
+    if col in df_display.columns:
+        df_display[col] = df_display[col].astype(float)
+
+df_display = df_display.rename(columns={"Rendement (%)": "SAM-% tot."})
+df_display = df_display[[
+    "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
+    "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"
+]]
+
+# ✅ 5.3 - Rendementen en succes tellen
+aantal_trades = len(df_display)
+aantal_koop = df_display["SAM-% Koop"].notna().sum()
+aantal_verkoop = df_display["SAM-% Verkoop"].notna().sum()
+rendement_totaal = df_display["SAM-% tot."].sum()
+rendement_koop = df_display["SAM-% Koop"].sum(skipna=True)
+rendement_verkoop = df_display["SAM-% Verkoop"].sum(skipna=True)
+aantal_succesvol = (df_display["SAM-% tot."] > 0).sum()
+aantal_succesvol_koop = (df_display["SAM-% Koop"] > 0).sum()
+aantal_succesvol_verkoop = (df_display["SAM-% Verkoop"] > 0).sum()
+
+# ✅ 5.4 - SAM-rendement afhankelijk van signaalkeuze bepalen
+if signaalkeuze == "Koop":
+    metric_sam_rendement = rendement_koop
+elif signaalkeuze == "Verkoop":
+    metric_sam_rendement = rendement_verkoop
+else:
+    metric_sam_rendement = rendement_totaal
+
+# ✅ 5.5 - Weergave: Metrics
 col1, col2 = st.columns(2)
 col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
+col2.metric("📊 SAM-rendement", f"{metric_sam_rendement:+.2f}%" if isinstance(metric_sam_rendement, (int, float)) else "n.v.t.")
 
-if trades:
-    df_trades = pd.DataFrame(trades)
+# ✅ 5.6 - Weergave: Samenvattende captions
+st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
+st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
+st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
 
-    df_trades["SAM-% Koop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Kopen" else None, axis=1)
-    df_trades["SAM-% Verkoop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Verkopen" else None, axis=1)
-    df_trades["Markt-%"] = df_trades.apply(
-        lambda row: ((row["Sluit prijs"] - row["Open prijs"]) / row["Open prijs"]) * 100, axis=1)
+# ✅ 5.7 - Kleurfunctie en visuele tabel
+def kleur_positief_negatief(val):
+    if pd.isna(val): return "color: #808080"
+    if val > 0: return "color: #008000"
+    if val < 0: return "color: #FF0000"
+    return "color: #808080"
 
-    # Kopie voor weergave
-    df_display = df_trades.copy()
+kleurbare_kolommen = ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]
+toon_alle = st.toggle("Toon alle trades", value=False)
+df_display = df_display if toon_alle or len(df_display) <= 12 else df_display.iloc[-12:]
 
-    # Formatteringskolommen
-    for col in ["Markt-%", "Rendement (%)", "SAM-% Koop", "SAM-% Verkoop"]:
-        if col in df_display.columns:
-            df_display[col] = df_display[col].astype(float)
-
-    df_display = df_display.rename(columns={"Rendement (%)": "SAM-% tot."})
-    df_display = df_display[[
-        "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
-        "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
-
-    # Succes-analyses
-    aantal_trades = len(df_display)
-    aantal_koop = df_display["SAM-% Koop"].notna().sum()
-    aantal_verkoop = df_display["SAM-% Verkoop"].notna().sum()
-    rendement_totaal = df_display["SAM-% tot."].sum()
-    rendement_koop = df_display["SAM-% Koop"].sum(skipna=True)
-    rendement_verkoop = df_display["SAM-% Verkoop"].sum(skipna=True)
-    aantal_succesvol = (df_display["SAM-% tot."] > 0).sum()
-    aantal_succesvol_koop = (df_display["SAM-% Koop"] > 0).sum()
-    aantal_succesvol_verkoop = (df_display["SAM-% Verkoop"] > 0).sum()
-
-    # ✅ Dynamisch SAM-rendement afhankelijk van signaalkeuze
-    if signaalkeuze == "Koop":
-        metric_sam_rendement = rendement_koop 
-    elif signaalkeuze == "Verkoop":
-        metric_sam_rendement = rendement_verkoop 
-    else:  # Beide
-        metric_sam_rendement = rendement_totaal
-
-    col2.metric(
-        "📊 SAM-rendement",
-        f"{metric_sam_rendement:+.2f}%" if isinstance(metric_sam_rendement, (int, float)) else "n.v.t."
-    )
-
-    st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
-    st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
-    st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
-
-    def kleur_positief_negatief(val):
-        if pd.isna(val): return "color: #808080"
-        if val > 0: return "color: #008000"
-        if val < 0: return "color: #FF0000"
-        return "color: #808080"
-
-    kleurbare_kolommen = ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]
-    toon_alle = st.toggle("Toon alle trades", value=False)
-    df_display = df_display if toon_alle or len(df_display) <= 12 else df_display.iloc[-12:]
-
-    # Afronding van 'Open prijs' en 'Sluit prijs' op basis van type asset
-    if selected_tab == "🌐 Crypto":
-        df_display["Open prijs"] = df_display["Open prijs"].map("{:.3f}".format)
-        df_display["Sluit prijs"] = df_display["Sluit prijs"].map("{:.3f}".format)
-    else:
-        df_display["Open prijs"] = df_display["Open prijs"].map("{:.2f}".format)
-        df_display["Sluit prijs"] = df_display["Sluit prijs"].map("{:.2f}".format)
-    
-    # ✅ Laatste stap: toon als tabel
-    geldige_kolommen = [col for col in kleurbare_kolommen if df_display[col].notna().any()]
-    
-    # ✅ Eerst kleuren toepassen, dan formatteren (anders krijg je een TypeError)
-    styler = df_display.style.applymap(kleur_positief_negatief, subset=geldige_kolommen)
-    styler = styler.format({col: "{:+.2f}%" for col in geldige_kolommen})
-
-    st.dataframe(styler, use_container_width=True)
-
+# ✅ 5.8 - Afronding prijzen
+if selected_tab == "🌐 Crypto":
+    df_display["Open prijs"] = df_display["Open prijs"].map("{:.3f}".format)
+    df_display["Sluit prijs"] = df_display["Sluit prijs"].map("{:.3f}".format)
 else:
-    st.info("ℹ️ Geen trades gevonden binnen de geselecteerde periode.")
-    
-    
-    
+    df_display["Open prijs"] = df_display["Open prijs"].map("{:.2f}".format)
+    df_display["Sluit prijs"] = df_display["Sluit prijs"].map("{:.2f}".format)
+
+# ✅ 5.9 - Style en toon als tabel
+geldige_kolommen = [col for col in kleurbare_kolommen if df_display[col].notna().any()]
+styler = df_display.style.applymap(kleur_positief_negatief, subset=geldige_kolommen)
+styler = styler.format({col: "{:+.2f}%" for col in geldige_kolommen})
+st.dataframe(styler, use_container_width=True)
+
 
 
 
