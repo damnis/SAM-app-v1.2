@@ -420,6 +420,9 @@ def calculate_sat(df):
     df["SAT_Stage"] = df["SAT_Stage"].astype(float)
     df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
 
+    # 📊 Debug: Laatste waarden MA150 en MA30
+    st.write("Laatste 5 waarden van MA150:", df["MA150"].tail())
+    st.write("Laatste 5 waarden van MA30:", df["MA30"].tail())
     return df
     
 #st.write("MA150 laatste waarden:", df["MA150"].tail())
