@@ -1246,6 +1246,8 @@ if trades:
 #    aantal_succesvol = (df_trades["Rendement (%)"] > 0).sum()
 #    aantal_succesvol_koop = (df_trades["SAM-% Koop"] > 0).sum()
 #    aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
+     ✅ Signaalkeuze geforceerd op Beide
+    signaalkeuze = "Beide"
 
     st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
     st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
