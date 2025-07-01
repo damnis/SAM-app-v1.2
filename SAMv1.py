@@ -376,7 +376,9 @@ def calculate_sat(df):
     df["SAT_Stage"] = df["SAT_Stage"].astype(float)
     df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
     return df
-    
+
+if risk_aversion:
+    df = calculate_sat(df)   
 def determine_advice(df, threshold, risk_aversion=False):
     df = df.copy()
 
