@@ -1374,6 +1374,8 @@ aantal_succesvol = (df_display["SAM-% tot."] > 0).sum()
 aantal_succesvol_koop = (df_display["SAM-% Koop"] > 0).sum()
 aantal_succesvol_verkoop = (df_display["SAM-% Verkoop"] > 0).sum()
 
+st.write("📌 Geselecteerde signaalkeuze:", signaalkeuze)
+
 # ✅ 5.4 - SAM-rendement afhankelijk van signaalkeuze bepalen
 if signaalkeuze == "Koop":
     metric_sam_rendement = rendement_koop
