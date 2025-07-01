@@ -1070,84 +1070,8 @@ st.pyplot(fig)
 #fig.tight_layout()
 #st.pyplot(fig)
 
+    
 # --- Tabel met signalen en rendement ---
-st.subheader("Laatste signalen en rendement")
-
-# Kolommen selecteren en formatteren
-kolommen = ["Close", "Advies", "SAM", "Trend", "Markt-%", "SAM-%"]
-#tabel = df[kolommen].dropna().tail(30).round(3).copy()
-tabel = df[kolommen].dropna().copy()
-tabel = tabel.sort_index(ascending=False).head(180) # lengte tabel hier!
-
-# Datumkolom aanmaken vanuit index
-if not isinstance(tabel.index, pd.DatetimeIndex):
-    tabel.index = pd.to_datetime(tabel.index, errors="coerce")
-tabel = tabel[~tabel.index.isna()]
-tabel["Datum"] = tabel.index.strftime("%d-%m-%Y")
-
-# Zet kolomvolgorde
-tabel = tabel[["Datum"] + kolommen]
-
-# Afronding en formatting
-if selected_tab == "🌐 Crypto":
-    tabel["Close"] = tabel["Close"].map("{:.3f}".format)
-else:
-    tabel["Close"] = tabel["Close"].map("{:.2f}".format)
-# ✅ Eerst de juiste berekening behouden als float (NIET afronden!)
-tabel["Markt-%"] = tabel["Markt-%"].astype(float) * 100
-tabel["SAM-%"] = tabel["SAM-%"].astype(float) * 100
-
-# SAM-% aanpassen op basis van filter (alle andere kolommen blijven staan)
-if signaal_keuze == "Koop":
-    tabel["SAM-%"] = tabel.apply(
-        lambda row: row["SAM-%"] if str(row.get("Advies", "")) == "Kopen" else 0.0, axis=1)
-    #tabel["SAM-%"] = tabel.apply(
-    #    lambda row: row["SAM-%"] if row["Advies"] == "Kopen" else 0.0, axis=1)
-elif signaal_keuze == "Verkoop":
-    tabel["SAM-%"] = tabel.apply(
-        lambda row: row["SAM-%"] if str(row.get("Advies", "")) == "Verkopen" else 0.0, axis=1)
-#    tabel["SAM-%"] = tabel.apply(
- #       lambda row: row["SAM-%"] if row["Advies"] == "Verkopen" else 0.0, axis=1)
-# bij 'Beide' hoeft niets te gebeuren
-
-# ✅ Daarna afzonderlijke kolommen voor weergave formatteren
-tabel["Markt-% weergave"] = tabel["Markt-%"].map("{:+.2f}%".format)
-tabel["SAM-% weergave"] = tabel["SAM-%"].map("{:+.2f}%".format)
-tabel["Trend Weergave"] = tabel["Trend"].map("{:+.3f}".format)
-
-tabel = tabel[["Datum", "Close", "Advies", "SAM", "Trend Weergave", "Markt-% weergave", "SAM-% weergave"]]
-tabel = tabel.rename(columns={
-    "Markt-% weergave": "Markt-%",
-    "SAM-% weergave": "SAM-%",
-    "Trend Weergave": "Trend"
-})
-
-# HTML-rendering
-html = """
-<style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-    }
-    th {
-        background-color: #004080;
-        color: white;
-        padding: 6px;
-        text-align: center;
-    }
-    td {
-        border: 1px solid #ddd;
-        padding: 6px;
-        text-align: right;
-        background-color: #f9f9f9;
-        color: #222222;
-    }
-    tr:nth-child(even) td {
-        background-color: #eef2f7;
-    }
-    tr:hover td {
 # --- Tabel met signalen en rendement ---
 st.subheader("Laatste signalen en rendement")
 
