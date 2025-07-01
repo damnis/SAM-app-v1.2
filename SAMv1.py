@@ -371,35 +371,98 @@ def determine_advice(df, threshold, risk_aversion=False):
 
         df.at[df.index[i], "Trail"] = huidige_trend
 
+    if risk_aversion:
+    # 📈 Bereken SAT-ma's
+    df["MA150"] = df["Close"].rolling(window=150).mean()
+    df["MA30"] = df["Close"].rolling(window=30).mean()
+    
+    # 📊 Bereken SAT_Stage
+    df["SAT_Stage"] = None
+
+    for i in range(1, len(df)):
+        ma150 = df["MA150"].iloc[i]
+        ma150_prev = df["MA150"].iloc[i - 1]
+        ma30 = df["MA30"].iloc[i]
+        ma30_prev = df["MA30"].iloc[i - 1]
+        close = df["Close"].iloc[i]
+
+        stage = df["SAT_Stage"].iloc[i - 1] if i > 1 else 0  # fallback voor eerste rij
+
+        if (
+            (ma150 > ma150_prev and close > ma150 and ma30 > close)
+            or (close > ma150 and ma30 < ma30_prev and ma30 > close)
+        ):
+            stage = -1
+        elif ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev:
+            stage = 1
+        elif ma150 > close and ma150 > ma150_prev:
+            stage = -1
+        elif ma150 > close and ma150 < ma150_prev:
+            stage = -2
+        elif ma150 < close and ma150 < ma150_prev and ma30 > ma30_prev:
+            stage = 1
+        elif ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev:
+            stage = 2
+
+        df.iat[i, df.columns.get_loc("SAT_Stage")] = stage
+
+    df["SAT_Stage"] = df["SAT_Stage"].astype(float)
+    df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
+
+    # ⬇️ Advieslogica gebaseerd op SAT_Trend
+    df["Advies"] = df["Advies"].astype(object)
+
+    for i in range(2, len(df)):
+        trend_sam = df["Trend"].iloc[i]
+        trend_nu = df["SAT_Trend"].iloc[i]
+        trend_vorige = df["SAT_Trend"].iloc[i - 1]
+        trend_eerder = df["SAT_Trend"].iloc[i - 2]
+        sam_3 = df["SAM"].iloc[i - 2:i + 1]
+
+        # 🔹 Positieve trend
+        if trend_nu >= 0.0 or all(sam_3 > 0):
+            if all(sam_3 < 0) or trend_sam < 0:
+                df.at[df.index[i], "Advies"] = "Verkopen"
+            else:
+                df.at[df.index[i], "Advies"] = "Kopen"
+
+        # 🔹 Negatieve trend
+        elif trend_nu < 0.0 or all(sam_3 < 0):
+            if all(sam_3 > 0) or trend_sam > 0:
+                df.at[df.index[i], "Advies"] = "Kopen"
+            else:
+                df.at[df.index[i], "Advies"] = "Verkopen"
+
+    df["Advies"] = df["Advies"].ffill()
     
     # ✅ Advieslogica bij risk_aversion
-    if risk_aversion:
-        df["Advies"] = df["Advies"].astype(object)
+ #   if risk_aversion:
+ #       df["Advies"] = df["Advies"].astype(object)
 
-        for i in range(2, len(df)):
-            trend_nu = df["Trend"].iloc[i]
-            trend_vorige = df["Trend"].iloc[i - 1]
-            trend_eerder = df["Trend"].iloc[i - 2]
-            sam_3 = df["SAM"].iloc[i - 2:i + 1]
+  #      for i in range(2, len(df)):
+  #          trend_nu = df["Trend"].iloc[i]
+   #         trend_vorige = df["Trend"].iloc[i - 1]
+    #        trend_eerder = df["Trend"].iloc[i - 2]
+    #        sam_3 = df["SAM"].iloc[i - 2:i + 1]
 
             # 🔹 Situatie 1: Trend is positief en stijgend
-            if trend_nu >= 0.0 and trend_nu > trend_vorige or all(sam_3 > 0):
+  #          if trend_nu >= 0.0 and trend_nu > trend_vorige or all(sam_3 > 0):
              # Als huidige trend meer dan 40% verzwakt t.o.v. 2 perioden geleden, of 3 rode SAM's → verkoop
-                if  all(sam_3 < 0) or trend_nu < trend_eerder * 0.6:
-                    df.at[df.index[i], "Advies"] = "Verkopen"
-                else:
-                    df.at[df.index[i], "Advies"] = "Kopen"
+  #              if  all(sam_3 < 0) or trend_nu < trend_eerder * 0.6:
+ #                   df.at[df.index[i], "Advies"] = "Verkopen"
+ #               else:
+#                    df.at[df.index[i], "Advies"] = "Kopen"
 
          # 🔹 Situatie 2: Trend is negatief en daalt verder
-            elif trend_nu < 0.0 and trend_nu < trend_vorige or all(sam_3 < 0) :
+ #           elif trend_nu < 0.0 and trend_nu < trend_vorige or all(sam_3 < 0) :
             # Als trend plots veel minder negatief is geworden (afzwakking), of 3 groene SAM's → koop
-                if  all(sam_3 > 0) or trend_nu > abs(trend_eerder) * 0.25:
-                    df.at[df.index[i], "Advies"] = "Kopen"
-                else:
-                    df.at[df.index[i], "Advies"] = "Verkopen"
+ #               if  all(sam_3 > 0) or trend_nu > abs(trend_eerder) * 0.25:
+ #                   df.at[df.index[i], "Advies"] = "Kopen"
+ #               else:
+#                    df.at[df.index[i], "Advies"] = "Verkopen"
 
     # 🔄 Vul ontbrekende adviezen aan met vorige advies
-        df["Advies"] = df["Advies"].ffill()
+#        df["Advies"] = df["Advies"].ffill()
     
     #----
     else:
