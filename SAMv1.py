@@ -38,7 +38,10 @@ def weighted_moving_average(series, window):
     weights = np.arange(1, window + 1)
     return series.rolling(window).apply(lambda x: np.dot(x, weights) / weights.sum(), raw=True)
 
-
+# 🧮 Controleer of voldoende rijen aanwezig zijn voor berekeningen zoals ADX
+    if len(df) < 150:
+        st.warning(f"⚠️ Slechts {len(df)} datapunten opgehaald — mogelijk te weinig voor sommige indicatoren.")
+        return pd.DataFrame()
 
 # ✅ Wrapper-functie met schoonmaak + fallback
 def fetch_data(ticker, interval):
@@ -59,7 +62,7 @@ def fetch_data(ticker, interval):
         period = "25y"     # Fallback (bijv. voor '1mo' of onbekend)
 
         # 📥 Ophalen via gecachete functie
-    df = fetch_data_cached(ticker, interval, period)
+        df = fetch_data_cached(ticker, interval, period)
 
     # 🛡️ Check op geldige data
     if df.empty or "Close" not in df.columns or "Open" not in df.columns:
