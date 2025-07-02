@@ -10,7 +10,7 @@ from ta.trend import ADXIndicator
 #from ta.momentum import TRIXIndicator
 
 # trading bot
-#import alpaca_trade_api as tradeapi
+import alpaca_trade_api as tradeapi
 
 #api = tradeapi.REST(
 #    st.secrets["ALPACA_API_KEY"],
@@ -1410,19 +1410,19 @@ else:
 
 # trading bot
 # 📌 Verbinding met Alpaca testen (optioneel, pas uit te voeren als gebruiker dit wil)
-#with st.expander("🔌 Verbind met Alpaca API"):
-#    if st.button("Test Alpaca verbinding"):
-#        try:
-#            api = tradeapi.REST(
-#                st.secrets["ALPACA_API_KEY"],
- #               st.secrets["ALPACA_SECRET_KEY"],
-#                base_url="https://paper-api.alpaca.markets/v2"
-#            )
-#            account = api.get_account()
- #           st.success(f"✅ Verbonden met Alpaca-account ({account.status})")
-#            st.write("💰 Cash beschikbaar:", account.cash)
-#        except Exception as e:
- #           st.error(f"❌ Fout bij verbinden met Alpaca: {e}")
+with st.expander("🔌 Verbind met Alpaca API"):
+    if st.button("Test Alpaca verbinding"):
+        try:
+            api = tradeapi.REST(
+                st.secrets["ALPACA_API_KEY"],
+                st.secrets["ALPACA_SECRET_KEY"],
+                base_url="https://paper-api.alpaca.markets/v2"
+            )
+            account = api.get_account()
+            st.success(f"✅ Verbonden met Alpaca-account ({account.status})")
+            st.write("💰 Cash beschikbaar:", account.cash)
+        except Exception as e:
+            st.error(f"❌ Fout bij verbinden met Alpaca: {e}")
 
 #ALPACA_API_KEY = "PK8IAXXDXQEO9QLVNSCV"
 # ALPACA_SECRET_KEY = "ooAURWeE0c2gp336eq5oHC1bqrRAVcCDlWpTbJDJ"
