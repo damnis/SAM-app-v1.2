@@ -247,6 +247,9 @@ def calculate_sam(df):
     ] = -0.5
 
     # --- SAMD op basis van DI+ en DI- ---
+    # ————————— Flatten MultiIndex kolommen ——————————
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
     # 1) Haal de Series direct op (geen squeeze)
     high_series  = df["High"]
     low_series   = df["Low"]
