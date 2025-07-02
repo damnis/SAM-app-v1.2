@@ -1416,7 +1416,7 @@ with st.expander("🔌 Verbind met Alpaca API"):
             api = tradeapi.REST(
                 st.secrets["ALPACA_API_KEY"],
                 st.secrets["ALPACA_SECRET_KEY"],
-                base_url="https://paper-api.alpaca.markets"
+                base_url="https://paper-api.alpaca.markets/v2"
             )
             account = api.get_account()
             st.success(f"✅ Verbonden met Alpaca-account ({account.status})")
