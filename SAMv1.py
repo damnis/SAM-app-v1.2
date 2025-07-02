@@ -1211,6 +1211,7 @@ html += "</tbody></table>"
 st.markdown(html, unsafe_allow_html=True)
 
 #st.write("DEBUG signaalkeuze boven Backtest:", signaalkeuze)
+# ---------------------
 
 ## 📊 Backtestfunctie: sluit op close van nieuw signaal
 # ✅ 0.Data voorbereiden voor advies')
@@ -1262,9 +1263,13 @@ if len(df_valid) >= 2 and df_valid.iloc[0] != 0.0:
 #signaalkeuze = "Beide"
 advies_col = "Advies"
 
-# Vind eerste rij waar 'Trail' >= threshold en dan pas beginnen
-eerste_valid_index = df_period.index[df_period["Trail"] >= thresh][0]
-df_signalen = df_period.loc[eerste_valid_index:]
+# Vind eerste geldige advies (geen NaN) om mee te starten
+eerste_valid_index = df_period[df_period["Advies"].notna()].index[0]
+df_signalen = df_period.loc[eerste_valid_index:].copy()
+
+# Vind eerste rij waar 'Trail' >= threshold en dan pas beginnen oud
+#eerste_valid_index = df_period.index[df_period["Trail"] >= thresh][0]
+#df_signalen = df_period.loc[eerste_valid_index:]
 df_signalen = df_signalen[df_signalen[advies_col].isin(["Kopen", "Verkopen"])].copy()
 
 # 🔄 Backtestfunctie
