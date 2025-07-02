@@ -1194,7 +1194,7 @@ st.subheader("Vergelijk Marktrendement en SAM-rendement")
 
 # 📅 1. Datumkeuze
 current_year = date.today().year
-default_start = date(current_year -1, 1, 1)
+default_start = date(current_year -2, 1, 1)
 #default_start = date(2021, 1, 1)
 default_end = df.index.max().date()
 
