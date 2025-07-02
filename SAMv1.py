@@ -834,6 +834,12 @@ risk_aversion = st.toggle("Voorzichtig advies (risk aversion)", value=False)
 def advies_wordt_geladen(ticker, interval, threshold, risk_aversion):
     df = fetch_data(ticker, interval)
 
+    if df is not None and not df.empty:
+        st.write("🔎 Laatste regels van originele data:")
+        st.write(df.tail(10))
+    else:
+        st.error("❌ Geen data opgehaald voor deze ticker/interval")
+    
     if df.empty or "Close" not in df.columns or "Open" not in df.columns:
         return None, None
 
