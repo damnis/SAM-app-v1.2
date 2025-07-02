@@ -1506,35 +1506,39 @@ with st.expander("🧪 Virtuele testorder plaatsen via Alpaca Paper Account"):
 
 st.markdown("---")
 
+#--- verkopen
+# 📉 Verkooppositie controleren en sluiten
+st.subheader("📤 Verkooppositie controleren en sluiten")
 
-st.subheader("📤 Verkoop open positie bij verkoopadvies")
-
-if st.button("📉 Verkooppositie controleren en sluiten"):
+with st.expander("📊 Positie check en verkoopactie (alleen bij 'Verkopen')"):
     try:
         positie = trading_client.get_open_position(ticker)
-        huidige_qty = int(float(positie.qty)) if positie else 0
+        huidige_qty = int(float(positie.qty))
+        avg_price = float(positie.avg_entry_price)
+        st.write(f"📦 Je bezit momenteel **{huidige_qty}x {ticker}** @ ${avg_price:.2f} gemiddeld.")
 
-        if huidige_qty > 0:
-            if advies == "Verkopen":
-                verkoop_order = MarketOrderRequest(
+        advies = huidig_advies if isinstance(huidig_advies, str) else "Onbekend"
+        st.write(f"📌 Huidig advies: **{advies}**")
+
+        if advies == "Verkopen":
+            if st.button("❗ Sluit positie (verkoop alles)"):
+                sluit_order = MarketOrderRequest(
                     symbol=ticker,
                     qty=huidige_qty,
                     side=OrderSide.SELL,
                     time_in_force=TimeInForce.DAY
                 )
                 try:
-                    response = trading_client.submit_order(verkoop_order)
+                    sluit_response = trading_client.submit_order(sluit_order)
                     st.success(f"✅ Verkooporder geplaatst voor {huidige_qty}x {ticker}")
-                    st.write(response)
+                    st.write(sluit_response)
                 except Exception as e:
-                    st.error(f"❌ Fout bij plaatsen verkooporder: {e}")
-            else:
-                st.info("ℹ️ Huidig advies is geen 'Verkopen'. Er is geen actie ondernomen.")
+                    st.error(f"❌ Fout bij plaatsen van verkooporder: {e}")
         else:
-            st.warning("⚠️ Geen open positie gevonden om te verkopen.")
+            st.info("ℹ️ Advies is niet 'Verkopen'. Geen verkooporder aangemaakt.")
+    except Exception:
+        st.info("📭 Geen open positie in deze ticker gevonden.")
 
-    except Exception as e:
-        st.error(f"❌ Fout bij ophalen positie: {e}")
 
 
 
