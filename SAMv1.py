@@ -370,8 +370,8 @@ def calculate_sat(df):
         stage = stage_prev  # start met vorige stage-waarde
 
          
-        if i > len(df) - 10:
-                st.write(f"🔍 i={i} | Close={close:.2f}, MA150={ma150:.2f}, MA150_prev={ma150_prev:.2f}, MA30={ma30:.2f}, MA30_prev={ma30_prev:.2f}")
+    if i > len(df) - 10:
+            st.write(f"🔍 i={i} | Close={close:.2f}, MA150={ma150:.2f}, MA150_prev={ma150_prev:.2f}, MA30={ma30:.2f}, MA30_prev={ma30_prev:.2f}")
 
         if (ma150 > close and ma150 < ma150_prev):
                 stage = -2
