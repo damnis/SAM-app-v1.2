@@ -1044,7 +1044,7 @@ st.subheader("Laatste signalen en rendement")
 # ✅ 1. Kolommen selecteren en rijen voorbereiden
 kolommen = ["Close", "Advies", "SAM", "Trend", "Markt-%", "SAM-%"]
 tabel = df[kolommen].dropna().copy()
-tabel = tabel.sort_index(ascending=False).head(120)  # Lengte tabel hier ingeven voor de duidelijkheid 
+tabel = tabel.sort_index(ascending=False).head(240)  # Lengte tabel hier ingeven voor de duidelijkheid 
 
 # ✅ 2. Datumkolom toevoegen vanuit index
 if not isinstance(tabel.index, pd.DatetimeIndex):
@@ -1163,7 +1163,8 @@ st.subheader("Vergelijk Marktrendement en SAM-rendement")
 
 # 📅 1. Datumkeuze
 current_year = date.today().year
-default_start = date(current_year, 1, 1)
+default_start = date(current_year -3, 1, 1)
+#default_start = date(2021, 1, 1)
 default_end = df.index.max().date()
 
 start_date = st.date_input("Startdatum analyse", default_start)
