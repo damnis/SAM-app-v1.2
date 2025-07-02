@@ -385,16 +385,17 @@ def calculate_sat(df):
 #        if i > len(df) - 10:
 #            st.write(f"🔍 i={i} | Close={close:.2f}, MA150={ma150:.2f}, MA150_prev={ma150_prev:.2f}, MA30={ma30:.2f}, MA30_prev={ma30_prev:.2f}")
 
-        if (ma150 > close and ma150 < ma150_prev):
-            stage = -2
-  #          if i > len(df) - 10:
-#                st.write(f"📉 i={i}: MA150 > Close en MA150 daalt → stage = -2")
-
-        elif (ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev):
-            stage = 2
-#            if i > len(df) - 10:
-#                st.write(f"📈 i={i}: MA150 stijgt richting koers, MA30 stijgt → stage = 2")
-
+        if ((ma150 > ma150_prev and close > ma150 and ma30 > close) or
+              (close > ma150 and ma30 < ma30_prev and ma30 > close)):
+            stage = -1
+ #           if i > len(df) - 10:
+ #               st.write(f"🔥 i={i}: Oververhitting of correctie → stage = -1")
+        
+        elif (ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev):
+            stage = 1
+ #           if i > len(df) - 10:
+ #               st.write(f"🌀 i={i}: Koers tussen MA150 en MA30, MA150 daalt → stage = 1")
+        
         elif (ma150 > close and ma150 > ma150_prev):
             stage = -1
 #            if i > len(df) - 10:
@@ -405,16 +406,15 @@ def calculate_sat(df):
   #          if i > len(df) - 10:
  #               st.write(f"🌱 i={i}: MA150 en MA30 stijgen onder koers → stage = 1")
 
-        elif (ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev):
-            stage = 1
- #           if i > len(df) - 10:
- #               st.write(f"🌀 i={i}: Koers tussen MA150 en MA30, MA150 daalt → stage = 1")
-
-        elif ((ma150 > ma150_prev and close > ma150 and ma30 > close) or
-              (close > ma150 and ma30 < ma30_prev and ma30 > close)):
-            stage = -1
- #           if i > len(df) - 10:
- #               st.write(f"🔥 i={i}: Oververhitting of correctie → stage = -1")
+        elif (ma150 > close and ma150 < ma150_prev):
+            stage = -2
+  #          if i > len(df) - 10:
+#                st.write(f"📉 i={i}: MA150 > Close en MA150 daalt → stage = -2")
+        
+       elif (ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev):
+            stage = 2
+#            if i > len(df) - 10:
+#                st.write(f"📈 i={i}: MA150 stijgt richting koers, MA30 stijgt → stage = 2")
 
         else:
             stage = stage_prev
