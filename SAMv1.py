@@ -369,30 +369,30 @@ def calculate_sat(df):
         stage_prev = safe_float(df["SAT_Stage"].iloc[i - 1]) if i > 1 else 0.0
         stage = stage_prev  # start met vorige stage-waarde
 
-        if ((ma150 > ma150_prev and close > ma150 and ma30 > close) or
-            (close > ma150 and ma30 < ma30_prev and ma30 > close)):
-    # Negatieve setup → correctie of oververhitting
-            stage = -1
-
-        elif (ma150 > close and ma150 < ma150_prev):
+        if (ma150 > close and ma150 < ma150_prev):
     # MA150 daalt en ligt boven koers = verzwakkende negatieve trend
-            stage = -2
-
-        elif (ma150 > close and ma150 > ma150_prev):
-    # MA150 stijgt, maar ligt boven koers = twijfelachtig herstel
-            stage = -1
+            stage = -2  # eerste positie
 
         elif (ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev):
     # MA150 stijgt richting koers, MA30 ook → mogelijk herstel
-            stage = 2
+            stage = 2  # positie 2
+
+        elif (ma150 > close and ma150 > ma150_prev):
+    # MA150 stijgt, maar ligt boven koers = twijfelachtig herstel
+            stage = -1  # positie 3
 
         elif (ma150 < close and ma150 < ma150_prev and ma30 > ma30_prev):
     # MA150 en MA30 stijgen onder koers → vroege opwaartse kracht
-            stage = 1
+            stage = 1  # positie 4
 
         elif (ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev):
     # MA150 daalt, koers ertussen → overgangsfase
-            stage = 1
+            stage = 1  # positie 5
+
+        elif ((ma150 > ma150_prev and close > ma150 and ma30 > close) or
+              (close > ma150 and ma30 < ma30_prev and ma30 > close)):
+    # Negatieve setup → correctie of oververhitting
+            stage = -1  # positie 6
 
         else:
     # Geen duidelijke verandering, behoud vorige stage
