@@ -369,34 +369,38 @@ def calculate_sat(df):
         stage_prev = safe_float(df["SAT_Stage"].iloc[i - 1]) if i > 1 else 0.0
         stage = stage_prev  # start met vorige stage-waarde
 
-        if (ma150 > close and ma150 < ma150_prev):
-    # MA150 daalt en ligt boven koers = verzwakkende negatieve trend
-            stage = -2  # eerste positie
+         
+        if i > len(df) - 10:
+                st.write(f"🔍 i={i} | Close={close:.2f}, MA150={ma150:.2f}, MA150_prev={ma150_prev:.2f}, MA30={ma30:.2f}, MA30_prev={ma30_prev:.2f}")
 
-        elif (ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev):
-    # MA150 stijgt richting koers, MA30 ook → mogelijk herstel
-            stage = 2  # positie 2
+            if (ma150 > close and ma150 < ma150_prev):
+                    stage = -2
+                    st.write(f"📉 i={i}: MA150 > Close en MA150 daalt → stage = -2")
 
-        elif (ma150 > close and ma150 > ma150_prev):
-    # MA150 stijgt, maar ligt boven koers = twijfelachtig herstel
-            stage = -1  # positie 3
+            elif (ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev):
+                    stage = 2
+                    st.write(f"📈 i={i}: MA150 stijgt richting koers, MA30 stijgt → stage = 2")
 
-        elif (ma150 < close and ma150 < ma150_prev and ma30 > ma30_prev):
-    # MA150 en MA30 stijgen onder koers → vroege opwaartse kracht
-            stage = 1  # positie 4
+            elif (ma150 > close and ma150 > ma150_prev):
+                    stage = -1
+                    st.write(f"😐 i={i}: MA150 stijgt, ligt boven koers → stage = -1")
 
-        elif (ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev):
-    # MA150 daalt, koers ertussen → overgangsfase
-            stage = 1  # positie 5
+            elif (ma150 < close and ma150 < ma150_prev and ma30 > ma30_prev):
+                    stage = 1
+                    st.write(f"🌱 i={i}: MA150 en MA30 stijgen onder koers → stage = 1")
 
-        elif ((ma150 > ma150_prev and close > ma150 and ma30 > close) or
-              (close > ma150 and ma30 < ma30_prev and ma30 > close)):
-    # Negatieve setup → correctie of oververhitting
-            stage = -1  # positie 6
+            elif (ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev):
+                    stage = 1
+                    st.write(f"🌀 i={i}: Koers tussen MA150 en MA30, MA150 daalt → stage = 1")
 
-        else:
-    # Geen duidelijke verandering, behoud vorige stage
-            stage = stage_prev
+            elif ((ma150 > ma150_prev and close > ma150 and ma30 > close) or
+                    (close > ma150 and ma30 < ma30_prev and ma30 > close)):
+                    stage = -1
+                    st.write(f"🔥 i={i}: Oververhitting of correctie → stage = -1")
+
+            else:
+                    stage = stage_prev
+                    st.write(f"⚪️ i={i}: Geen duidelijke verandering → stage = stage_prev ({stage_prev})")
 
         
 #        if (ma150 > ma150_prev and close > ma150 and ma30 > close) or \
