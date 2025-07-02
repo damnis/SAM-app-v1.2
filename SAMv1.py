@@ -1470,6 +1470,36 @@ with st.expander("🧪 Virtuele testorder plaatsen via Alpaca Paper Account"):
         else:
             st.warning("⚠️ Geen geldige koers beschikbaar voor dit aandeel.")
 
+    # 💵 Invoerbedrag
+        bedrag = st.number_input("💰 Te investeren bedrag ($)", min_value=10.0, value=1000.0, step=10.0)
+
+        # ✅ Actueel advies ophalen
+        advies = huidig_advies if isinstance(huidig_advies, str) else "Niet beschikbaar"
+        st.write(f"📌 Actueel advies voor {ticker}: **{advies}**")
+
+        # 🟢 Orderknop
+        if st.button("📤 Verstuur order naar Alpaca"):
+            if last is not None and advies in ["Kopen", "Verkopen"]:
+                aantal = int(bedrag / last)
+                if aantal == 0:
+                    st.warning("❌ Bedrag is te klein voor aankoop tegen huidige koers.")
+                else:
+                    side = OrderSide.BUY if advies == "Kopen" else OrderSide.SELL
+                    order = MarketOrderRequest(
+                        symbol=ticker,
+                        qty=aantal,
+                        side=side,
+                        time_in_force=TimeInForce.DAY
+                    )
+                    try:
+                        response = trading_client.submit_order(order)
+                        st.success(f"✅ Order geplaatst: {aantal}x {ticker} ({advies})")
+                        st.write(response)
+                    except Exception as e:
+                        st.error(f"❌ Order kon niet worden geplaatst: {e}")
+            else:
+                st.warning("⚠️ Geen geldige koers of advies beschikbaar om order te plaatsen.")
+    
     except Exception as e:
         st.error(f"❌ Fout bij verbinding met Alpaca: {e}")
 
