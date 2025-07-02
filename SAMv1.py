@@ -1011,32 +1011,32 @@ st.pyplot(fig)
 
 # --- volgende grafiek niet tonen wel bewaren ----
 # --- Grafiek met SAT Stage en SAT Trend ---
-st.subheader("Grafiek met SAT en Trend")
+#st.subheader("Grafiek met SAT en Trend")
 
 # Filter data binnen dezelfde periode als bij SAM
-df_sat = df[df.index >= cutoff_datum].copy()
+#df_sat = df[df.index >= cutoff_datum].copy()
 
 # ✅ Zwarte bars voor SAT_Stage
-fig, ax = plt.subplots(figsize=(10, 4))
-ax.bar(df_sat.index, df_sat["SAT_Stage"], color="black", label="SAT Stage")
+#fig, ax = plt.subplots(figsize=(10, 4))
+#ax.bar(df_sat.index, df_sat["SAT_Stage"], color="black", label="SAT Stage")
 
 # ✅ Blauwe lijn voor SAT_Trend (2px)
-ax.plot(df_sat.index, df_sat["SAT_Trend"], color="blue", linewidth=2, label="SAT Trend")
+#ax.plot(df_sat.index, df_sat["SAT_Trend"], color="blue", linewidth=2, label="SAT Trend")
 
 # ✅ Nullijn
-ax.axhline(y=0, color="gray", linewidth=1, linestyle="--")
+#ax.axhline(y=0, color="gray", linewidth=1, linestyle="--")
 
 # ✅ As-instellingen
-ax.set_xlim(df_sat.index.min(), df_sat.index.max())
-ax.set_ylim(-2.25, 2.25)
-ax.set_ylabel("Waarde")
-ax.set_title("SAT-indicator en Trendlijn")
+#ax.set_xlim(df_sat.index.min(), df_sat.index.max())
+#ax.set_ylim(-2.25, 2.25)
+#ax.set_ylabel("Waarde")
+#ax.set_title("SAT-indicator en Trendlijn")
 
 # ✅ Legenda
-ax.legend()
+#ax.legend()
 
 #fig.tight_layout()
-st.pyplot(fig)
+#st.pyplot(fig)
     
 # --- Tabel met signalen en rendement ---
 st.subheader("Laatste signalen en rendement")
@@ -1070,7 +1070,7 @@ weergave_lengte = st.session_state.tabel_lengte
 kolommen = ["Close", "Advies", "SAM", "Trend", "Markt-%", "SAM-%"]
 tabel = df[kolommen].dropna().copy()
 tabel = tabel.sort_index(ascending=False).head(weergave_lengte)
-tabel = tabel.sort_index(ascending=False).head(20)  # Lengte tabel hier ingeven voor de duidelijkheid 
+#tabel = tabel.sort_index(ascending=False).head(20)  # Lengte tabel hier ingeven voor de duidelijkheid 
 
 # ✅ 2. Datumkolom toevoegen vanuit index
 if not isinstance(tabel.index, pd.DatetimeIndex):
