@@ -71,9 +71,9 @@ def bepaal_grafiekperiode(interval):
     elif interval == "4h":
         return timedelta(days=90)       # 3 maanden à ~6 candles per week
     elif interval == "1d":
-        return timedelta(days=360)      # 180=6 maanden à 1 candle per dag
+        return timedelta(days=720)      # 180=6 maanden à 1 candle per dag
     elif interval == "1wk":
-        return timedelta(weeks=200)     # 104=2 jaar aan weekly candles (104 candles)
+        return timedelta(weeks=208)     # 104=2 jaar aan weekly candles (104 candles)
     elif interval == "1mo":
         return timedelta(weeks=520)     # 520=0 jaar aan monthly candles (120 candles)
     else:
@@ -636,25 +636,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-
-#    with st.expander("ℹ️ Uitleg SAM Trading Indicator"):
-  #      st.markdown(
-  #          """
-   #         <div style='color:#444; font-size:12px;'>
-    #        Gebruik de SAM Trading Indicator door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
-    #        de trendlijn. De groene en rode SAM waarden (vaak perioden) geven het momentum weer, dus pas op voor aankoopbeslissingen
-    #        in een rode periode en wees niet te snel met verkopen als het duidelijk groen is. Kleine trend wijzigingen
-    #        zouden anders uw resultaat negatief kunnen beïnvloeden.<br>
-   #         Het advies is hiervan afgeleid en kan bijgesteld worden door de gevoeligheid aan te passen. Maar dit blijkt een model en slechts een benadering
-  #          van de juiste beslissing. Blijf de blauwe lijn (die vrij geleidelijk omhoog en omlaag gaat) zelf goed volgen.<br>
-    #        De indicator is oorspronkelijk bedoeld voor de middellange termijn belegger en beslissingen op 'week' basis,
-   #         maar kan ook voor korte intervallen gebruikt worden.
-     #       </div>
-    #        """,
-    #        unsafe_allow_html=True
-   #     )
-
-
 # --- Volledige tickerlijsten ---
 aex_tickers = {
 "ABN.AS": "ABN AMRO", "ADYEN.AS": "Adyen", "AGN.AS": "Aegon", "AD.AS": "Ahold Delhaize", 
@@ -808,7 +789,7 @@ interval_mapping = {
 interval = interval_mapping[interval_optie]
 # -------
 
-# 📌 Titel en uitleg als toggle (zelfde stijl als eerder)
+# 📌 Titel SAM UITLEG als toggle (zelfde stijl als eerder)
 st.markdown("""
 <style>
 .sam-uitleg details[open] {
@@ -907,12 +888,7 @@ advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies =
 col1, col2 = st.columns([1, 2])
 with col1:
     st.markdown("### Advies voor:")
-#    st.markdown(
-#    f"""
-#    Advies voor:
-#    """,
-#    unsafe_allow_html=True
-#)
+
 with col2:
     st.markdown(
     f"""
@@ -925,12 +901,7 @@ with col2:
 col1, col2 = st.columns([1, 2])
 with col1:
     st.markdown("### Huidig advies:")
-#    st.markdown(
-#    f"""
-#    <h5 style='color:{advies_kleur}'>Huidig advies:</h5>
-#    """,
- #   unsafe_allow_html=True
-#)
+
 with col2:
     st.markdown(
     f"""
@@ -939,43 +910,7 @@ with col2:
     unsafe_allow_html=True
     )
 
-# ⏱ gecompliceerde koersgrafiek werkt niet geheel
-# bepaal data weeergaveperiode op basis van interval
-#grafiek_periode = bepaal_grafiekperiode(interval)
-
-# Bepaal cutoff-datum
-#cutoff_datum = df.index.max() - grafiek_periode
-
-# Filter alleen grafiekdata
-#df_grafiek = df[df.index >= cutoff_datum].copy()
-
-#cutoff_datum = datetime.now() - bepaal_grafiekperiode(interval)
-#df_filtered = df[df.index >= cutoff_datum]
-
-# 🖼️ Toggle voor grafiek
-#if st.toggle("📊 Toon koersgrafiek"):
- #   fig = go.Figure(data=[
-#        go.Candlestick(
- #           x=df_filtered.index,
-#            open=df_filtered["Open"],
- #           high=df_filtered["High"],
-  #          low=df_filtered["Low"],
-  #          close=df_filtered["Close"],
- #           increasing_line_color='green',
- #           decreasing_line_color='red',
-#            name='Koers'
-#        )
-#    ])
-
- #   fig.update_layout(
- #       xaxis_title="Datum",
- #       yaxis_title="Koers",
- #       xaxis_rangeslider_visible=False,
- #       height=400,
- #       margin=dict(l=10, r=10, t=10, b=10)
-#    )
-
-#    st.plotly_chart(fig, use_container_width=True)
+# -------------
 
 # ⏳ Toggle voor koersgrafiek
 toon_koersgrafiek = st.toggle("📈 Toon koersgrafiek", value=False)
@@ -1076,33 +1011,35 @@ ax.legend()
 fig.tight_layout()
 st.pyplot(fig)
 
+
+# --- volgende grafiek niet tonen wel bewaren ----
 # --- Grafiek met SAT Stage en SAT Trend ---
-st.subheader("Grafiek met SAT en Trend")
+#st.subheader("Grafiek met SAT en Trend")
 
 # Filter data binnen dezelfde periode als bij SAM
-df_sat = df[df.index >= cutoff_datum].copy()
+#df_sat = df[df.index >= cutoff_datum].copy()
 
 # ✅ Zwarte bars voor SAT_Stage
-fig, ax = plt.subplots(figsize=(10, 4))
-ax.bar(df_sat.index, df_sat["SAT_Stage"], color="black", label="SAT Stage")
+#fig, ax = plt.subplots(figsize=(10, 4))
+#ax.bar(df_sat.index, df_sat["SAT_Stage"], color="black", label="SAT Stage")
 
 # ✅ Blauwe lijn voor SAT_Trend (2px)
-ax.plot(df_sat.index, df_sat["SAT_Trend"], color="blue", linewidth=2, label="SAT Trend")
+#ax.plot(df_sat.index, df_sat["SAT_Trend"], color="blue", linewidth=2, label="SAT Trend")
 
 # ✅ Nullijn
-ax.axhline(y=0, color="gray", linewidth=1, linestyle="--")
+#ax.axhline(y=0, color="gray", linewidth=1, linestyle="--")
 
 # ✅ As-instellingen
-ax.set_xlim(df_sat.index.min(), df_sat.index.max())
-ax.set_ylim(-2.25, 2.25)
-ax.set_ylabel("Waarde")
-ax.set_title("SAT-indicator en Trendlijn")
+#ax.set_xlim(df_sat.index.min(), df_sat.index.max())
+#ax.set_ylim(-2.25, 2.25)
+#ax.set_ylabel("Waarde")
+#ax.set_title("SAT-indicator en Trendlijn")
 
 # ✅ Legenda
-ax.legend()
+#ax.legend()
 
-fig.tight_layout()
-st.pyplot(fig)
+#fig.tight_layout()
+#st.pyplot(fig)
     
 # --- Tabel met signalen en rendement ---
 st.subheader("Laatste signalen en rendement")
@@ -1110,7 +1047,7 @@ st.subheader("Laatste signalen en rendement")
 # ✅ 1. Kolommen selecteren en rijen voorbereiden
 kolommen = ["Close", "Advies", "SAM", "Trend", "Markt-%", "SAM-%"]
 tabel = df[kolommen].dropna().copy()
-tabel = tabel.sort_index(ascending=False).head(260)  # Lengte tabel
+tabel = tabel.sort_index(ascending=False).head(60)  # Lengte tabel
 
 # ✅ 2. Datumkolom toevoegen vanuit index
 if not isinstance(tabel.index, pd.DatetimeIndex):
@@ -1270,10 +1207,6 @@ advies_col = "Advies"
 # Vind eerste geldige advies (geen NaN) om mee te starten
 eerste_valid_index = df_period[df_period["Advies"].notna()].index[0]
 df_signalen = df_period.loc[eerste_valid_index:].copy()
-
-# Vind eerste rij waar 'Trail' >= threshold en dan pas beginnen oud
-#eerste_valid_index = df_period.index[df_period["Trail"] >= thresh][0]
-#df_signalen = df_period.loc[eerste_valid_index:]
 df_signalen = df_signalen[df_signalen[advies_col].isin(["Kopen", "Verkopen"])].copy()
 
 # 🔄 Backtestfunctie
@@ -1437,12 +1370,70 @@ else:
 
 
 
+#    with st.expander("ℹ️ Uitleg SAM Trading Indicator"):
+  #      st.markdown(
+  #          """
+   #         <div style='color:#444; font-size:12px;'>
+    #        Gebruik de SAM Trading Indicator door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
+    #        de trendlijn. De groene en rode SAM waarden (vaak perioden) geven het momentum weer, dus pas op voor aankoopbeslissingen
+    #        in een rode periode en wees niet te snel met verkopen als het duidelijk groen is. Kleine trend wijzigingen
+    #        zouden anders uw resultaat negatief kunnen beïnvloeden.<br>
+   #         Het advies is hiervan afgeleid en kan bijgesteld worden door de gevoeligheid aan te passen. Maar dit blijkt een model en slechts een benadering
+  #          van de juiste beslissing. Blijf de blauwe lijn (die vrij geleidelijk omhoog en omlaag gaat) zelf goed volgen.<br>
+    #        De indicator is oorspronkelijk bedoeld voor de middellange termijn belegger en beslissingen op 'week' basis,
+   #         maar kan ook voor korte intervallen gebruikt worden.
+     #       </div>
+    #        """,
+    #        unsafe_allow_html=True
+
+
+
 #            if mapped_type == "Beide" or advies == mapped_type:
 #                entry_type = advies
  #               entry_price = close
  #               entry_date = datum
  #               continue
 #  else:  
+
+# ⏱ gecompliceerde koersgrafiek werkt niet geheel
+# bepaal data weeergaveperiode op basis van interval
+#grafiek_periode = bepaal_grafiekperiode(interval)
+
+# Bepaal cutoff-datum
+#cutoff_datum = df.index.max() - grafiek_periode
+
+# Filter alleen grafiekdata
+#df_grafiek = df[df.index >= cutoff_datum].copy()
+
+#cutoff_datum = datetime.now() - bepaal_grafiekperiode(interval)
+#df_filtered = df[df.index >= cutoff_datum]
+
+# 🖼️ Toggle voor grafiek
+#if st.toggle("📊 Toon koersgrafiek"):
+ #   fig = go.Figure(data=[
+#        go.Candlestick(
+ #           x=df_filtered.index,
+#            open=df_filtered["Open"],
+ #           high=df_filtered["High"],
+  #          low=df_filtered["Low"],
+  #          close=df_filtered["Close"],
+ #           increasing_line_color='green',
+ #           decreasing_line_color='red',
+#            name='Koers'
+#        )
+#    ])
+
+ #   fig.update_layout(
+ #       xaxis_title="Datum",
+ #       yaxis_title="Koers",
+ #       xaxis_rangeslider_visible=False,
+ #       height=400,
+ #       margin=dict(l=10, r=10, t=10, b=10)
+#    )
+
+#    st.plotly_chart(fig, use_container_width=True)
+
+
 #-- Grafiek met SAM en Trend  - oud ---
 #fig, ax1 = plt.subplots(figsize=(10, 4))
 #ax1.bar(df_grafiek.index, df_grafiek["SAM"], color="lightblue", label="SAM")
