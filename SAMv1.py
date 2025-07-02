@@ -1041,9 +1041,35 @@ st.pyplot(fig)
 # --- Tabel met signalen en rendement ---
 st.subheader("Laatste signalen en rendement")
 
+# ✅ Toggle voor het aantal weergegeven rijen in de tabel (20 → 50 → 200 → 20)
+if "tabel_lengte" not in st.session_state:
+    st.session_state.tabel_lengte = 20
+
+def toggle_lengte():
+    if st.session_state.tabel_lengte == 20:
+        st.session_state.tabel_lengte = 50
+    elif st.session_state.tabel_lengte == 50:
+        st.session_state.tabel_lengte = 200
+    else:
+        st.session_state.tabel_lengte = 20
+
+# ✅ Dynamische knoptekst
+knoptekst = {
+    20: "📈 Toon 50 rijen",
+    50: "📈 Toon 200 rijen",
+    200: "🔁 Toon minder rijen"
+}[st.session_state.tabel_lengte]
+
+st.button(knoptekst, on_click=toggle_lengte)
+
+# ✅ Aantal rijen om weer te geven
+weergave_lengte = st.session_state.tabel_lengte
+
+
 # ✅ 1. Kolommen selecteren en rijen voorbereiden
 kolommen = ["Close", "Advies", "SAM", "Trend", "Markt-%", "SAM-%"]
 tabel = df[kolommen].dropna().copy()
+tabel = tabel.sort_index(ascending=False).head(weergave_lengte)
 tabel = tabel.sort_index(ascending=False).head(20)  # Lengte tabel hier ingeven voor de duidelijkheid 
 
 # ✅ 2. Datumkolom toevoegen vanuit index
