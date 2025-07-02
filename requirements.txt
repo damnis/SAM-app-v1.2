@@ -5,4 +5,3 @@ matplotlib
 yfinance
 ta
 plotly
-alpaca-trade-api
