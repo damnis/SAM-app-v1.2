@@ -948,25 +948,25 @@ if toon_koersgrafiek:
     cutoff_datum = df.index.max() - grafiek_periode
     df_koers = df[df.index >= cutoff_datum].copy()  # Alleen koers in periode
 
-    # ✅ Bereken MA's op de volledige dataset
-    df["MA30"] = df["Close"].rolling(window=30).mean()
-    df["MA150"] = df["Close"].rolling(window=150).mean()
+    # ✅ Bereken MA's op volledige dataset (eenmalig)
+    if "MA30" not in df.columns or "MA150" not in df.columns:
+        df["MA30"] = df["Close"].rolling(window=30).mean()
+        df["MA150"] = df["Close"].rolling(window=150).mean()
 
     # 📊 Plot met lijnen
     fig, ax = plt.subplots(figsize=(10, 4))
 
-    # Plot koers alleen voor gekozen periode
+    # Plot koers (beperkte periode)
     ax.plot(df_koers.index, df_koers["Close"], color="black", linewidth=2.0, label="Koers")
 
-    # Plot MA-lijnen vanuit volledige dataset
+    # Plot MA's over volledige dataset, maar beperk zichtbare x-as
     ax.plot(df.index, df["MA30"], color="orange", linewidth=1.0, label="MA(30)")
     ax.plot(df.index, df["MA150"], color="pink", linewidth=1.0, label="MA(150)")
 
-    # Beperk x-as op koersperiode
+    # Zet x-as beperking op koers-periode (geldt voor alles!)
     ax.set_xlim(df_koers.index.min(), df_koers.index.max())
-
     
-# ➕ y-as: bepaal min/max + marge (veilig en robuust)  
+    # ➕ y-as: bepaal min/max + marge (veilig en robuust)  
     try:  
         close_series = df_koers["Close"]  
         if isinstance(close_series, pd.DataFrame):  
