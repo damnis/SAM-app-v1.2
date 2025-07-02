@@ -411,7 +411,7 @@ def calculate_sat(df):
   #          if i > len(df) - 10:
 #                st.write(f"📉 i={i}: MA150 > Close en MA150 daalt → stage = -2")
         
-       elif (ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev):
+        elif (ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev):
             stage = 2
 #            if i > len(df) - 10:
 #                st.write(f"📈 i={i}: MA150 stijgt richting koers, MA30 stijgt → stage = 2")
