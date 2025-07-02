@@ -461,18 +461,17 @@ def calculate_sat(df):
 #st.write("MA30 laatste waarden:", df["MA30"].tail())
 #st.write("SAT_Stage laatste waarden:", df["SAT_Stage"].tail())    
 
-
-def determine_advice(df, threshold, risk_aversion=False):
+def determine_advice(df, threshold, risk_aversion=0):
     df = df.copy()
 
-    # 🧮 Trendberekening over SAM
+    # ✅ Trendberekening over SAM
     df["Trend"] = weighted_moving_average(df["SAM"], 12)
     df["TrendChange"] = df["Trend"] - df["Trend"].shift(1)
     df["Richting"] = np.sign(df["TrendChange"])
     df["Trail"] = 0
     df["Advies"] = np.nan
 
-    # 🔁 Bereken Trail (opeenvolgende richting-versterking)
+    # ✅ Bereken Trail (opeenvolgende richting-versterking)
     huidige_trend = 0
     for i in range(1, len(df)):
         huidige = df["Richting"].iloc[i]
@@ -488,34 +487,7 @@ def determine_advice(df, threshold, risk_aversion=False):
         df.at[df.index[i], "Trail"] = huidige_trend
 
     # ✅ Advieslogica
-    if risk_aversion:
-        df = calculate_sat(df)
-        df["Advies"] = df["Advies"].astype(object)
-
-        for i in range(2, len(df)):
-            trend_sam = df["Trend"].iloc[i]
-            trend_nu = df["SAT_Trend"].iloc[i]
-            trend_vorige = df["SAT_Trend"].iloc[i - 1]
-            trend_eerder = df["SAT_Trend"].iloc[i - 2]
-      #      sam_3 = df["SAM"].iloc[i - 2:i + 1]
-            sam_3 = df["SAM"].iloc[i - 2 : i + 1]
-            
-            # 🔹 Positieve trend
-            if trend_nu >= 0.0 or (sam_3 > 0).all():
-                if all(sam_3 < 0) or trend_sam < 0:
-                    df.at[df.index[i], "Advies"] = "Verkopen"
-                else:
-                    df.at[df.index[i], "Advies"] = "Kopen"
-
-            # 🔹 Negatieve trend
-            elif trend_nu < 0.0 or (sam_3 > 0).all():
-                if all(sam_3 > 0) or trend_sam > 0:
-                    df.at[df.index[i], "Advies"] = "Kopen"
-                else:
-                    df.at[df.index[i], "Advies"] = "Verkopen"
-
-        df["Advies"] = df["Advies"].ffill()
-    else:
+    if risk_aversion == 0:
         mask_koop = (df["Richting"] == 1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
         mask_verkoop = (df["Richting"] == -1) & (df["Trail"] >= threshold) & (df["Advies"].isna())
 
@@ -523,7 +495,35 @@ def determine_advice(df, threshold, risk_aversion=False):
         df.loc[mask_verkoop, "Advies"] = "Verkopen"
         df["Advies"] = df["Advies"].ffill()
 
-    # 📊 Bereken rendementen op basis van adviesgroepering
+    elif risk_aversion == 1:
+        for i in range(2, len(df)):
+            trend_1 = df["SAT_Trend"].iloc[i - 1]
+            trend_2 = df["SAT_Trend"].iloc[i]
+            stage_1 = df["SAT_Stage"].iloc[i - 1]
+            stage_2 = df["SAT_Stage"].iloc[i]
+
+            if trend_1 > 0 and trend_2 > 0 and stage_1 > 0 and stage_2 > 0:
+                df.at[df.index[i], "Advies"] = "Kopen"
+            elif trend_1 < trend_2 < 0 and stage_1 < 0 and stage_2 < 0:
+                df.at[df.index[i], "Advies"] = "Verkopen"
+
+        df["Advies"] = df["Advies"].ffill()
+
+    elif risk_aversion == 2:
+        for i in range(2, len(df)):
+            trend = df["SAT_Trend"].iloc[i]
+            trend_prev = df["SAT_Trend"].iloc[i - 1]
+            stage = df["SAT_Stage"].iloc[i]
+            stage_prev = df["SAT_Stage"].iloc[i - 1]
+
+            if trend > 0 and stage > 0:
+                df.at[df.index[i], "Advies"] = "Kopen"
+            elif trend < trend_prev and stage < 0 and stage_prev < 0:
+                df.at[df.index[i], "Advies"] = "Verkopen"
+
+        df["Advies"] = df["Advies"].ffill()
+
+    # ✅ Bereken rendementen op basis van adviesgroepering
     df["AdviesGroep"] = (df["Advies"] != df["Advies"].shift()).cumsum()
     rendementen = []
     sam_rendementen = []
@@ -568,6 +568,13 @@ def determine_advice(df, threshold, risk_aversion=False):
         huidig_advies = "Niet beschikbaar"
 
     return df, huidig_advies
+
+            
+        
+
+
+    
+
     
 #--- Advies en rendement EINDE
 
@@ -817,18 +824,18 @@ st.markdown("""
 
 <div class="sam-uitleg" style='display: flex; justify-content: space-between; align-items: top;'>
   <div style='flex: 1;'>
-    <h4 style='margin-bottom: 10px;'>⚙️ Adviesgevoeligheid</h4>
+    <h4 style='margin-bottom: 10px;'>⚙️ Voorzichtigheid van advies (risk aversion)</h4>
   </div>
   <div style='flex: 1; text-align: right;'>
     <details>
-      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg Adviesgevoeligheid</summary>
+      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg risk aversion</summary>
       <div style='margin-top: 10px;'>
         <p style='font-size: 13px; color: #333; text-align: left'>
-        De gevoeligheidsslider bepaalt hoeveel opeenvolgende perioden met dezelfde trendrichting
-        nodig zijn voordat een advies wordt afgegeven.<br><br>
-        - Een lagere waarde (**1 of 2**) geeft sneller advieswijzigingen, maar is gevoeliger voor ruis.<br>
-        - Een hogere waarde (**3 t/m 5**) geeft minder maar betrouwbaardere signalen.<br><br>
-        De standaardwaarde is <strong>2</strong>.
+        Deze instelling bepaalt hoe voorzichtig het advies reageert op marktbewegingen.<br><br>
+        - <strong>0 - Geen</strong>: Advies puur op basis van SAM (standaard trailing logica).<br>
+        - <strong>1 - Laag</strong>: SAT moet 2 dagen positief/negatief zijn én trend stijgend/dalend.<br>
+        - <strong>2 - Hoog</strong>: Alleen advies bij duidelijke SAT-trend met bevestiging.<br><br>
+        Hogere waardes leiden tot minder signalen maar meer zekerheid.
         </p>   
       </div>
     </details>
@@ -839,38 +846,9 @@ st.markdown("""
 # 📌 Slider in kolommen, links met max 50% breedte
 col1, col2 = st.columns([1, 1])
 with col1:
-    thresh = st.slider("Aantal perioden met dezelfde richting voor advies", 1, 5, 2, step=1)
+    risk_aversion = st.slider("Mate van risk aversion", 0, 2, 0, step=1)
 with col2:
     pass  # lege kolom, zodat slider links blijft
-
-
-# Berekening
-# ✅ Gecombineerde functie met cache
-# ✅ Keuzeoptie in de app
-risk_aversion = st.toggle("Voorzichtig advies (risk aversion)", value=False)
-
-# ✅ Gecombineerde functie met cache + risk_aversion
-@st.cache_data(ttl=900)
-def advies_wordt_geladen(ticker, interval, threshold, risk_aversion):
-    df = fetch_data(ticker, interval)
-
-#    if df is not None and not df.empty:
-#        st.write("🔎 Laatste regels van originele data:")
-#        st.write(df.tail(10))
-#    else:
-#        st.error("❌ Geen data opgehaald voor deze ticker/interval")
-    
-    if df.empty or "Close" not in df.columns or "Open" not in df.columns:
-        return None, None
-
-    # ✅ Altijd SAM en SAT berekenen
-    df = calculate_sam(df)
-    df = calculate_sat(df)
-
-    # ✅ Advies bepalen op basis van risk_aversion
-    df, huidig_advies = determine_advice(df, threshold=threshold, risk_aversion=risk_aversion)
-
-    return df, huidig_advies
     
     
 # ✅ Gebruik en foutafhandeling
