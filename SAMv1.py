@@ -15,7 +15,7 @@ import alpaca_trade_api as tradeapi
 api = tradeapi.REST(
     st.secrets["ALPACA_API_KEY"],
     st.secrets["ALPACA_SECRET_KEY"],
-    base_url="https://paper-api.alpaca.markets/v2"
+    base_url="https://paper-api.alpaca.markets"
 )
     
    
