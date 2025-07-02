@@ -1084,7 +1084,7 @@ st.pyplot(fig)
 st.subheader("Laatste signalen en rendement")
 
 # ✅ 1. Kolommen selecteren en rijen voorbereiden
-kolommen = ["Close", "Advies", "SAM", "Trend", "Markt-%", "SAM-%"]
+kolommen = ["Close", "Advies", "SAM", "Trend", "SAT", "Markt-%", "SAM-%"]
 tabel = df[kolommen].dropna().copy()
 tabel = tabel.sort_index(ascending=False).head(260)  # Lengte tabel
 
