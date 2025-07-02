@@ -995,6 +995,11 @@ ax.bar(df_grafiek.index, df_grafiek["SAM"], color=kleuren, label="SAM")
 ax.set_xlim(df_grafiek.index.min(), df_grafiek.index.max())
 # ✅ Trendlijn (zelfde as)
 ax.plot(df_grafiek.index, df_grafiek["Trend"], color="blue", linewidth=2, label="Trend")
+
+# ✅ SAT als transparante grijze lijn
+if "SAT_Stage" in df_grafiek.columns:
+    ax.plot(df_grafiek.index, df_grafiek["SAT_Stage"], color="gray", linewidth=1.5, linestyle="--", alpha=0.4, label="SAT (achtergrond)")
+
 # ✅ Nullijn
 ax.axhline(y=0, color="black", linewidth=1, linestyle="--")
 # ✅ Geforceerde y-as
