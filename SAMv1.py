@@ -1489,8 +1489,9 @@ with st.expander("🧪 Virtuele testorder plaatsen via Alpaca Paper Account"):
                         symbol=ticker,
                         qty=aantal,
                         side=side,
-                        time_in_force=TimeInForce.DAY
+                        time_in_force=TimeInForce.GTC  # GTC = blijft geldig tot uitgevoerd of geannuleerd
                     )
+
                     try:
                         response = trading_client.submit_order(order)
                         st.success(f"✅ Order geplaatst: {aantal}x {ticker} ({advies})")
