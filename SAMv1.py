@@ -73,7 +73,7 @@ def bepaal_grafiekperiode(interval):
     elif interval == "1d":
         return timedelta(days=720)      # 180=6 maanden à 1 candle per dag
     elif interval == "1wk":
-        return timedelta(weeks=208)     # 104=2 jaar aan weekly candles (104 candles)
+        return timedelta(weeks=150)     # 104=2 jaar aan weekly candles (104 candles)
     elif interval == "1mo":
         return timedelta(weeks=520)     # 520=0 jaar aan monthly candles (120 candles)
     else:
@@ -1054,15 +1054,15 @@ def toggle_lengte():
     if st.session_state.tabel_lengte == 16:
         st.session_state.tabel_lengte = 50
     elif st.session_state.tabel_lengte == 50:
-        st.session_state.tabel_lengte = 200
+        st.session_state.tabel_lengte = 150
     else:
-        st.session_state.tabel_lengte = 20
+        st.session_state.tabel_lengte = 16
 
 # ✅ Dynamische knoptekst
 knoptekst = {
     16: "📈 Toon 50 rijen",
     50: "📈 Toon 200 rijen",
-    200: "🔁 Toon minder rijen"
+    150: "🔁 Toon minder rijen"
 }[st.session_state.tabel_lengte]
 
 st.button(knoptekst, on_click=toggle_lengte)
