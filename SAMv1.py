@@ -998,7 +998,7 @@ ax.plot(df_grafiek.index, df_grafiek["Trend"], color="blue", linewidth=2, label=
 
 # ✅ SAT als transparante grijze lijn
 if "SAT_Stage" in df_grafiek.columns:
-    ax.plot(df_grafiek.index, df_grafiek["SAT_Stage"], color="gray", linewidth=1.5, linestyle="--", alpha=0.4")
+    ax.plot(df_grafiek.index, df_grafiek["SAT_Stage"], color="gray", linewidth=1.5, linestyle="--", alpha=0.4)
 
 # ✅ Nullijn
 ax.axhline(y=0, color="black", linewidth=1, linestyle="--")
