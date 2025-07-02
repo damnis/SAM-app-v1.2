@@ -939,7 +939,7 @@ with col2:
 
 #    st.plotly_chart(fig, use_container_width=True)
 
-# simpele koersgrafiek
+# ⏳ Toggle voor koersgrafiek
 toon_koersgrafiek = st.toggle("📈 Toon koersgrafiek", value=False)
 
 if toon_koersgrafiek:
@@ -948,25 +948,24 @@ if toon_koersgrafiek:
     cutoff_datum = df.index.max() - grafiek_periode
     df_koers = df[df.index >= cutoff_datum].copy()  # Alleen koers in periode
 
-    # ✅ Bereken MA's op volledige dataset (eenmalig)
-    if "MA30" not in df.columns or "MA150" not in df.columns:
-        df["MA30"] = df["Close"].rolling(window=30).mean()
-        df["MA150"] = df["Close"].rolling(window=150).mean()
+    # ✅ Bereken MA's op de volledige dataset
+    df["MA30"] = df["Close"].rolling(window=30).mean()
+    df["MA150"] = df["Close"].rolling(window=150).mean()
 
     # 📊 Plot met lijnen
     fig, ax = plt.subplots(figsize=(10, 4))
 
-    # Plot koers (beperkte periode)
+    # Plot koers alleen voor gekozen periode
     ax.plot(df_koers.index, df_koers["Close"], color="black", linewidth=2.0, label="Koers")
 
-    # Plot MA's over volledige dataset, maar beperk zichtbare x-as
+    # Plot MA-lijnen vanuit volledige dataset
     ax.plot(df.index, df["MA30"], color="orange", linewidth=1.0, label="MA(30)")
     ax.plot(df.index, df["MA150"], color="pink", linewidth=1.0, label="MA(150)")
 
-    # Zet x-as beperking op koers-periode (geldt voor alles!)
+    # Beperk x-as op koersperiode
     ax.set_xlim(df_koers.index.min(), df_koers.index.max())
 
-    # y-as met marge
+    # ➕ y-as: bepaal min/max + marge
     try:
         koers_values = df_koers["Close"].astype(float).dropna()
         if not koers_values.empty:
@@ -974,19 +973,19 @@ if toon_koersgrafiek:
             koers_max = koers_values.max()
             marge = (koers_max - koers_min) * 0.05
             ax.set_ylim(koers_min - marge, koers_max + marge)
+        else:
+            st.warning("Geen geldige koersdata om y-as limieten op te baseren.")
     except Exception as e:
         st.warning(f"Kon y-as limieten niet instellen: {e}")
 
-    # Titels en labels
+    # Opmaak
     ax.set_title(f"Koersgrafiek van {ticker_name}")
     ax.set_ylabel("Close")
     ax.set_xlabel("Datum")
     ax.legend()
     fig.tight_layout()
-
     st.subheader("Koersgrafiek")
     st.pyplot(fig)
-
 
 # --- Grafiek met SAM en Trend ---
 st.subheader("Grafiek met SAM en Trend")
