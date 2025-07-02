@@ -1044,7 +1044,7 @@ st.subheader("Laatste signalen en rendement")
 # ✅ 1. Kolommen selecteren en rijen voorbereiden
 kolommen = ["Close", "Advies", "SAM", "Trend", "Markt-%", "SAM-%"]
 tabel = df[kolommen].dropna().copy()
-tabel = tabel.sort_index(ascending=False).head(240)  # Lengte tabel hier ingeven voor de duidelijkheid 
+tabel = tabel.sort_index(ascending=False).head(20)  # Lengte tabel hier ingeven voor de duidelijkheid 
 
 # ✅ 2. Datumkolom toevoegen vanuit index
 if not isinstance(tabel.index, pd.DatetimeIndex):
