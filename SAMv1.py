@@ -1455,15 +1455,17 @@ with st.expander("🧪 Virtuele testorder plaatsen via Alpaca Paper Account"):
         )
 
         # 🏷️ Huidige ticker selecteren
-        ticker = selected_ticker  # of vervang met handmatige keuze
+        ticker = selected_ticker
+
+        # 📉 Koers ophalen
         try:
             live_data = yf.download(ticker, period="1d", interval="1d", progress=False)
             if isinstance(live_data, pd.DataFrame) and "Close" in live_data.columns:
                 last = live_data["Close"].dropna().iloc[-1]
-        else:
+            else:
+                last = None
+        except Exception:
             last = None
-    except Exception:
-        last = None
 
         if last is not None:
             st.write(f"📉 Laatste koers voor {ticker}: **${last:.2f}**")
@@ -1479,7 +1481,6 @@ with st.expander("🧪 Virtuele testorder plaatsen via Alpaca Paper Account"):
 
         if st.button("📤 Verstuur order naar Alpaca"):
             if last is not None and advies in ["Kopen", "Verkopen"]:
-                # 📦 Bereken hoeveelheid
                 aantal = int(bedrag / last)
                 if aantal == 0:
                     st.warning("❌ Bedrag is te klein voor aankoop tegen huidige koers.")
@@ -1503,6 +1504,8 @@ with st.expander("🧪 Virtuele testorder plaatsen via Alpaca Paper Account"):
                 st.warning("⚠️ Geen geldige koers of advies beschikbaar om order te plaatsen.")
     except Exception as e:
         st.error(f"❌ Fout bij verbinding met Alpaca: {e}")
+
+
 
 
 #    with st.expander("ℹ️ Uitleg SAM Trading Indicator"):
