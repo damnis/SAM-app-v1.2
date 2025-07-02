@@ -18,51 +18,40 @@ from alpaca.trading.requests import MarketOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce
 #import alpaca_trade_api as tradeapi
 
-#api = tradeapi.REST(
-#    st.secrets["ALPACA_API_KEY"],
-#    st.secrets["ALPACA_SECRET_KEY"],
-#    base_url="https://paper-api.alpaca.markets"
-#)
-    
-   
-    
 
-# einde bot
-#
+
+
  #--- Functie om data op te halen ---
-# 📥 Cachen van data per combinatie van ticker/interval (15 minuten geldig)
+# ✅ Gecachete downloadfunctie (15 minuten geldig)
 @st.cache_data(ttl=900)
 def fetch_data_cached(ticker, interval, period):
     return yf.download(ticker, interval=interval, period=period)
+
+# ✅ Weighted Moving Average functie
 def weighted_moving_average(series, window):
     weights = np.arange(1, window + 1)
     return series.rolling(window).apply(lambda x: np.dot(x, weights) / weights.sum(), raw=True)
 
-# 🧮 Controleer of voldoende rijen aanwezig zijn voor berekeningen zoals ADX
-    if len(df) < 150:
-        st.warning(f"⚠️ Slechts {len(df)} datapunten opgehaald — mogelijk te weinig voor sommige indicatoren.")
-        return pd.DataFrame()
-
-# ✅ Wrapper-functie met schoonmaak + fallback
+# ✅ Wrapper-functie met dataschoonmaak en fallback
 def fetch_data(ticker, interval):
-    # 📅 Interval naar periode (maximale periode per interval volgens Yahoo Finance)
+    # 🔁 Interval naar periode
     if interval == "15m":
-        period = "30d"     # Max voor 15m = 60d, maar 30d is veiliger/snelle laadtijd
+        period = "30d"
     elif interval == "1h":
-        period = "720d"    # Max voor 1h = ±730d (2 jaar)
+        period = "720d"
     elif interval == "4h":
-        period = "360d"    # Max voor 4h = ±730d (gedeeld over 6 candles per dag)
+        period = "360d"
     elif interval == "1d":
-        period = "20y"     # Max voor 1d = 20y
+        period = "20y"
     elif interval == "1wk":
-        period = "20y"     # Max voor 1wk = 20y
+        period = "20y"
     elif interval == "1mo":
-        period = "25y"  # maximaal bij maanddata = 25y
+        period = "25y"
     else:
-        period = "25y"     # Fallback (bijv. voor '1mo' of onbekend)
+        period = "25y"  # fallback
 
-        # 📥 Ophalen via gecachete functie
-        df = fetch_data_cached(ticker, interval, period)
+    # ⬇️ Ophalen via gecachete functie
+    df = fetch_data_cached(ticker, interval, period)
 
     # 🛡️ Check op geldige data
     if df.empty or "Close" not in df.columns or "Open" not in df.columns:
@@ -79,11 +68,17 @@ def fetch_data(ticker, interval):
         df.index = pd.to_datetime(df.index, errors="coerce")
     df = df[~df.index.isna()]
 
-    # 🔁 Vul NaN's op per kolom
+    # 🔁 Vul NaN's per kolom
     for col in ["Close", "Open", "High", "Low", "Volume"]:
         df[col] = df[col].fillna(method="ffill").fillna(method="bfill")
 
+    # 🧪 Check minimale lengte
+    if len(df) < 30:
+        st.warning(f"⚠️ Slechts {len(df)} datapunten opgehaald — mogelijk te weinig voor indicatoren.")
+        return pd.DataFrame()
+
     return df
+    
 
 # 📆 Periode voor SAM-grafiek op basis van interval
 def bepaal_grafiekperiode(interval):
