@@ -1458,9 +1458,12 @@ with st.expander("🧪 Virtuele testorder plaatsen via Alpaca Paper Account"):
         ticker = selected_ticker  # of vervang met handmatige keuze
         try:
             live_data = yf.download(ticker, period="1d", interval="1d", progress=False)
-            last = live_data["Close"].iloc[-1]
-        except Exception:
+            if isinstance(live_data, pd.DataFrame) and "Close" in live_data.columns:
+                last = live_data["Close"].dropna().iloc[-1]
+        else:
             last = None
+    except Exception:
+        last = None
 
         if last is not None:
             st.write(f"📉 Laatste koers voor {ticker}: **${last:.2f}**")
