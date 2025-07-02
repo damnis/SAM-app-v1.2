@@ -436,6 +436,7 @@ def calculate_sat(df):
     # 📊 Debug: Laatste waarden MA150 en MA30
     st.write("Laatste 5 waarden van MA150:", df["MA150"].tail())
     st.write("Laatste 5 waarden van MA30:", df["MA30"].tail())
+    st.write("📈 Laatste Close-waarden:", df["Close"].tail(10))
     return df
     
 #st.write("MA150 laatste waarden:", df["MA150"].tail())
