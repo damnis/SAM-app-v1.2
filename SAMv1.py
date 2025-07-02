@@ -1043,10 +1043,10 @@ st.subheader("Laatste signalen en rendement")
 
 # ✅ Toggle voor het aantal weergegeven rijen in de tabel (20 → 50 → 200 → 20)
 if "tabel_lengte" not in st.session_state:
-    st.session_state.tabel_lengte = 20
+    st.session_state.tabel_lengte = 16
 
 def toggle_lengte():
-    if st.session_state.tabel_lengte == 20:
+    if st.session_state.tabel_lengte == 16:
         st.session_state.tabel_lengte = 50
     elif st.session_state.tabel_lengte == 50:
         st.session_state.tabel_lengte = 200
@@ -1055,7 +1055,7 @@ def toggle_lengte():
 
 # ✅ Dynamische knoptekst
 knoptekst = {
-    20: "📈 Toon 50 rijen",
+    16: "📈 Toon 50 rijen",
     50: "📈 Toon 200 rijen",
     200: "🔁 Toon minder rijen"
 }[st.session_state.tabel_lengte]
