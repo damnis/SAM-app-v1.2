@@ -1504,6 +1504,38 @@ with st.expander("🧪 Virtuele testorder plaatsen via Alpaca Paper Account"):
     except Exception as e:
         st.error(f"❌ Fout bij verbinding met Alpaca: {e}")
 
+st.markdown("---")
+
+
+st.subheader("📤 Verkoop open positie bij verkoopadvies")
+
+if st.button("📉 Verkooppositie controleren en sluiten"):
+    try:
+        positie = trading_client.get_open_position(ticker)
+        huidige_qty = int(float(positie.qty)) if positie else 0
+
+        if huidige_qty > 0:
+            if advies == "Verkopen":
+                verkoop_order = MarketOrderRequest(
+                    symbol=ticker,
+                    qty=huidige_qty,
+                    side=OrderSide.SELL,
+                    time_in_force=TimeInForce.DAY
+                )
+                try:
+                    response = trading_client.submit_order(verkoop_order)
+                    st.success(f"✅ Verkooporder geplaatst voor {huidige_qty}x {ticker}")
+                    st.write(response)
+                except Exception as e:
+                    st.error(f"❌ Fout bij plaatsen verkooporder: {e}")
+            else:
+                st.info("ℹ️ Huidig advies is geen 'Verkopen'. Er is geen actie ondernomen.")
+        else:
+            st.warning("⚠️ Geen open positie gevonden om te verkopen.")
+
+    except Exception as e:
+        st.error(f"❌ Fout bij ophalen positie: {e}")
+
 
 
 #    with st.expander("ℹ️ Uitleg SAM Trading Indicator"):
