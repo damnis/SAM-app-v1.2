@@ -473,17 +473,18 @@ def determine_advice(df, threshold, risk_aversion=False):
             trend_nu = df["SAT_Trend"].iloc[i]
             trend_vorige = df["SAT_Trend"].iloc[i - 1]
             trend_eerder = df["SAT_Trend"].iloc[i - 2]
-            sam_3 = df["SAM"].iloc[i - 2:i + 1]
-
+      #      sam_3 = df["SAM"].iloc[i - 2:i + 1]
+            sam_3 = df["SAM"].iloc[i - 2 : i + 1]
+            
             # 🔹 Positieve trend
-            if trend_nu >= 0.0 or all(sam_3 > 0):
+            if trend_nu >= 0.0 or (sam_3 > 0).all():
                 if all(sam_3 < 0) or trend_sam < 0:
                     df.at[df.index[i], "Advies"] = "Verkopen"
                 else:
                     df.at[df.index[i], "Advies"] = "Kopen"
 
             # 🔹 Negatieve trend
-            elif trend_nu < 0.0 or all(sam_3 < 0):
+            elif trend_nu < 0.0 or (sam_3 > 0).all():
                 if all(sam_3 > 0) or trend_sam > 0:
                     df.at[df.index[i], "Advies"] = "Kopen"
                 else:
