@@ -245,31 +245,58 @@ def calculate_sam(df):
         (df["WMA6"] <= df["WMA6_shifted"]) & (df["WMA6"] > df["WMA80"]),
         "SAMT"
     ] = -0.5
-    
-    # SAMD
+
     # --- SAMD op basis van DI+ en DI- ---
-    high_series = df["High"].squeeze()
-    low_series = df["Low"].squeeze()
-    close_series = df["Close"].squeeze()
-
-    adx = ADXIndicator(high=high_series, low=low_series, close=close_series, window=14)
-
-    df["DI_PLUS"] = adx.adx_pos()
+    # 1) Haal de Series direct op (geen squeeze)
+    high_series  = df["High"]
+    low_series   = df["Low"]
+    close_series = df["Close"]
+    
+    # 2) Optioneel: forceer numeric en drop NaNs vóór de indicator
+    high_series  = pd.to_numeric(high_series, errors="coerce")
+    low_series   = pd.to_numeric(low_series, errors="coerce")
+    close_series = pd.to_numeric(close_series, errors="coerce")
+    
+    # 3) Debug-check: 
+    st.write("▶️ types:", type(high_series), type(low_series), type(close_series))
+    st.write("▶️ head close_series:", close_series.head())
+    
+    # 4) Roep ADXIndicator aan
+    adx = ADXIndicator(
+        high=high_series,
+        low=low_series,
+        close=close_series,
+        window=14,
+        fillna=True
+    )
+    
+    df["DI_PLUS"]  = adx.adx_pos()
     df["DI_MINUS"] = adx.adx_neg()
+
+    # SAMD - was goed
+    # --- SAMD op basis van DI+ en DI- ---
+#    high_series = df["High"].squeeze()
+#    low_series = df["Low"].squeeze()
+#    close_series = df["Close"].squeeze()
+
+#    adx = ADXIndicator(high=high_series, low=low_series, close=close_series, window=14)
+
+#    df["DI_PLUS"] = adx.adx_pos()
+#    df["DI_MINUS"] = adx.adx_neg()
   #  df["SAMD"] = 0.0  # begin met 0.0
 
     # Epsilon-drempels instellen
-    epsilonneg = 10.0  # vrijwel afwezig andere richting
-    epsilonpos = 30.0  # sterke richting
-    df["SAMD"] = 0.0
+#    epsilonneg = 10.0  # vrijwel afwezig andere richting
+#    epsilonpos = 30.0  # sterke richting
+#    df["SAMD"] = 0.0
     # 1️⃣ Sterke positieve richting
-    df.loc[(df["DI_PLUS"] > epsilonpos) & (df["DI_MINUS"] <= epsilonneg), "SAMD"] = 0.75 # was 1.0
+#    df.loc[(df["DI_PLUS"] > epsilonpos) & (df["DI_MINUS"] <= epsilonneg), "SAMD"] = 0.75 # was 1.0
     # 2️⃣ Sterke negatieve richting
-    df.loc[(df["DI_MINUS"] > epsilonpos) & (df["DI_PLUS"] <= epsilonneg), "SAMD"] = -0.75 # was -1.0
+#    df.loc[(df["DI_MINUS"] > epsilonpos) & (df["DI_PLUS"] <= epsilonneg), "SAMD"] = -0.75 # was -1.0
     # 3️⃣ Lichte positieve richting
-    df.loc[(df["DI_PLUS"] > df["DI_MINUS"]) & (df["DI_MINUS"] > epsilonneg), "SAMD"] = 0.5
+#    df.loc[(df["DI_PLUS"] > df["DI_MINUS"]) & (df["DI_MINUS"] > epsilonneg), "SAMD"] = 0.5
     # 4️⃣ Lichte negatieve richting
-    df.loc[(df["DI_MINUS"] > df["DI_PLUS"]) & (df["DI_PLUS"] > epsilonneg), "SAMD"] = -0.5
+#    df.loc[(df["DI_MINUS"] > df["DI_PLUS"]) & (df["DI_PLUS"] > epsilonneg), "SAMD"] = -0.5
 
 
     # samd oud
