@@ -15,8 +15,9 @@ import alpaca_trade_api as tradeapi
 api = tradeapi.REST(
     st.secrets["PK5WWLC22ZCSWWGQXVOU"],
     st.secrets["j5dadZmcExGK5alef90B0fQVRh3B8b48WcAC53bU"],
-    base_url="https://paper-api.alpaca.markets"
-)
+    base_url="https://paper-api.alpaca.markets/v2"
+    
+    
 
 # einde bot
 #
