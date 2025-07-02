@@ -765,7 +765,7 @@ ticker_name = dropdown_dict[ticker][1]
 
 # --- Live koers opnieuw ophalen voor de geselecteerde ticker ---
 try:
-    live_data = yf.download(ticker, period="1d", interval="1d", progress=False)
+    live_data = yf.download(ticker, period="1wk", interval="1wk", progress=False)
     last = live_data["Close"].iloc[-1]
 except Exception:
     last = 0.0  # fallback
@@ -831,7 +831,7 @@ st.markdown("""
 # 📌 Slider in kolommen, links met max 50% breedte
 col1, col2 = st.columns([1, 1])
 with col1:
-    risk_aversion = st.slider("Mate van risk aversion", 0, 2, 0, step=1)
+    risk_aversion = st.slider("Mate van risk aversion", 0, 2, 1, step=1)
 with col2:
     pass  # lege kolom, zodat slider links blijft
 
@@ -860,7 +860,7 @@ df, huidig_advies = advies_wordt_geladen(ticker, interval, risk_aversion)
 signaalkeuze = st.radio(
     "Toon SAM-rendement voor:",
     options=["Beide", "Koop", "Verkoop"],
-    index=0,
+    index=1,
     horizontal=True
 )
 
@@ -1014,32 +1014,32 @@ st.pyplot(fig)
 
 # --- volgende grafiek niet tonen wel bewaren ----
 # --- Grafiek met SAT Stage en SAT Trend ---
-#st.subheader("Grafiek met SAT en Trend")
+st.subheader("Grafiek met SAT en Trend")
 
 # Filter data binnen dezelfde periode als bij SAM
-#df_sat = df[df.index >= cutoff_datum].copy()
+df_sat = df[df.index >= cutoff_datum].copy()
 
 # ✅ Zwarte bars voor SAT_Stage
-#fig, ax = plt.subplots(figsize=(10, 4))
-#ax.bar(df_sat.index, df_sat["SAT_Stage"], color="black", label="SAT Stage")
+fig, ax = plt.subplots(figsize=(10, 4))
+ax.bar(df_sat.index, df_sat["SAT_Stage"], color="black", label="SAT Stage")
 
 # ✅ Blauwe lijn voor SAT_Trend (2px)
-#ax.plot(df_sat.index, df_sat["SAT_Trend"], color="blue", linewidth=2, label="SAT Trend")
+ax.plot(df_sat.index, df_sat["SAT_Trend"], color="blue", linewidth=2, label="SAT Trend")
 
 # ✅ Nullijn
-#ax.axhline(y=0, color="gray", linewidth=1, linestyle="--")
+ax.axhline(y=0, color="gray", linewidth=1, linestyle="--")
 
 # ✅ As-instellingen
-#ax.set_xlim(df_sat.index.min(), df_sat.index.max())
-#ax.set_ylim(-2.25, 2.25)
-#ax.set_ylabel("Waarde")
-#ax.set_title("SAT-indicator en Trendlijn")
+ax.set_xlim(df_sat.index.min(), df_sat.index.max())
+ax.set_ylim(-2.25, 2.25)
+ax.set_ylabel("Waarde")
+ax.set_title("SAT-indicator en Trendlijn")
 
 # ✅ Legenda
-#ax.legend()
+ax.legend()
 
 #fig.tight_layout()
-#st.pyplot(fig)
+st.pyplot(fig)
     
 # --- Tabel met signalen en rendement ---
 st.subheader("Laatste signalen en rendement")
