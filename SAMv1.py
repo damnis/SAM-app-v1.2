@@ -1440,8 +1440,52 @@ with st.expander("🔌 Verbind met Alpaca API"):
         except Exception as e:
             st.error(f"❌ Fout bij verbinden met Alpaca: {e}")
             
-#ALPACA_API_KEY = "PK8IAXXDXQEO9QLVNSCV"
+# ALPACA_API_KEY = "PK8IAXXDXQEO9QLVNSCV"
 # ALPACA_SECRET_KEY = "ooAURWeE0c2gp336eq5oHC1bqrRAVcCDlWpTbJDJ"
+
+# 🧠 Alpaca client aanroepen
+trading_client = TradingClient(
+    st.secrets["ALPACA_API_KEY"],
+    st.secrets["ALPACA_SECRET_KEY"],
+    paper=True  # belangrijk voor testomgeving
+)
+
+# 🧪 Virtuele live trading (paper)
+st.subheader("🤖 Live test met Alpaca Paper Trading")
+
+with st.expander("📥 Plaats live paper trade op basis van advies"):
+
+    startbedrag = st.number_input("💰 Te investeren bedrag ($)", min_value=10.0, value=1000.0, step=10.0)
+    st.write(f"📉 Laatste koers voor {ticker}: **${last:.2f}**")
+    st.write(f"📢 Actueel advies: **{huidig_advies}**")
+
+    if st.button("📈 Voer adviesorder uit bij Alpaca"):
+        try:
+            aantal = int(startbedrag // last)
+            if aantal <= 0:
+                st.error("❌ Bedrag te laag voor minstens 1 aandeel.")
+            else:
+                side = None
+                if huidig_advies == "Kopen":
+                    side = OrderSide.BUY
+                elif huidig_advies == "Verkopen":
+                    side = OrderSide.SELL
+
+                if side:
+                    order = MarketOrderRequest(
+                        symbol=ticker,
+                        qty=aantal,
+                        side=side,
+                        time_in_force=TimeInForce.DAY
+                    )
+                    response = trading_client.submit_order(order)
+                    st.success(f"✅ {side.name.capitalize()} order geplaatst: {aantal} x {ticker}")
+                    st.write(response)
+                else:
+                    st.warning("⚠️ Advies is geen koop of verkoop. Geen order geplaatst.")
+        except Exception as e:
+            st.error(f"❌ Fout bij orderplaatsing: {e}")
+            
 
 #    with st.expander("ℹ️ Uitleg SAM Trading Indicator"):
   #      st.markdown(
