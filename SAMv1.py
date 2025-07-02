@@ -1462,8 +1462,7 @@ with st.expander("🧪 Virtuele testorder plaatsen via Alpaca Paper Account"):
                 last = live_data["Close"].dropna().iloc[-1]
             else:
                 last = None
-        except Exception:
-            last = None
+            
 
         if last is not None:
             st.write(f"📉 Laatste koers voor {ticker}: **${last:.2f}**")
