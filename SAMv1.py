@@ -9,7 +9,18 @@ import matplotlib.pyplot as plt
 from ta.trend import ADXIndicator
 #from ta.momentum import TRIXIndicator
 
-# --- Functie om data op te halen ---
+# trading bot
+import alpaca_trade_api as tradeapi
+
+api = tradeapi.REST(
+    st.secrets["ALPACA_API_KEY"],
+    st.secrets["ALPACA_SECRET_KEY"],
+    base_url="https://paper-api.alpaca.markets"
+)
+
+# einde bot
+#
+ #--- Functie om data op te halen ---
 # 📥 Cachen van data per combinatie van ticker/interval (15 minuten geldig)
 @st.cache_data(ttl=900)
 def fetch_data_cached(ticker, interval, period):
