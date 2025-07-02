@@ -476,14 +476,14 @@ def determine_advice(df, threshold, risk_aversion=False):
             sam_3 = df["SAM"].iloc[i - 2:i + 1]
 
             # 🔹 Positieve trend
-            if trend_nu >= 0.0 or all(sam_3 > 0):
+            if trend_nu >= 0.0 and stage > 0 or all(sam_3 > 0):
                 if all(sam_3 < 0) or trend_sam < 0:
                     df.at[df.index[i], "Advies"] = "Verkopen"
                 else:
                     df.at[df.index[i], "Advies"] = "Kopen"
 
             # 🔹 Negatieve trend
-            elif trend_nu < 0.0 or all(sam_3 < 0):
+            elif trend_nu < 0.0 and stage < 0 or all(sam_3 < 0):
                 if all(sam_3 > 0) or trend_sam > 0:
                     df.at[df.index[i], "Advies"] = "Kopen"
                 else:
