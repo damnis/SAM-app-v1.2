@@ -10,7 +10,13 @@ from ta.trend import ADXIndicator
 #from ta.momentum import TRIXIndicator
 
 # trading bot
-import alpaca_trade_api as tradeapi
+from alpaca.data.historical import StockHistoricalDataClient
+from alpaca.data.requests import StockBarsRequest
+from alpaca.data.timeframe import TimeFrame
+from alpaca.trading.client import TradingClient
+from alpaca.trading.requests import MarketOrderRequest
+from alpaca.trading.enums import OrderSide, TimeInForce
+#import alpaca_trade_api as tradeapi
 
 #api = tradeapi.REST(
 #    st.secrets["ALPACA_API_KEY"],
