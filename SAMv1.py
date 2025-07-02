@@ -353,9 +353,22 @@ def safe_float(val):
     except:
         return 0.0
 
-# ✅ Verbeterde SAT-berekening met cache
+# ✅ Verbeterde SAT-berekening met debug en fallback
 @st.cache_data(ttl=900)
 def calculate_sat(df):
+    # ✅ Controle op MultiIndex en 'Close'-fallback
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
+
+    if "Close" not in df.columns:
+        mogelijke_close = [col for col in df.columns if col.lower() == "close" or "close" in col.lower()]
+        if mogelijke_close:
+            df["Close"] = df[mogelijke_close[0]]
+        else:
+            st.error("❌ Kon geen geldige 'Close'-kolom vinden voor SAT-berekening.")
+            return df
+
+    # ✅ Berekeningen
     df["MA150"] = df["Close"].rolling(window=150).mean()
     df["MA30"] = df["Close"].rolling(window=30).mean()
     df["SAT_Stage"] = np.nan  # eerst lege kolom
@@ -369,7 +382,6 @@ def calculate_sat(df):
         stage_prev = safe_float(df["SAT_Stage"].iloc[i - 1]) if i > 1 else 0.0
         stage = stage_prev  # start met vorige stage-waarde
 
-        # Debug alleen voor laatste 10 rijen
         if i > len(df) - 10:
             st.write(f"🔍 i={i} | Close={close:.2f}, MA150={ma150:.2f}, MA150_prev={ma150_prev:.2f}, MA30={ma30:.2f}, MA30_prev={ma30_prev:.2f}")
 
@@ -409,29 +421,12 @@ def calculate_sat(df):
             if i > len(df) - 10:
                 st.write(f"⚪️ i={i}: Geen duidelijke verandering → stage = stage_prev ({stage_prev})")
 
-        # Sla stage op
         df.at[df.index[i], "SAT_Stage"] = stage
-        
-
-
-        
 
     df["SAT_Stage"] = df["SAT_Stage"].astype(float)
-#    df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
-
-    # ✅ Extra controle op MultiIndex of fout kolomtype
-if isinstance(df.columns, pd.MultiIndex):
-    df.columns = df.columns.get_level_values(0)
-
-# ✅ Controle of 'Close' erin zit, anders een kolom kiezen
-if "Close" not in df.columns:
-    mogelijke_close = [col for col in df.columns if col.lower() == "close" or "close" in col.lower()]
-    if mogelijke_close:
-        df["Close"] = df[mogelijke_close[0]]
-    else:
-        st.error("❌ Kon geen geldige 'Close'-kolom vinden voor SAT-berekening.")
-        return df  # Exit met ongewijzigd df
-
+    df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
+    return df
+    
     # 📊 Debug: Laatste waarden MA150 en MA30
  #   st.write("Laatste 5 waarden van MA150:", df["MA150"].tail())
  # ×  st.write("Laatste 5 waarden van MA30:", df["MA30"].tail())
