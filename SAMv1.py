@@ -412,32 +412,31 @@ def calculate_sat(df):
         # Sla stage op
         df.at[df.index[i], "SAT_Stage"] = stage
         
-#        if (ma150 > ma150_prev and close > ma150 and ma30 > close) or \
- #          (close > ma150 and ma30 < ma30_prev and ma30 > close):
-#            stage = -1
- #       elif ma150 < ma150_prev and close < ma150 and close > ma30 and ma30 > ma30_prev:
-  #          stage = 1
-    #    elif ma150 > close and ma150 > ma150_prev:
-  #          stage = -1
-  #      elif ma150 > close and ma150 < ma150_prev:
- #           stage = -2
- #       elif ma150 < close and ma150 < ma150_prev and ma30 > ma30_prev:
- #           stage = 1
- #       elif ma150 < close and ma150 > ma150_prev and ma30 > ma30_prev:
- #           stage = 2
- #       else:
-#            stage = stage_prev
 
-        df.at[df.index[i], "SAT_Stage"] = stage
+
+        
 
     df["SAT_Stage"] = df["SAT_Stage"].astype(float)
-    df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
+#    df["SAT_Trend"] = df["SAT_Stage"].rolling(window=25).mean()
+
+    # ✅ Extra controle op MultiIndex of fout kolomtype
+if isinstance(df.columns, pd.MultiIndex):
+    df.columns = df.columns.get_level_values(0)
+
+# ✅ Controle of 'Close' erin zit, anders een kolom kiezen
+if "Close" not in df.columns:
+    mogelijke_close = [col for col in df.columns if col.lower() == "close" or "close" in col.lower()]
+    if mogelijke_close:
+        df["Close"] = df[mogelijke_close[0]]
+    else:
+        st.error("❌ Kon geen geldige 'Close'-kolom vinden voor SAT-berekening.")
+        return df  # Exit met ongewijzigd df
 
     # 📊 Debug: Laatste waarden MA150 en MA30
-    st.write("Laatste 5 waarden van MA150:", df["MA150"].tail())
-    st.write("Laatste 5 waarden van MA30:", df["MA30"].tail())
-    st.write("📈 Laatste Close-waarden:", df["Close"].tail(10))
-    return df
+ #   st.write("Laatste 5 waarden van MA150:", df["MA150"].tail())
+ # ×  st.write("Laatste 5 waarden van MA30:", df["MA30"].tail())
+# ÷   st.write("📈 Laatste Close-waarden:", df["Close"].tail(10))
+  #  return df
     
 #st.write("MA150 laatste waarden:", df["MA150"].tail())
 #st.write("MA30 laatste waarden:", df["MA30"].tail())
