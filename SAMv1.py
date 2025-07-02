@@ -574,10 +574,7 @@ def determine_advice(df, threshold, risk_aversion=0):
     return df, huidig_advies
 
             
-        
-
-
-    
+       
 
     
 #--- Advies en rendement EINDE
@@ -718,7 +715,7 @@ valutasymbool = {
 # --- Data ophalen voor dropdown live view ---
 def get_live_ticker_data(tickers_dict):
     tickers = list(tickers_dict.keys())
-    data = yf.download(tickers, period="1d", interval="1d", progress=False, group_by='ticker')
+    data = yf.download(tickers, period="1wk", interval="1wk", progress=False, group_by='ticker')
     result = []
 
     for ticker in tickers:
@@ -774,7 +771,7 @@ except Exception:
 # --- Intervalopties ---
 interval_optie = st.selectbox(
     "Kies de interval",
-    ["Dagelijks", "Wekelijks", "4-uur", "1-uur", "15-minuten"]
+    ["Wekelijks", "Dagelijks", "4-uur", "1-uur", "15-minuten"]
 )
 
 # Vertaal gebruikerskeuze naar Yahoo Finance intervalcode
