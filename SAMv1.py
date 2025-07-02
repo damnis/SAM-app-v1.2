@@ -849,11 +849,28 @@ with col1:
     risk_aversion = st.slider("Mate van risk aversion", 0, 2, 0, step=1)
 with col2:
     pass  # lege kolom, zodat slider links blijft
-    
+
+# advies wordt geladen daarna
+@st.cache_data(ttl=900)
+def advies_wordt_geladen(ticker, interval, risk_aversion):
+    df = fetch_data(ticker, interval)
+
+    if df is None or df.empty or "Close" not in df.columns:
+        return None, None
+
+    # ✅ Altijd SAM en SAT berekenen
+    df = calculate_sam(df)
+    df = calculate_sat(df)
+
+    # ✅ Advies bepalen
+    threshold = 2  # ← Default trail voor risk_aversion = 0
+    df, huidig_advies = determine_advice(df, threshold=threshold, risk_aversion=risk_aversion)
+
+    return df, huidig_advies
     
 # ✅ Gebruik en foutafhandeling
-df, huidig_advies = advies_wordt_geladen(ticker, interval, thresh, risk_aversion)
-
+#df, huidig_advies = advies_wordt_geladen(ticker, interval, thresh, risk_aversion)
+df, huidig_advies = advies_wordt_geladen(ticker, interval, risk_aversion)
 # Keuze welke adviezen worden meegenomen in SAM-rendement
 signaalkeuze = st.radio(
     "Toon SAM-rendement voor:",
