@@ -261,8 +261,8 @@ def calculate_sam(df):
     close_series = pd.to_numeric(close_series, errors="coerce")
     
     # 3) Debug-check: 
-    st.write("▶️ types:", type(high_series), type(low_series), type(close_series))
-    st.write("▶️ head close_series:", close_series.head())
+#    st.write("▶️ types:", type(high_series), type(low_series), type(close_series))
+ #   st.write("▶️ head close_series:", close_series.head())
     
     # 4) Roep ADXIndicator aan
     adx = ADXIndicator(
