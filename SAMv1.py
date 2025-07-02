@@ -273,8 +273,8 @@ def calculate_sam(df):
         fillna=True
     )
     
-    df["DI_PLUS"]  = adx.adx_pos()
-    df["DI_MINUS"] = adx.adx_neg()
+#    df["DI_PLUS"]  = adx.adx_pos()
+#    df["DI_MINUS"] = adx.adx_neg()
 
     # SAMD - was goed
     # --- SAMD op basis van DI+ en DI- ---
@@ -284,22 +284,22 @@ def calculate_sam(df):
 
 #    adx = ADXIndicator(high=high_series, low=low_series, close=close_series, window=14)
 
-#    df["DI_PLUS"] = adx.adx_pos()
-#    df["DI_MINUS"] = adx.adx_neg()
-  #  df["SAMD"] = 0.0  # begin met 0.0
+    df["DI_PLUS"] = adx.adx_pos()
+    df["DI_MINUS"] = adx.adx_neg()
+    df["SAMD"] = 0.0  # begin met 0.0
 
     # Epsilon-drempels instellen
-#    epsilonneg = 10.0  # vrijwel afwezig andere richting
-#    epsilonpos = 30.0  # sterke richting
-#    df["SAMD"] = 0.0
+    epsilonneg = 10.0  # vrijwel afwezig andere richting
+    epsilonpos = 30.0  # sterke richting
+    df["SAMD"] = 0.0
     # 1️⃣ Sterke positieve richting
-#    df.loc[(df["DI_PLUS"] > epsilonpos) & (df["DI_MINUS"] <= epsilonneg), "SAMD"] = 0.75 # was 1.0
+    df.loc[(df["DI_PLUS"] > epsilonpos) & (df["DI_MINUS"] <= epsilonneg), "SAMD"] = 0.75 # was 1.0
     # 2️⃣ Sterke negatieve richting
-#    df.loc[(df["DI_MINUS"] > epsilonpos) & (df["DI_PLUS"] <= epsilonneg), "SAMD"] = -0.75 # was -1.0
+    df.loc[(df["DI_MINUS"] > epsilonpos) & (df["DI_PLUS"] <= epsilonneg), "SAMD"] = -0.75 # was -1.0
     # 3️⃣ Lichte positieve richting
-#    df.loc[(df["DI_PLUS"] > df["DI_MINUS"]) & (df["DI_MINUS"] > epsilonneg), "SAMD"] = 0.5
+    df.loc[(df["DI_PLUS"] > df["DI_MINUS"]) & (df["DI_MINUS"] > epsilonneg), "SAMD"] = 0.5
     # 4️⃣ Lichte negatieve richting
-#    df.loc[(df["DI_MINUS"] > df["DI_PLUS"]) & (df["DI_PLUS"] > epsilonneg), "SAMD"] = -0.5
+    df.loc[(df["DI_MINUS"] > df["DI_PLUS"]) & (df["DI_PLUS"] > epsilonneg), "SAMD"] = -0.5
 
 
     # samd oud
