@@ -1,6 +1,7 @@
 # bot.py
 import yfinance as yf
 import streamlit as st
+import pandas as pd
 from alpaca.trading.client import TradingClient
 from alpaca.trading.enums import OrderSide, TimeInForce
 from alpaca.trading.requests import MarketOrderRequest, TrailingStopOrderRequest
@@ -19,7 +20,7 @@ def verbind_met_alpaca():
 def haal_laatste_koers(ticker):
     try:
         live_data = yf.download(ticker, period="1d", interval="1d", progress=False)
-        if isinstance(live_data, yf.pd.DataFrame) and "Close" in live_data.columns:
+        if isinstance(live_data, pd.DataFrame) and "Close" in live_data.columns:
             return float(live_data["Close"].dropna().iloc[-1].squeeze())
     except:
         return None
@@ -53,11 +54,11 @@ def plaats_order(client, ticker, bedrag, last_price, advies, order_type="Market"
     except Exception as e:
         st.error(f"❌ Order kon niet worden geplaatst: {e}")
 
-def sluit_positie(client, ticker, advies):
+def sluit_positie(client, ticker, advies, force=False):
     try:
         positie = client.get_open_position(ticker)
         aantal = int(float(positie.qty))
-        if advies != "Verkopen":
+        if not force and advies != "Verkopen":
             st.info("ℹ️ Huidig advies is geen 'Verkopen'. Geen actie ondernomen.")
             return
         order = MarketOrderRequest(
@@ -72,15 +73,10 @@ def sluit_positie(client, ticker, advies):
     except Exception as e:
         st.info("📭 Geen open positie of fout bij ophalen: " + str(e))
 
-
-
-
-
-#   visueel
-
-
 def toon_trading_bot_interface(ticker, huidig_advies):
     st.subheader("📥 Plaats live paper trade op basis van advies")
+
+    modus = st.radio("🎛️ Kies handelsmodus", ["Handmatig", "Automatisch", "Beide"], horizontal=True)
 
     client, account = verbind_met_alpaca()
     if client is None:
@@ -108,19 +104,20 @@ def toon_trading_bot_interface(ticker, huidig_advies):
         if order_type == "Trailing Stop":
             trailing_pct = st.slider("📉 Trailing stop (% vanaf hoogste koers)", 1.0, 20.0, 5.0)
 
-        if st.button("📤 Verstuur order naar Alpaca"):
+        handmatig = modus in ["Handmatig", "Beide"]
+        automatisch = modus in ["Automatisch", "Beide"]
+
+        if handmatig and st.button("📤 Handmatig order plaatsen"):
+            plaats_order(client, ticker, bedrag, last, huidig_advies, order_type, trailing_pct)
+
+        if automatisch and huidig_advies in ["Kopen", "Verkopen"]:
+            st.info("🤖 Automatisch advies actief...")
             plaats_order(client, ticker, bedrag, last, huidig_advies, order_type, trailing_pct)
 
     st.markdown("---")
 
     st.subheader("📤 Verkooppositie controleren en sluiten")
-    with st.expander("📊 Positie check en verkoopactie (alleen bij 'Verkopen')"):
-        sluit_positie(client, ticker, huidig_advies)
-
-
-
-
-
-
-
-# wit
+    with st.expander("📊 Positie check en verkoopactie"):
+        force_verkoop = st.checkbox("🔒 Forceer verkoop, ongeacht advies")
+        if st.button("❗ Verkooppositie sluiten"):
+            sluit_positie(client, ticker, huidig_advies, force=force_verkoop)
