@@ -71,3 +71,59 @@ def sluit_positie(client, ticker, advies):
         st.write(response)
     except Exception as e:
         st.info("📭 Geen open positie of fout bij ophalen: " + str(e))
+
+def toon_trading_bot_interface(ticker, huidig_advies):
+    st.subheader("📥 Plaats live paper trade op basis van advies")
+
+    client, account = verbind_met_alpaca()
+    if client is None:
+        return
+
+    if account:
+        st.success(f"✅ Verbonden met Alpaca-account ({account.status})")
+        st.write(f"👤 Account-ID: {account.id}")
+        st.write(f"💰 Beschikbaar cash: ${float(account.cash):,.2f}")
+        st.write(f"📈 Portfolio waarde: ${float(account.portfolio_value):,.2f}")
+
+    with st.expander("🧪 Virtuele testorder plaatsen via Alpaca Paper Account"):
+        last = haal_laatste_koers(ticker)
+        if last:
+            st.write(f"📉 Laatste koers voor {ticker}: **${last:.2f}**")
+        else:
+            st.warning("⚠️ Geen geldige koers beschikbaar voor dit aandeel.")
+            return
+
+        bedrag = st.number_input("💰 Te investeren bedrag ($)", min_value=10.0, value=1000.0, step=10.0)
+        st.write(f"📌 Actueel advies voor {ticker}: **{huidig_advies}**")
+
+        order_type = st.radio("🛒 Kies ordertype", ["Market", "Trailing Stop"], horizontal=True)
+        trailing_pct = None
+        if order_type == "Trailing Stop":
+            trailing_pct = st.slider("📉 Trailing stop (% vanaf hoogste koers)", 1.0, 20.0, 5.0)
+
+        if st.button("📤 Verstuur order naar Alpaca"):
+            plaats_order(client, ticker, bedrag, last, huidig_advies, order_type, trailing_pct)
+
+    st.markdown("---")
+
+    st.subheader("📤 Verkooppositie controleren en sluiten")
+    with st.expander("📊 Positie check en verkoopactie (alleen bij 'Verkopen')"):
+        sluit_positie(client, ticker, huidig_advies)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# wit
