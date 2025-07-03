@@ -1417,6 +1417,10 @@ else:
 # ALPACA_API_KEY = "PK8IAXXDXQEO9QLVNSCV"
 # ALPACA_SECRET_KEY = "ooAURWeE0c2gp336eq5oHC1bqrRAVcCDlWpTbJDJ"
 # trading bot code
+from bot import toon_trading_bot_interface
+
+# …na de adviezen en grafiek, etc.
+#toon_trading_bot_interface(selected_ticker, huidig_advies)
 toon_trading_bot_interface(selected_ticker, huidig_advies)
 # 📌 Verbinding met Alpaca testen (optioneel, pas uit te voeren als gebruiker dit wil)
 
