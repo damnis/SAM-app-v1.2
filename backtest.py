@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 from datetime import date
 
-def backtest_functie(df, selected_tab, signaalkeuze):
+def backtest_functie(df, signaalkeuze, selected_tab):
     st.subheader("Vergelijk Marktrendement en SAM-rendement")
 
     # 📅 1. Datumkeuze
@@ -20,14 +21,18 @@ def backtest_functie(df, selected_tab, signaalkeuze):
         (df.index.date >= start_date) & (df.index.date <= end_date)
     ].copy()
 
+    # 🧹 Flatten MultiIndex indien nodig
     if isinstance(df_period.columns, pd.MultiIndex):
         df_period.columns = ["_".join([str(i) for i in col if i]) for col in df_period.columns]
 
+    # 🔍 Zoek geldige 'Close'-kolom
     close_col = next((col for col in df_period.columns if col.lower().startswith("close")), None)
-    if not close_col:
-        st.error("❌ Geen geldige 'Close'-kolom gevonden.")
-        return
 
+    if not close_col:
+        st.error("❌ Geen geldige 'Close'-kolom gevonden in deze dataset.")
+        st.stop()
+
+    # 📈 Marktrendement (Buy & Hold)
     df_period[close_col] = pd.to_numeric(df_period[close_col], errors="coerce")
     df_valid = df_period[close_col].dropna()
 
@@ -37,17 +42,15 @@ def backtest_functie(df, selected_tab, signaalkeuze):
         koers_eind = df_valid.iloc[-1]
         marktrendement = ((koers_eind - koers_start) / koers_start) * 100
 
-    # 🔄 Filter adviezen
+    # ✅ Signaalkeuze geforceerd op Beide
     advies_col = "Advies"
-    if "Advies" not in df_period.columns:
-        st.error("Kolom 'Advies' ontbreekt in de data.")
-        return
 
+    # Vind eerste geldige advies (geen NaN) om mee te starten
     eerste_valid_index = df_period[df_period["Advies"].notna()].index[0]
     df_signalen = df_period.loc[eerste_valid_index:].copy()
     df_signalen = df_signalen[df_signalen[advies_col].isin(["Kopen", "Verkopen"])].copy()
 
-    # 🧠 Interne functie: rendementberekening
+    # 🔄 Backtestfunctie
     def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
         rendementen = []
         trades = []
@@ -68,11 +71,10 @@ def backtest_functie(df, selected_tab, signaalkeuze):
                     sluit_datum = datum
                     sluit_close = close
 
-                    rendement = (
-                        (sluit_close - entry_price) / entry_price * 100
-                        if entry_type == "Kopen"
-                        else (entry_price - sluit_close) / entry_price * 100
-                    )
+                    if entry_type == "Kopen":
+                        rendement = (sluit_close - entry_price) / entry_price * 100
+                    else:
+                        rendement = (entry_price - sluit_close) / entry_price * 100
 
                     if entry_price != sluit_close and entry_date != sluit_datum:
                         rendementen.append(rendement)
@@ -83,6 +85,8 @@ def backtest_functie(df, selected_tab, signaalkeuze):
                             "Sluit datum": sluit_datum.date(),
                             "Sluit prijs": sluit_close,
                             "Rendement (%)": rendement,
+                            "SAM": df.loc[entry_date, "SAM"] if entry_date in df.index else None,
+                            "Trend": df.loc[entry_date, "Trend"] if entry_date in df.index else None,
                         })
 
                     if mapped_type == "Beide" or advies == mapped_type:
@@ -103,11 +107,10 @@ def backtest_functie(df, selected_tab, signaalkeuze):
             laatste_datum = df_signalen.index[-1]
             laatste_koers = df_signalen[close_col].iloc[-1]
 
-            rendement = (
-                (laatste_koers - entry_price) / entry_price * 100
-                if entry_type == "Kopen"
-                else (entry_price - laatste_koers) / entry_price * 100
-            )
+            if entry_type == "Kopen":
+                rendement = (laatste_koers - entry_price) / entry_price * 100
+            else:
+                rendement = (entry_price - laatste_koers) / entry_price * 100
 
             if entry_price != laatste_koers and entry_date != laatste_datum:
                 rendementen.append(rendement)
@@ -123,20 +126,57 @@ def backtest_functie(df, selected_tab, signaalkeuze):
         sam_rendement = sum(rendementen) if rendementen else 0.0
         return sam_rendement, trades, rendementen
 
-    # ✅ Berekeningen
+    # ✅ 4. Berekening
     sam_rendement_filtered, _, _ = bereken_sam_rendement(df_signalen, signaal_type=signaalkeuze, close_col=close_col)
     _, trades_all, _ = bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col=close_col)
 
-    # ✅ Metrics
+    # ✅ 5.0: Alleen metric gebaseerd op keuze
     col1, col2 = st.columns(2)
     col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
     col2.metric("📊 SAM-rendement", f"{sam_rendement_filtered:+.2f}%" if isinstance(sam_rendement_filtered, (int, float)) else "n.v.t.")
 
-    # ✅ Trades tonen (optioneel: kun je verder uitbouwen zoals in je script)
+    # ✅ 5.1: Volledige analyse op basis van alle trades (Beide)
     if trades_all:
-        st.caption(f"Aantal trades: {len(trades_all)}, totaal SAM-rendement: {sum([t['Rendement (%)'] for t in trades_all]):+.2f}%")
         df_trades = pd.DataFrame(trades_all)
-        st.dataframe(df_trades)
+        df_trades["SAM-% Koop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Kopen" else None, axis=1)
+        df_trades["SAM-% Verkoop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Verkopen" else None, axis=1)
+        df_trades["Markt-%"] = df_trades.apply(lambda row: ((row["Sluit prijs"] - row["Open prijs"]) / row["Open prijs"]) * 100, axis=1)
+
+        rendement_totaal = df_trades["Rendement (%)"].sum()
+        rendement_koop = df_trades["SAM-% Koop"].sum(skipna=True)
+        rendement_verkoop = df_trades["SAM-% Verkoop"].sum(skipna=True)
+        aantal_trades = len(df_trades)
+        aantal_koop = df_trades["SAM-% Koop"].notna().sum()
+        aantal_verkoop = df_trades["SAM-% Verkoop"].notna().sum()
+        aantal_succesvol = (df_trades["Rendement (%)"] > 0).sum()
+        aantal_succesvol_koop = (df_trades["SAM-% Koop"] > 0).sum()
+        aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
+
+        st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
+        st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
+        st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
+
+        df_display = df_trades.copy()
+        df_display = df_display.rename(columns={"Rendement (%)": "SAM-% tot."})
+        df_display = df_display[[
+            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
+            "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
+
+        for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]:
+            df_display[col] = df_display[col].astype(float)
+
+        toon_alle = st.toggle("Toon alle trades", value=False)
+        if not toon_alle and len(df_display) > 12:
+            df_display = df_display.iloc[-12:]
+
+        if selected_tab == "🌐 Crypto":
+            df_display["Open prijs"] = df_display["Open prijs"].map("{:.3f}".format)
+            df_display["Sluit prijs"] = df_display["Sluit prijs"].map("{:.3f}".format)
+        else:
+            df_display["Open prijs"] = df_display["Open prijs"].map("{:.2f}".format)
+            df_display["Sluit prijs"] = df_display["Sluit prijs"].map("{:.2f}".format)
+
+        st.dataframe(df_display, use_container_width=True)
 
     else:
         st.info("ℹ️ Geen trades gevonden binnen de geselecteerde periode.")
@@ -155,7 +195,4 @@ def backtest_functie(df, selected_tab, signaalkeuze):
 
 
 
-
-
-# wit
-
+# WIT
