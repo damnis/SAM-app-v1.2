@@ -18,6 +18,7 @@ from tickers import (
 )
 # Indicatoren berekening
 from sam_indicator import calculate_sam
+from sat_indicator import calculate_sat
 # trading bot
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
