@@ -18,6 +18,8 @@ from tickers import (
 # Indicatoren berekening
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
+# grafieken en tabellen
+from grafieken import plot_koersgrafiek, plot_sam_trend, plot_sat_debug
 # trading bot
 from bot import toon_trading_bot_interface
 from bot import verbind_met_alpaca, haal_laatste_koers, plaats_order, sluit_positie
@@ -508,126 +510,17 @@ with col2:
 
 # -------------
 
-# ⏳ Toggle voor koersgrafiek
-toon_koersgrafiek = st.toggle("📈 Toon koersgrafiek", value=False)
 
-if toon_koersgrafiek:
-    # 📅 Bepaal grafiekperiode
-    grafiek_periode = bepaal_grafiekperiode(interval)
-    cutoff_datum = df.index.max() - grafiek_periode
-    df_koers = df[df.index >= cutoff_datum].copy()  # Alleen koers in periode
+# weergave grafieken via py
+# 🟢 Toon koersgrafiek (toggle)
+if st.toggle("📈 Toon koersgrafiek", value=False):
+    plot_koersgrafiek(df, ticker_name, interval)
 
-    # ✅ Bereken MA's op volledige dataset (eenmalig)
-    if "MA30" not in df.columns or "MA150" not in df.columns:
-        df["MA30"] = df["Close"].rolling(window=30).mean()
-        df["MA150"] = df["Close"].rolling(window=150).mean()
+# 🔵 Toon SAM + Trend grafiek
+plot_sam_trend(df, interval)
 
-    # 📊 Plot met lijnen
-    fig, ax = plt.subplots(figsize=(10, 4))
-
-    # Plot koers (beperkte periode)
-    ax.plot(df_koers.index, df_koers["Close"], color="black", linewidth=2.0, label="Koers")
-
-    # Plot MA's over volledige dataset, maar beperk zichtbare x-as
-    ax.plot(df.index, df["MA30"], color="orange", linewidth=1.0, label="MA(30)")
-    ax.plot(df.index, df["MA150"], color="pink", linewidth=1.0, label="MA(150)")
-
-    # Zet x-as beperking op koers-periode (geldt voor alles!)
-    ax.set_xlim(df_koers.index.min(), df_koers.index.max())
-    
-    # ➕ y-as: bepaal min/max + marge (veilig en robuust)  
-    try:  
-        close_series = df_koers["Close"]  
-        if isinstance(close_series, pd.DataFrame):  
-            close_series = close_series.iloc[:, 0]  # neem eerste kolom als DataFrame  
-        koers_values = close_series.astype(float).dropna()  
-
-        if not koers_values.empty:  
-            koers_min = koers_values.min()  
-            koers_max = koers_values.max()  
-            marge = (koers_max - koers_min) * 0.05  
-            ax.set_ylim(koers_min - marge, koers_max + marge)  
-    except Exception as e:  
-        st.warning(f"Kon y-as limieten niet instellen: {e}")  
-
-    # Opmaak
-    ax.set_title(f"Koersgrafiek van {ticker_name}")
-    ax.set_ylabel("Close")
-    ax.set_xlabel("Datum")
-    ax.legend()
-    fig.tight_layout()
-    st.subheader("Koersgrafiek")
-    st.pyplot(fig)
-
-# --- Grafiek met SAM en Trend ---
-st.subheader("Grafiek met SAM en Trend")
-
-# Bepaal de weergaveperiode op basis van interval
-grafiek_periode = bepaal_grafiekperiode(interval)
-
-# Bepaal cutoff-datum
-cutoff_datum = df.index.max() - grafiek_periode
-
-# Filter alleen grafiekdata
-df_grafiek = df[df.index >= cutoff_datum].copy()
-
-# --- Grafiek met SAM en Trend (aangepast) ---
-fig, ax = plt.subplots(figsize=(10, 4))
-
-# ✅ Kleuren voor SAM afhankelijk van positief/negatief
-kleuren = ["green" if val >= 0 else "red" for val in df_grafiek["SAM"]]
-# ✅ Bars voor SAM
-ax.bar(df_grafiek.index, df_grafiek["SAM"], color=kleuren, label="SAM")
-ax.set_xlim(df_grafiek.index.min(), df_grafiek.index.max())
-# ✅ Trendlijn (zelfde as)
-ax.plot(df_grafiek.index, df_grafiek["Trend"], color="blue", linewidth=2, label="Trend")
-
-# ✅ SAT als transparante grijze lijn
-if "SAT_Stage" in df_grafiek.columns:
-    ax.plot(df_grafiek.index, df_grafiek["SAT_Stage"], color="gray", linewidth=1.5, linestyle="--", alpha=0.4)
-
-# ✅ Nullijn
-ax.axhline(y=0, color="black", linewidth=1, linestyle="--")
-# ✅ Geforceerde y-as
-ax.set_ylim(-4.5, 4.5)
-# ✅ Titel en labels
-ax.set_title("SAM-indicator en Trendlijn")
-ax.set_ylabel("Waarde")
-# ✅ Legenda toevoegen
-ax.legend()
-
-fig.tight_layout()
-st.pyplot(fig)
-
-
-# --- volgende grafiek niet tonen wel bewaren ----
-# --- Grafiek met SAT Stage en SAT Trend ---
-#st.subheader("Grafiek met SAT en Trend")
-
-# Filter data binnen dezelfde periode als bij SAM
-#df_sat = df[df.index >= cutoff_datum].copy()
-
-# ✅ Zwarte bars voor SAT_Stage
-#fig, ax = plt.subplots(figsize=(10, 4))
-#ax.bar(df_sat.index, df_sat["SAT_Stage"], color="black", label="SAT Stage")
-
-# ✅ Blauwe lijn voor SAT_Trend (2px)
-#ax.plot(df_sat.index, df_sat["SAT_Trend"], color="blue", linewidth=2, label="SAT Trend")
-
-# ✅ Nullijn
-#ax.axhline(y=0, color="gray", linewidth=1, linestyle="--")
-
-# ✅ As-instellingen
-#ax.set_xlim(df_sat.index.min(), df_sat.index.max())
-#ax.set_ylim(-2.25, 2.25)
-#ax.set_ylabel("Waarde")
-#ax.set_title("SAT-indicator en Trendlijn")
-
-# ✅ Legenda
-#ax.legend()
-
-#fig.tight_layout()
-#st.pyplot(fig)
+# ⚫ (optioneel) Debug SAT-grafiek — standaard niet geactiveerd
+# plot_sat_debug(df, interval)
     
 # --- Tabel met signalen en rendement ---
 st.subheader("Laatste signalen en rendement")
