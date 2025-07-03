@@ -6,7 +6,6 @@ from datetime import date
 def backtest_functie(df, signaalkeuze, selected_tab):
     st.subheader("Vergelijk Marktrendement en SAM-rendement")
 
-    # 📅 1. Datumkeuze
     current_year = date.today().year
     default_start = date(current_year - 2, 1, 1)
     default_end = df.index.max().date()
@@ -14,25 +13,18 @@ def backtest_functie(df, signaalkeuze, selected_tab):
     start_date = st.date_input("Startdatum analyse", default_start)
     end_date = st.date_input("Einddatum analyse", default_end)
 
-    # 📆 2. Filter op periode
     df = df.copy()
     df.index = pd.to_datetime(df.index)
-    df_period = df.loc[
-        (df.index.date >= start_date) & (df.index.date <= end_date)
-    ].copy()
+    df_period = df.loc[(df.index.date >= start_date) & (df.index.date <= end_date)].copy()
 
-    # 🧹 Flatten MultiIndex indien nodig
     if isinstance(df_period.columns, pd.MultiIndex):
         df_period.columns = ["_".join([str(i) for i in col if i]) for col in df_period.columns]
 
-    # 🔍 Zoek geldige 'Close'-kolom
     close_col = next((col for col in df_period.columns if col.lower().startswith("close")), None)
-
     if not close_col:
         st.error("❌ Geen geldige 'Close'-kolom gevonden in deze dataset.")
         st.stop()
 
-    # 📈 Marktrendement (Buy & Hold)
     df_period[close_col] = pd.to_numeric(df_period[close_col], errors="coerce")
     df_valid = df_period[close_col].dropna()
 
@@ -42,15 +34,11 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         koers_eind = df_valid.iloc[-1]
         marktrendement = ((koers_eind - koers_start) / koers_start) * 100
 
-    # ✅ Signaalkeuze geforceerd op Beide
     advies_col = "Advies"
-
-    # Vind eerste geldige advies (geen NaN) om mee te starten
     eerste_valid_index = df_period[df_period["Advies"].notna()].index[0]
     df_signalen = df_period.loc[eerste_valid_index:].copy()
     df_signalen = df_signalen[df_signalen[advies_col].isin(["Kopen", "Verkopen"])].copy()
 
-    # 🔄 Backtestfunctie
     def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
         rendementen = []
         trades = []
@@ -126,16 +114,13 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         sam_rendement = sum(rendementen) if rendementen else 0.0
         return sam_rendement, trades, rendementen
 
-    # ✅ 4. Berekening
     sam_rendement_filtered, _, _ = bereken_sam_rendement(df_signalen, signaal_type=signaalkeuze, close_col=close_col)
     _, trades_all, _ = bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col=close_col)
 
-    # ✅ 5.0: Alleen metric gebaseerd op keuze
     col1, col2 = st.columns(2)
     col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
     col2.metric("📊 SAM-rendement", f"{sam_rendement_filtered:+.2f}%" if isinstance(sam_rendement_filtered, (int, float)) else "n.v.t.")
 
-    # ✅ 5.1: Volledige analyse op basis van alle trades (Beide)
     if trades_all:
         df_trades = pd.DataFrame(trades_all)
         df_trades["SAM-% Koop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Kopen" else None, axis=1)
@@ -156,27 +141,50 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
         st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
 
-        df_display = df_trades.copy()
-        df_display = df_display.rename(columns={"Rendement (%)": "SAM-% tot."})
-        df_display = df_display[[
+        df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
             "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
             "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
 
+        # ➕ Afronding op 2 decimalen
         for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]:
-            df_display[col] = df_display[col].astype(float)
+            df_display[col] = df_display[col].astype(float).map("{:+.2f}".format)
+
+        # ➕ Styling: kleuren
+        def kleur_positief_negatief(val):
+            if pd.isna(val): return "color: gray"
+            try:
+                val = float(val.replace('%', ''))
+                if val > 0: return "color: green"
+                elif val < 0: return "color: red"
+                else: return "color: gray"
+            except: return "color: gray"
 
         toon_alle = st.toggle("Toon alle trades", value=False)
         if not toon_alle and len(df_display) > 12:
             df_display = df_display.iloc[-12:]
 
         if selected_tab == "🌐 Crypto":
-            df_display["Open prijs"] = df_display["Open prijs"].map("{:.3f}".format)
-            df_display["Sluit prijs"] = df_display["Sluit prijs"].map("{:.3f}".format)
+            df_display["Open prijs"] = df_display["Open prijs"].astype(float).map("{:.3f}".format)
+            df_display["Sluit prijs"] = df_display["Sluit prijs"].astype(float).map("{:.3f}".format)
         else:
-            df_display["Open prijs"] = df_display["Open prijs"].map("{:.2f}".format)
-            df_display["Sluit prijs"] = df_display["Sluit prijs"].map("{:.2f}".format)
+            df_display["Open prijs"] = df_display["Open prijs"].astype(float).map("{:.2f}".format)
+            df_display["Sluit prijs"] = df_display["Sluit prijs"].astype(float).map("{:.2f}".format)
 
-        st.dataframe(df_display, use_container_width=True)
+        # ➕ Kolomnamen op 2 regels
+        df_display = df_display.rename(columns={
+            "SAM-% Koop": "SAM-%<br>Koop",
+            "SAM-% Verkoop": "SAM-%<br>Verkoop"
+        })
+
+        geldige_kolommen = [col for col in df_display.columns if "%" in col]
+        styler = df_display.style.applymap(kleur_positief_negatief, subset=geldige_kolommen)
+        styler = styler.format({col: "{}" for col in geldige_kolommen})
+        styler.set_table_styles([{
+            'selector': 'th',
+            'props': [('white-space', 'normal')]
+        }])
+
+        st.dataframe(styler, use_container_width=True)
 
     else:
         st.info("ℹ️ Geen trades gevonden binnen de geselecteerde periode.")
@@ -190,9 +198,4 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
 
 
-
-
-
-
-
-# WIT
+# wit
