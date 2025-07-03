@@ -26,14 +26,6 @@ def verbind_met_alpaca():
         st.error(f"❌ Fout bij verbinden met Alpaca: {e}")
         return None, None
 
-def haal_laatste_koers(ticker):
-    try:
-        live_data = yf.download(ticker, period="1d", interval="1d", progress=False)
-        if isinstance(live_data, yf.pd.DataFrame) and "Close" in live_data.columns:
-            return float(live_data["Close"].dropna().iloc[-1].squeeze())
-    except:
-        return None
-    return None
 
 def plaats_order(client, ticker, bedrag, last_price, advies, order_type="Market", trailing_pct=None):
     aantal = int(bedrag / last_price)
