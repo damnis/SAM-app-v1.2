@@ -134,3 +134,53 @@ def plot_sat_debug(df, interval):
  #           st.warning("Geen geldige koersdata om y-as limieten op te baseren.")
 #    except Exception as e:
 #        st.warning(f"Kon y-as limieten niet instellen: {e}")
+
+
+
+
+
+# ⏱ gecompliceerde koersgrafiek werkt niet geheel
+# bepaal data weeergaveperiode op basis van interval
+#grafiek_periode = bepaal_grafiekperiode(interval)
+
+# Bepaal cutoff-datum
+#cutoff_datum = df.index.max() - grafiek_periode
+
+# Filter alleen grafiekdata
+#df_grafiek = df[df.index >= cutoff_datum].copy()
+
+#cutoff_datum = datetime.now() - bepaal_grafiekperiode(interval)
+#df_filtered = df[df.index >= cutoff_datum]
+
+# 🖼️ Toggle voor grafiek
+#if st.toggle("📊 Toon koersgrafiek"):
+ #   fig = go.Figure(data=[
+#        go.Candlestick(
+ #           x=df_filtered.index,
+#            open=df_filtered["Open"],
+ #           high=df_filtered["High"],
+  #          low=df_filtered["Low"],
+  #          close=df_filtered["Close"],
+ #           increasing_line_color='green',
+ #           decreasing_line_color='red',
+#            name='Koers'
+#        )
+#    ])
+
+ #   fig.update_layout(
+ #       xaxis_title="Datum",
+ #       yaxis_title="Koers",
+ #       xaxis_rangeslider_visible=False,
+ #       height=400,
+ #       margin=dict(l=10, r=10, t=10, b=10)
+#    )
+
+#    st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+
+
+
+# wit
