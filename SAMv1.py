@@ -90,34 +90,7 @@ def fetch_data(ticker, interval):
     return df
     
 
-# 📆 Periode voor SAM-grafiek op basis van interval
-#def bepaal_grafiekperiode(interval):
-#    if interval == "15m":
-#        return timedelta(days=7)        # 7 dagen à ~96 candles per dag = ±672 punten
-#    elif interval == "1h":
- #       return timedelta(days=5)        # 5 dagen à ~7 candles = ±35 punten
- #   elif interval == "4h":
- #       return timedelta(days=90)       # 3 maanden à ~6 candles per week
- #   elif interval == "1d":
- #       return timedelta(days=720)      # 180=6 maanden à 1 candle per dag
- #   elif interval == "1wk":
-#        return timedelta(weeks=150)     # 104=2 jaar aan weekly candles (104 candles)
- #   elif interval == "1mo":
-#        return timedelta(weeks=520)     # 520=0 jaar aan monthly candles (120 candles)
- #   else:
- #       return timedelta(weeks=260)     # Fallback = 5 jaar
-# periode voor koersgrafiek2 
-#def bepaal_grafiekperiode2(interval):
-#    if interval == "15m":
-#        return timedelta(days=7)
- #   elif interval == "1h":
- #       return timedelta(days=5)
- #   elif interval == "4h":
- #       return timedelta(days=90)
-#    elif interval == "1d":
-#        return timedelta(days=180)
- #   else:
-  #      return timedelta(weeks=260)  # bijv. bij weekly/monthly data
+
 #--- Advies en rendementen ---
 # ✅ Helperfunctie voor veilige conversie naar float - alleen in sat dus uitgeschakeld, wel in satpy
 #def safe_float(val):
@@ -125,7 +98,6 @@ def fetch_data(ticker, interval):
 #        return float(val) if pd.notna(val) else 0.0
 #    except:
 #        return 0.0
-
 
     
 def determine_advice(df, threshold, risk_aversion=0):
@@ -241,9 +213,6 @@ def determine_advice(df, threshold, risk_aversion=0):
     return df, huidig_advies
 
             
-       
-
-    
 #--- Advies en rendement EINDE
 
 
@@ -459,20 +428,6 @@ signaalkeuze = st.radio(
     horizontal=True
 )
 
-# debugging tools
-#st.subheader("🔍 SAM Debug-tabel (laatste 8 rijen)")
-#st.dataframe(
-#    df[["Close", "SAMK", "SAMG", "SAMT", "SAMD", "SAMM", "SAMX", "SAM"]].tail(180),
-#    use_container_width=True
-#)
-#st.caption(f"SAM-componenten gemiddeld: "
-#           f"SAMK={df['SAMK'].mean():+.2f}, "
- #          f"SAMG={df['SAMG'].mean():+.2f}, "
-#           f"SAMT={df['SAMT'].mean():+.2f}, "
-#           f"SAMD={df['SAMD'].mean():+.2f}, "
- #          f"SAMM={df['SAMM'].mean():+.2f}, "
- #          f"SAMX={df['SAMX'].mean():+.2f}, "
-  #         f"SAM totaal={df['SAM'].mean():+.2f}")
 
 # Grafieken
 
