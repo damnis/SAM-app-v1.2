@@ -993,10 +993,6 @@ else:
     st.info("ℹ️ Geen trades gevonden binnen de geselecteerde periode.")
     
 
-# trading bot
-# ALPACA_API_KEY = "PK8IAXXDXQEO9QLVNSCV"
-# ALPACA_SECRET_KEY = "ooAURWeE0c2gp336eq5oHC1bqrRAVcCDlWpTbJDJ"
-# trading bot code
 
 # …na de adviezen en grafiek, etc.
 #toon_trading_bot_interface(selected_ticker, huidig_advies)
