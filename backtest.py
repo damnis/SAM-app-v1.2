@@ -141,13 +141,23 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
         st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
 
-        df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
-            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
-            "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
+        # ------------
+        # ✅ Weergave
+        st.dataframe(styler, use_container_width=True)
 
+        # Definieer kolommen
+        geldige_kolommen = ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]
+
+        # ✅ Afronding en formattering op 2 decimalen met plusteken
         # ➕ Afronding op 2 decimalen
         for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]:
             df_display[col] = df_display[col].astype(float).map("{:+.2f}".format)
+
+#        # styler = df_display.style.format({col: "{:+.2f}%" for col in geldige_kolommen})
+        df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
+            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
+            "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
+ 
 
         # ➕ Styling: kleuren
         def kleur_positief_negatief(val):
@@ -158,6 +168,15 @@ def backtest_functie(df, signaalkeuze, selected_tab):
                 elif val < 0: return "color: red"
                 else: return "color: gray"
             except: return "color: gray"
+
+        styler = styler.applymap(kleur_positief_negatief, subset=geldige_kolommen)
+
+        # ✅ Geforceerde kolomhoofdstijl: tekst op 2 regels door vaste breedte (visuele truc)
+        # HTML/CSS workaround: breek automatisch bij spatie als de breedte beperkt is
+        styler = styler.set_table_styles([
+            {"selector": "th.col6", "props": [("min-width", "80px"), ("white-space", "normal")]},
+            {"selector": "th.col7", "props": [("min-width", "80px"), ("white-space", "normal")]}
+        ])
 
         toon_alle = st.toggle("Toon alle trades", value=False)
         if not toon_alle and len(df_display) > 12:
@@ -176,16 +195,15 @@ def backtest_functie(df, signaalkeuze, selected_tab):
             "SAM-% Verkoop": "SAM-%<br>Verkoop"
         })
 
-        geldige_kolommen = [col for col in df_display.columns if "%" in col]
+        # goed en oud
+        geldige_kolommen = [col for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"] if df_display[col].notna().any()]
         styler = df_display.style.applymap(kleur_positief_negatief, subset=geldige_kolommen)
-        styler = styler.format({col: "{}" for col in geldige_kolommen})
-        styler.set_table_styles([{
-            'selector': 'th',
-            'props': [('white-space', 'normal')]
-        }])
+        styler = styler.format({col: "{:+.2f}%" for col in geldige_kolommen})
 
         st.dataframe(styler, use_container_width=True)
 
+
+   
     else:
         st.info("ℹ️ Geen trades gevonden binnen de geselecteerde periode.")
 
