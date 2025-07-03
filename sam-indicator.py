@@ -1,6 +1,14 @@
-# hier dus een werkende afzonderlijke "sam-indicator.py" van maken. 
-# de onderstaande berekening heb ik gekopieerd uit de appctotale script en wil ik daar dus uit hebben
-# svp ook alle grijze (#) delen bewaren, dus stuur me alleen wijzigingen of toevoegingen aan deze sam-indicator.py 
+# sam_indicator.py
+import numpy as np
+import pandas as pd
+import streamlit as st
+from ta.trend import ADXIndicator
+import ta
+
+# --- Weighted Moving Average functie ---
+def weighted_moving_average(series, window):
+    weights = np.arange(1, window + 1)
+    return series.rolling(window).apply(lambda x: np.dot(x, weights)/weights.sum(), raw=True)
 
 # --- SAM Indicatorberekeningen ---
 @st.cache_data(ttl=900)
