@@ -4,7 +4,17 @@ import streamlit as st
 from alpaca.trading.client import TradingClient
 from alpaca.trading.enums import OrderSide, TimeInForce
 from alpaca.trading.requests import MarketOrderRequest, TrailingStopOrderRequest
+import pandas as pd  # Bovenaan toevoegen
 
+def haal_laatste_koers(ticker):
+    try:
+        live_data = yf.download(ticker, period="1d", interval="1d", progress=False)
+        if isinstance(live_data, pd.DataFrame) and "Close" in live_data.columns:
+            return float(live_data["Close"].dropna().iloc[-1].squeeze())
+    except:
+        return None
+    return None
+    
 def verbind_met_alpaca():
     try:
         api_key = st.secrets["ALPACA_API_KEY"]
