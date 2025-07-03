@@ -8,4 +8,6 @@ from datetime import datetime, timedelta, date
 import matplotlib.pyplot as plt
 from ta.trend import ADXIndicator
 
+def backtest_functie (df, interval)
+
 
