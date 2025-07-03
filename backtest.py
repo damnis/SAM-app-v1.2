@@ -143,15 +143,11 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
         # ------------
         # ✅ Weergave
-        st.dataframe(styler, use_container_width=True)
-
+        
         # Definieer kolommen
         geldige_kolommen = ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]
 
-        df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
-            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
-            "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
-
+        
         
         # ✅ Afronding en formattering op 2 decimalen met plusteken
         # ➕ Afronding op 2 decimalen
@@ -191,17 +187,22 @@ def backtest_functie(df, signaalkeuze, selected_tab):
             df_display["Open prijs"] = df_display["Open prijs"].astype(float).map("{:.2f}".format)
             df_display["Sluit prijs"] = df_display["Sluit prijs"].astype(float).map("{:.2f}".format)
 
+        df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
+            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
+            "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
+
+        
         # ➕ Kolomnamen op 2 regels
         df_display = df_display.rename(columns={
-            "SAM-% Koop": "SAM-%<br>Koop",
-            "SAM-% Verkoop": "SAM-%<br>Verkoop"
+            "SAM-% Koop": "SAM-%    Koop",
+            "SAM-% Verkoop": "SAM-%    Verkoop"
         })
 
         # goed en oud
         geldige_kolommen = [col for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"] if df_display[col].notna().any()]
-        styler = df_display.style.applymap(kleur_positief_negatief, subset=geldige_kolommen)
         styler = styler.format({col: "{:+.2f}%" for col in geldige_kolommen})
-
+        styler = df_display.style.applymap(kleur_positief_negatief, subset=geldige_kolommen)
+        
         st.dataframe(styler, use_container_width=True)
 
 
