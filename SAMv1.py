@@ -124,7 +124,7 @@ def bepaal_grafiekperiode(interval):
 #    try:
 #        return float(val) if pd.notna(val) else 0.0
 #    except:
-×        return 0.0
+#        return 0.0
 
 
     
