@@ -112,3 +112,21 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
     html += "</tbody></table>"
 
     st.markdown(html, unsafe_allow_html=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# wit
