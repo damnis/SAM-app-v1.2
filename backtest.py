@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, date
 import matplotlib.pyplot as plt
 from ta.trend import ADXIndicator
 
-def backtest_functie (df, interval)
+def backtest_functie (df, df_signalen,signaal_type)
 #  📊 Backtestfunctie: sluit op close van nieuw signaal
 # ✅ 0.Data voorbereiden voor advies')
 df_signalen = df.copy()
