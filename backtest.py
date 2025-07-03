@@ -165,8 +165,8 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
         # ➕ Kolomnamen op 2 regels
         df_display = df_display.rename(columns={
-            "SAM-% Koop": "SAM-% Koop",
-            "SAM-% Verkoop": "SAM-% Verkoop goed werkt fit"
+  #          "SAM-% Koop": "SAM-% Koop",
+            "SAM-% Verkoop": "SAM-% Verkoop"
         })
 
         
