@@ -1,4 +1,33 @@
 #'tickerlijsten
+# --- Update tab labels en bijbehorende mapping ---
+
+# to script total from tickers import (
+#    aex_tickers, amx_tickers, dow_tickers, eurostoxx_tickers,
+#    nasdaq_ticke
+# --- Mapping beurs tabs en tickers ---
+tabs_mapping = {
+    "🇺🇸 Dow Jones": dow_tickers,
+    "🇺🇸 Nasdaq": nasdaq_tickers,
+    "🇺🇸 US Tech": us_tech_tickers,
+    "🇪🇺 Eurostoxx": eurostoxx_tickers,
+    "🇳🇱 AEX": aex_tickers,
+    "🇳🇱 AMX": amx_tickers,
+    "🌐 Crypto": crypto_tickers
+}
+
+tab_labels = list(tabs_mapping.keys())
+
+valutasymbool = {
+    "🇳🇱 AEX": "€ ",
+    "🇳🇱 AMX": "€ ",
+    "🇺🇸 Dow Jones": "$ ",
+    "🇺🇸 Nasdaq": "$ ",
+    "🇪🇺 Eurostoxx": "€ ",
+    "🇺🇸 US Tech": "$ ",
+    "🌐 Crypto": ""
+}
+
+
 # to script from tickers import ustech_tickers, nasdaq_tickers, dow_tickers, aex_tickers, amx_tickers, eurostoxx_tickers, crypto_tickers
 aex_tickers = {
 "ABN.AS": "ABN AMRO", "ADYEN.AS": "Adyen", "AGN.AS": "Aegon", "AD.AS": "Ahold Delhaize", 
