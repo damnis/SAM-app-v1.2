@@ -2,6 +2,36 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
 
+# 📆 Periode voor SAM-grafiek op basis van interval
+def bepaal_grafiekperiode(interval):
+    if interval == "15m":
+        return timedelta(days=7)        # 7 dagen à ~96 candles per dag = ±672 punten
+    elif interval == "1h":
+        return timedelta(days=5)        # 5 dagen à ~7 candles = ±35 punten
+    elif interval == "4h":
+        return timedelta(days=90)       # 3 maanden à ~6 candles per week
+    elif interval == "1d":
+        return timedelta(days=720)      # 180=6 maanden à 1 candle per dag
+    elif interval == "1wk":
+        return timedelta(weeks=150)     # 104=2 jaar aan weekly candles (104 candles)
+    elif interval == "1mo":
+        return timedelta(weeks=520)     # 520=0 jaar aan monthly candles (120 candles)
+    else:
+        return timedelta(weeks=260)     # Fallback = 5 jaar
+# periode voor koersgrafiek 
+#def bepaal_grafiekperiode2(interval):
+#    if interval == "15m":
+#        return timedelta(days=7)
+ #   elif interval == "1h":
+ #       return timedelta(days=5)
+ #   elif interval == "4h":
+ #       return timedelta(days=90)
+#    elif interval == "1d":
+#        return timedelta(days=180)
+ #   else:
+  #      return timedelta(weeks=260)  # bijv. bij weekly/monthly data
+
+
 # --- Koersgrafiek ---
 def plot_koersgrafiek(df, ticker_name, interval):
     toon_koersgrafiek = st.toggle("\U0001F4C8 Toon koersgrafiek", value=False)
