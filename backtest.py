@@ -148,16 +148,18 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         # Definieer kolommen
         geldige_kolommen = ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]
 
+        df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
+            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
+            "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
+
+        
         # ✅ Afronding en formattering op 2 decimalen met plusteken
         # ➕ Afronding op 2 decimalen
         for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]:
             df_display[col] = df_display[col].astype(float).map("{:+.2f}".format)
 
-#        # styler = df_display.style.format({col: "{:+.2f}%" for col in geldige_kolommen})
-        df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
-            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
-            "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
- 
+         styler = df_display.style.format({col: "{:+.2f}%" for col in geldige_kolommen})
+        
 
         # ➕ Styling: kleuren
         def kleur_positief_negatief(val):
