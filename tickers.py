@@ -7,29 +7,6 @@
 #    tabs_mapping, tab_labels, valutasymbool
 #)
 
-# --- Mapping beurs tabs en tickers ---
-tabs_mapping = {
-    "🇺🇸 Dow Jones": dow_tickers,
-    "🇺🇸 Nasdaq": nasdaq_tickers,
-    "🇺🇸 US Tech": ustech_tickers,
-    "🇪🇺 Eurostoxx": eurostoxx_tickers,
-    "🇳🇱 AEX": aex_tickers,
-    "🇳🇱 AMX": amx_tickers,
-    "🌐 Crypto": crypto_tickers
-}
-
-tab_labels = list(tabs_mapping.keys())
-
-valutasymbool = {
-    "🇳🇱 AEX": "€ ",
-    "🇳🇱 AMX": "€ ",
-    "🇺🇸 Dow Jones": "$ ",
-    "🇺🇸 Nasdaq": "$ ",
-    "🇪🇺 Eurostoxx": "€ ",
-    "🇺🇸 US Tech": "$ ",
-    "🌐 Crypto": ""
-}
-
 
 # to script from tickers import ustech_tickers, nasdaq_tickers, dow_tickers, aex_tickers, amx_tickers, eurostoxx_tickers, crypto_tickers
 aex_tickers = {
@@ -85,6 +62,38 @@ crypto_tickers = {
     "BTC-USD": "Bitcoin", "ETH-USD": "Ethereum", "SOL-USD": "Solana",
     "BNB-USD": "BNB", "XRP-USD": "XRP", "DOGE-USD": "Dogecoin"
 }
+
+
+# --- Mapping beurs tabs en tickers ---
+tabs_mapping = {
+    "🇺🇸 Dow Jones": dow_tickers,
+    "🇺🇸 Nasdaq": nasdaq_tickers,
+    "🇺🇸 US Tech": ustech_tickers,
+    "🇪🇺 Eurostoxx": eurostoxx_tickers,
+    "🇳🇱 AEX": aex_tickers,
+    "🇳🇱 AMX": amx_tickers,
+    "🌐 Crypto": crypto_tickers
+}
+
+tab_labels = list(tabs_mapping.keys())
+
+valutasymbool = {
+    "🇳🇱 AEX": "€ ",
+    "🇳🇱 AMX": "€ ",
+    "🇺🇸 Dow Jones": "$ ",
+    "🇺🇸 Nasdaq": "$ ",
+    "🇪🇺 Eurostoxx": "€ ",
+    "🇺🇸 US Tech": "$ ",
+    "🌐 Crypto": ""
+}
+
+
+
+
+
+
+
+
 
 
 
