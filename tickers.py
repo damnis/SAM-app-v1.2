@@ -1,5 +1,5 @@
 #'tickerlijsten
-# to script from tickers import us_tech, nasdaq, dow_jones, aex, amx, eurostoxx, crypto
+# to script from tickers import ustech_tickers, nasdaq_tickers, dow_tickers, aex_tickers, amx_tickers, eurostoxx_tickers, crypto_tickers
 aex_tickers = {
 "ABN.AS": "ABN AMRO", "ADYEN.AS": "Adyen", "AGN.AS": "Aegon", "AD.AS": "Ahold Delhaize", 
 "AKZA.AS": "Akzo Nobel", "MT.AS": "ArcelorMittal", "ASM.AS": "ASMI", "ASML.AS": "ASML", "ASRNL.AS": "ASR Nederland",
@@ -53,4 +53,26 @@ crypto_tickers = {
     "BTC-USD": "Bitcoin", "ETH-USD": "Ethereum", "SOL-USD": "Solana",
     "BNB-USD": "BNB", "XRP-USD": "XRP", "DOGE-USD": "Dogecoin"
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# wit
 
