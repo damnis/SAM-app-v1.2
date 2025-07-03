@@ -1413,6 +1413,9 @@ else:
     
 
 # trading bot
+# ALPACA_API_KEY = "PK8IAXXDXQEO9QLVNSCV"
+# ALPACA_SECRET_KEY = "ooAURWeE0c2gp336eq5oHC1bqrRAVcCDlWpTbJDJ"
+# trading bot code
 # 📌 Verbinding met Alpaca testen (optioneel, pas uit te voeren als gebruiker dit wil)
 # 📌 Alpaca-py verbindingstest via expander
 from alpaca.trading.client import TradingClient
@@ -1438,8 +1441,6 @@ with st.expander("🔌 Verbind met Alpaca API"):
         except Exception as e:
             st.error(f"❌ Fout bij verbinden met Alpaca: {e}")
             
-# ALPACA_API_KEY = "PK8IAXXDXQEO9QLVNSCV"
-# ALPACA_SECRET_KEY = "ooAURWeE0c2gp336eq5oHC1bqrRAVcCDlWpTbJDJ"
 
 # 📊 Live test met Alpaca Paper Trading
 st.subheader("📥 Plaats live paper trade op basis van advies")
@@ -1463,19 +1464,26 @@ with st.expander("🧪 Virtuele testorder plaatsen via Alpaca Paper Account"):
             else:
                 last = None
         except Exception:
-             last = None
+            last = None
 
         if last is not None:
             st.write(f"📉 Laatste koers voor {ticker}: **${last:.2f}**")
         else:
             st.warning("⚠️ Geen geldige koers beschikbaar voor dit aandeel.")
 
-    # 💵 Invoerbedrag
+        # 💵 Invoerbedrag
         bedrag = st.number_input("💰 Te investeren bedrag ($)", min_value=10.0, value=1000.0, step=10.0)
 
         # ✅ Actueel advies ophalen
         advies = huidig_advies if isinstance(huidig_advies, str) else "Niet beschikbaar"
         st.write(f"📌 Actueel advies voor {ticker}: **{advies}**")
+
+        # 🔄 Keuze tussen Market en Trailing Stop
+        order_type = st.radio("🛒 Kies ordertype", ["Market Order", "Trailing Stop Order"], horizontal=True)
+
+        trailing_pct = None
+        if order_type == "Trailing Stop Order":
+            trailing_pct = st.slider("📉 Trailing stop (% vanaf hoogste koers)", 1.0, 20.0, 5.0)
 
         # 🟢 Orderknop
         if st.button("📤 Verstuur order naar Alpaca"):
@@ -1485,22 +1493,34 @@ with st.expander("🧪 Virtuele testorder plaatsen via Alpaca Paper Account"):
                     st.warning("❌ Bedrag is te klein voor aankoop tegen huidige koers.")
                 else:
                     side = OrderSide.BUY if advies == "Kopen" else OrderSide.SELL
-                    order = MarketOrderRequest(
-                        symbol=ticker,
-                        qty=aantal,
-                        side=side,
-                        time_in_force=TimeInForce.GTC  # GTC = blijft geldig tot uitgevoerd of geannuleerd
-                    )
-
                     try:
+                        if order_type == "Market Order":
+                            order = MarketOrderRequest(
+                                symbol=ticker,
+                                qty=aantal,
+                                side=side,
+                                time_in_force=TimeInForce.GTC
+                            )
+                        else:
+                            from alpaca.trading.requests import TrailingStopOrderRequest
+
+                            order = TrailingStopOrderRequest(
+                                symbol=ticker,
+                                qty=aantal,
+                                side=side,
+                                trail_percent=trailing_pct,
+                                time_in_force=TimeInForce.GTC
+                            )
+
                         response = trading_client.submit_order(order)
-                        st.success(f"✅ Order geplaatst: {aantal}x {ticker} ({advies})")
+                        st.success(f"✅ Order geplaatst: {aantal}x {ticker} ({advies}) via {order_type}")
                         st.write(response)
+
                     except Exception as e:
                         st.error(f"❌ Order kon niet worden geplaatst: {e}")
             else:
                 st.warning("⚠️ Geen geldige koers of advies beschikbaar om order te plaatsen.")
-    
+
     except Exception as e:
         st.error(f"❌ Fout bij verbinding met Alpaca: {e}")
 
@@ -1621,7 +1641,30 @@ with st.expander("📊 Positie check en verkoopactie (alleen bij 'Verkopen')"):
 #    st.write("▶️ types:", type(high_series), type(low_series), type(close_series))
  #   st.write("▶️ head close_series:", close_series.head())
 
+# 🟢 Orderknop
+#        if st.button("📤 Verstuur order naar Alpaca"):
+#            if last is not None and advies in ["Kopen", "Verkopen"]:
+#                aantal = int(bedrag / last)
+  #              if aantal == 0:
+ #                   st.warning("❌ Bedrag is te klein voor aankoop tegen huidige koers.")
+ #               else:
+  #                  side = OrderSide.BUY if advies == "Kopen" else OrderSide.SELL
+ #                   order = MarketOrderRequest(
+  #                      symbol=ticker,
+  #                      qty=aantal,
+  #                      side=side,
+  #                      time_in_force=TimeInForce.GTC  # GTC = blijft geldig tot uitgevoerd of geannuleerd
+  #                  )
 
+   #                 try:
+ #                       response = trading_client.submit_order(order)
+  #                      st.success(f"✅ Order geplaatst: {aantal}x {ticker} ({advies})")
+   #                     st.write(response)
+   #                 except Exception as e:
+   #                     st.error(f"❌ Order kon niet worden geplaatst: {e}")
+   #         else:
+    #            st.warning("⚠️ Geen geldige koers of advies beschikbaar om order te plaatsen.")
+    
 
 # wit
 
