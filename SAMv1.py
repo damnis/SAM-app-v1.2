@@ -17,7 +17,7 @@ from tickers import (
     tabs_mapping, tab_labels, valutasymbool
 )
 # Indicatoren berekening
-from sam-indicator import calculate_sam
+from sam_indicator import calculate_sam
 # trading bot
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
