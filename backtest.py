@@ -176,8 +176,8 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         # ✅ Geforceerde kolomhoofdstijl: tekst op 2 regels door vaste breedte (visuele truc)
         # HTML/CSS workaround: breek automatisch bij spatie als de breedte beperkt is
         styler = styler.set_table_styles([
-            {"selector": "th.col6", "props": [("min-width", "80px"), ("white-space", "normal")]},
-            {"selector": "th.col7", "props": [("min-width", "80px"), ("white-space", "normal")]}
+            {"selector": "th.col6", "props": [("min-width", "60px"), ("white-space", "normal")]},
+            {"selector": "th.col7", "props": [("min-width", "60px"), ("white-space", "normal")]}
         ])
 
         toon_alle = st.toggle("Toon alle trades", value=False)
@@ -195,8 +195,8 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         
         # ➕ Kolomnamen op 2 regels
         df_display = df_display.rename(columns={
-            "SAM-%     Koop": "SAM-% Koop",
-            "SAM-%    Verkoop": "SAM-% Verkoop"
+            "SAM-% Koop": "SAM-% Koop",
+            "SAM-% Verkoop": "SAM-% Verkoop"
         })
 
         # goed en oud
