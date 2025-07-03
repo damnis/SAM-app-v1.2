@@ -150,6 +150,10 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         
         
         # ✅ Afronding en formattering op 2 decimalen met plusteken
+        df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
+            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
+            "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
+
         # ➕ Afronding op 2 decimalen
         for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]:
             df_display[col] = df_display[col].astype(float).map("{:+.2f}".format)
@@ -187,10 +191,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
             df_display["Open prijs"] = df_display["Open prijs"].astype(float).map("{:.2f}".format)
             df_display["Sluit prijs"] = df_display["Sluit prijs"].astype(float).map("{:.2f}".format)
 
-        df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
-            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
-            "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
-
+        
         
         # ➕ Kolomnamen op 2 regels
         df_display = df_display.rename(columns={
