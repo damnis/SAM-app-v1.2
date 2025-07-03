@@ -118,6 +118,28 @@ def toon_trading_bot_interface(ticker, huidig_advies):
 
     st.subheader("📤 Verkooppositie controleren en sluiten")
     with st.expander("📊 Positie check en verkoopactie"):
+        try:
+            positie = client.get_open_position(ticker)
+            huidige_qty = int(float(positie.qty))
+            avg_price = float(positie.avg_entry_price)
+            st.write(f"📦 Je bezit momenteel **{huidige_qty}x {ticker}** @ ${avg_price:.2f} gemiddeld.")
+        except Exception:
+            st.info("📭 Geen open positie gevonden in deze ticker.")
+            return
+
+        st.write(f"📌 Huidig advies: **{huidig_advies}**")
         force_verkoop = st.checkbox("🔒 Forceer verkoop, ongeacht advies")
+
         if st.button("❗ Verkooppositie sluiten"):
             sluit_positie(client, ticker, huidig_advies, force=force_verkoop)
+
+
+
+
+
+
+
+
+
+
+#  wir
