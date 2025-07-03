@@ -10,6 +10,7 @@ from ta.trend import ADXIndicator
 #from ta.momentum import TRIXIndicator
 # from .py imports
 from bot import verbind_met_alpaca, haal_laatste_koers, plaats_order, sluit_positie
+# --- Volledige tickerlijsten ---
 from tickers import ustech_tickers, nasdaq_tickers, dow_tickers, aex_tickers, amx_tickers, eurostoxx_tickers, crypto_tickers
 
 # trading bot
@@ -654,8 +655,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# --- Volledige tickerlijsten ---
-aex_tickers = {
+
 
 # --- Update tab labels en bijbehorende mapping ---
 tabs_mapping = {
