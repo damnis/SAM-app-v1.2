@@ -19,7 +19,7 @@ from tickers import (
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
 # grafieken en tabellen
-from grafieken import plot_koersgrafiek, plot_sam_trend, plot_sat_debug, grafiekperiode
+from grafieken import plot_koersgrafiek, plot_sam_trend, plot_sat_debug, bepaal_grafiekperiode 
 # trading bot
 from bot import toon_trading_bot_interface
 from bot import verbind_met_alpaca, haal_laatste_koers, plaats_order, sluit_positie
