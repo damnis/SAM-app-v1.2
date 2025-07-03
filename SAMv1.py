@@ -13,7 +13,7 @@ from bot import verbind_met_alpaca, haal_laatste_koers, plaats_order, sluit_posi
 # --- Volledige tickerlijsten ---
 from tickers import (
     aex_tickers, amx_tickers, dow_tickers, eurostoxx_tickers,
-    nasdaq_tickers, us_tech_tickers, crypto_tickers,
+    nasdaq_tickers, ustech_tickers, crypto_tickers,
     tabs_mapping, tab_labels, valutasymbool
 )
 # trading bot
