@@ -11,7 +11,7 @@ from ta.trend import ADXIndicator
 # from .py imports
 from bot import verbind_met_alpaca, haal_laatste_koers, plaats_order, sluit_positie
 from tickers import ustech_tickers, nasdaq_tickers, dow_tickers, aex_tickers, amx_tickers, eurostoxx_tickers, crypto_tickers
-aex_tickers = {
+
 # trading bot
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
