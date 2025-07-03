@@ -833,95 +833,11 @@ toon_trading_bot_interface(selected_ticker, huidig_advies)
 
 
 
-#            if mapped_type == "Beide" or advies == mapped_type:
-#                entry_type = advies
- #               entry_price = close
- #               entry_date = datum
- #               continue
-#  else:  
-
-# ⏱ gecompliceerde koersgrafiek werkt niet geheel
-# bepaal data weeergaveperiode op basis van interval
-#grafiek_periode = bepaal_grafiekperiode(interval)
-
-# Bepaal cutoff-datum
-#cutoff_datum = df.index.max() - grafiek_periode
-
-# Filter alleen grafiekdata
-#df_grafiek = df[df.index >= cutoff_datum].copy()
-
-#cutoff_datum = datetime.now() - bepaal_grafiekperiode(interval)
-#df_filtered = df[df.index >= cutoff_datum]
-
-# 🖼️ Toggle voor grafiek
-#if st.toggle("📊 Toon koersgrafiek"):
- #   fig = go.Figure(data=[
-#        go.Candlestick(
- #           x=df_filtered.index,
-#            open=df_filtered["Open"],
- #           high=df_filtered["High"],
-  #          low=df_filtered["Low"],
-  #          close=df_filtered["Close"],
- #           increasing_line_color='green',
- #           decreasing_line_color='red',
-#            name='Koers'
-#        )
-#    ])
-
- #   fig.update_layout(
- #       xaxis_title="Datum",
- #       yaxis_title="Koers",
- #       xaxis_rangeslider_visible=False,
- #       height=400,
- #       margin=dict(l=10, r=10, t=10, b=10)
-#    )
-
-#    st.plotly_chart(fig, use_container_width=True)
 
 
-#-- Grafiek met SAM en Trend  - oud ---
-#fig, ax1 = plt.subplots(figsize=(10, 4))
-#ax1.bar(df_grafiek.index, df_grafiek["SAM"], color="lightblue", label="SAM")
-#ax1.axhline(y=0, color="black", linewidth=1, linestyle="--")  # nullijn
-#ax2 = ax1.twinx()
-#ax2.plot(df_grafiek.index, df_grafiek["Trend"], color="red", label="Trend")
-#ax1.set_ylabel("SAM")
-#ax2.set_ylabel("Trend")
-#fig.tight_layout()
-#st.pyplot(fig)
 
-    # 3) Debug-check: 
-#    st.write("▶️ types:", type(high_series), type(low_series), type(close_series))
- #   st.write("▶️ head close_series:", close_series.head())
 
-# 🟢 Orderknop
-#        if st.button("📤 Verstuur order naar Alpaca"):
-#            if last is not None and advies in ["Kopen", "Verkopen"]:
-#                aantal = int(bedrag / last)
-  #              if aantal == 0:
- #                   st.warning("❌ Bedrag is te klein voor aankoop tegen huidige koers.")
- #               else:
-  #                  side = OrderSide.BUY if advies == "Kopen" else OrderSide.SELL
- #                   order = MarketOrderRequest(
-  #                      symbol=ticker,
-  #                      qty=aantal,
-  #                      side=side,
-  #                      time_in_force=TimeInForce.GTC  # GTC = blijft geldig tot uitgevoerd of geannuleerd
-  #                  )
 
-   #                 try:
- #                       response = trading_client.submit_order(order)
-  #                      st.success(f"✅ Order geplaatst: {aantal}x {ticker} ({advies})")
-   #                     st.write(response)
-   #                 except Exception as e:
-   #                     st.error(f"❌ Order kon niet worden geplaatst: {e}")
-   #         else:
-    #            st.warning("⚠️ Geen geldige koers of advies beschikbaar om order te plaatsen.")
-    
+
 
 # wit
-
-
-
-
-                    
