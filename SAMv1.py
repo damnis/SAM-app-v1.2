@@ -21,7 +21,8 @@ from sat_indicator import calculate_sat
 # grafieken en tabellen
 from grafieken import plot_koersgrafiek, plot_sam_trend, plot_sat_debug, bepaal_grafiekperiode 
 from sam_tabel import toon_sam_tabel
-
+# Backtestfunctie 
+from backtest import backtest_functie
 # trading bot
 from bot import toon_trading_bot_interface
 from bot import verbind_met_alpaca, haal_laatste_koers, plaats_order, sluit_positie
@@ -485,6 +486,8 @@ toon_sam_tabel(df, selected_tab, signaalkeuze)
 # ---------------------
 
 ## 📊 Backtestfunctie: sluit op close van nieuw signaal
+backtest_functie(df, selected_tab, signaalkeuze)
+
 # ✅ 0.Data voorbereiden voor advies')
 df_signalen = df.copy()
 if "Advies" not in df_signalen.columns:
