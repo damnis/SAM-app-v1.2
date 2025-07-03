@@ -9,8 +9,7 @@ import matplotlib.pyplot as plt
 from ta.trend import ADXIndicator
 #from ta.momentum import TRIXIndicator
 # from .py imports
-from bot import verbind_met_alpaca, haal_laatste_koers, plaats_order, sluit_positie
-# --- Volledige tickerlijsten ---
+#-- Volledige tickerlijsten ---
 from tickers import (
     aex_tickers, amx_tickers, dow_tickers, eurostoxx_tickers,
     nasdaq_tickers, ustech_tickers, crypto_tickers,
@@ -20,6 +19,8 @@ from tickers import (
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
 # trading bot
+from bot import toon_trading_bot_interface
+from bot import verbind_met_alpaca, haal_laatste_koers, plaats_order, sluit_positie
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
@@ -996,7 +997,6 @@ else:
 # ALPACA_API_KEY = "PK8IAXXDXQEO9QLVNSCV"
 # ALPACA_SECRET_KEY = "ooAURWeE0c2gp336eq5oHC1bqrRAVcCDlWpTbJDJ"
 # trading bot code
-from bot import toon_trading_bot_interface
 
 # …na de adviezen en grafiek, etc.
 #toon_trading_bot_interface(selected_ticker, huidig_advies)
