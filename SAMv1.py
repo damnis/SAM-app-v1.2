@@ -661,28 +661,11 @@ st.markdown("""
 
 
 # --- Update tab labels en bijbehorende mapping ---
-tabs_mapping = {
-    "🇺🇸 Dow Jones": dow_tickers,
-    "🇺🇸 Nasdaq": nasdaq_tickers,
-    "🇺🇸 US Tech": ustech_tickers,
-    "🇪🇺 Eurostoxx": eurostoxx_tickers,
-    "🇳🇱 AEX": aex_tickers,
-    "🇳🇱 AMX": amx_tickers,
-    "🌐 Crypto": crypto_tickers
-}
-
-tab_labels = list(tabs_mapping.keys())
+# tab_labels = list(tabs_mapping.keys())
 selected_tab = st.radio("Kies beurs", tab_labels, horizontal=True)
-
-valutasymbool = {
-    "🇳🇱 AEX": "€ ",
-    "🇳🇱 AMX": "€ ",
-    "🇺🇸 Dow Jones": "$ ",
-    "🇺🇸 Nasdaq": "$ ",
-    "🇪🇺 Eurostoxx": "€ ",
-    "🇺🇸 US Tech": "$ ",
-    "🌐 Crypto": "",  # Geen symbool
-}.get(selected_tab, "")
+tickers = tabs_mapping[selected_tab]
+valutasymbool = valutasymbool[selected_tab]
+# }.get(selected_tab, "")
 
 #def get_live_ticker_data(tickers_dict):
 # --- Data ophalen voor dropdown live view ---
