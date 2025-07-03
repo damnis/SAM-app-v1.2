@@ -195,11 +195,11 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
         
         
-        # ➕ Kolomnamen op 2 regels
-     #   df_display = df_display.rename(columns={
-    #        "SAM-% Koop": "SAM-% Koop",
-   #         "SAM-% Verkoop": "SAM-% Verkoop"
-   #     })
+         ➕ Kolomnamen op 2 regels
+        df_display = df_display.rename(columns={
+            "SAM-% Koop": "SAM-%\n Koop",
+            "SAM-% Verkoop": "SAM-% Verkoop dit nooit"
+        })
 
         # goed en oud
         geldige_kolommen = [col for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"] if df_display[col].notna().any()]
