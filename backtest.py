@@ -163,6 +163,13 @@ def backtest_functie(df, signaalkeuze, selected_tab):
             st.write(f"Kolom {i}: {col}")
     
 
+        # ➕ Kolomnamen op 2 regels
+        df_display = df_display.rename(columns={
+            "SAM-% is niet te Koop": "SAM-% Koop",
+            "SAM-% wel Verkoop": "SAM-% Verkoop"
+        })
+
+        
         # ➕ Styling: kleuren
         def kleur_positief_negatief(val):
             if pd.isna(val): return "color: gray"
@@ -195,12 +202,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
         
         
-        # ➕ Kolomnamen op 2 regels
-        df_display = df_display.rename(columns={
-            "SAM-% is niet te Koop": "SAM-% Koop",
-            "SAM-% wel Verkoop": "SAM-% Verkoop"
-        })
-
+        
         # goed en oud
         geldige_kolommen = [col for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"] if df_display[col].notna().any()]
         styler = styler.format({col: "{:+.2f}%" for col in geldige_kolommen})
