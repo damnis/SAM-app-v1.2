@@ -159,7 +159,9 @@ def backtest_functie(df, signaalkeuze, selected_tab):
             df_display[col] = df_display[col].astype(float).map("{:+.2f}%".format)
 
         styler = df_display.style.format({col: "{:+.2f}%" for col in geldige_kolommen})
-        
+        for i, col in enumerate(df_display.columns):
+            st.write(f"Kolom {i}: {col}")
+    
 
         # ➕ Styling: kleuren
         def kleur_positief_negatief(val):
@@ -192,9 +194,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
             df_display["Sluit prijs"] = df_display["Sluit prijs"].astype(float).map("{:.2f}".format)
 
         
-        for i, col in enumerate(df_display.columns):
-    st.write(f"Kolom {i}: {col}")
-    
+        
         # ➕ Kolomnamen op 2 regels
         df_display = df_display.rename(columns={
             "SAM-% Koop": "SAM-% Koop",
