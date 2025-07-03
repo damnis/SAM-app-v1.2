@@ -285,4 +285,29 @@ def calculate_sam(df):
     df["SAM"] = df[["SAMK", "SAMG", "SAMT", "SAMD", "SAMM", "SAMX"]].sum(axis=1)
 
     return df
-    
+
+
+
+
+# debugging tools
+#st.subheader("🔍 SAM Debug-tabel (laatste 8 rijen)")
+#st.dataframe(
+#    df[["Close", "SAMK", "SAMG", "SAMT", "SAMD", "SAMM", "SAMX", "SAM"]].tail(180),
+#    use_container_width=True
+#)
+#st.caption(f"SAM-componenten gemiddeld: "
+#           f"SAMK={df['SAMK'].mean():+.2f}, "
+ #          f"SAMG={df['SAMG'].mean():+.2f}, "
+#           f"SAMT={df['SAMT'].mean():+.2f}, "
+#           f"SAMD={df['SAMD'].mean():+.2f}, "
+ #          f"SAMM={df['SAMM'].mean():+.2f}, "
+ #          f"SAMX={df['SAMX'].mean():+.2f}, "
+  #         f"SAM totaal={df['SAM'].mean():+.2f}")
+
+
+
+
+
+
+
+
