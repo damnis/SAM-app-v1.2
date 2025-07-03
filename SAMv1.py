@@ -510,8 +510,8 @@ with col2:
 
 # weergave grafieken via py
 # 🟢 Toon koersgrafiek (toggle)
-if st.toggle("📈 Toon koersgrafiek", value=False):
-    plot_koersgrafiek(df, ticker_name, interval)
+#if st.toggle("📈 Toon koersgrafiek", value=False):
+plot_koersgrafiek(df, ticker_name, interval)
 
 # 🔵 Toon SAM + Trend grafiek
 plot_sam_trend(df, interval)
