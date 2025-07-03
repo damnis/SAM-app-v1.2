@@ -1,14 +1,17 @@
 #'tickerlijsten
 # --- Update tab labels en bijbehorende mapping ---
 
-# to script total from tickers import (
+# to script = from tickers import (
 #    aex_tickers, amx_tickers, dow_tickers, eurostoxx_tickers,
-#    nasdaq_ticke
+#    nasdaq_tickers, ustech_tickers, crypto_tickers,
+#    tabs_mapping, tab_labels, valutasymbool
+#)
+
 # --- Mapping beurs tabs en tickers ---
 tabs_mapping = {
     "🇺🇸 Dow Jones": dow_tickers,
     "🇺🇸 Nasdaq": nasdaq_tickers,
-    "🇺🇸 US Tech": us_tech_tickers,
+    "🇺🇸 US Tech": ustech_tickers,
     "🇪🇺 Eurostoxx": eurostoxx_tickers,
     "🇳🇱 AEX": aex_tickers,
     "🇳🇱 AMX": amx_tickers,
