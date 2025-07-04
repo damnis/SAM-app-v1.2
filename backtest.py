@@ -207,7 +207,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         
         
         # goed en oud
-        geldige_kolommen = [col for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", ""SAM-%\u200BVerkoop"] if df_display[col].notna().any()]
+        geldige_kolommen = [col for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-%\u200BVerkoop"] if df_display[col].notna().any()]
         styler = styler.format({col: "{:+.2f}%" for col in geldige_kolommen})
         styler = df_display.style.applymap(kleur_positief_negatief, subset=geldige_kolommen)
         
