@@ -171,7 +171,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
         
         df_display = df_display.rename(columns={
-            "SAM-% Verkoop": "SAM-%\u200BVerkoop"
+            "SAM-% Verkoop": "SAM-%\u100BVerkoop"
 })
         # ➕ Styling: kleuren
         def kleur_positief_negatief(val):
@@ -187,10 +187,10 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
         # ✅ Geforceerde kolomhoofdstijl: tekst op 2 regels door vaste breedte (visuele truc)
         # HTML/CSS workaround: breek automatisch bij spatie als de breedte beperkt is
-        styler = styler.set_table_styles([
+   #     styler = styler.set_table_styles([
    #         {"selector": "th.col6", "props": [("min-width", "40px"), ("max-width", "60px"), ("white-space", "normal")]},
-            {"selector": "th.col7", "props": [("min-width", "40px"), ("max-width", "45px"), ("no-white-space", "normal")]}
-        ])
+   #         {"selector": "th.col7", "props": [("min-width", "40px"), ("max-width", "45px"), ("no-white-space", "normal")]}
+   #     ])
 
         toon_alle = st.toggle("Toon alle trades", value=False)
         if not toon_alle and len(df_display) > 12:
@@ -207,7 +207,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         
         
         # goed en oud
-        geldige_kolommen = [col for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-%\nVerkoop"] if df_display[col].notna().any()]
+        geldige_kolommen = [col for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"] if df_display[col].notna().any()]
         styler = styler.format({col: "{:+.2f}%" for col in geldige_kolommen})
         styler = df_display.style.applymap(kleur_positief_negatief, subset=geldige_kolommen)
         
