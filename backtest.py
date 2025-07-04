@@ -164,12 +164,15 @@ def backtest_functie(df, signaalkeuze, selected_tab):
     
 
         # ➕ Kolomnamen op 2 regels
-        df_display = df_display.rename(columns={
-            "SAM-% Koop": "SAM-% Koop",
-            "SAM-% Verkoop": "SAM-%\nVerkoop"
-        })
+  #      df_display = df_display.rename(columns={
+ #           "SAM-% Koop": "SAM-% Koop",
+  #          "SAM-% Verkoop": "SAM-%\nVerkoop"
+ #       })
 
         
+        df_display = df_display.rename(columns={
+            "SAM-% Verkoop": "SAM-%\u200BVerkoop"
+})
         # ➕ Styling: kleuren
         def kleur_positief_negatief(val):
             if pd.isna(val): return "color: gray"
