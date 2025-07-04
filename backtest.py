@@ -158,7 +158,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]:
             df_display[col] = df_display[col].astype(float).map("{:+.2f}%".format)
 
-   #     styler = df_display.style.format({col: "{:+.2f}%" for col in geldige_kolommen})
+        styler = df_display.style.format({col: "{:+.2f}%" for col in geldige_kolommen})
    #     for i, col in enumerate(df_display.columns):
     #        st.write(f"Kolom {i}: {col}")
     
