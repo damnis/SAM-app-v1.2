@@ -187,10 +187,10 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
         # ✅ Geforceerde kolomhoofdstijl: tekst op 2 regels door vaste breedte (visuele truc)
         # HTML/CSS workaround: breek automatisch bij spatie als de breedte beperkt is
-   #     styler = styler.set_table_styles([
+        styler = styler.set_table_styles([
    #         {"selector": "th.col6", "props": [("min-width", "40px"), ("max-width", "60px"), ("white-space", "normal")]},
-   #         {"selector": "th.col7", "props": [("min-width", "40px"), ("max-width", "45px"), ("no-white-space", "normal")]}
-   #     ])
+            {"selector": "th.col7", "props": [("min-width", "40px"), ("max-width", "45px"), ("no-white-space", "normal")]}
+        ])
 
         toon_alle = st.toggle("Toon alle trades", value=False)
         if not toon_alle and len(df_display) > 12:
