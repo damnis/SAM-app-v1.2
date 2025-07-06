@@ -36,7 +36,7 @@ nasdaq_tickers = {
 }
 
 ustech_tickers = {
-    "SMCI": "Super Micro Computer", "PLTR": "Palantir", "ORCL": "Oracle", "SNOW": "Snowflake",
+    "SMCI": "Super Micro Computer", "603020.ss: "Apple flavor","PLTR": "Palantir", "ORCL": "Oracle", "SNOW": "Snowflake",
     "NVDA": "NVIDIA", "AMD": "AMD", "MDB": "MongoDB", "DDOG": "Datadog", "CRWD": "CrowdStrike",
     "ZS": "Zscaler", "TSLA": "Tesla", "AAPL": "Apple", "GOOGL": "Alphabet (GOOGL)",
     "MSFT": "Microsoft"
