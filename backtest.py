@@ -137,7 +137,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 #    sam_rendement_filtered, _, _ = bereken_sam_rendement(df_signalen, signaal_type=signaalkeuze, close_col=close_col)
 
     # ✅ 4.2: Berekening voor volledige analyse (altijd "Beide")
-#    _, trades_all, _ = bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col=close_col)
+    _, trades_all, _ = bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col=close_col)
 
     # ✅ 5.0: Alleen metric gebaseerd op keuze
 #    col1, col2 = st.columns(2)
