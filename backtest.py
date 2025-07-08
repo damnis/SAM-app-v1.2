@@ -129,8 +129,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
     # 5. Visueel weergeven
     col1, col2 = st.columns(2)
     col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
-    col2.metric(" YES SAM-rendement", f"{sam_rendement:+.2f}%" if isinstance(sam_rendement, (int, float)) else "n.v.t.")
-
+    
     
 
     # ✅ 4.1: Berekening voor metric (gefilterd op gekozen signaal)
@@ -164,6 +163,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         aantal_succesvol = (df_trades["Rendement (%)"] > 0).sum()
         aantal_succesvol_koop = (df_trades["SAM-% Koop"] > 0).sum()
         aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
+    col2.metric("SAM-rendement", f"{sam_rendement:+.2f}%" if isinstance(sam_rendement, (int, float)) else "n.v.t.")
 
     # ✅ 5.3 Captions op basis van volledige set
         st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
