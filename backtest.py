@@ -205,7 +205,10 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
             df_signalen, signaal_type=signaalkeuze, close_col=close_col
 
 )
-        
+        st.write("🧪 DEBUG vóór metrics:")
+        st.write("sam_rendement_filtered", sam_rendement_filtered)
+        st.write("marktrendement", marktrendement)
+
         col1, col2 = st.columns(2)
         col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
    #     col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
@@ -228,6 +231,13 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
         aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
     
     # ✅ 5.3 Captions op basis van volledige set
+        st.write("🧪 DEBUG vóór captions:")
+        st.write("rendement_totaal", rendement_totaal)
+        st.write("rendement_koop", rendement_koop)
+        st.write("rendement_verkoop", rendement_verkoop)
+        st.write("aantal_trades", aantal_trades)
+        st.write("aantal_koop", aantal_koop)
+        st.write("aantal_verkoop", aantal_verkoop)
         st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
         st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
         st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
