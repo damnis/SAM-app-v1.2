@@ -194,17 +194,17 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
             df_trades_filtered = df_trades[df_trades["Type"] == "Verkopen"].copy()
         else:
             df_trades_filtered = df_trades.copy()
-
+#
     # 🔢 Rendementsberekening (gecompoundeerd)
   #      metric_sam = (df_trades_filtered["Rendement (%)"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
         marktrendement_display = f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t."
 
     # 🎯 Metricweergave
    
-        sam_rendement_filtered, trades_filtered, rendementen_filtered = bereken_sam_rendement(
-            df_signalen, signaal_type=signaalkeuze, close_col=close_col
+#        sam_rendement_filtered, trades_filtered, rendementen_filtered = bereken_sam_rendement(
+   #         df_signalen, signaal_type=signaalkeuze, close_col=close_col
 
-)
+#)
         st.write("🧪 DEBUG vóór metrics:")
         st.write("sam_rendement_filtered", sam_rendement_filtered)
         st.write("marktrendement", marktrendement)
