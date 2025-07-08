@@ -6,6 +6,20 @@ from datetime import date
 def backtest_functie(df, signaalkeuze, selected_tab):
     st.subheader("Vergelijk Marktrendement en SAM-rendement")
 
+    current_year = date.today().year
+    default_start = date(current_year - 2, 1, 1)
+    default_end = df.index.max().date()
+
+    start_date = st.date_input("Startdatum analyse", default_start)
+    end_date = st.date_input("Einddatum analyse", default_end)
+
+    df = df.copy()
+    df.index = pd.to_datetime(df.index)
+    df_period = df.loc[(df.index.date >= start_date) & (df.index.date <= end_date)].copy()
+
+    if isinstance(df_period.columns, pd.MultiIndex):
+        df_period.columns = ["_".join([str(i) for i in col if i]) for col in df_period.columns]
+
     # ðŸ“Š Backtestfunctie: sluit op close van nieuw signaal
 # âœ… 0.Data voorbereiden voor advies')
 df_signalen = df.copy()
