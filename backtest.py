@@ -135,19 +135,21 @@ def backtest_functie(df, signaalkeuze, selected_tab):
  
     
     col1, col2 = st.columns(2)
-    col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
-   # col2.metric("📊 SAM-rendement", f"{sam_rendement_filtered:+.2f}%" if isinstance(sam_rendement_filtered, (int, float)) else "n.v.t.")
 
-       # 🔁 Bovenste SAM-rendement aanpassen op signaalkeuze
-    if signaalkeuze == "Koop":
-        metric_sam = df_trades["SAM-% Koop"].sum(skipna=True)
-    elif signaalkeuze == "Verkoop":
-        metric_sam = df_trades["SAM-% Verkoop"].sum(skipna=True)
-    else:
-        metric_sam = df_trades["Rendement (%)"].sum(skipna=True)
+col1.metric(
+    "Marktrendement (Buy & Hold)",
+    f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t."
+)
 
-    col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
- 
+# 🔁 Bovenste SAM-rendement aanpassen op signaalkeuze
+if signaalkeuze == "Koop":
+    metric_sam = df_trades["SAM-% Koop"].sum(skipna=True)
+elif signaalkeuze == "Verkoop":
+    metric_sam = df_trades["SAM-% Verkoop"].sum(skipna=True)
+else:
+    metric_sam = df_trades["Rendement (%)"].sum(skipna=True)
+
+col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
         
     st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
     st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
