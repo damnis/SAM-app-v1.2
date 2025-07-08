@@ -160,12 +160,12 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
 
         
-  #      if signaalkeuze == "Koop":
-   #         df_trades_filtered = df_trades[df_trades["Type"] == "Kopen"].copy()
-  #      elif signaalkeuze == "Verkoop":
-  #          df_trades_filtered = df_trades[df_trades["Type"] == "Verkopen"].copy()
-   #     else:
-   #         df_trades_filtered = df_trades.copy()
+        if signaalkeuze == "Koop":
+            df_trades_filtered = df_trades[df_trades["Type"] == "Kopen"].copy()
+        elif signaalkeuze == "Verkoop":
+            df_trades_filtered = df_trades[df_trades["Type"] == "Verkopen"].copy()
+        else:
+            df_trades_filtered = df_trades.copy()
 
     # 🔢 Rendementsberekening (gecompoundeerd)
   #      metric_sam = (df_trades_filtered["Rendement (%)"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
