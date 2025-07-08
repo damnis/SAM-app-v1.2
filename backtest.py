@@ -123,6 +123,84 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
 
 
 
+# ------------
+        # ✅ Weergave
+        
+        # Definieer kolommen
+        geldige_kolommen = ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]
+
+        
+        
+        # ✅ Afronding en formattering op 2 decimalen met plusteken
+        df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
+            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
+            "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
+
+        # ➕ Afronding op 2 decimalen
+        for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]:
+            df_display[col] = df_display[col].astype(float).map("{:+.2f}%".format)
+
+        styler = df_display.style.format({col: "{:+.2f}%" for col in geldige_kolommen})
+   #     for i, col in enumerate(df_display.columns):
+    #        st.write(f"Kolom {i}: {col}")
+    
+
+        # ➕ Kolomnamen op 2 regels
+  #      df_display = df_display.rename(columns={
+ #           "SAM-% Koop": "SAM-% Koop",
+  #          "SAM-% Verkoop": "SAM-%\nVerkoop"
+ #       })
+        
+#        df_display = df_display.rename(columns={
+ #           "SAM-% Verkoop": "SAM-%\u200B Verkoop"
+#})
+        # ➕ Styling: kleuren
+        def kleur_positief_negatief(val):
+            if pd.isna(val): return "color: gray"
+            try:
+                val = float(val.replace('%', ''))
+                if val > 0: return "color: green"
+                elif val < 0: return "color: red"
+                else: return "color: gray"
+            except: return "color: gray"
+
+        styler = styler.applymap(kleur_positief_negatief, subset=geldige_kolommen)
+
+        # ✅ Geforceerde kolomhoofdstijl: tekst op 2 regels door vaste breedte (visuele truc)
+        # HTML/CSS workaround: breek automatisch bij spatie als de breedte beperkt is
+  #      styler = styler.set_table_styles([
+   #         {"selector": "th.col6", "props": [("min-width", "40px"), ("max-width", "60px"), ("white-space", "normal")]},
+   #         {"selector": "th.col7", "props": [("min-width", "40px"), ("max-width", "45px"), ("no-white-space", "normal")]}
+   #     ])
+
+        toon_alle = st.toggle("Toon alle trades", value=False)
+        if not toon_alle and len(df_display) > 12:
+            df_display = df_display.iloc[-12:]
+
+        if selected_tab == "🌐 Crypto":
+            df_display["Open prijs"] = df_display["Open prijs"].astype(float).map("{:.3f}".format)
+            df_display["Sluit prijs"] = df_display["Sluit prijs"].astype(float).map("{:.3f}".format)
+        else:
+            df_display["Open prijs"] = df_display["Open prijs"].astype(float).map("{:.2f}".format)
+            df_display["Sluit prijs"] = df_display["Sluit prijs"].astype(float).map("{:.2f}".format)
+
+        
+        
+        
+        # goed en oud
+        geldige_kolommen = [col for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"] if df_display[col].notna().any()]
+        styler = styler.format({col: "{:+.2f}%" for col in geldige_kolommen})
+        styler = df_display.style.applymap(kleur_positief_negatief, subset=geldige_kolommen)
+        
+        st.dataframe(styler, use_container_width=True)
+
+
+   
+    else:
+        st.info("ℹ️ Geen trades gevonden binnen de geselecteerde periode.")
+
+
+
 
 
 
