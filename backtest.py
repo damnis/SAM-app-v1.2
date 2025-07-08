@@ -137,7 +137,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
         col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
 
-    #    rendement_totaal = df_trades["Rendement (%)"].sum()
+        rendement_totaal = df_trades["Rendement (%)"].sum()
         rendement_koop = df_trades["SAM-% Koop"].sum(skipna=True)
         rendement_verkoop = df_trades["SAM-% Verkoop"].sum(skipna=True)
         aantal_trades = len(df_trades)
