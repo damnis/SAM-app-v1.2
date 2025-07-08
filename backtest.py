@@ -172,16 +172,16 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         marktrendement_display = f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t."
 
     # 🎯 Metricweergave
-        col1, col2 = st.columns(2)
-        col1.metric("Marktrendement (Buy & Hold)", marktrendement_display)
-        col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
+#        col1, col2 = st.columns(2)
+#        col1.metric("Marktrendement (Buy & Hold)", marktrendement_display)
+#        col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
 
     # 📊 Overzicht cijfers voor captions (alleen uit filtered set!)
-        rendement_totaal = (df_trades_filtered["Rendement (%)"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
-        aantal_trades = len(df_trades_filtered)
-        aantal_succesvol = (df_trades_filtered["Rendement (%)"] > 0).sum()
+#        rendement_totaal = (df_trades_filtered["Rendement (%)"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
+#        aantal_trades = len(df_trades_filtered)
+ #       aantal_succesvol = (df_trades_filtered["Rendement (%)"] > 0).sum()
 
-        st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, resultaat SAM-%: **{rendement_totaal:+.2f}%**, succesvol: **{aantal_succesvol}**")
+#        st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, resultaat SAM-%: **{rendement_totaal:+.2f}%**, succesvol: **{aantal_succesvol}**")
 
     # ✅ Je mag hierna eventueel `df_trades` weer gebruiken voor tabellen e.d.
     
@@ -215,29 +215,29 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
 
         
-#        col1, col2 = st.columns(2)
-#        col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
-  #      col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
+        col1, col2 = st.columns(2)
+        col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
+        col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
 
         
     # ✅ 5.2 Statistieken
-#        rendement_totaal = (df_trades["Rendement (%)"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
-#        rendement_koop = (df_trades["SAM-% Koop"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
-#        rendement_verkoop = (df_trades["SAM-% Verkoop"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
+        rendement_totaal = (df_trades["Rendement (%)"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
+        rendement_koop = (df_trades["SAM-% Koop"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
+        rendement_verkoop = (df_trades["SAM-% Verkoop"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
 #        rendement_totaal = df_trades["Rendement (%)"].sum()
    #     rendement_koop = df_trades["SAM-% Koop"].sum(skipna=True)
    #     rendement_verkoop = df_trades["SAM-% Verkoop"].sum(skipna=True)
- #       aantal_trades = len(df_trades)
- #       aantal_koop = df_trades["SAM-% Koop"].notna().sum()
- #       aantal_verkoop = df_trades["SAM-% Verkoop"].notna().sum()
- #       aantal_succesvol = (df_trades["Rendement (%)"] > 0).sum()
- #       aantal_succesvol_koop = (df_trades["SAM-% Koop"] > 0).sum()
-  #      aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
+        aantal_trades = len(df_trades)
+        aantal_koop = df_trades["SAM-% Koop"].notna().sum()
+        aantal_verkoop = df_trades["SAM-% Verkoop"].notna().sum()
+        aantal_succesvol = (df_trades["Rendement (%)"] > 0).sum()
+        aantal_succesvol_koop = (df_trades["SAM-% Koop"] > 0).sum()
+        aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
     
     # ✅ 5.3 Captions op basis van volledige set
-#        st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
-#        st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
- #       st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
+        st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
+        st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
+        st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
 
 
     
