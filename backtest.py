@@ -147,9 +147,9 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         df_trades["Markt-%"] = df_trades.apply(lambda row: ((row["Sluit prijs"] - row["Open prijs"]) / row["Open prijs"]) * 100, axis=1)
 
     # 🔍 Filter op geselecteerd signaaltype
-        if signaalkeuze == "Koop":
+        if signaalkeuze == "Kopen":
             df_trades_filtered = df_trades[df_trades["Type"] == "Kopen"].copy()
-        elif signaalkeuze == "Verkoop":
+        elif signaalkeuze == "Verkopen":
             df_trades_filtered = df_trades[df_trades["Type"] == "Verkopen"].copy()
         else:
             df_trades_filtered = df_trades.copy()
