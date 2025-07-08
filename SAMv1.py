@@ -22,7 +22,7 @@ from sat_indicator import calculate_sat
 from grafieken import plot_koersgrafiek, plot_sam_trend, plot_sat_debug, bepaal_grafiekperiode 
 from sam_tabel import toon_sam_tabel
 # Backtestfunctie 
-from backtest import backtest_functie
+from backtest import backtest_functie, bereken_sam_rendement 
 # trading bot
 from bot import toon_trading_bot_interface
 from bot import verbind_met_alpaca, haal_laatste_koers, plaats_order, sluit_positie
