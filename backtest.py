@@ -41,11 +41,11 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
     # --- Backup van de originele versie ---
     def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
-    rendementen = []
-    trades = []
-    entry_price = None
-    entry_date = None
-    entry_type = None
+        rendementen = []
+        trades = []
+        entry_price = None
+        entry_date = None
+        entry_type = None
 
     # Zorg dat signaal_type overeenkomt met de waardes in de Advies-kolom  
     type_map = {"Koop": "Kopen", "Verkoop": "Verkopen", "Beide": "Beide"}
