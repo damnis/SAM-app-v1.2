@@ -6,23 +6,30 @@ from datetime import date
 def backtest_functie(df, signaalkeuze, selected_tab):
     st.subheader("Vergelijk Marktrendement en SAM-rendement")
 
-# Filterperiode
-df = df.copy()
-df.index = pd.to_datetime(df.index)
-df_period = df.loc[(df.index.date >= start_date) & (df.index.date <= end_date)].copy()
-st.write("Gefilterde data (eerste 5 rijen):", df_period.head())
-st.write("Aantal rijen na datumfilter:", len(df_period))
+    # 📅 Datumselectie
+    current_year = date.today().year
+    default_start = date(current_year - 2, 1, 1)
+    default_end = df.index.max().date()
 
+    start_date = st.date_input("Startdatum analyse", default_start)
+    end_date = st.date_input("Einddatum analyse", default_end)
 
-    # 🔍 DEBUG: Basisinformatie
-st.write("🟢 Start debug info backtest_functie")
+    # 🧪 Data voorbereiden
+    df = df.copy()
+    df.index = pd.to_datetime(df.index)
 
-st.write("Dataframe (eerste 5 rijen):", df.head())
-st.write("Dataframe-index type:", type(df.index))
-st.write("Aantal rijen in df:", len(df))
+    # 🔍 DEBUG BLOK
+    st.write("🟢 DEBUG START — Basisinfo")
+    st.write("Dataframe (eerste 5 rijen):", df.head())
+    st.write("Indextype:", type(df.index))
+    st.write("Signaalkeuze (instelling gebruiker):", signaalkeuze)
+    st.write("Gekozen periode:", start_date, "t/m", end_date)
+    st.write("🟢 DEBUG EINDE")
 
-# Datuminstellingen
-st.write("Gekozen periode:", start_date, "t/m", end_date)
+    # ⏳ Filter op periode
+    df_period = df.loc[(df.index.date >= start_date) & (df.index.date <= end_date)].copy()
+    st.write("📆 Gefilterde data (eerste 5 rijen):", df_period.head())
+    st.write("Aantal rijen na datumfilter:", len(df_period))
 
 
 # Kolommen controleren
