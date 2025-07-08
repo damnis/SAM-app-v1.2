@@ -20,33 +20,35 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
     # 🔍 DEBUG BLOK
     st.write("🟢 DEBUG START — Basisinfo")
-    st.write("Dataframe (eerste 5 rijen):", df.head())
-    st.write("Indextype:", type(df.index))
-    st.write("Signaalkeuze (instelling gebruiker):", signaalkeuze)
-    st.write("Gekozen periode:", start_date, "t/m", end_date)
+    st.write("Dataframe (eerste 5 rijen):")
+    st.dataframe(df.head())
+    st.text(f"Indextype: {type(df.index)}")
+    st.text(f"Signaalkeuze (instelling gebruiker): {signaalkeuze}")
+    st.text(f"Gekozen periode: {start_date} t/m {end_date}")
     st.write("🟢 DEBUG EINDE")
 
     # ⏳ Filter op periode
     df_period = df.loc[(df.index.date >= start_date) & (df.index.date <= end_date)].copy()
-    st.write("📆 Gefilterde data (eerste 5 rijen):", df_period.head())
-    st.write("Aantal rijen na datumfilter:", len(df_period))
+    st.write("📆 Gefilterde data (eerste 5 rijen):")
+    st.dataframe(df_period.head())
+    st.text(f"Aantal rijen na datumfilter: {len(df_period)}")
 
-    # 🧱 Kolommen controleren
+    # Kolommen controleren
     if isinstance(df_period.columns, pd.MultiIndex):
         df_period.columns = ["_".join([str(i) for i in col if i]) for col in df_period.columns]
 
-    st.write("Beschikbare kolommen:", df_period.columns)
+    st.text(f"Beschikbare kolommen: {', '.join(df_period.columns)}")
 
-    # 🔍 Close-kolom zoeken
+    # Close-kolom zoeken
     close_col = next((col for col in df_period.columns if col.lower().startswith("close")), None)
-    st.write("Gevonden close-kolom:", close_col)
+    st.text(f"Gevonden close-kolom: {close_col}")
 
-    # ✅ Validatie close-kolom
+    # Validatie close-kolom
     if not close_col:
         st.error("❌ Geen geldige 'Close'-kolom gevonden in deze dataset.")
         st.stop()
 
-    # 📈 Marktrendementberekening
+    # Marktrendementberekening
     df_period[close_col] = pd.to_numeric(df_period[close_col], errors="coerce")
     df_valid = df_period[close_col].dropna()
     if len(df_valid) >= 2:
@@ -57,7 +59,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
     else:
         st.write("⚠️ Niet genoeg geldige koersen voor marktrendement.")
 
-    # 📊 Signalen voorbereiden
+    # Signalen voorbereiden
     if "Advies" not in df_period.columns:
         st.error("❌ Geen 'Advies'-kolom aanwezig in dataframe.")
         st.stop()
@@ -65,16 +67,16 @@ def backtest_functie(df, signaalkeuze, selected_tab):
     eerste_valid_index = df_period[df_period["Advies"].notna()].index[0]
     df_signalen = df_period.loc[eerste_valid_index:].copy()
     df_signalen = df_signalen[df_signalen["Advies"].isin(["Kopen", "Verkopen"])].copy()
-    st.write("📊 Signalen (eerste 5):", df_signalen.head())
-    st.write("Aantal signalen:", len(df_signalen))
-    st.write("Unieke adviezen:", df_signalen["Advies"].unique())
 
-    # ⚙️ Signaalkeuze tonen
-    st.write("⚙️ Gekozen signaalkeuze:", signaalkeuze)
+    st.write("📊 Signalen (eerste 5):")
+    st.dataframe(df_signalen.head())
+    st.text(f"Aantal signalen: {len(df_signalen)}")
+    st.text(f"Unieke adviezen: {', '.join(df_signalen['Advies'].unique())}")
 
-    # 🔚 Einde debugblok
+    st.text(f"⚙️ Gekozen signaalkeuze: {signaalkeuze}")
     st.write("🔚 Einde debug info")
 
+    # Hierna volgt de rest van je functie...
 
 
 #def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
