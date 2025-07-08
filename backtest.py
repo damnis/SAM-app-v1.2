@@ -111,8 +111,10 @@ def backtest_functie(df, signaalkeuze, selected_tab):
                     "Rendement (%)": rendement
                 })
 
-        sam_rendement = sum(rendementen) if rendementen else 0.0
+        sam_rendement = (np.prod([1 + r / 100 for r in rendementen]) - 1) * 100 if rendementen else 0.0
         return sam_rendement, trades, rendementen
+       # sam_rendement = sum(rendementen) if rendementen else 0.0
+     #   return sam_rendement, trades, rendementen
 
 
 
