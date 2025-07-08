@@ -40,7 +40,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
     df_signalen = df_signalen[df_signalen[advies_col].isin(["Kopen", "Verkopen"])].copy()
 
     # --- Backup van de originele versie ---
-    def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
+def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
     rendementen = []
     trades = []
     entry_price = None
