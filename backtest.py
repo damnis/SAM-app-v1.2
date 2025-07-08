@@ -212,8 +212,9 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
         col1, col2 = st.columns(2)
         col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
    #     col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
-        col2.metric("📊 SAM-rendement", f"{sam_rendement_filtered:+.2f}%" if isinstance(sam_rendement_filtered, (int, float)) else "n.v.t.")
-
+  #      col2.metric("📊 SAM-rendement", f"{sam_rendement_filtered:+.2f}%" if isinstance(sam_rendement_filtered, (int, float)) else "n.v.t.")
+        col2.metric(f"📊 SAM-rendement ({signaalkeuze})", f"{metric_sam:+.2f}%" if isinstance(metric_sam, (int, float)) else "n.v.t.")
+        
 
         
     # ✅ 5.2 Statistieken
