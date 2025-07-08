@@ -140,6 +140,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
     _, trades_all, _ = bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col=close_col)
 
     # ✅ 5.0: Alleen metric gebaseerd op keuze
+    
     if trades_all:
         df_trades = pd.DataFrame(trades_all)
         df_trades["SAM-% Koop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Kopen" else None, axis=1)
@@ -148,11 +149,23 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
     # 🔍 Filter op geselecteerd signaaltype
         if signaalkeuze == "Koop":
-            df_trades_filtered = df_trades[df_trades["Type"] == "Kopen"].copy()
+            metric_sam = (df_trades[df_trades["Type"] == "Kopen"]["Rendement (%)"]
+                          .dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
         elif signaalkeuze == "Verkoop":
-            df_trades_filtered = df_trades[df_trades["Type"] == "Verkopen"].copy()
+            metric_sam = (df_trades[df_trades["Type"] == "Verkopen"]["Rendement (%)"]
+                          .dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
         else:
-            df_trades_filtered = df_trades.copy()
+            metric_sam = (df_trades["Rendement (%)"]
+                          .dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
+
+
+        
+  #      if signaalkeuze == "Koop":
+   #         df_trades_filtered = df_trades[df_trades["Type"] == "Kopen"].copy()
+  #      elif signaalkeuze == "Verkoop":
+  #          df_trades_filtered = df_trades[df_trades["Type"] == "Verkopen"].copy()
+   #     else:
+   #         df_trades_filtered = df_trades.copy()
 
     # 🔢 Rendementsberekening (gecompoundeerd)
         metric_sam = (df_trades_filtered["Rendement (%)"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
