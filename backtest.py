@@ -122,16 +122,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
    # col2.metric("📊 SAM-rendement", f"{sam_rendement_filtered:+.2f}%" if isinstance(sam_rendement_filtered, (int, float)) else "n.v.t.")
 
 
-    # 🔁 Bovenste SAM-rendement aanpassen op signaalkeuze
-    if signaalkeuze == "Koop":
-        metric_sam = df_trades["SAM-% Koop"].sum(skipna=True)
-    elif signaalkeuze == "Verkoop":
-        metric_sam = df_trades["SAM-% Verkoop"].sum(skipna=True)
-    else:
-        metric_sam = df_trades["Rendement (%)"].sum(skipna=True)
-
-    col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
-
+    
     if trades_all:
         df_trades = pd.DataFrame(trades_all)
         df_trades["SAM-% Koop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Kopen" else None, axis=1)
@@ -148,6 +139,17 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         aantal_succesvol_koop = (df_trades["SAM-% Koop"] > 0).sum()
         aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
 
+       # 🔁 Bovenste SAM-rendement aanpassen op signaalkeuze
+    if signaalkeuze == "Koop":
+        metric_sam = df_trades["SAM-% Koop"].sum(skipna=True)
+    elif signaalkeuze == "Verkoop":
+        metric_sam = df_trades["SAM-% Verkoop"].sum(skipna=True)
+    else:
+        metric_sam = df_trades["Rendement (%)"].sum(skipna=True)
+
+    col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
+ 
+        
         st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
         st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
         st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
