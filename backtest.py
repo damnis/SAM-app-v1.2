@@ -168,7 +168,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
    #         df_trades_filtered = df_trades.copy()
 
     # 🔢 Rendementsberekening (gecompoundeerd)
-        metric_sam = (df_trades_filtered["Rendement (%)"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
+  #      metric_sam = (df_trades_filtered["Rendement (%)"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
         marktrendement_display = f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t."
 
     # 🎯 Metricweergave
