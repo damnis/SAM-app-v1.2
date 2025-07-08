@@ -41,25 +41,21 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
     # --- Backup van de originele versie ---
     def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
-        rendementen = []
-        trades = []
-        entry_price = None
-        entry_date = None
-        entry_type = None
+    rendementen = []
+    trades = []
+    entry_price = None
+    entry_date = None
+    entry_type = None
 
-    # Zorg dat signaal_type overeenkomt met de waardes in de Advies-kolom  
     type_map = {"Koop": "Kopen", "Verkoop": "Verkopen", "Beide": "Beide"}
     mapped_type = type_map.get(signaal_type, "Beide")
-
-    # Filter alvast op alleen relevante signalen  
-    if mapped_type in ["Kopen", "Verkopen"]:  
-        df_signalen = df_signalen[df_signalen["Advies"] == mapped_type]
 
     for i in range(len(df_signalen)):
         advies = df_signalen["Advies"].iloc[i]
         close = df_signalen[close_col].iloc[i]
         datum = df_signalen.index[i]
 
+        # Alleen sluiten als er een open positie is
         if entry_type is not None:
             if advies != entry_type and (mapped_type == "Beide" or entry_type == mapped_type):
                 sluit_datum = datum
@@ -70,6 +66,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
                 else:
                     rendement = (entry_price - sluit_close) / entry_price * 100
 
+                # Nieuw: filter dummy-trade
                 if entry_price != sluit_close and entry_date != sluit_datum:
                     rendementen.append(rendement)
                     trades.append({
@@ -83,6 +80,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
                         "Trend": df.loc[entry_date, "Trend"] if entry_date in df.index else None,
                     })
 
+                # Mogelijk nieuwe trade openen
                 if mapped_type == "Beide" or advies == mapped_type:
                     entry_type = advies
                     entry_price = close
@@ -92,11 +90,13 @@ def backtest_functie(df, signaalkeuze, selected_tab):
                     entry_price = None
                     entry_date = None
 
+        # Start een nieuwe trade, zonder geforceerd te zijn
         elif advies in ["Kopen", "Verkopen"] and (mapped_type == "Beide" or advies == mapped_type):
             entry_type = advies
             entry_price = close
             entry_date = datum
 
+    # Eventueel open trade afsluiten op laatste koers
     if entry_type and entry_price is not None:
         laatste_datum = df_signalen.index[-1]
         laatste_koers = df_signalen[close_col].iloc[-1]
@@ -106,6 +106,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         else:
             rendement = (entry_price - laatste_koers) / entry_price * 100
 
+        # Nieuw: filter dummy-trade (ook laatste)
         if entry_price != laatste_koers and entry_date != laatste_datum:
             rendementen.append(rendement)
             trades.append({
