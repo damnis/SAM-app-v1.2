@@ -176,7 +176,7 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
  
 
     # ✅ 4.1: Berekening voor metric (gefilterd op gekozen signaal)
-#    sam_rendement_filtered, _, _ = bereken_sam_rendement(df_signalen, signaal_type=signaalkeuze, close_col=close_col)
+    sam_rendement_filtered, _, _ = bereken_sam_rendement(df_signalen, signaal_type=signaalkeuze, close_col=close_col)
 
 
     # ✅ 4.2: Berekening voor volledige analyse (altijd "Beide")
