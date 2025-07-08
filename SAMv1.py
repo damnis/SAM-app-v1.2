@@ -510,8 +510,8 @@ df_signalen = df.copy()
 if "Advies" not in df_signalen.columns:
     st.error("Kolom 'Advies' ontbreekt in de data.")
     st.stop()
-backtest_functie(df, signaalkeuze=signaalkeuze, selected_tab=selected_tab)  # ✅
-#backtest_functie(df, selected_tab, signaalkeuze)
+backtest_functie(df, signaalkeuze=signaalkeuze, selected_tab=selected_tab)  
+# ✅ #backtest_functie(df, selected_tab, signaalkeuze)
 
 
 # …na de adviezen en grafiek, etc.
@@ -521,6 +521,21 @@ toon_trading_bot_interface(selected_ticker, huidig_advies)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# w
 
 
 
