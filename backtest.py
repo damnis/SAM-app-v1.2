@@ -123,19 +123,26 @@ def backtest_functie(df, signaalkeuze, selected_tab):
      #   return sam_rendement, trades, rendementen
 
 
+    # 4. Berekening
+    sam_rendement, trades, rendementen = bereken_sam_rendement(df_signalen, signaalkeuze, close_col)
+
+    # 5. Visueel weergeven
+    col1, col2 = st.columns(2)
+    col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
+    col2.metric(" YES SAM-rendement", f"{sam_rendement:+.2f}%" if isinstance(sam_rendement, (int, float)) else "n.v.t.")
 
     
 
     # ✅ 4.1: Berekening voor metric (gefilterd op gekozen signaal)
-    sam_rendement_filtered, _, _ = bereken_sam_rendement(df_signalen, signaal_type=signaalkeuze, close_col=close_col)
+#    sam_rendement_filtered, _, _ = bereken_sam_rendement(df_signalen, signaal_type=signaalkeuze, close_col=close_col)
 
     # ✅ 4.2: Berekening voor volledige analyse (altijd "Beide")
-    _, trades_all, _ = bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col=close_col)
+#    _, trades_all, _ = bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col=close_col)
 
     # ✅ 5.0: Alleen metric gebaseerd op keuze
-    col1, col2 = st.columns(2)
-    col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
-    col2.metric("📊 SAM-rendement", f"{sam_rendement_filtered:+.2f}%" if isinstance(sam_rendement_filtered, (int, float)) else "n.v.t.")
+#    col1, col2 = st.columns(2)
+#    col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
+#    col2.metric("📊 SAM-rendement", f"{sam_rendement_filtered:+.2f}%" if isinstance(sam_rendement_filtered, (int, float)) else "n.v.t.")
 
     # ✅ 5.1: Volledige analyse op basis van alle trades (Beide)
     if trades_all:
