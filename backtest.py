@@ -137,9 +137,12 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         df_trades["Markt-%"] = df_trades.apply(lambda row: ((row["Sluit prijs"] - row["Open prijs"]) / row["Open prijs"]) * 100, axis=1)
 
     # ✅ 5.2 Statistieken
-        rendement_totaal = df_trades["Rendement (%)"].sum()
-        rendement_koop = df_trades["SAM-% Koop"].sum(skipna=True)
-        rendement_verkoop = df_trades["SAM-% Verkoop"].sum(skipna=True)
+        rendement_totaal = (df_trades["Rendement (%)"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
+        rendement_koop = (df_trades["SAM-% Koop"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
+        rendement_verkoop = (df_trades["SAM-% Verkoop"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
+#        rendement_totaal = df_trades["Rendement (%)"].sum()
+   #     rendement_koop = df_trades["SAM-% Koop"].sum(skipna=True)
+   #     rendement_verkoop = df_trades["SAM-% Verkoop"].sum(skipna=True)
         aantal_trades = len(df_trades)
         aantal_koop = df_trades["SAM-% Koop"].notna().sum()
         aantal_verkoop = df_trades["SAM-% Verkoop"].notna().sum()
