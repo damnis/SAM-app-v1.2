@@ -20,61 +20,24 @@ def backtest_functie(df, signaalkeuze, selected_tab):
     if isinstance(df_period.columns, pd.MultiIndex):
         df_period.columns = ["_".join([str(i) for i in col if i]) for col in df_period.columns]
 
-    # ðŸ“Š Backtestfunctie: sluit op close van nieuw signaal
-# âœ… 0.Data voorbereiden voor advies')
-df_signalen = df.copy()
-if "Advies" not in df_signalen.columns:
-    st.error("Kolom 'Advies' ontbreekt in de data.")
-    st.stop()
+    close_col = next((col for col in df_period.columns if col.lower().startswith("close")), None)
+    if not close_col:
+        st.error("❌ Geen geldige 'Close'-kolom gevonden in deze dataset.")
+        st.stop()
 
-                
-st.subheader("Vergelijk Marktrendement en SAM-rendement")
+    df_period[close_col] = pd.to_numeric(df_period[close_col], errors="coerce")
+    df_valid = df_period[close_col].dropna()
 
-# ðŸ“… 1. Datumkeuze
-current_year = date.today().year
-default_start = date(current_year -2, 1, 1)
-#default_start = date(2021, 1, 1)
-default_end = df.index.max().date()
+    marktrendement = None
+    if len(df_valid) >= 2 and df_valid.iloc[0] != 0.0:
+        koers_start = df_valid.iloc[0]
+        koers_eind = df_valid.iloc[-1]
+        marktrendement = ((koers_eind - koers_start) / koers_start) * 100
 
-start_date = st.date_input("Startdatum analyse", default_start)
-end_date = st.date_input("Einddatum analyse", default_end)
-
-# ðŸ“† 2. Filter op periode
-df = df.copy()
-df.index = pd.to_datetime(df.index)
-df_period = df.loc[
-    (df.index.date >= start_date) & (df.index.date <= end_date)
-].copy()
-
-# ðŸ§¹ Flatten MultiIndex indien nodig
-if isinstance(df_period.columns, pd.MultiIndex):
-    df_period.columns = ["_".join([str(i) for i in col if i]) for col in df_period.columns]
-
-# ðŸ” Zoek geldige 'Close'-kolom
-close_col = next((col for col in df_period.columns if col.lower().startswith("close")), None)
-
-if not close_col:
-    st.error("âŒ Geen geldige 'Close'-kolom gevonden in deze dataset.")
-    st.stop()
-
-# ðŸ“ˆ Marktrendement (Buy & Hold)
-df_period[close_col] = pd.to_numeric(df_period[close_col], errors="coerce")
-df_valid = df_period[close_col].dropna()
-
-marktrendement = None
-if len(df_valid) >= 2 and df_valid.iloc[0] != 0.0:
-    koers_start = df_valid.iloc[0]
-    koers_eind = df_valid.iloc[-1]
-    marktrendement = ((koers_eind - koers_start) / koers_start) * 100
-
-# âœ… Signaalkeuze geforceerd op Beide
-#signaalkeuze = "Beide"
-advies_col = "Advies"
-
-# Vind eerste geldige advies (geen NaN) om mee te starten
-eerste_valid_index = df_period[df_period["Advies"].notna()].index[0]
-df_signalen = df_period.loc[eerste_valid_index:].copy()
-df_signalen = df_signalen[df_signalen[advies_col].isin(["Kopen", "Verkopen"])].copy()
+    advies_col = "Advies"
+    eerste_valid_index = df_period[df_period["Advies"].notna()].index[0]
+    df_signalen = df_period.loc[eerste_valid_index:].copy()
+    df_signalen = df_signalen[df_signalen[advies_col].isin(["Kopen", "Verkopen"])].copy()
 
 # ðŸ”„ Backtestfunctie
 
@@ -156,3 +119,35 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
                 "Sluit prijs": laatste_koers,
                 "Rendement (%)": rendement
             })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# w
