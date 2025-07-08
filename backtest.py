@@ -157,7 +157,7 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
     
 
     # 4. Berekening
-#    sam_rendement, trades, rendementen = bereken_sam_rendement(df_signalen, signaal_type=signaalkeuze, close_col=close_col)
+    sam_rendement, trades, rendementen = bereken_sam_rendement(df_signalen, signaal_type=signaalkeuze, close_col=close_col)
 
     
     # ✅ 4.1: Berekening voor metric (gefilterd op gekozen signaal)
