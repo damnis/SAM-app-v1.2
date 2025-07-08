@@ -257,6 +257,10 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
       #      df_trades["Rendement (%)"].sum(skipna=True)
 
 
+        sam_rendement_filtered, trades_filtered, rendementen_filtered = bereken_sam_rendement(
+            df_signalen, signaal_type=signaalkeuze, close_col=close_col
+
+)
         
         col1, col2 = st.columns(2)
         col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
