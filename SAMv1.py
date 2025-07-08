@@ -139,6 +139,7 @@ def determine_advice(df, threshold, risk_aversion=0):
 
     elif risk_aversion == 1:
         for i in range(2, len(df)):
+            sam1 = df["SAM"].iloc[i]
             trend_1 = df["SAT_Trend"].iloc[i]
             trend_2 = df["SAT_Trend"].iloc[i - 1]
             trend_3 = df["SAT_Trend"].iloc[i - 2]
