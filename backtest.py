@@ -124,7 +124,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
 
     # 4. Berekening
-    sam_rendement, trades, rendementen = bereken_sam_rendement(df_signalen, signaalkeuze, close_col)
+    sam_rendement, trades, rendementen = bereken_sam_rendement(df_signalen, signaal_type=signaalkeuze, close_col=close_col)
 
     # 5. Visueel weergeven
 #    col1, col2 = st.columns(2)
