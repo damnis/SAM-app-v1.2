@@ -131,11 +131,12 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         metric_sam = df_trades["Rendement (%)"].sum(skipna=True)
 
     col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
-        if trades_all:
-            df_trades = pd.DataFrame(trades_all)
-            df_trades["SAM-% Koop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Kopen" else None, axis=1)
-            df_trades["SAM-% Verkoop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Verkopen" else None, axis=1)
-            df_trades["Markt-%"] = df_trades.apply(lambda row: ((row["Sluit prijs"] - row["Open prijs"]) / row["Open prijs"]) * 100, axis=1)
+
+    if trades_all:
+        df_trades = pd.DataFrame(trades_all)
+        df_trades["SAM-% Koop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Kopen" else None, axis=1)
+        df_trades["SAM-% Verkoop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Verkopen" else None, axis=1)
+        df_trades["Markt-%"] = df_trades.apply(lambda row: ((row["Sluit prijs"] - row["Open prijs"]) / row["Open prijs"]) * 100, axis=1)
 
         rendement_totaal = df_trades["Rendement (%)"].sum()
         rendement_koop = df_trades["SAM-% Koop"].sum(skipna=True)
