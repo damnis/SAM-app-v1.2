@@ -6,6 +6,14 @@ from datetime import date
 def backtest_functie(df, signaalkeuze, selected_tab):
     st.subheader("Vergelijk Marktrendement en SAM-rendement")
 
+# Filterperiode
+df = df.copy()
+df.index = pd.to_datetime(df.index)
+df_period = df.loc[(df.index.date >= start_date) & (df.index.date <= end_date)].copy()
+st.write("Gefilterde data (eerste 5 rijen):", df_period.head())
+st.write("Aantal rijen na datumfilter:", len(df_period))
+
+
     # 🔍 DEBUG: Basisinformatie
 st.write("🟢 Start debug info backtest_functie")
 
@@ -16,12 +24,6 @@ st.write("Aantal rijen in df:", len(df))
 # Datuminstellingen
 st.write("Gekozen periode:", start_date, "t/m", end_date)
 
-# Filterperiode
-df = df.copy()
-df.index = pd.to_datetime(df.index)
-df_period = df.loc[(df.index.date >= start_date) & (df.index.date <= end_date)].copy()
-st.write("Gefilterde data (eerste 5 rijen):", df_period.head())
-st.write("Aantal rijen na datumfilter:", len(df_period))
 
 # Kolommen controleren
 if isinstance(df_period.columns, pd.MultiIndex):
