@@ -415,7 +415,7 @@ st.markdown("""
 # 📌 Slider in kolommen, links met max 50% breedte
 col1, col2 = st.columns([1, 1])
 with col1:
-    risk_aversion = st.slider("Mate van risk aversion", 0, 2, 1, step=1)
+    risk_aversion = st.slider("Mate van risk aversion", 0, 3, 1, step=1)
 with col2:
     pass  # lege kolom, zodat slider links blijft
 
@@ -491,7 +491,7 @@ plot_koersgrafiek(df, ticker_name, interval)
 plot_sam_trend(df, interval)
 
 # ⚫ (optioneel) Debug SAT-grafiek — standaard niet geactiveerd
-# plot_sat_debug(df, interval)
+plot_sat_debug(df, interval)
     
 # --- Tabel met signalen en rendement ---
 # later in je code, waar de tabel moet komen
