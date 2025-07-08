@@ -46,8 +46,14 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         entry_date = None
         entry_type = None
 
-        type_map = {"Koop": "Kopen", "Verkoop": "Verkopen", "Beide": "Beide"}
-        mapped_type = type_map.get(signaal_type, "Beide")
+        # Zorg dat signaal_type overeenkomt met de waardes in de Advies-kolom
+        mapped_type = {"Koop": "Kopen", "Verkoop": "Verkopen", "Beide": "Beide"}.get(signaal_type, "Beide")
+  #      type_map = {"Koop": "Kopen", "Verkoop": "Verkopen", "Beide": "Beide"}
+  #      mapped_type = type_map.get(signaal_type, "Beide")
+
+        # Filter alvast op alleen relevante signalen
+        if mapped_type in ["Kopen", "Verkopen"]:
+            df_signalen = df_signalen[df_signalen["Advies"] == mapped_type]
 
         for i in range(len(df_signalen)):
             advies = df_signalen["Advies"].iloc[i]
