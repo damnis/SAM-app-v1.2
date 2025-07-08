@@ -48,82 +48,78 @@ def backtest_functie(df, signaalkeuze, selected_tab):
     entry_type = None
 
     # Zorg dat signaal_type overeenkomt met de waardes in de Advies-kolom  
-#    mapped_type = {"Koop": "Kopen", "Verkoop": "Verkopen", "Beide": "Beide"}.get(signaal_type, "Beide")
-
     type_map = {"Koop": "Kopen", "Verkoop": "Verkopen", "Beide": "Beide"}
-
     mapped_type = type_map.get(signaal_type, "Beide")
-
-#    mapped_type = signaal_type  
 
     # Filter alvast op alleen relevante signalen  
     if mapped_type in ["Kopen", "Verkopen"]:  
-        df_signalen = df_signalen[df_signalen["Advies"] == mapped_type]  
+        df_signalen = df_signalen[df_signalen["Advies"] == mapped_type]
 
-    for i in range(len(df_signalen)):  
-        advies = df_signalen["Advies"].iloc[i]  
-        close = df_signalen[close_col].iloc[i]  
-        datum = df_signalen.index[i]  
+    for i in range(len(df_signalen)):
+        advies = df_signalen["Advies"].iloc[i]
+        close = df_signalen[close_col].iloc[i]
+        datum = df_signalen.index[i]
 
-        if entry_type is not None:  
-            if advies != entry_type and (mapped_type == "Beide" or entry_type == mapped_type):  
-                sluit_datum = datum  
-                sluit_close = close  
+        if entry_type is not None:
+            if advies != entry_type and (mapped_type == "Beide" or entry_type == mapped_type):
+                sluit_datum = datum
+                sluit_close = close
 
-                if entry_type == "Kopen":  
-                    rendement = (sluit_close - entry_price) / entry_price * 100  
-                else:  
-                    rendement = (entry_price - sluit_close) / entry_price * 100  
+                if entry_type == "Kopen":
+                    rendement = (sluit_close - entry_price) / entry_price * 100
+                else:
+                    rendement = (entry_price - sluit_close) / entry_price * 100
 
-                if entry_price != sluit_close and entry_date != sluit_datum:  
-                    rendementen.append(rendement)  
-                    trades.append({  
-                        "Type": entry_type,  
-                        "Open datum": entry_date.date(),  
-                        "Open prijs": entry_price,  
-                        "Sluit datum": sluit_datum.date(),  
-                        "Sluit prijs": sluit_close,  
-                        "Rendement (%)": rendement,  
-                        "SAM": df.loc[entry_date, "SAM"] if entry_date in df.index else None,  
-                        "Trend": df.loc[entry_date, "Trend"] if entry_date in df.index else None,  
-                    })  
+                if entry_price != sluit_close and entry_date != sluit_datum:
+                    rendementen.append(rendement)
+                    trades.append({
+                        "Type": entry_type,
+                        "Open datum": entry_date.date(),
+                        "Open prijs": entry_price,
+                        "Sluit datum": sluit_datum.date(),
+                        "Sluit prijs": sluit_close,
+                        "Rendement (%)": rendement,
+                        "SAM": df.loc[entry_date, "SAM"] if entry_date in df.index else None,
+                        "Trend": df.loc[entry_date, "Trend"] if entry_date in df.index else None,
+                    })
 
-                if mapped_type == "Beide" or advies == mapped_type:  
-                    entry_type = advies  
-                    entry_price = close  
-                    entry_date = datum  
-                else:  
-                    entry_type = None  
-                    entry_price = None  
-                    entry_date = None  
+                if mapped_type == "Beide" or advies == mapped_type:
+                    entry_type = advies
+                    entry_price = close
+                    entry_date = datum
+                else:
+                    entry_type = None
+                    entry_price = None
+                    entry_date = None
 
-        elif advies in ["Kopen", "Verkopen"] and (mapped_type == "Beide" or advies == mapped_type):  
-            entry_type = advies  
-            entry_price = close  
-            entry_date = datum  
+        elif advies in ["Kopen", "Verkopen"] and (mapped_type == "Beide" or advies == mapped_type):
+            entry_type = advies
+            entry_price = close
+            entry_date = datum
 
-    if entry_type and entry_price is not None:  
-        laatste_datum = df_signalen.index[-1]  
-        laatste_koers = df_signalen[close_col].iloc[-1]  
+    if entry_type and entry_price is not None:
+        laatste_datum = df_signalen.index[-1]
+        laatste_koers = df_signalen[close_col].iloc[-1]
 
-        if entry_type == "Kopen":  
-            rendement = (laatste_koers - entry_price) / entry_price * 100  
-        else:  
-            rendement = (entry_price - laatste_koers) / entry_price * 100  
+        if entry_type == "Kopen":
+            rendement = (laatste_koers - entry_price) / entry_price * 100
+        else:
+            rendement = (entry_price - laatste_koers) / entry_price * 100
 
-        if entry_price != laatste_koers and entry_date != laatste_datum:  
-            rendementen.append(rendement)  
-            trades.append({  
-                "Type": entry_type,  
-                "Open datum": entry_date.date(),  
-                "Open prijs": entry_price,  
-                "Sluit datum": laatste_datum.date(),  
-                "Sluit prijs": laatste_koers,  
-                "Rendement (%)": rendement  
-            })  
+        if entry_price != laatste_koers and entry_date != laatste_datum:
+            rendementen.append(rendement)
+            trades.append({
+                "Type": entry_type,
+                "Open datum": entry_date.date(),
+                "Open prijs": entry_price,
+                "Sluit datum": laatste_datum.date(),
+                "Sluit prijs": laatste_koers,
+                "Rendement (%)": rendement
+            })
 
-    sam_rendement = (np.prod([1 + r / 100 for r in rendementen]) - 1) * 100 if rendementen else 0.0  
+    sam_rendement = (np.prod([1 + r / 100 for r in rendementen]) - 1) * 100 if rendementen else 0.0
     return sam_rendement, trades, rendementen
+    
 
       # sam_rendement = sum(rendementen) if rendementen else 0.0
      #   return sam_rendement, trades, rendementen
