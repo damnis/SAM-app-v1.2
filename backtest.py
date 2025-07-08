@@ -116,26 +116,27 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
 
 
-    # 4. Berekening
-    #  4.1: Berekening voor metric (gefilterd op gekozen signaal)
+    
+
+    # ✅ 4.1: Berekening voor metric (gefilterd op gekozen signaal)
     sam_rendement_filtered, _, _ = bereken_sam_rendement(df_signalen, signaal_type=signaalkeuze, close_col=close_col)
 
-    # 4.2: Berekening voor volledige analyse (altijd "Beide")
+    # ✅ 4.2: Berekening voor volledige analyse (altijd "Beide")
     _, trades_all, _ = bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col=close_col)
 
-    # 5.0: Alleen metric gebaseerd op keuze
+    # ✅ 5.0: Alleen metric gebaseerd op keuze
     col1, col2 = st.columns(2)
     col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
-    col2.metric("ðŸ“Š SAM-rendement", f"{sam_rendement_filtered:+.2f}%" if isinstance(sam_rendement_filtered, (int, float)) else "n.v.t.")
+    col2.metric("📊 SAM-rendement", f"{sam_rendement_filtered:+.2f}%" if isinstance(sam_rendement_filtered, (int, float)) else "n.v.t.")
 
-    # 5.1: Volledige analyse op basis van alle trades (Beide)
+    # ✅ 5.1: Volledige analyse op basis van alle trades (Beide)
     if trades_all:
         df_trades = pd.DataFrame(trades_all)
         df_trades["SAM-% Koop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Kopen" else None, axis=1)
         df_trades["SAM-% Verkoop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Verkopen" else None, axis=1)
         df_trades["Markt-%"] = df_trades.apply(lambda row: ((row["Sluit prijs"] - row["Open prijs"]) / row["Open prijs"]) * 100, axis=1)
 
-    #  5.2 Statistieken
+    # ✅ 5.2 Statistieken
         rendement_totaal = df_trades["Rendement (%)"].sum()
         rendement_koop = df_trades["SAM-% Koop"].sum(skipna=True)
         rendement_verkoop = df_trades["SAM-% Verkoop"].sum(skipna=True)
@@ -146,45 +147,10 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         aantal_succesvol_koop = (df_trades["SAM-% Koop"] > 0).sum()
         aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
 
-    #  5.3 Captions op basis van volledige set
+    # ✅ 5.3 Captions op basis van volledige set
         st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
         st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
         st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
-
-
-    # ✅ 4.1: Berekening voor metric (gefilterd op gekozen signaal)
-#    sam_rendement_filtered, _, _ = bereken_sam_rendement(df_signalen, signaal_type=signaalkeuze, close_col=close_col)
-
-    # ✅ 4.2: Berekening voor volledige analyse (altijd "Beide")
-#    _, trades_all, _ = bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col=close_col)
-
-    # ✅ 5.0: Alleen metric gebaseerd op keuze
-#    col1, col2 = st.columns(2)
-#    col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
-#    col2.metric("📊 SAM-rendement", f"{sam_rendement_filtered:+.2f}%" if isinstance(sam_rendement_filtered, (int, float)) else "n.v.t.")
-
-    # ✅ 5.1: Volledige analyse op basis van alle trades (Beide)
-#    if trades_all:
-#        df_trades = pd.DataFrame(trades_all)
- #       df_trades["SAM-% Koop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Kopen" else None, axis=1)
- #       df_trades["SAM-% Verkoop"] = df_trades.apply(lambda row: row["Rendement (%)"] if row["Type"] == "Verkopen" else None, axis=1)
- #       df_trades["Markt-%"] = df_trades.apply(lambda row: ((row["Sluit prijs"] - row["Open prijs"]) / row["Open prijs"]) * 100, axis=1)
-
-    # ✅ 5.2 Statistieken
-#        rendement_totaal = df_trades["Rendement (%)"].sum()
-#        rendement_koop = df_trades["SAM-% Koop"].sum(skipna=True)
-#        rendement_verkoop = df_trades["SAM-% Verkoop"].sum(skipna=True)
-  #      aantal_trades = len(df_trades)
-   #     aantal_koop = df_trades["SAM-% Koop"].notna().sum()
-  #      aantal_verkoop = df_trades["SAM-% Verkoop"].notna().sum()
-  #      aantal_succesvol = (df_trades["Rendement (%)"] > 0).sum()
-  #      aantal_succesvol_koop = (df_trades["SAM-% Koop"] > 0).sum()
-#        aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
-
-    # ✅ 5.3 Captions op basis van volledige set
- #       st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{rendement_totaal:+.2f}%**, aantal succesvol: **{aantal_succesvol}**")
- #       st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
- #       st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
 
 
     
@@ -227,7 +193,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
  #       st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
 #
 
-        st.caption(f"DEBUG: SAM-% Koop = {df_trades['SAM-% Koop'].sum(skipna=True):+.2f}%, SAM-% Verkoop = {df_trades['SAM-% Verkoop'].sum(skipna=True):+.2f}%")
+ #       st.caption(f"DEBUG: SAM-% Koop = {df_trades['SAM-% Koop'].sum(skipna=True):+.2f}%, SAM-% Verkoop = {df_trades['SAM-% Verkoop'].sum(skipna=True):+.2f}%")
         
         # ------------
         # ✅ Weergave
