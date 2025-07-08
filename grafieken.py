@@ -119,7 +119,7 @@ def plot_sat_debug(df, interval):
     ax.set_title("SAT-indicator en Trendlijn")
     ax.legend()
     fig.tight_layout()
-    # st.pyplot(fig)  # handmatig inschakelen indien nodig
+    st.pyplot(fig)  # handmatig inschakelen indien nodig
 
 
 # ➕ y-as: bepaal min/max + marge
