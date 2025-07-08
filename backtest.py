@@ -54,7 +54,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
     mapped_type = type_map.get(signaal_type, "Beide")
 
-    mapped_type = signaal_type  
+#    mapped_type = signaal_type  
 
     # Filter alvast op alleen relevante signalen  
     if mapped_type in ["Kopen", "Verkopen"]:  
