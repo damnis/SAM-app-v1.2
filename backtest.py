@@ -131,6 +131,15 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         else:
             metric_sam = df_trades["Rendement (%)"].sum(skipna=True)
 
+
+        # 🔁 Bovenste SAM-rendement aanpassen op signaalkeuze
+    if signaalkeuze == "Koop":
+        metric_sam = df_trades["SAM-% Koop"].sum(skipna=True)
+    elif signaalkeuze == "Verkoop":
+        metric_sam = df_trades["SAM-% Verkoop"].sum(skipna=True)
+    else:
+        metric_sam = df_trades["Rendement (%)"].sum(skipna=True)
+        
         col1, col2 = st.columns(2)
         col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
         col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
