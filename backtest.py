@@ -31,51 +31,51 @@ def backtest_functie(df, signaalkeuze, selected_tab):
     st.write("📆 Gefilterde data (eerste 5 rijen):", df_period.head())
     st.write("Aantal rijen na datumfilter:", len(df_period))
 
+    # 🧱 Kolommen controleren
+    if isinstance(df_period.columns, pd.MultiIndex):
+        df_period.columns = ["_".join([str(i) for i in col if i]) for col in df_period.columns]
 
-# Kolommen controleren
-if isinstance(df_period.columns, pd.MultiIndex):
-    df_period.columns = ["_".join([str(i) for i in col if i]) for col in df_period.columns]
+    st.write("Beschikbare kolommen:", df_period.columns)
 
-st.write("Beschikbare kolommen:", df_period.columns)
+    # 🔍 Close-kolom zoeken
+    close_col = next((col for col in df_period.columns if col.lower().startswith("close")), None)
+    st.write("Gevonden close-kolom:", close_col)
 
-# Close-kolom zoeken
-close_col = next((col for col in df_period.columns if col.lower().startswith("close")), None)
-st.write("Gevonden close-kolom:", close_col)
+    # ✅ Validatie close-kolom
+    if not close_col:
+        st.error("❌ Geen geldige 'Close'-kolom gevonden in deze dataset.")
+        st.stop()
 
-# Validatie close-kolom
-if not close_col:
-    st.error("❌ Geen geldige 'Close'-kolom gevonden in deze dataset.")
-    st.stop()
+    # 📈 Marktrendementberekening
+    df_period[close_col] = pd.to_numeric(df_period[close_col], errors="coerce")
+    df_valid = df_period[close_col].dropna()
+    if len(df_valid) >= 2:
+        koers_start = df_valid.iloc[0]
+        koers_eind = df_valid.iloc[-1]
+        marktrendement = ((koers_eind - koers_start) / koers_start) * 100
+        st.write("📈 Marktrendement:", f"{marktrendement:+.2f}%")
+    else:
+        st.write("⚠️ Niet genoeg geldige koersen voor marktrendement.")
 
-# Marktrendementberekening
-df_period[close_col] = pd.to_numeric(df_period[close_col], errors="coerce")
-df_valid = df_period[close_col].dropna()
-if len(df_valid) >= 2:
-    koers_start = df_valid.iloc[0]
-    koers_eind = df_valid.iloc[-1]
-    marktrendement = ((koers_eind - koers_start) / koers_start) * 100
-    st.write("📈 Marktrendement:", f"{marktrendement:+.2f}%")
-else:
-    st.write("⚠️ Niet genoeg geldige koersen voor marktrendement.")
+    # 📊 Signalen voorbereiden
+    if "Advies" not in df_period.columns:
+        st.error("❌ Geen 'Advies'-kolom aanwezig in dataframe.")
+        st.stop()
 
-# Signalen voorbereiden
-if "Advies" not in df_period.columns:
-    st.error("❌ Geen 'Advies'-kolom aanwezig in dataframe.")
-    st.stop()
+    eerste_valid_index = df_period[df_period["Advies"].notna()].index[0]
+    df_signalen = df_period.loc[eerste_valid_index:].copy()
+    df_signalen = df_signalen[df_signalen["Advies"].isin(["Kopen", "Verkopen"])].copy()
+    st.write("📊 Signalen (eerste 5):", df_signalen.head())
+    st.write("Aantal signalen:", len(df_signalen))
+    st.write("Unieke adviezen:", df_signalen["Advies"].unique())
 
-eerste_valid_index = df_period[df_period["Advies"].notna()].index[0]
-df_signalen = df_period.loc[eerste_valid_index:].copy()
-df_signalen = df_signalen[df_signalen["Advies"].isin(["Kopen", "Verkopen"])].copy()
-st.write("📊 Signalen (eerste 5):", df_signalen.head())
-st.write("Aantal signalen:", len(df_signalen))
-st.write("Unieke adviezen:", df_signalen["Advies"].unique())
+    # ⚙️ Signaalkeuze tonen
+    st.write("⚙️ Gekozen signaalkeuze:", signaalkeuze)
 
-# Signaalkeuze tonen
-st.write("⚙️ Gekozen signaalkeuze:", signaalkeuze)
+    # 🔚 Einde debugblok
+    st.write("🔚 Einde debug info")
 
-# Einde debugblok
-st.write("🔚 Einde debug info")
-# ðŸ”„ Backtestfunctie
+
 
 #def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
 def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close"):
