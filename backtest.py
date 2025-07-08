@@ -158,6 +158,9 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
         st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
 
+
+        st.caption(f"DEBUG: SAM-% Koop = {df_trades['SAM-% Koop'].sum(skipna=True):+.2f}%, SAM-% Verkoop = {df_trades['SAM-% Verkoop'].sum(skipna=True):+.2f}%")
+        
         # ------------
         # ✅ Weergave
         
