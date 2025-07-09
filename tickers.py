@@ -76,6 +76,8 @@ mijn_lijst = {
 }
 
 
+
+
 # --- Mapping beurs tabs en tickers ---
 tabs_mapping = {
     "🇺🇸 Dow Jones": dow_tickers,
