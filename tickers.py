@@ -85,16 +85,16 @@ tabs_mapping = {
     "🇺🇸 US Tech": ustech_tickers,
     "🇪🇺 Eurostoxx": eurostoxx_tickers,
     "📌 Mijn lijst": mijn_lijst,
-    "🇳🇱 AEX": aex_tickers,
-    "🇳🇱 AMX": amx_tickers,
+    "🇳🇱 AEX index": aex_tickers,
+    "🇳🇱 AMX index": amx_tickers,
     "🌐 Crypto": crypto_tickers
 }
 
 tab_labels = list(tabs_mapping.keys())
 
 valutasymbool = {
-    "🇳🇱 AEX": "€ ",
-    "🇳🇱 AMX": "€ ",
+    "🇳🇱 AEX index": "€ ",
+    "🇳🇱 AMX index": "€ ",
     "🇺🇸 Dow Jones": "$ ",
     "🇺🇸 Nasdaq": "$ ",
     "🇪🇺 Eurostoxx": "€ ",
