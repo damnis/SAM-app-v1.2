@@ -11,7 +11,7 @@
 # to script from tickers import ustech_tickers, nasdaq_tickers, dow_tickers, aex_tickers, amx_tickers, eurostoxx_tickers, crypto_tickers
 aex_tickers = {
 "ABN.AS": "ABN AMRO", "ADYEN.AS": "Adyen", "AGN.AS": "Aegon", "AD.AS": "Ahold Delhaize", 
-"AKZA.AS": "Akzo Nobel", "MT.AS": "ArcelorMittal", "ASM.AS": "ASMI", "ASML.AS": "ASML", "ASRNL.AS": "ASR Nederland",
+"AKZA.AS": "Akzo Nobel", "MT.AS": "ArcelorMittal", "ASM.AS": "ASM International", "ASML.AS": "ASML Holding", "ASRNL.AS": "ASR Nederland",
 "BESI.AS": "BESI", "DSFIR.AS": "DSM-Firmenich", "GLPG.AS": "Galapagos", "HEIA.AS": "Heineken", 
 "IMCD.AS": "IMCD", "INGA.AS": "ING Groep", "TKWY.AS": "Just Eat Takeaway", "KPN.AS": "KPN",
 "NN.AS": "NN Group", "PHIA.AS": "Philips", "PRX.AS": "Prosus", "RAND.AS": "Randstad",
@@ -53,14 +53,26 @@ eurostoxx_tickers = {
 }
 # --- Toevoeging tickers AMX & Crypto ---
 amx_tickers = {
-    "AMG.AS": "AMG", "ARCAD.AS": "Arcadis", "BAMNB.AS": "BAM Groep",
-    "BPOST.AS": "BPost", "FAGR.AS": "Fagron", "FUR.AS": "Fugro", "KENDR.AS": "Kendrion",
-    "SBMO.AS": "SBM Offshore", "TKWY.AS": "Just Eat", "VASTN.AS": "Vastned Retail"
+    "AALB.AS": "Aalberts N.V.", "AF.PA": "Air France-KLM SA", "APAM.AS": "Aperam S.A.",
+    "ARCAD.AS": "Arcadis NV", "BAMNB.AS": "Koninklijke BAM Groep nv", "BESI.AS": "BE Semiconductor Industries N.V.",
+    "BFIT.AS": "Basic-Fit N.V.", "CRBN.AS": "Corbion N.V.", "ECMPA.AS": "Eurocommercial Properties N.V.",
+    "FAGR.BR": "Fagron NV", "FLOW.AS": "Flow Traders Ltd.", "FUR.AS": "Fugro N.V.",
+    "LIGHT.AS": "Signify N.V.", "NSI.AS": "NSI N.V.", "OCI.AS": "OCI N.V.", "PHARM.AS": "Pharming Group N.V.",
+    "PNL.AS": "PostNL N.V.", "SBMO.AS": "SBM Offshore N.V.", "TWEKA.AS": "TKH Group N.V.",
+    "VPK.AS": "Koninklijke Vopak N.V.", "WDP.BR": "Warehouses De Pauw SA",
+    "AMG.AS": "AMG", "KENDR.AS": "Kendrion", "TKWY.AS": "Just Eat", "VASTN.AS": "Vastned Retail"
 }
 
 crypto_tickers = {
     "BTC-USD": "Bitcoin", "ETH-USD": "Ethereum", "SOL-USD": "Solana",
     "BNB-USD": "BNB", "XRP-USD": "XRP", "DOGE-USD": "Dogecoin"
+}
+
+mijn_lijst = {
+    "ASM.AS": "ASM International, "ASML.AS": "ASML Holding", "AMZN": "Amazon",
+    "SMCI": "Super Micro Computer", "PLTR": "Palantir", "ORCL": "Oracle",
+    "NVDA": "NVIDIA", "AVGO": "Broadcom", "TSLA": "Tesla", "AAPL": "Apple",
+    "GOOGL": "Alphabet (GOOGL)", "MSFT": "Microsoft", "META": "Meta Platforms"
 }
 
 
@@ -70,6 +82,7 @@ tabs_mapping = {
     "🇺🇸 Nasdaq": nasdaq_tickers,
     "🇺🇸 US Tech": ustech_tickers,
     "🇪🇺 Eurostoxx": eurostoxx_tickers,
+    "📌 Mijn lijst": mijn_lijst,
     "🇳🇱 AEX": aex_tickers,
     "🇳🇱 AMX": amx_tickers,
     "🌐 Crypto": crypto_tickers
@@ -84,6 +97,7 @@ valutasymbool = {
     "🇺🇸 Nasdaq": "$ ",
     "🇪🇺 Eurostoxx": "€ ",
     "🇺🇸 US Tech": "$ ",
+    "📌 Mijn lijst": "",
     "🌐 Crypto": ""
 }
 
