@@ -6,3 +6,4 @@ yfinance
 ta
 plotly
 alpaca-py
+pandas_market_calendars 
