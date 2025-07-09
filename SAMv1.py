@@ -341,41 +341,48 @@ if default_ticker_key not in dropdown_dict:
     default_ticker_key = list(dropdown_dict.keys())[0]  # fallback naar eerste
 
 # --- Dropdown zelf ---
-selected_ticker = st.selectbox(
+# --- 1. Initieel: dropdownkeuze (voorkeursmethode) ---
+selected_ticker_key = st.selectbox(
     f"Selecteer {selected_tab} ticker:",
-    options=list(dropdown_dict.keys()),  # alleen tickers als stabiele optie-key
-    format_func=lambda x: dropdown_dict[x][0],  # toon koers etc.
+    options=list(dropdown_dict.keys()),
+    format_func=lambda x: dropdown_dict[x][0],  # koers of naam tonen
     key=f"ticker_select_{selected_tab}",
     index=list(dropdown_dict.keys()).index(default_ticker_key)
 )
 
-# --- Ophalen ticker info ---
-ticker = selected_ticker
+ticker = selected_ticker_key
 ticker_name = dropdown_dict[ticker][1]
 
-# --- Live koers opnieuw ophalen voor de geselecteerde ticker ---
+# --- 2. Probeer live data te laden ---
 try:
     live_data = yf.download(ticker, period="1wk", interval="1wk", progress=False)
     last = live_data["Close"].iloc[-1]
+    if pd.isna(last) or last == 0.0:
+        raise ValueError("Ongeldige koerswaarde, overschakelen naar FMP-input")
+    ticker_valid = True
 except Exception:
-    last = 0.0  # fallback
+    ticker_valid = False
 
-# --- Andere instellingen ---
-# 🔍 Ticker input
-zoekterm = st.text_input("🔍 Zoek op naam of ticker", value="AAPL").strip()
+# --- 3. Fallback: handmatige input als eerste ticker ongeldig is ---
+if not ticker_valid:
+    st.warning("⚠️ Geen geldige data voor de gekozen ticker. Gebruik handmatige zoekfunctie.")
+    zoekterm = st.text_input("🔍 Zoek op naam of ticker", value="AAPL").strip()
+    suggesties = search_ticker_fmp(zoekterm)
 
-suggesties = search_ticker_fmp(zoekterm)
-
-if suggesties:
-    ticker_opties = [f"{sym} - {naam}" for sym, naam in suggesties]
-    selectie = st.selectbox("Kies ticker", ticker_opties, index=0)
-    query = selectie.split(" - ")[0]  # extract ticker
+    if suggesties:
+        ticker_opties = [f"{sym} - {naam}" for sym, naam in suggesties]
+        selectie = st.selectbox("Kies ticker", ticker_opties, index=0)
+        ticker = selectie.split(" - ")[0]
+        ticker_name = selectie.split(" - ")[1]
+    else:
+        st.warning("❌ Geen resultaten gevonden.")
+        ticker = None
+        ticker_name = ""
 else:
-    st.warning("⚠️ Geen resultaten gevonden.")
-    query = ""
-    
-#query = st.text_input("Zoek op naam of ticker (bijv. Apple of AAPL)", value="AAPL").upper().strip()
+    # Toon bevestiging van geslaagde selectie
+    st.success(f"✅ Geselecteerde ticker: {ticker} ({ticker_name})")
 
+# overige
 # --- Intervalopties ---
 interval_optie = st.selectbox(
     "Kies de interval",
