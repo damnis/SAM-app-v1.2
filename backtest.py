@@ -90,6 +90,8 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         st.error("❌ Geen geldige 'Close'-kolom gevonden in deze dataset.")
         st.stop()
 
+    st.text(f"Signaalkeuze (instelling gebruiker): {signaalkeuze}")
+    
     df_period[close_col] = pd.to_numeric(df_period[close_col], errors="coerce")
     df_valid = df_period[close_col].dropna()
 
