@@ -447,7 +447,7 @@ df, huidig_advies = advies_wordt_geladen(ticker, interval, risk_aversion)
 signaalkeuze = st.radio(
     "Toon SAM-rendement voor:",
     options=["Beide", "Koop", "Verkoop"],
-    index=1,
+    index=0,
     horizontal=True
 )
 
