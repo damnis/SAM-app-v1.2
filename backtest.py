@@ -130,12 +130,12 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
 
         col2.metric(
-            if signaalkeuze == koop
-                "📊 SAM-rendement", f"{rendement_koop:+.2f}%"
-            elif signaalkeuze == verkoop
-                "📊 SAM-rendement", f"{rendement_verkoop:+.2f}%"
-            else            
-               "📊 SAM-rendement", f"{metric_sam:+.2f}%"
+        if signaalkeuze == koop
+            "📊 SAM-rendement", f"{rendement_koop:+.2f}%"
+        elif signaalkeuze == verkoop
+            "📊 SAM-rendement", f"{rendement_verkoop:+.2f}%"
+        else            
+            "📊 SAM-rendement", f"{metric_sam:+.2f}%"
         )
                
         st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{metric_sam:+.2f}%**, succesvol: **{aantal_succesvol}**")
