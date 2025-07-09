@@ -69,7 +69,7 @@ crypto_tickers = {
 }
 
 mijn_lijst = {
-    "ASM.AS": "ASM International", "ASML.AS": "ASML Holding", "AMZN": "Amazon",
+    "": "", "ASM.AS": "ASM International", "ASML.AS": "ASML Holding", "AMZN": "Amazon",
     "SMCI": "Super Micro Computer", "PLTR": "Palantir", "ORCL": "Oracle",
     "NVDA": "NVIDIA", "AVGO": "Broadcom", "TSLA": "Tesla", "AAPL": "Apple",
     "GOOGL": "Alphabet (GOOGL)", "MSFT": "Microsoft", "META": "Meta Platforms"
