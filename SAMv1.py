@@ -534,7 +534,7 @@ backtest_functie(df, signaalkeuze=signaalkeuze, selected_tab=selected_tab)
 
 # …na de adviezen en grafiek, etc.
 #toon_trading_bot_interface(selected_ticker, huidig_advies)
-toon_trading_bot_interface(selected_ticker_key, huidig_advies)
+toon_trading_bot_interface(selected_ticker, huidig_advies)
 # 📌 Verbinding met Alpaca testen (optioneel, pas uit te voeren als gebruiker dit wil)
 
 
