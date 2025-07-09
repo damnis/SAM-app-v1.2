@@ -81,13 +81,13 @@ mijn_lijst = {
 # --- Mapping beurs tabs en tickers ---
 tabs_mapping = {
     "🇺🇸 Dow Jones": dow_tickers,
-    "🇺🇸 Nasdaq": nasdaq_tickers,
-    "🇺🇸 US Tech": ustech_tickers,
+    "🇺🇸 Nasdaq   ": nasdaq_tickers,
+    "🇺🇸 US Tech  ": ustech_tickers,
     "🇪🇺 Eurostoxx": eurostoxx_tickers,
     "📌 Mijn lijst": mijn_lijst,
-    "🇳🇱 AEX": aex_tickers,
-    "🇳🇱 AMX": amx_tickers,
-    "🌐 Crypto": crypto_tickers
+    "🇳🇱 AEX      ": aex_tickers,
+    "🇳🇱 AMX      ": amx_tickers,
+    "🌐 Crypto   ": crypto_tickers
 }
 
 tab_labels = list(tabs_mapping.keys())
