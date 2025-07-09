@@ -12,7 +12,7 @@ from ta.trend import ADXIndicator
 #-- Volledige tickerlijsten ---
 from tickers import (
     aex_tickers, amx_tickers, dow_tickers, eurostoxx_tickers,
-    nasdaq_tickers, ustech_tickers, crypto_tickers,
+    nasdaq_tickers, ustech_tickers, crypto_tickers, mijn_lijst, 
     tabs_mapping, tab_labels, valutasymbool
 )
 # Indicatoren berekening
