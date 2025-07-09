@@ -184,7 +184,7 @@ def determine_advice(df, threshold, risk_aversion=0):
             
             if trend_1 > 0 and stage_1 > 0:
                 df.at[df.index[i], "Advies"] = "Kopen"
-            elif trend_1 < trend_2 and stage_1 < 0 and stage_2 < 0:
+            elif trend_1 < trend_2 and stage_1 < 0:
                 df.at[df.index[i], "Advies"] = "Verkopen"
 
         df["Advies"] = df["Advies"].ffill()
@@ -522,7 +522,58 @@ toon_trading_bot_interface(selected_ticker, huidig_advies)
 
 
 
+###### oud
 
+#    for i in range(2, len(df)):
+#            sam_1 = df["SAM"].iloc[i]
+#            trends_1 = df["Trend"].iloc[i]
+#            trends_2 = df["Trend"].iloc[i - 1]
+#            trend_1 = df["SAT_Trend"].iloc[i]
+#            trend_2 = df["SAT_Trend"].iloc[i - 1]
+#            trend_3 = df["SAT_Trend"].iloc[i - 2]
+#            stage_1 = df["SAT_Stage"].iloc[i]
+#            stage_2 = df["SAT_Stage"].iloc[i - 1]
+#            stage_3 = df["SAT_Stage"].iloc[i - 2]
+
+#            if trend_1 >= trend_2 and trend_2 >= trend_3 and stage_1 > 0 or (trends_1 - trends_2 >= 0) and sam_1 >= 0:
+#                df.at[df.index[i], "Advies"] = "Kopen"
+ #           elif trend_1 < trend_2 and stage_1 < 0 and stage_2 < 0: # optie and trend_2 < trend_3 
+ #               df.at[df.index[i], "Advies"] = "Verkopen"
+
+#        df["Advies"] = df["Advies"].ffill()
+
+    
+#    elif risk_aversion == 2:
+#        for i in range(2, len(df)):
+#            trend_1 = df["SAT_Trend"].iloc[i]
+#            trend_2 = df["SAT_Trend"].iloc[i - 1]
+ #           trend_3 = df["SAT_Trend"].iloc[i - 2]
+#            stage_1 = df["SAT_Stage"].iloc[i]
+ #           stage_2 = df["SAT_Stage"].iloc[i - 1]
+ #           stage_3 = df["SAT_Stage"].iloc[i - 2]
+
+#            if trend_1 >= trend_2 and trend_2 >= trend_3 and stage_1 > 0 and stage_2 > 0:
+#                df.at[df.index[i], "Advies"] = "Kopen"
+ #           elif trend_1 < trend_2 and stage_1 < 0: # optie and trend_2 < trend_3 
+  #              df.at[df.index[i], "Advies"] = "Verkopen"
+
+#        df["Advies"] = df["Advies"].ffill()
+
+#    elif risk_aversion == 3:
+#        for i in range(2, len(df)):
+#            trend_1 = df["SAT_Trend"].iloc[i]
+ #           trend_2 = df["SAT_Trend"].iloc[i - 1]
+#            trend_3 = df["SAT_Trend"].iloc[i - 2]
+#            stage_1 = df["SAT_Stage"].iloc[i]
+#            stage_2 = df["SAT_Stage"].iloc[i - 1]
+ #           stage_3 = df["SAT_Stage"].iloc[i - 2]
+            
+  #          if trend_1 > 0 and stage_1 > 0:
+  #              df.at[df.index[i], "Advies"] = "Kopen"
+  #          elif trend_1 < trend_2 and stage_1 < 0 and stage_2 < 0:
+  #              df.at[df.index[i], "Advies"] = "Verkopen"
+
+  #      df["Advies"] = df["Advies"].ffill()
 
 
 
