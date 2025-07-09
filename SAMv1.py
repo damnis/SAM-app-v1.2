@@ -371,7 +371,7 @@ if suggesties:
     selectie = st.selectbox("Kies ticker", ticker_opties, index=0)
     query = selectie.split(" - ")[0]  # extract ticker
 else:
-    st.warning("⚠️ Geen resultaten gevonden.")
+#    st.warning("⚠️ Geen resultaten gevonden.")
     query = ""
     
 # overige
