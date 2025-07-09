@@ -116,10 +116,6 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
         metric_sam = (df_trades["Rendement (%)"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
 
-        st.write("🧪 DEBUG vóór metrics:")
-        st.write("sam_rendement_filtered", sam_rendement_filtered)
-        st.write("marktrendement", marktrendement)
-
         col1, col2 = st.columns(2)
         col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
  #       col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
