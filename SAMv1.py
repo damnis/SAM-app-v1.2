@@ -356,14 +356,20 @@ ticker_name = dropdown_dict[ticker][1]
 # --- 2. Probeer data op te halen via yfinance ---
 try:
     live_data = yf.download(ticker, period="1wk", interval="1wk", progress=False)
-    if live_data.empty or live_data["Close"].isna().all():
-        raise ValueError("Geen bruikbare koersdata")
+    st.write("📥 Live data:", live_data.tail(1))  # debug
+
+    # Check: is er een 'Close'-kolom met minimaal 1 niet-NaN waarde?
+    if "Close" not in live_data.columns or live_data["Close"].dropna().empty:
+        raise ValueError("❌ Geen bruikbare 'Close'-koersdata gevonden")
+
     last = live_data["Close"].dropna().iloc[-1]
     ticker_valid = True
-except Exception:
+
+except Exception as e:
+    st.error(f"⚠️ Fout bij ophalen data: {e}")
     ticker_valid = False
     last = 0.0
-
+    
 # --- 3. Fallback via handmatige zoekopdracht (alleen als ticker 1 faalt) ---
 if not ticker_valid:
     st.warning("⚠️ Geen geldige data voor de gekozen ticker. Gebruik handmatige zoekfunctie.")
