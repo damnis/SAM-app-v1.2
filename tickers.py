@@ -53,14 +53,14 @@ eurostoxx_tickers = {
 }
 # --- Toevoeging tickers AMX & Crypto ---
 amx_tickers = {
-    "AALB.AS": "Aalberts N.V.", "AF.PA": "Air France-KLM SA", "APAM.AS": "Aperam S.A.",
+    "AF.PA": "Air France-KLM SA", "APAM.AS": "Aperam S.A.",
     "ARCAD.AS": "Arcadis NV", "BAMNB.AS": "Koninklijke BAM Groep nv", "BESI.AS": "BE Semiconductor Industries N.V.",
     "BFIT.AS": "Basic-Fit N.V.", "CRBN.AS": "Corbion N.V.", "ECMPA.AS": "Eurocommercial Properties N.V.",
     "FAGR.BR": "Fagron NV", "FLOW.AS": "Flow Traders Ltd.", "FUR.AS": "Fugro N.V.",
     "LIGHT.AS": "Signify N.V.", "NSI.AS": "NSI N.V.", "OCI.AS": "OCI N.V.", "PHARM.AS": "Pharming Group N.V.",
     "PNL.AS": "PostNL N.V.", "SBMO.AS": "SBM Offshore N.V.", "TWEKA.AS": "TKH Group N.V.",
     "VPK.AS": "Koninklijke Vopak N.V.", "WDP.BR": "Warehouses De Pauw SA",
-    "AMG.AS": "AMG", "KENDR.AS": "Kendrion", "TKWY.AS": "Just Eat", "VASTN.AS": "Vastned Retail"
+    "AMG.AS": "AMG", "AALB.AS": "Aalberts N.V.", "KENDR.AS": "Kendrion", "TKWY.AS": "Just Eat", "VASTN.AS": "Vastned Retail"
 }
 
 crypto_tickers = {
