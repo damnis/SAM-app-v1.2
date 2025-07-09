@@ -10,7 +10,7 @@
 
 # to script from tickers import ustech_tickers, nasdaq_tickers, dow_tickers, aex_tickers, amx_tickers, eurostoxx_tickers, crypto_tickers
 aex_tickers = {
-"ABN.AS": "ABN AMRO", "ADYEN.AS": "Adyen", "AGN.AS": "Aegon", "AD.AS": "Ahold Delhaize", 
+"^AEX": "AEX Index", "ABN.AS": "ABN AMRO", "ADYEN.AS": "Adyen", "AGN.AS": "Aegon", "AD.AS": "Ahold Delhaize", 
 "AKZA.AS": "Akzo Nobel", "MT.AS": "ArcelorMittal", "ASM.AS": "ASM International", "ASML.AS": "ASML Holding", "ASRNL.AS": "ASR Nederland",
 "BESI.AS": "BESI", "DSFIR.AS": "DSM-Firmenich", "GLPG.AS": "Galapagos", "HEIA.AS": "Heineken", 
 "IMCD.AS": "IMCD", "INGA.AS": "ING Groep", "TKWY.AS": "Just Eat Takeaway", "KPN.AS": "KPN",
@@ -28,7 +28,7 @@ dow_tickers = {
     'DOW': 'Dow', 'RTX': 'RTX Corp.', 'WBA': 'Walgreens Boots'
 }
 nasdaq_tickers = {
-    'MSFT': 'Microsoft', 'NVDA': 'NVIDIA', 'ASML': 'ASML', 'AAPL': 'Apple', 'AMZN': 'Amazon', 'META': 'Meta',
+    '^IXIC': 'Nasdaq index', 'MSFT': 'Microsoft', 'NVDA': 'NVIDIA', 'ASML': 'ASML', 'AAPL': 'Apple', 'AMZN': 'Amazon', 'META': 'Meta',
     'NFLX': 'Netflix', 'GOOG': 'Google', 'GOOGL': 'Alphabet', 'TSLA': 'Tesla', 'CSCO': 'Cisco',
     'INTC': 'Intel', 'ADBE': 'Adobe', 'CMCSA': 'Comcast', 'PEP': 'PepsiCo', 'COST': 'Costco',
     'AVGO': 'Broadcom', 'QCOM': 'Qualcomm', 'TMUS': 'T-Mobile', 'TXN': 'Texas Instruments',
@@ -42,7 +42,7 @@ ustech_tickers = {
     "MSFT": "Microsoft"
 }
 eurostoxx_tickers = {
-    'ASML.AS': 'ASML Holding', 'AIR.PA': 'Airbus', 'BAS.DE': 'BASF', 'BAYN.DE': 'Bayer',
+    '^STOXX50E': 'Eurostoxx index', 'ASML.AS': 'ASML Holding', 'AIR.PA': 'Airbus', 'BAS.DE': 'BASF', 'BAYN.DE': 'Bayer',
     'BNP.PA': 'BNP Paribas', 'MBG.DE': 'Mercedes-Benz Group', 'ENEL.MI': 'Enel',
     'ENGI.PA': 'Engie', 'IBE.MC': 'Iberdrola', 'MC.PA': 'LVMH', 'OR.PA': 'L’Oréal',
     'PHIA.AS': 'Philips', 'SAN.PA': 'Sanofi', 'SAP.DE': 'SAP', 'SIE.DE': 'Siemens',
@@ -53,7 +53,7 @@ eurostoxx_tickers = {
 }
 # --- Toevoeging tickers AMX & Crypto ---
 amx_tickers = {
-    "AF.PA": "Air France-KLM SA", "APAM.AS": "Aperam S.A.",
+    "^AMX": "AMX Index", "AF.PA": "Air France-KLM SA", "APAM.AS": "Aperam S.A.",
     "ARCAD.AS": "Arcadis NV", "BAMNB.AS": "Koninklijke BAM Groep nv", "BESI.AS": "BE Semiconductor Industries N.V.",
     "BFIT.AS": "Basic-Fit N.V.", "CRBN.AS": "Corbion N.V.", "ECMPA.AS": "Eurocommercial Properties N.V.",
     "FAGR.BR": "Fagron NV", "FLOW.AS": "Flow Traders Ltd.", "FUR.AS": "Fugro N.V.",
