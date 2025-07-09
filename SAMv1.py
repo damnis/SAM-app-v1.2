@@ -362,7 +362,7 @@ except Exception:
     last = 0.0  # fallback
 
 # --- Andere instellingen ---
-zoekterm = st.text_input("🔍 Zoek op naam of ticker", value="AAPL").strip()
+zoekterm = st.text_input("🔍 Gebruik 'Vrije keuze...' uit mijn lijst en zoek op naam of ticker", value="RYTM").strip()
 
 suggesties = search_ticker_fmp(zoekterm)
 
