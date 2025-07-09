@@ -7,6 +7,30 @@ import pandas_market_calendars as mcal
 
 FMP_API_KEY = "D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5"
 
+@st.cache_data(ttl=3600)
+def search_ticker(query, fmp_api_key="D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5"):
+    query = query.upper().strip()
+
+    # Probeer eerst of het een geldige yfinance-ticker is
+    try:
+        info = yf.Ticker(query).info
+        if info and "regularMarketPrice" in info:
+            naam = info.get("shortName") or info.get("longName") or query
+            return [(query, naam)]
+    except Exception:
+        pass  # yfinance gaf geen geldige data terug
+
+    # Als fallback → FMP doorzoeken
+    try:
+        url = f"https://financialmodelingprep.com/api/v3/search?query={query}&limit=50&apikey={fmp_api_key}"
+        response = requests.get(url)
+        data = response.json()
+        resultaten = [(item["symbol"], item.get("name", item["symbol"])) for item in data]
+        return resultaten
+    except Exception as e:
+        st.error(f"Fout bij ophalen FMP-tickers: {e}")
+        return []
+        
 # ✅ Tickerzoekfunctie met voorkeur voor NYSE/NASDAQ
 def search_ticker_fmp(query):
     query = query.upper().strip()
