@@ -33,6 +33,9 @@ from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import MarketOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce
 #import alpaca_trade_api as tradeapi
+from datafetch import fetch_data_fmp, search_ticker_fmp
+
+
 
 #--- Functie om data op te halen ---
 # ✅ Gecachete downloadfunctie (15 minuten geldig)
@@ -358,6 +361,21 @@ except Exception:
     last = 0.0  # fallback
 
 # --- Andere instellingen ---
+# 🔍 Ticker input
+zoekterm = st.text_input("🔍 Zoek op naam of ticker", value="AAPL").strip()
+
+suggesties = search_ticker_fmp(zoekterm)
+
+if suggesties:
+    ticker_opties = [f"{sym} - {naam}" for sym, naam in suggesties]
+    selectie = st.selectbox("Kies ticker", ticker_opties, index=0)
+    query = selectie.split(" - ")[0]  # extract ticker
+else:
+    st.warning("⚠️ Geen resultaten gevonden.")
+    query = ""
+    
+#query = st.text_input("Zoek op naam of ticker (bijv. Apple of AAPL)", value="AAPL").upper().strip()
+
 # --- Intervalopties ---
 interval_optie = st.selectbox(
     "Kies de interval",
