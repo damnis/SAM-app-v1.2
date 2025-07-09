@@ -341,11 +341,11 @@ if default_ticker_key not in dropdown_dict:
     default_ticker_key = list(dropdown_dict.keys())[0]  # fallback naar eerste
 
 # --- Dropdown zelf ---
-# --- 1. Initieel: dropdownkeuze (voorkeursmethode) ---
+# --- 1. Ticker via dropdown (voorkeursmethode) ---
 selected_ticker_key = st.selectbox(
     f"Selecteer {selected_tab} ticker:",
     options=list(dropdown_dict.keys()),
-    format_func=lambda x: dropdown_dict[x][0],  # koers of naam tonen
+    format_func=lambda x: dropdown_dict[x][0],
     key=f"ticker_select_{selected_tab}",
     index=list(dropdown_dict.keys()).index(default_ticker_key)
 )
@@ -353,17 +353,18 @@ selected_ticker_key = st.selectbox(
 ticker = selected_ticker_key
 ticker_name = dropdown_dict[ticker][1]
 
-# --- 2. Probeer live data te laden ---
+# --- 2. Probeer data op te halen via yfinance ---
 try:
     live_data = yf.download(ticker, period="1wk", interval="1wk", progress=False)
-    last = live_data["Close"].iloc[-1]
-    if pd.isna(last) or last == 0.0:
-        raise ValueError("Ongeldige koerswaarde, overschakelen naar FMP-input")
+    if live_data.empty or live_data["Close"].isna().all():
+        raise ValueError("Geen bruikbare koersdata")
+    last = live_data["Close"].dropna().iloc[-1]
     ticker_valid = True
 except Exception:
     ticker_valid = False
+    last = 0.0
 
-# --- 3. Fallback: handmatige input als eerste ticker ongeldig is ---
+# --- 3. Fallback via handmatige zoekopdracht (alleen als ticker 1 faalt) ---
 if not ticker_valid:
     st.warning("⚠️ Geen geldige data voor de gekozen ticker. Gebruik handmatige zoekfunctie.")
     zoekterm = st.text_input("🔍 Zoek op naam of ticker", value="AAPL").strip()
@@ -374,14 +375,14 @@ if not ticker_valid:
         selectie = st.selectbox("Kies ticker", ticker_opties, index=0)
         ticker = selectie.split(" - ")[0]
         ticker_name = selectie.split(" - ")[1]
+        st.success(f"✅ Gekozen via zoekfunctie: {ticker} ({ticker_name})")
     else:
-        st.warning("❌ Geen resultaten gevonden.")
+        st.error("❌ Geen resultaten gevonden.")
         ticker = None
         ticker_name = ""
 else:
-    # Toon bevestiging van geslaagde selectie
-    st.success(f"✅ Geselecteerde ticker: {ticker} ({ticker_name})")
-
+    st.success(f"✅ Gekozen uit lijst: {ticker} ({ticker_name})")
+    
 # overige
 # --- Intervalopties ---
 interval_optie = st.selectbox(
