@@ -33,7 +33,7 @@ from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import MarketOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce
 #import alpaca_trade_api as tradeapi
-from datafetch import fetch_data_fmp, search_ticker_fmp
+from fmpfetch import fetch_data_fmp, search_ticker_fmp
 
 
 
