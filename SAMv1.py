@@ -432,6 +432,13 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+
+# --- Als originele ticker een NaN is, en er is een query, gebruik die
+if (pd.isna(ticker) or ticker in ["", "nan", None]) and query:
+    ticker = query
+    ticker_name = query  # eventueel uit selectie halen
+
+
 # 📌 Slider in kolommen, links met max 50% breedte
 col1, col2 = st.columns([1, 1])
 with col1:
