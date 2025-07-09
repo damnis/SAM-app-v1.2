@@ -341,53 +341,38 @@ if default_ticker_key not in dropdown_dict:
     default_ticker_key = list(dropdown_dict.keys())[0]  # fallback naar eerste
 
 # --- Dropdown zelf ---
-# --- 1. Ticker via dropdown (voorkeursmethode) ---
-selected_ticker_key = st.selectbox(
+# --- Dropdown zelf ---
+selected_ticker = st.selectbox(
     f"Selecteer {selected_tab} ticker:",
-    options=list(dropdown_dict.keys()),
-    format_func=lambda x: dropdown_dict[x][0],
+    options=list(dropdown_dict.keys()),  # alleen tickers als stabiele optie-key
+    format_func=lambda x: dropdown_dict[x][0],  # toon koers etc.
     key=f"ticker_select_{selected_tab}",
     index=list(dropdown_dict.keys()).index(default_ticker_key)
 )
 
-ticker = selected_ticker_key
+# --- Ophalen ticker info ---
+ticker = selected_ticker
 ticker_name = dropdown_dict[ticker][1]
 
-# --- 2. Probeer data op te halen via yfinance ---
+# --- Live koers opnieuw ophalen voor de geselecteerde ticker ---
 try:
     live_data = yf.download(ticker, period="1wk", interval="1wk", progress=False)
-    st.write("📥 Live data:", live_data.tail(1))  # debug
+    last = live_data["Close"].iloc[-1]
+except Exception:
+    last = 0.0  # fallback
 
-    # Check: is er een 'Close'-kolom met minimaal 1 niet-NaN waarde?
-    if "Close" not in live_data.columns or live_data["Close"].dropna().empty:
-        raise ValueError("❌ Geen bruikbare 'Close'-koersdata gevonden")
+# --- Andere instellingen ---
+zoekterm = st.text_input("🔍 Zoek op naam of ticker", value="AAPL").strip()
 
-    last = live_data["Close"].dropna().iloc[-1]
-    ticker_valid = True
+suggesties = search_ticker_fmp(zoekterm)
 
-except Exception as e:
-    st.error(f"⚠️ Fout bij ophalen data: {e}")
-    ticker_valid = False
-    last = 0.0
-    
-# --- 3. Fallback via handmatige zoekopdracht (alleen als ticker 1 faalt) ---
-if not ticker_valid:
-    st.warning("⚠️ Geen geldige data voor de gekozen ticker. Gebruik handmatige zoekfunctie.")
-    zoekterm = st.text_input("🔍 Zoek op naam of ticker", value="AAPL").strip()
-    suggesties = search_ticker_fmp(zoekterm)
-
-    if suggesties:
-        ticker_opties = [f"{sym} - {naam}" for sym, naam in suggesties]
-        selectie = st.selectbox("Kies ticker", ticker_opties, index=0)
-        ticker = selectie.split(" - ")[0]
-        ticker_name = selectie.split(" - ")[1]
-        st.success(f"✅ Gekozen via zoekfunctie: {ticker} ({ticker_name})")
-    else:
-        st.error("❌ Geen resultaten gevonden.")
-        ticker = None
-        ticker_name = ""
+if suggesties:
+    ticker_opties = [f"{sym} - {naam}" for sym, naam in suggesties]
+    selectie = st.selectbox("Kies ticker", ticker_opties, index=0)
+    query = selectie.split(" - ")[0]  # extract ticker
 else:
-    st.success(f"✅ Gekozen uit lijst: {ticker} ({ticker_name})")
+    st.warning("⚠️ Geen resultaten gevonden.")
+    query = ""
     
 # overige
 # --- Intervalopties ---
