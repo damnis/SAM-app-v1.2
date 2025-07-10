@@ -5,10 +5,11 @@ import streamlit as st
 import plotly.graph_objects as go
 import pandas_market_calendars as mcal
 
-FMP_API_KEY = "D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5"
+
+fmp_api_key = st.secrets["FMP_API_KEY"]
 
 @st.cache_data(ttl=3600)
-def search_ticker(query, fmp_api_key="D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5"):
+def search_ticker(query, fmp_api_key):
     query = query.upper().strip()
 
     # Probeer eerst of het een geldige yfinance-ticker is
@@ -34,7 +35,7 @@ def search_ticker(query, fmp_api_key="D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5"):
 # ✅ Tickerzoekfunctie met voorkeur voor NYSE/NASDAQ
 def search_ticker_fmp(query):
     query = query.upper().strip()
-    url = f"https://financialmodelingprep.com/api/v3/search?query={query}&limit=50&apikey={FMP_API_KEY}"
+    url = f"https://financialmodelingprep.com/api/v3/search?query={query}&limit=50&apikey={fmp_api_key}"
     try:
         response = requests.get(url)
         data = response.json()
@@ -54,7 +55,7 @@ def search_ticker_fmp(query):
 # ✅ Ophalen historische koersdata
 def fetch_data_fmp(ticker, periode="1y"):
     st.write(f"📡 Ophalen FMP-data voor: {ticker} ({periode})")
-    url = f"https://financialmodelingprep.com/api/v3/historical-price-full/{ticker}?serietype=line&timeseries=1000&apikey={FMP_API_KEY}"
+    url = f"https://financialmodelingprep.com/api/v3/historical-price-full/{ticker}?serietype=line&timeseries=1000&apikey={fmp_api_key}"
     try:
         response = requests.get(url)
         data = response.json()
