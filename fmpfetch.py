@@ -76,7 +76,7 @@ def fetch_data_fmp(ticker, periode="1y"):
         if not ticker.upper().endswith("-USD"):
             try:
                 is_europe = any(exchange in ticker.upper() for exchange in [".AS", ".BR", ".PA", ".DE"])
-                cal = mcal.get_calendar("EUREX") if is_europe else mcal.get_calendar("NYSE")
+                cal = mcal.get_calendar("NYSE") if is_europe else mcal.get_calendar("NYSE")
                 start_date = df.index.min().date()
                 end_date = df.index.max().date()
                 schedule = cal.schedule(start_date=start_date, end_date=end_date)
