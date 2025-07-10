@@ -179,6 +179,8 @@ def determine_advice(df, threshold, risk_aversion=0):
     elif risk_aversion == 3: # cannot lose
         for i in range(2, len(df)):
             sam_1 = df["SAM"].iloc[i]
+            sam_2 = df["SAM"].iloc[i - 1]
+            sam_3 = df["SAM"].iloc[i - 2]
             trends_1 = df["Trend"].iloc[i]
             trends_2 = df["Trend"].iloc[i - 1]
             trend_1 = df["SAT_Trend"].iloc[i]
