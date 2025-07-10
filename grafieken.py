@@ -80,6 +80,12 @@ def plot_koersgrafiek(df, ticker_name, interval):
 # --- SAM en Trend ---
 def plot_sam_trend(df, interval):
     st.subheader("Grafiek met SAM en Trend")
+
+    # Vul NaNs vooraf
+    df = df.copy()
+    df[["SAM", "Trend", "SAT_Stage"]] = df[["SAM", "Trend", "SAT_Stage"]].fillna(method="ffill")
+
+    # Slice daarna
     grafiek_periode = bepaal_grafiekperiode(interval)
     cutoff_datum = df.index.max() - grafiek_periode
     df_grafiek = df[df.index >= cutoff_datum].copy()
@@ -101,10 +107,12 @@ def plot_sam_trend(df, interval):
     fig.tight_layout()
     st.pyplot(fig)
 
-
 # --- SAT grafiek (tijdelijk uitgeschakeld) ---
 def plot_sat_debug(df, interval):
-    # st.subheader("Grafiek met SAT en Trend")
+    # Vul NaNs vooraf
+    df = df.copy()
+    df[["SAT_Stage", "SAT_Trend"]] = df[["SAT_Stage", "SAT_Trend"]].fillna(method="ffill")
+
     grafiek_periode = bepaal_grafiekperiode(interval)
     cutoff_datum = df.index.max() - grafiek_periode
     df_sat = df[df.index >= cutoff_datum].copy()
@@ -119,8 +127,7 @@ def plot_sat_debug(df, interval):
     ax.set_title("SAT-indicator en Trendlijn")
     ax.legend()
     fig.tight_layout()
-    st.pyplot(fig)  # handmatig inschakelen indien nodig
-
+    st.pyplot(fig)
 
 # ➕ y-as: bepaal min/max + marge
 #    try:
