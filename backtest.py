@@ -72,7 +72,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
     st.subheader("Vergelijk Marktrendement en SAM-rendement")
 
     current_year = date.today().year
-    default_start = date(current_year - 2, 1, 1)
+    default_start = date(current_year - 5, 1, 1)
     default_end = df.index.max().date()
 
     start_date = st.date_input("Startdatum analyse", default_start)
