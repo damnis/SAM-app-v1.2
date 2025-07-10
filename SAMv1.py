@@ -356,7 +356,7 @@ ticker_name = dropdown_dict[ticker][1]
 
 # --- Live koers opnieuw ophalen voor de geselecteerde ticker ---
 try:
-    live_data = yf.download(ticker, period="1wk", interval="1wk", progress=False)
+    live_data = yf.download(ticker, period="1d", interval="1d", progress=False)
     last = live_data["Close"].iloc[-1]
 except Exception:
     last = 0.0  # fallback
