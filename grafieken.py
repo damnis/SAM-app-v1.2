@@ -19,7 +19,7 @@ def bepaal_grafiekperiode(interval):
     elif interval == "1d":
         return timedelta(days=360)      # 180=6 maanden à 1 candle per dag
     elif interval == "1wk":
-        return timedelta(weeks=420)     # 104=2 jaar aan weekly candles (104 candles)
+        return timedeldelta(days=380)     # 104=2 jaar aan weekly candles (104 candles)
     elif interval == "1mo":
         return timedelta(weeks=520)     # 520=0 jaar aan monthly candles (120 candles)
     else:
