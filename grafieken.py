@@ -121,6 +121,7 @@ def plot_sat_debug(df, interval):
 
     ax.axhline(y=0, color="gray", linewidth=1, linestyle="--")
     ax.set_xlim(df_sat.index.min(), df_sat.index.max())
+    ax.margins(x=0)
     ax.set_ylim(-2.25, 2.25)
     ax.set_ylabel("Waarde")
     ax.set_title("SAT-indicator en Trendlijn")
