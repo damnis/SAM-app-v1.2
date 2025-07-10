@@ -80,23 +80,21 @@ def plot_koersgrafiek(df, ticker_name, interval):
 # --- SAM en Trend ---
 def plot_sam_trend(df, interval):
     st.subheader("Grafiek met SAM en Trend")
-
-    # Vul NaNs vooraf
-    df = df.copy()
-    df[["SAM", "Trend", "SAT_Stage"]] = df[["SAM", "Trend", "SAT_Stage"]].fillna(method="ffill")
-
-    # Slice daarna
     grafiek_periode = bepaal_grafiekperiode(interval)
     cutoff_datum = df.index.max() - grafiek_periode
     df_grafiek = df[df.index >= cutoff_datum].copy()
 
-    fig, ax = plt.subplots(figsize=(10, 4))
+    fig, ax = plt.subplots(figsize=(14, 6))  # grotere grafiek voor duidelijkheid
     kleuren = ["green" if val >= 0 else "red" for val in df_grafiek["SAM"]]
-    ax.bar(df_grafiek.index, df_grafiek["SAM"], color=kleuren, label="SAM")
-    ax.plot(df_grafiek.index, df_grafiek["Trend"], color="blue", linewidth=2, label="Trend")
+
+    # SAM als bar
+    ax.bar(df_grafiek.index, df_grafiek["SAM"], color=kleuren, label="SAM", alpha=0.6)
+
+    # Trend als lijn met zichtbare punten
+    ax.plot(df_grafiek.index, df_grafiek["Trend"], color="blue", linewidth=1.5, marker='.', markersize=3, label="Trend")
 
     if "SAT_Stage" in df_grafiek.columns:
-        ax.plot(df_grafiek.index, df_grafiek["SAT_Stage"], color="gray", linewidth=1.5, linestyle="--", alpha=0.4)
+        ax.plot(df_grafiek.index, df_grafiek["SAT_Stage"], color="gray", linewidth=1.2, linestyle="--", marker='.', markersize=2, alpha=0.5)
 
     ax.axhline(y=0, color="black", linewidth=1, linestyle="--")
     ax.set_ylim(-4.5, 4.5)
@@ -106,20 +104,21 @@ def plot_sam_trend(df, interval):
     ax.legend()
     fig.tight_layout()
     st.pyplot(fig)
-
+    
 # --- SAT grafiek (tijdelijk uitgeschakeld) ---
 def plot_sat_debug(df, interval):
-    # Vul NaNs vooraf
-    df = df.copy()
-    df[["SAT_Stage", "SAT_Trend"]] = df[["SAT_Stage", "SAT_Trend"]].fillna(method="ffill")
-
     grafiek_periode = bepaal_grafiekperiode(interval)
     cutoff_datum = df.index.max() - grafiek_periode
     df_sat = df[df.index >= cutoff_datum].copy()
 
-    fig, ax = plt.subplots(figsize=(10, 4))
-    ax.bar(df_sat.index, df_sat["SAT_Stage"], color="black", label="SAT Stage")
-    ax.plot(df_sat.index, df_sat["SAT_Trend"], color="blue", linewidth=2, label="SAT Trend")
+    fig, ax = plt.subplots(figsize=(14, 6))
+
+    # SAT Stage met markers
+    ax.bar(df_sat.index, df_sat["SAT_Stage"], color="black", label="SAT Stage", alpha=0.6)
+
+    # SAT Trend als lijn met marker
+    ax.plot(df_sat.index, df_sat["SAT_Trend"], color="blue", linewidth=1.5, marker='.', markersize=3, label="SAT Trend")
+
     ax.axhline(y=0, color="gray", linewidth=1, linestyle="--")
     ax.set_xlim(df_sat.index.min(), df_sat.index.max())
     ax.set_ylim(-2.25, 2.25)
@@ -128,6 +127,7 @@ def plot_sat_debug(df, interval):
     ax.legend()
     fig.tight_layout()
     st.pyplot(fig)
+    
 
 # ➕ y-as: bepaal min/max + marge
 #    try:
