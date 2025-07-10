@@ -192,7 +192,7 @@ def determine_advice(df, threshold, risk_aversion=0):
             stage_4 = df["SAT_Stage"].iloc[i - 3]
             stage_5 = df["SAT_Stage"].iloc[i - 4]
             
-            if (stage_1 + stage_2 + stage_3 + stage_4 + stage_5) >= 8 and trend_1 >= trend_2 and stage_1 >= 1 and sam_1 >= 2 and (trends_1 - trends_2) >= 0 and trends_1 > 0:
+            if (stage_1 + stage_2 + stage_3 + stage_4 + stage_5) >= 9 and trend_1 >= trend_2 and stage_1 >= 1 and sam_1 >= 2 and (trends_1 - trends_2) >= 0 and trends_1 > 0:
                 df.at[df.index[i], "Advies"] = "Kopen"
             elif sam_1 < 0 and trends_1 < trends_2 or trend_1 < trend_2 and stage_1 < 0:
                 df.at[df.index[i], "Advies"] = "Verkopen"
