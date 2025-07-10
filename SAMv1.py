@@ -313,8 +313,8 @@ def get_live_ticker_data(tickers_dict):
 
     for ticker in tickers:
         try:
-            last = data[ticker]['Close'].iloc[0]
-            prev = data[ticker]['Close'].iloc[-1]
+            last = data[ticker]['Close'].iloc[-1]
+            prev = data[ticker]['Close'].iloc[-2]
             change = (last - prev) / prev * 100
             kleur = "#00FF00" if change > 0 else "#FF0000" if change < 0 else "#808080"
             naam = tickers_dict[ticker]
