@@ -434,7 +434,7 @@ st.markdown("""
 
 
 # --- Als originele ticker een NaN is, en er is een query, gebruik die
-if (pd.isna(ticker) or ticker in ["", "geen", None]) and query:
+if (pd.isna(ticker) or ticker in ["", "nan", None]) and query:
     ticker = query
     ticker_name = query  # eventueel uit selectie halen
 
