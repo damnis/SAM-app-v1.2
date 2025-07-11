@@ -79,7 +79,10 @@ def plot_overlay_grafiek(df, ticker_name, interval):
     ax2.set_ylim(-4.25, 4.25)
 
     # X-as datumformaat
-    ax1.set_xlim(x_vals.min(), x_vals.max())  # strakke begrenzing
+    ax1.set_xlim(x_vals.min(), x_vals.max())  # dit zit er al in
+    ax2.set_zorder(1)  # zet rechteras onder koerslijn
+    ax1.set_zorder(2)
+#    ax1.set_xlim(x_vals.min(), x_vals.max())  # strakke begrenzing
     ax1.xaxis_date()
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
     fig.autofmt_xdate()
