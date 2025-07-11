@@ -124,7 +124,7 @@ def plot_sat_debug(df, interval):
 
     # Breedte instellen als fractie van 1 dag
     spacing = np.median(np.diff(x_vals)) if len(x_vals) > 1 else 1
-    bar_width = spacing * 0.6  # 60% van afstand tussen punten
+    bar_width = spacing * 0.2  # 60% van afstand tussen punten
 
     # Bars tekenen op numerieke x-as
     ax.bar(x_vals, df_sat["SAT_Stage"], width=bar_width, color="black", label="SAT Stage", alpha=0.6)
