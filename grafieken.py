@@ -113,8 +113,16 @@ def plot_sat_debug(df, interval):
 
     fig, ax = plt.subplots(figsize=(14, 6))
 
+    if len(df_sat.index) > 1:
+        spacing = (df_sat.index[1] - df_sat.index[0]).days
+    else:
+        spacing = 7  # fallback
+
+    bar_width = spacing * 0.6  # bijvoorbeeld 60% van de afstand
+
+    ax.bar(df_sat.index, df_sat["SAT_Stage"], width=bar_width, color="black", label="SAT Stage", alpha=0.6)
     # SAT Stage met markers
-    ax.bar(df_sat.index, df_sat["SAT_Stage"], width=0.2, color="black", label="SAT Stage", alpha=0.6)
+#    ax.bar(df_sat.index, df_sat["SAT_Stage"], width=0.2, color="black", label="SAT Stage", alpha=0.6)
 #    ax.bar(df_sat.index, df_sat["SAT_Stage"], color="black", label="SAT Stage", alpha=0.6)
 
     # SAT Trend als lijn met marker
