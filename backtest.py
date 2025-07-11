@@ -68,11 +68,14 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close", 
     sam_rendement = (np.prod([1 + r / 100 for r in rendementen]) - 1) * 100 if rendementen else 0.0
     return sam_rendement, trades, rendementen
 
-def backtest_functie(df, signaalkeuze, selected_tab):
+def backtest_functie(df, signaalkeuze, selected_tab, interval):
     st.subheader("Vergelijk Marktrendement en SAM-rendement")
 
-    current_year = date.today().year
-    default_start = date(current_year - 5, 1, 1)
+    # Gebruik dezelfde logica als in grafiekweergave
+    grafiek_periode = bepaal_grafiekperiode(interval)
+    cutoff_datum = df.index.max() - grafiek_periode
+
+    default_start = cutoff_datum.date()
     default_end = df.index.max().date()
 
     start_date = st.date_input("Startdatum analyse", default_start)
@@ -95,6 +98,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
     df_period[close_col] = pd.to_numeric(df_period[close_col], errors="coerce")
     df_valid = df_period[close_col].dropna()
 
+    
     marktrendement = None
     if len(df_valid) >= 2 and df_valid.iloc[0] != 0.0:
         koers_start = df_valid.iloc[0]
