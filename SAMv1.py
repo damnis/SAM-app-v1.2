@@ -19,7 +19,7 @@ from tickers import (
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
 # grafieken en tabellen
-from grafieken import plot_koersgrafiek, plot_sam_trend, plot_sat_debug, bepaal_grafiekperiode 
+from grafieken import plot_koersgrafiek, plot_sam_trend, plot_sat_debug, bepaal_grafiekperiode, plot_overlay_grafiek 
 from sam_tabel import toon_sam_tabel
 # Backtestfunctie 
 from backtest import backtest_functie, bereken_sam_rendement
@@ -517,6 +517,9 @@ with col2:
 # -------------
 
 # weergave grafieken via py
+
+plot_overlay_grafiek(df, ticker_name, interval) 
+
 # 🟢 Toon koersgrafiek (toggle)
 #if st.toggle("📈 Toon koersgrafiek", value=False):
 plot_koersgrafiek(df, ticker_name, interval)
