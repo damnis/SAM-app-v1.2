@@ -118,33 +118,37 @@ def plot_sam_trend(df, interval):
 def plot_sat_debug(df, interval):
     grafiek_periode = bepaal_grafiekperiode(interval)
     cutoff_datum = df.index.max() - grafiek_periode
-    df_sat = df[df.index >= cutoff_datum].copy()
+    df_sat = df[df.index >= cutoff_datum].copy().reset_index()
 
     if df_sat.empty:
         st.warning("Geen SAT-data beschikbaar voor de gekozen periode.")
         return
 
+    datumkolom = df_sat.columns[0]  # meestal 'Date' of 'index'
+    df_sat["x"] = range(len(df_sat))
+
     fig, ax = plt.subplots(figsize=(14, 6))
 
-    # Zet datumindex om naar numerieke waarden
-    x_vals = mdates.date2num(df_sat.index)
+    # Bereken bar spacing
+    spacing = 1
+    if len(df_sat) > 1:
+        spacing = np.median(np.diff(df_sat["x"]))
+    bar_width = spacing * 0.45  # 45% van afstand tussen punten
 
-    # Breedte instellen als fractie van 1 dag
-    spacing = np.median(np.diff(x_vals)) if len(x_vals) > 1 else 1
-    bar_width = spacing * 0.45  # 60% van afstand tussen punten
+    # Bars tekenen
+    ax.bar(df_sat["x"], df_sat["SAT_Stage"], width=bar_width, color="black", label="SAT Stage", alpha=0.6)
 
-    # Bars tekenen op numerieke x-as
-    ax.bar(x_vals, df_sat["SAT_Stage"], width=bar_width, color="black", label="SAT Stage", alpha=0.6)
+    # SAT Trend tekenen met markers
+    ax.plot(df_sat["x"], df_sat["SAT_Trend"], color="blue", linewidth=1.5, marker='.', markersize=3, label="SAT Trend")
 
-    # SAT Trend met markers
-    ax.plot(x_vals, df_sat["SAT_Trend"], color="blue", linewidth=1.5, marker='.', markersize=3, label="SAT Trend")
-
-    # X-as terugzetten naar datumformaat
-    ax.xaxis_date()
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+    # X-as labels instellen
+    labels = df_sat[datumkolom].dt.strftime('%Y-%m-%d')
+    step = max(1, len(df_sat) // 12)
+    ax.set_xticks(df_sat["x"][::step])
+    ax.set_xticklabels(labels[::step], rotation=45, ha="right")
 
     ax.axhline(y=0, color="gray", linewidth=1, linestyle="--")
-    ax.set_xlim(x_vals.min(), x_vals.max())
+    ax.set_xlim(df_sat["x"].min(), df_sat["x"].max())
     ax.set_ylim(-2.25, 2.25)
     ax.set_ylabel("Waarde")
     ax.set_title("SAT-indicator en Trendlijn")
