@@ -7,6 +7,8 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta, date
 import matplotlib.pyplot as plt
 from ta.trend import ADXIndicator
+import matplotlib.dates as mdates
+
 
 # 📆 Periode voor SAM-grafiek op basis van interval
 def bepaal_grafiekperiode(interval):
@@ -111,32 +113,38 @@ def plot_sat_debug(df, interval):
     cutoff_datum = df.index.max() - grafiek_periode
     df_sat = df[df.index >= cutoff_datum].copy()
 
+    if df_sat.empty:
+        st.warning("Geen SAT-data beschikbaar voor de gekozen periode.")
+        return
+
     fig, ax = plt.subplots(figsize=(14, 6))
 
-    if len(df_sat.index) > 1:
-        spacing = (df_sat.index[1] - df_sat.index[0]).days
-    else:
-        spacing = 7  # fallback
+    # Zet datumindex om naar numerieke waarden
+    x_vals = mdates.date2num(df_sat.index)
 
-    bar_width = spacing * 1.5  # bijvoorbeeld 60% van de afstand
+    # Breedte instellen als fractie van 1 dag
+    spacing = np.median(np.diff(x_vals)) if len(x_vals) > 1 else 1
+    bar_width = spacing * 0.6  # 60% van afstand tussen punten
 
-    ax.bar(df_sat.index, df_sat["SAT_Stage"], width=bar_width, color="black", label="SAT Stage", alpha=0.6)
-    # SAT Stage met markers
-#    ax.bar(df_sat.index, df_sat["SAT_Stage"], width=0.2, color="black", label="SAT Stage", alpha=0.6)
-#    ax.bar(df_sat.index, df_sat["SAT_Stage"], color="black", label="SAT Stage", alpha=0.6)
+    # Bars tekenen op numerieke x-as
+    ax.bar(x_vals, df_sat["SAT_Stage"], width=bar_width, color="black", label="SAT Stage", alpha=0.6)
 
-    # SAT Trend als lijn met marker
-    ax.plot(df_sat.index, df_sat["SAT_Trend"], color="blue", linewidth=1.5, marker='.', markersize=3, label="SAT Trend")
+    # SAT Trend met markers
+    ax.plot(x_vals, df_sat["SAT_Trend"], color="blue", linewidth=1.5, marker='.', markersize=3, label="SAT Trend")
+
+    # X-as terugzetten naar datumformaat
+    ax.xaxis_date()
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
 
     ax.axhline(y=0, color="gray", linewidth=1, linestyle="--")
-    ax.set_xlim(df_sat.index.min(), df_sat.index.max())
-    ax.margins(x=0)
+    ax.set_xlim(x_vals.min(), x_vals.max())
     ax.set_ylim(-2.25, 2.25)
     ax.set_ylabel("Waarde")
     ax.set_title("SAT-indicator en Trendlijn")
     ax.legend()
     fig.tight_layout()
     st.pyplot(fig)
+    
     
 
 # ➕ y-as: bepaal min/max + marge
