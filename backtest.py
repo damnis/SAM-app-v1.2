@@ -161,8 +161,10 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
         # Bereken het aantal dagen tussen open en sluit datum
         # Bereken het aantal dagen tussen open en sluit datum
-        df_display["Dagen"] = (pd.to_datetime(df_display["Sluit datum"]) - pd.to_datetime(df_display["Open datum"])).dt.days
-        
+        df_display["Dagen"] = (
+            pd.to_datetime(df_display["Sluit datum"]) - pd.to_datetime(df_display["Open datum"])
+        ).dt.days
+
         # ➕ Afronding op 2 decimalen
         for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]:
             df_display[col] = df_display[col].astype(float).map("{:+.2f}%".format)
