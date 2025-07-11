@@ -154,18 +154,33 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         # Definieer kolommen
         geldige_kolommen = ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]
 
-        
-        
-        # ✅ Afronding en formattering op 2 decimalen met plusteken
+        # ✅ Rename en basisselectie (zonder 'Dagen')
         df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
-            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs", "Dagen",
-            "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
+            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
+            "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"
+        ]]
 
-        # Bereken het aantal dagen tussen open en sluit datum
-        # Bereken het aantal dagen tussen open en sluit datum
+        # ✅ Voeg kolom 'Dagen' toe
         df_display["Dagen"] = (
             pd.to_datetime(df_display["Sluit datum"]) - pd.to_datetime(df_display["Open datum"])
         ).dt.days
+
+        # ✅ Zet kolommen in gewenste volgorde (Dagen achter Sluit prijs)
+        df_display = df_display[[
+            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs", "Dagen",
+            "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"
+        ]]
+        
+        # ✅ Afronding en formattering op 2 decimalen met plusteken
+    #    df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
+  #          "Open datum", "Open prijs", "Sluit datum", "Sluit prijs", "Dagen",
+     #       "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
+
+        # Bereken het aantal dagen tussen open en sluit datum
+        # Bereken het aantal dagen tussen open en sluit datum
+  #      df_display["Dagen"] = (
+  #          pd.to_datetime(df_display["Sluit datum"]) - pd.to_datetime(df_display["Open datum"])
+   #     ).dt.days
 
         # ➕ Afronding op 2 decimalen
         for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]:
