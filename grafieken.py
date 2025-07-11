@@ -90,41 +90,38 @@ def plot_sam_trend(df, interval):
         st.warning("Geen SAM-data beschikbaar voor de gekozen periode.")
         return
 
-    fig, ax = plt.subplots(figsize=(14, 6))  # grote grafiek voor lange periodes
+    # Maak een numerieke index
+    df_grafiek = df_grafiek.reset_index()
+    df_grafiek["x"] = range(len(df_grafiek))
+
+    fig, ax = plt.subplots(figsize=(14, 6))
     kleuren = ["green" if val >= 0 else "red" for val in df_grafiek["SAM"]]
 
-    # Zet datumindex om naar numeriek formaat
-    x_vals = mdates.date2num(df_grafiek.index)
+    # Plot SAM bars
+    ax.bar(df_grafiek["x"], df_grafiek["SAM"], color=kleuren, label="SAM", alpha=0.6)
 
-    # Bepaal breedte van de bars
-    spacing = np.median(np.diff(x_vals)) if len(x_vals) > 1 else 1
-    bar_width = spacing * 0.45  # 45% van afstand
+    # Plot Trend
+    ax.plot(df_grafiek["x"], df_grafiek["Trend"], color="blue", linewidth=1.5, marker='.', markersize=3, label="Trend")
 
-    # Teken SAM bars
-    ax.bar(x_vals, df_grafiek["SAM"], width=bar_width, color=kleuren, label="SAM", alpha=0.6)
-
-    # Trend als lijn + marker
-    ax.plot(x_vals, df_grafiek["Trend"], color="blue", linewidth=1.5, marker='.', markersize=3, label="Trend")
-
-    # Eventueel SAT Stage als extra referentie
+    # SAT Stage optioneel
     if "SAT_Stage" in df_grafiek.columns:
-        ax.plot(x_vals, df_grafiek["SAT_Stage"], color="gray", linewidth=1.2, linestyle="--", marker='.', markersize=2, alpha=0.5)
+        ax.plot(df_grafiek["x"], df_grafiek["SAT_Stage"], color="gray", linewidth=1.2, linestyle="--", marker='.', markersize=2, alpha=0.5)
 
-    # X-as terug naar datumformaat
-    ax.xaxis_date()
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-    ax.set_xlim(x_vals.min(), x_vals.max())
+    # Zet datumlabels netjes onder de x-as (bijv. elke 25e)
+    step = max(1, len(df_grafiek) // 25)
+    labels = df_grafiek["index"].dt.strftime('%Y-%m-%d')
+    ax.set_xticks(df_grafiek["x"][::step])
+    ax.set_xticklabels(labels[::step], rotation=45, ha="right")
 
-    # Y-as instellingen
     ax.axhline(y=0, color="black", linewidth=1, linestyle="--")
     ax.set_ylim(-4.5, 4.5)
+    ax.set_xlim(df_grafiek["x"].min(), df_grafiek["x"].max())
 
     ax.set_title("SAM-indicator en Trendlijn")
     ax.set_ylabel("Waarde")
     ax.legend()
     fig.tight_layout()
     st.pyplot(fig)
-    
     
 # --- SAT grafiek (tijdelijk uitgeschakeld) ---
 def plot_sat_debug(df, interval):
