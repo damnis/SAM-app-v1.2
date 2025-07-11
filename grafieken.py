@@ -118,7 +118,7 @@ def plot_sat_debug(df, interval):
     else:
         spacing = 7  # fallback
 
-    bar_width = spacing * 0.6  # bijvoorbeeld 60% van de afstand
+    bar_width = spacing * 0.06  # bijvoorbeeld 60% van de afstand
 
     ax.bar(df_sat.index, df_sat["SAT_Stage"], width=bar_width, color="black", label="SAT Stage", alpha=0.6)
     # SAT Stage met markers
