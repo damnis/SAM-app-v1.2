@@ -545,7 +545,7 @@ df_signalen = df.copy()
 if "Advies" not in df_signalen.columns:
     st.error("Kolom 'Advies' ontbreekt in de data.")
     st.stop()
-backtest_functie(df, signaalkeuze=signaalkeuze, selected_tab=selected_tab)  
+backtest_functie(df, signaalkeuze=signaalkeuze, selected_tab=selected_tab, interval=interval)  
 # ✅ #backtest_functie(df, selected_tab, signaalkeuze)
 
 
