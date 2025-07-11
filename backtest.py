@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from datetime import date
+from grafieken import grafiek_periode 
 
 def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close", df_orig=None):
     rendementen = []
