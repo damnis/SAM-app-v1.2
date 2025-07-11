@@ -48,18 +48,30 @@ def plot_koersgrafiek(df, ticker_name, interval):
 
     grafiek_periode = bepaal_grafiekperiode(interval)
     cutoff_datum = df.index.max() - grafiek_periode
-    df_koers = df[df.index >= cutoff_datum].copy()
+    df_koers = df[df.index >= cutoff_datum].copy().reset_index()
 
+    # Zorg dat MA's bestaan
     if "MA30" not in df.columns or "MA150" not in df.columns:
         df["MA30"] = df["Close"].rolling(window=30).mean()
         df["MA150"] = df["Close"].rolling(window=150).mean()
 
-    fig, ax = plt.subplots(figsize=(10, 4))
-    ax.plot(df_koers.index, df_koers["Close"], color="black", linewidth=2.0, label="Koers")
-    ax.plot(df.index, df["MA30"], color="orange", linewidth=1.0, label="MA(30)")
-    ax.plot(df.index, df["MA150"], color="pink", linewidth=1.0, label="MA(150)")
-    ax.set_xlim(df_koers.index.min(), df_koers.index.max())
+    df_koers["x"] = range(len(df_koers))
+    datumkolom = df_koers.columns[0]  # meestal 'Date' of 'index'
 
+    fig, ax = plt.subplots(figsize=(14, 6))  # zelfde formaat als SAM/SAT
+
+    # Koers en MA-lijnen plotten
+    ax.plot(df_koers["x"], df_koers["Close"], color="black", linewidth=2.0, label="Koers")
+    ax.plot(df_koers["x"], df_koers["MA30"], color="orange", linewidth=1.0, label="MA(30)")
+    ax.plot(df_koers["x"], df_koers["MA150"], color="pink", linewidth=1.0, label="MA(150)")
+
+    # X-as labels (datum)
+    labels = df_koers[datumkolom].dt.strftime('%Y-%m-%d')
+    step = max(1, len(df_koers) // 12)
+    ax.set_xticks(df_koers["x"][::step])
+    ax.set_xticklabels(labels[::step], rotation=45, ha="right")
+
+    # Y-as instellen
     try:
         koers_values = df_koers["Close"].astype(float).dropna()
         if not koers_values.empty:
@@ -70,6 +82,7 @@ def plot_koersgrafiek(df, ticker_name, interval):
     except Exception as e:
         st.warning(f"Kon y-as limieten niet instellen: {e}")
 
+    ax.set_xlim(df_koers["x"].min(), df_koers["x"].max())
     ax.set_title(f"Koersgrafiek van {ticker_name}")
     ax.set_ylabel("Close")
     ax.set_xlabel("Datum")
@@ -77,7 +90,7 @@ def plot_koersgrafiek(df, ticker_name, interval):
     fig.tight_layout()
     st.subheader("Koersgrafiek")
     st.pyplot(fig)
-
+    
 
 # --- SAM en Trend ---
 def plot_sam_trend(df, interval):
