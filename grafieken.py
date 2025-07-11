@@ -114,7 +114,7 @@ def plot_sat_debug(df, interval):
     fig, ax = plt.subplots(figsize=(14, 6))
 
     # SAT Stage met markers
-    ax.bar(df_sat.index, df_sat["SAT_Stage"], width=5, color="black", label="SAT Stage", alpha=0.6)
+    ax.bar(df_sat.index, df_sat["SAT_Stage"], width=2, color="black", label="SAT Stage", alpha=0.6)
 #    ax.bar(df_sat.index, df_sat["SAT_Stage"], color="black", label="SAT Stage", alpha=0.6)
 
     # SAT Trend als lijn met marker
