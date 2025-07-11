@@ -86,6 +86,8 @@ def plot_sam_trend(df, interval):
     cutoff_datum = df.index.max() - grafiek_periode
     df_grafiek = df[df.index >= cutoff_datum].copy().reset_index()
 
+    # Zorg dat we weten hoe de datumkolom heet
+    datumkolom = df_grafiek.columns[0]  # meestal 'Date' of 'index'
     df_grafiek["x"] = range(len(df_grafiek))
     kleuren = ["green" if val >= 0 else "red" for val in df_grafiek["SAM"]]
 
@@ -100,8 +102,8 @@ def plot_sam_trend(df, interval):
     ax.set_ylim(-4.5, 4.5)
     ax.set_xlim(df_grafiek["x"].min(), df_grafiek["x"].max())
 
-    # Datumlabels slim zetten
-    labels = df_grafiek["index"].dt.strftime('%Y-%m-%d')
+    # Slimme labels
+    labels = df_grafiek[datumkolom].dt.strftime('%Y-%m-%d')
     step = max(1, len(df_grafiek) // 12)
     ax.set_xticks(df_grafiek["x"][::step])
     ax.set_xticklabels(labels[::step], rotation=45, ha="right")
@@ -111,7 +113,6 @@ def plot_sam_trend(df, interval):
     ax.legend()
     fig.tight_layout()
     st.pyplot(fig)
-
 
 # --- SAT grafiek (tijdelijk uitgeschakeld) ---
 def plot_sat_debug(df, interval):
