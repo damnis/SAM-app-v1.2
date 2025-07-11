@@ -154,13 +154,15 @@ def backtest_functie(df, signaalkeuze, selected_tab):
         # Definieer kolommen
         geldige_kolommen = ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]
 
-        
-        
         # ✅ Afronding en formattering op 2 decimalen met plusteken
         df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
-            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
+            "Open datum", "Open prijs", "Sluit datum", "Sluit prijs", "Dagen",
             "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
 
+        # Bereken het aantal dagen tussen open en sluit datum
+        # Bereken het aantal dagen tussen open en sluit datum
+        df_display["Dagen"] = (pd.to_datetime(df_display["Sluit datum"]) - pd.to_datetime(df_display["Open datum"])).dt.days
+        
         # ➕ Afronding op 2 decimalen
         for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]:
             df_display[col] = df_display[col].astype(float).map("{:+.2f}%".format)
@@ -169,16 +171,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
    #     for i, col in enumerate(df_display.columns):
     #        st.write(f"Kolom {i}: {col}")
     
-
-        # ➕ Kolomnamen op 2 regels
-  #      df_display = df_display.rename(columns={
- #           "SAM-% Koop": "SAM-% Koop",
-  #          "SAM-% Verkoop": "SAM-%\nVerkoop"
- #       })
         
-#        df_display = df_display.rename(columns={
- #           "SAM-% Verkoop": "SAM-%\u200B Verkoop"
-#})
         # ➕ Styling: kleuren
         def kleur_positief_negatief(val):
             if pd.isna(val): return "color: gray"
@@ -191,13 +184,7 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
         styler = styler.applymap(kleur_positief_negatief, subset=geldige_kolommen)
 
-        # ✅ Geforceerde kolomhoofdstijl: tekst op 2 regels door vaste breedte (visuele truc)
-        # HTML/CSS workaround: breek automatisch bij spatie als de breedte beperkt is
-  #      styler = styler.set_table_styles([
-   #         {"selector": "th.col6", "props": [("min-width", "40px"), ("max-width", "60px"), ("white-space", "normal")]},
-   #         {"selector": "th.col7", "props": [("min-width", "40px"), ("max-width", "45px"), ("no-white-space", "normal")]}
-   #     ])
-
+        
         toon_alle = st.toggle("Toon alle trades", value=False)
         if not toon_alle and len(df_display) > 12:
             df_display = df_display.iloc[-12:]
@@ -227,8 +214,23 @@ def backtest_functie(df, signaalkeuze, selected_tab):
 
 
 
+# ✅ Geforceerde kolomhoofdstijl: tekst op 2 regels door vaste breedte (visuele truc)
+        # HTML/CSS workaround: breek automatisch bij spatie als de breedte beperkt is
+  #      styler = styler.set_table_styles([
+   #         {"selector": "th.col6", "props": [("min-width", "40px"), ("max-width", "60px"), ("white-space", "normal")]},
+   #         {"selector": "th.col7", "props": [("min-width", "40px"), ("max-width", "45px"), ("no-white-space", "normal")]}
+   #     ])
 
-   
+
+  # ➕ Kolomnamen op 2 regels
+  #      df_display = df_display.rename(columns={
+ #           "SAM-% Koop": "SAM-% Koop",
+  #          "SAM-% Verkoop": "SAM-%\nVerkoop"
+ #       })
+        
+#        df_display = df_display.rename(columns={
+ #           "SAM-% Verkoop": "SAM-%\u200B Verkoop"
+#}) 
 
 #          df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
  #           "Open datum", "Open prijs", "Sluit datum", "Sluit prijs",
