@@ -39,7 +39,54 @@ def bepaal_grafiekperiode(interval):
  #   else:
   #      return timedelta(weeks=260)  # bijv. bij weekly/monthly data
 
+# aanvullende overlay grafiek
+def plot_overlay_grafiek(df, ticker_name, interval):
+    st.subheader("📊 Gecombineerde grafiek: Koers + SAM + SAT")
 
+    grafiek_periode = bepaal_grafiekperiode(interval)
+    cutoff_datum = df.index.max() - grafiek_periode
+    df_plot = df[df.index >= cutoff_datum].copy()
+
+    if df_plot.empty:
+        st.warning("Geen data beschikbaar voor de gekozen periode.")
+        return
+
+    fig, ax1 = plt.subplots(figsize=(14, 6))
+
+    # 1️⃣ X-as naar numeriek (voor bars)
+    x_vals = mdates.date2num(df_plot.index)
+    spacing = np.median(np.diff(x_vals)) if len(x_vals) > 1 else 1
+    bar_width = spacing * 0.45
+
+    # 2️⃣ Koers (lijn) - basis
+    ax1.plot(df_plot.index, df_plot["Close"], color="black", linewidth=2, label="Koers")
+    ax1.set_ylabel("Koers")
+    ax1.set_title(f"{ticker_name} - Overlay: Koers + SAM + SAT")
+    ax1.grid(True)
+
+    # 3️⃣ SAM (bars, linker y-as)
+    kleuren = ["green" if val >= 0 else "red" for val in df_plot["SAM"]]
+    ax1.bar(x_vals, df_plot["SAM"], width=bar_width, color=kleuren, alpha=0.3, label="SAM")
+
+    # 4️⃣ Tweede as voor SAT
+    ax2 = ax1.twinx()
+    ax2.plot(x_vals, df_plot["SAT_Stage"], color="purple", linestyle="--", linewidth=1.2, label="SAT Stage", alpha=0.5)
+    ax2.plot(x_vals, df_plot["SAT_Trend"], color="blue", linewidth=1.5, marker='.', markersize=3, label="SAT Trend")
+    ax2.set_ylabel("Indicatorwaarden (SAM / SAT)")
+
+    # 5️⃣ As-formatting
+    ax1.xaxis_date()
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+    fig.autofmt_xdate()
+
+    # 6️⃣ Legenda’s combineren
+    lines_labels = ax1.get_legend_handles_labels()
+    lines2_labels = ax2.get_legend_handles_labels()
+    ax1.legend(lines_labels[0] + lines2_labels[0], lines_labels[1] + lines2_labels[1], loc="upper left")
+
+    fig.tight_layout()
+    st.pyplot(fig)
+    
 # --- Koersgrafiek ---
 def plot_koersgrafiek(df, ticker_name, interval):
     toon_koersgrafiek = st.toggle("\U0001F4C8 Toon koersgrafiek", value=False)
