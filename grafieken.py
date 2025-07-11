@@ -47,32 +47,23 @@ def plot_overlay_grafiek(df, ticker_name, interval):
 
     grafiek_periode = bepaal_grafiekperiode(interval)
     cutoff_datum = df.index.max() - grafiek_periode
-    df_plot = df[df.index >= cutoff_datum].copy()
+    df_plot = df[df.index >= cutoff_datum].copy().reset_index()
 
     if df_plot.empty:
         st.warning("Geen data beschikbaar voor de gekozen periode.")
         return
 
-    # Filter regels zonder data voor overlay-componenten
-    df_plot = df_plot.dropna(subset=["SAM", "Trend", "SAT_Stage", "SAT_Trend", "Close"])
+    # Bepaal naam van datumkolom (eerste kolom na reset_index)
+    datumkolom = df_plot.columns[0]  # meestal 'Date' of 'index'
+    df_plot["x"] = range(len(df_plot))
 
-    # Sorteren op index
-    df_plot = df_plot.sort_index()
-
-    # Voeg x-as toe (numeriek)
-    df_plot["x"] = mdates.date2num(df_plot.index.to_pydatetime())
-    spacing = np.median(np.diff(df_plot["x"])) if len(df_plot["x"]) > 1 else 1
-    bar_width = spacing * 0.45
-
+    # --- Plot opstellen ---
     fig, ax1 = plt.subplots(figsize=(14, 6))
 
-    # 1️⃣ Koerslijn
+    # 1️⃣ Linkeras: Koers
     ax1.plot(df_plot["x"], df_plot["Close"], color="black", linewidth=2, label="Koers")
     ax1.set_ylabel("Koers")
     ax1.grid(True)
-    ax1.set_xlim(df_plot["x"].min(), df_plot["x"].max())
-    ax1.xaxis_date()
-    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
 
     # 2️⃣ Rechteras: SAM + SAT
     ax2 = ax1.twinx()
@@ -80,16 +71,24 @@ def plot_overlay_grafiek(df, ticker_name, interval):
     ax2.set_ylabel("Indicatorwaarden")
 
     kleuren = ["green" if val >= 0 else "red" for val in df_plot["SAM"]]
-    ax2.bar(df_plot["x"], df_plot["SAM"], width=bar_width, color=kleuren, alpha=0.3, label="SAM")
-    ax2.plot(df_plot["x"], df_plot["Trend"], color="orange", linewidth=1.2, linestyle="-", marker='.', markersize=3, label="SAM Trend")
+    ax2.bar(df_plot["x"], df_plot["SAM"], color=kleuren, alpha=0.3, label="SAM")
+    ax2.plot(df_plot["x"], df_plot["Trend"], color="orange", linewidth=1.2, marker='.', markersize=3, label="SAM Trend")
     ax2.plot(df_plot["x"], df_plot["SAT_Stage"], color="purple", linestyle="--", linewidth=1.2, alpha=0.5, label="SAT Stage")
     ax2.plot(df_plot["x"], df_plot["SAT_Trend"], color="blue", linewidth=1.5, marker='.', markersize=3, label="SAT Trend")
+
+    # --- X-as slimme labels ---
+    labels = df_plot[datumkolom].dt.strftime('%Y-%m-%d')
+    step = max(1, len(df_plot) // 12)
+    ax1.set_xticks(df_plot["x"][::step])
+    ax1.set_xticklabels(labels[::step], rotation=45, ha="right")
+    ax1.set_xlim(df_plot["x"].min(), df_plot["x"].max())
 
     # Legenda combineren
     handles1, labels1 = ax1.get_legend_handles_labels()
     handles2, labels2 = ax2.get_legend_handles_labels()
     ax1.legend(handles1 + handles2, labels1 + labels2, loc="upper left")
 
+    ax1.set_title("Overlaygrafiek: Koers + SAM + SAT")
     fig.tight_layout()
     st.pyplot(fig)
     
