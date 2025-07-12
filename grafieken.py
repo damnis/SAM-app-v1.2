@@ -264,7 +264,7 @@ def toon_adviesmatrix_automatisch(ticker, risk_aversion):
                 continue
 
             # Advies berekenen met meegegeven risk_aversion
-            df = determine_advice(df, risk_aversion=risk_aversion)
+            df = determine_advice(df, treshold=2, risk_aversion=risk_aversion)
 
             waarden = []
             for i in range(-stappen, 0):
