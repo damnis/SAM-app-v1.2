@@ -244,6 +244,17 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         "15m": {"stappen": 480, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
 
+    # Marktlogica: bepaal type op basis van ticker
+    ticker_lower = ticker.lower()
+    if any(x in ticker_lower for x in [":us", "nasdaq", "nyse"]):
+        markt = "us"
+    elif any(x in ticker_lower for x in [":as", ".ams", "aex", "amx"]):
+        markt = "eur"
+    elif any(x in ticker_lower for x in ["btc", "eth", "crypto"]):
+        markt = "crypto"
+    else:
+        markt = "us"
+
     matrix = {}
 
     for interval, specs in INTERVALLEN.items():
@@ -251,13 +262,6 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         try:
             df = fetch_data_fmp(ticker, interval=interval) if ":" in ticker or ticker.upper() in ["AEX", "AMX"] else fetch_data(ticker, interval=interval)
             df = df.dropna().copy()
-
-            # Tijdzonecorrectie
-            if df.index.tz is None:
-                df.index = df.index.tz_localize("UTC")
-            else:
-                df.index = df.index.tz_convert("UTC")
-
             df = calculate_sam(df)
             df = calculate_sat(df)
             df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
@@ -265,61 +269,65 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
             waarden = []
 
-            # Interval 1wk → gewoon laatste X weken
-            if interval == "1wk":
-                df = df.iloc[-stappen:][::-1]
-                for i in range(stappen):
-                    if i >= len(df):
-                        waarden.append({"kleur": "⬛", "tekst": ""})
-                        continue
-                    advies = df.iloc[i]["Advies"]
-                    datum = df.index[i]
-                    kleur = "🟩" if advies == "Kopen" else "🟥"
-                    tekst = datum.strftime("%Y-%m-%d") if specs["show_text"] else ""
-                    waarden.append({"kleur": kleur, "tekst": tekst})
+            if interval in ["1wk", "1d"]:
+                df.index = pd.to_datetime(df.index).normalize()
+                laatste_datum = df.index.max()
+                gewenste_dagen = []
+                while len(gewenste_dagen) < stappen:
+                    if laatste_datum.weekday() < 5:
+                        gewenste_dagen.append(laatste_datum)
+                    laatste_datum -= pd.Timedelta(days=1)
+                gewenste_dagen = gewenste_dagen[::-1]  # vrijdag bovenaan
+
+                for dag in gewenste_dagen:
+                    advies = df.loc[df.index == dag, "Advies"].values
+                    kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+                    tekst = dag.strftime("%Y-%m-%d") if interval == "1wk" else dag.strftime("%a")[:2]
+                    waarden.append({"kleur": kleur, "tekst": tekst if specs["show_text"] else ""})
 
             else:
-                # Bouw lijst van gewenste tijdstempels vanaf nu terug
-                nu = pd.Timestamp.now(tz="UTC")
-                stap_grootte = {"1d": "1D", "4h": "4H", "1h": "1H", "15m": "15min"}[interval]
-                tijdstempels = []
-                while len(tijdstempels) < stappen:
-                    if interval == "1d":
-                        if nu.weekday() < 5:  # Geen weekend
-                            tijdstempels.append(nu.normalize())
-                    else:
-                        tijdstempels.append(nu.floor(stap_grootte))
-                    nu -= pd.Timedelta(stap_grootte)
+                df.index = pd.to_datetime(df.index).tz_convert("UTC")
+                eind_datum = pd.Timestamp.now(tz="UTC").normalize()
+                gewenste_tijdstippen = []
 
-     #           tijdstempels = tijdstempels[::-1]  # laatste bovenaan
+                uren = []
+                if markt == "us":
+                    uren = range(14, 22)  # 09:00–17:00 ET = 14:00–22:00 UTC
+                elif markt == "eur":
+                    uren = range(8, 16)   # 09:00–17:00 CET = 08:00–16:00 UTC
+                elif markt == "crypto":
+                    uren = range(0, 24)   # 24/7
 
-                for ts in tijdstempels:
-                    df_match = df[(df.index >= ts) & (df.index < ts + pd.Timedelta(stap_grootte))]
-                    if not df_match.empty:
-                        advies = df_match.iloc[-1]["Advies"]
-                        kleur = "🟩" if advies == "Kopen" else "🟥"
-                    else:
-                        kleur = "⬛"
+                stap = pd.Timedelta("4h") if interval == "4h" else pd.Timedelta("1h") if interval == "1h" else pd.Timedelta("15min")
+                max_tijd = pd.Timestamp.now(tz="UTC")
+
+                t = max_tijd
+                while len(gewenste_tijdstippen) < stappen and t > max_tijd - pd.Timedelta(days=15):
+                    if t.weekday() < 5 or markt == "crypto":
+                        if t.hour in uren:
+                            gewenste_tijdstippen.append(t.replace(minute=0, second=0, microsecond=0))
+                    t -= stap
+
+                gewenste_tijdstippen = gewenste_tijdstippen[::-1]
+
+                for ts in gewenste_tijdstippen:
+                    df_sub = df[(df.index >= ts) & (df.index < ts + stap)]
+                    advies = df_sub["Advies"].values
+                    kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
 
                     if specs["show_text"]:
-                        if interval == "1d":
-                            tekst = ts.strftime("%a")[:2]
-                        elif interval in ["4h", "1h"]:
-                            tekst = ts.strftime("%H:%M")
-                        else:
-                            tekst = ""
+                        tekst = ts.strftime("%H:%M")
                     else:
-                        tekst = str(tijdstempels.index(ts) % 4 + 1) if interval == "15m" else ""
+                        tekst = str(len(waarden) % 4 + 1) if interval == "15m" else ""
 
                     waarden.append({"kleur": kleur, "tekst": tekst})
-
             matrix[interval] = waarden
 
         except Exception as e:
             st.warning(f"Fout bij {interval}: {e}")
             matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * stappen
 
-    # HTML rendering
+    # HTML-rendering
     html = "<div style='font-family: monospace;'>"
     html += "<div style='display: flex;'>"
 
@@ -348,7 +356,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
     html += "</div></div>"
     st_html(html, height=600, scrolling=True)
-    
+                
+        
       
                       
     
