@@ -230,51 +230,61 @@ def plot_sat_debug(df, interval):
 
 # matrix
 # Aanpasbare lijst van intervallen
-INTERVALLEN = ["1wk", "1d", "4h", "1h", "15min"]
+# INTERVALLEN = ["1wk", "1d", "4h", "1h", "15min"]
 
-def toon_adviesmatrix_automatisch(ticker, risk_aversion=2):
-    st.subheader("🧠 Adviesmatrix per interval")
-
-    alle_resultaten = []
-
-    for interval in INTERVALLEN:
-        try:
-            # 🔄 Data ophalen per interval (gebruik je eigen functie zoals fetch_data of build_df)
-            df = fetch_data(ticker, interval=interval)
-            if df is None or df.empty:
-                continue
-
-            # 📊 Advies berekenen met jouw eigen functie
-            df_met_advies = determine_advice(df, interval=interval, risk_aversion=risk_aversion)
-
-            # Laatste X datapunten (bijv. 3 weken bij weekdata, 20 rijen max)
-            df_recent = df_met_advies.tail(20).copy()
-            df_recent["Interval"] = interval
-            df_recent["Datum"] = df_recent.index
-            df_recent["Advies"] = df_recent["Advies"].fillna("n.v.t.")
-
-            alle_resultaten.append(df_recent[["Datum", "Interval", "Advies"]])
-
-        except Exception as e:
-            st.warning(f"Fout bij {interval}: {e}")
-
-    if not alle_resultaten:
-        st.error("❌ Geen geldige data gevonden voor adviesmatrix.")
+def toon_adviesmatrix_automatisch(ticker: str, risk_aversion: int):
+    toon_matrix = st.toggle("🧮 Toon automatische Adviesmatrix", value=False)
+    if not toon_matrix:
         return
 
-    # 👇 Combineer en toon
-    df_all = pd.concat(alle_resultaten)
-    df_all["DatumLabel"] = df_all["Datum"].dt.strftime('%Y-%m-%d %H:%M')
-    df_all["Kleur"] = df_all["Advies"].map({"Kopen": "green", "Verkopen": "red", "n.v.t.": "gray"})
+    st.subheader("📊 Automatische Adviesmatrix")
 
-    matrix = df_all.pivot(index="Interval", columns="DatumLabel", values="Advies")
+    intervallen = {
+        "1wk": 3,    # laatste 3 weken
+        "1d": 15,    # laatste 3 dagen
+        "4h": 30,    # laatste 15 dagen
+        "1h": 60,    # laatste 30 dagen
+        "15m": 96    # laatste 4 dagen
+    }
 
-    def kleurcode(val):
-        if val == "Kopen": return "background-color: green; color: white; font-weight: bold"
-        if val == "Verkopen": return "background-color: red; color: white; font-weight: bold"
-        return "background-color: lightgray; color: black"
+    matrix_data = {}
 
-    st.dataframe(matrix.style.applymap(kleurcode), use_container_width=True)
+    for interval, stappen in intervallen.items():
+        try:
+            # Kies juiste fetch functie op basis van ticker
+            if ":" in ticker or ticker.upper() in ["AEX", "AMX"]:
+                df = fetch_data_fmp(ticker, interval=interval)
+            else:
+                df = fetch_data(ticker, interval=interval)
+
+            df = df.dropna().copy()
+            if df.empty or len(df) < stappen:
+                matrix_data[interval] = ["⛔"] * stappen
+                continue
+
+            # Advies berekenen met meegegeven risk_aversion
+            df = determine_advice(df, risk_aversion=risk_aversion)
+
+            waarden = []
+            for i in range(-stappen, 0):
+                try:
+                    advies = df.iloc[i]["Advies"]
+                    kleur = "🟩" if advies == "Kopen" else "🟥"
+                except:
+                    kleur = "❓"
+                waarden.append(kleur)
+
+            matrix_data[interval] = waarden
+
+        except Exception as e:
+            matrix_data[interval] = ["⚠️"] * stappen
+            st.warning(f"Fout bij {interval}: {e}")
+
+    matrix_df = pd.DataFrame(matrix_data).T
+    matrix_df.columns = [f"⏱️-{i+1}" for i in range(matrix_df.shape[1])]
+    matrix_df.index.name = "Interval"
+
+    st.dataframe(matrix_df, use_container_width=True)
     
 
 # ➕ y-as: bepaal min/max + marge
