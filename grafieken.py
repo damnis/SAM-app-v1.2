@@ -266,6 +266,8 @@ def toon_adviesmatrix_markdown(ticker, risk_aversion=2):
                 matrix[interval] = ["🟨"] * stappen
                 continue
 
+            df = calculate_sam(df)
+            df = calculate_sat(df)
             df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
 
             adviezen = df["Advies"].dropna().iloc[-stappen:].tolist()
