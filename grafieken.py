@@ -236,8 +236,6 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     if not toon_matrix:
         return
 
-    from modules import fetch_data, fetch_data_fmp, calculate_sam, calculate_sat, determine_advice
-
     INTERVALLEN = {
         "1wk": {"tijdstippen": [time(17, 0)], "breedte": 10, "hoogte": 160, "label": "Week", "show_text": True},
         "1d": {"tijdstippen": [time(17, 0)], "breedte": 10, "hoogte": 32, "label": "Dag", "show_text": True},
