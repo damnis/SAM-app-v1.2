@@ -267,7 +267,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
             df = df.dropna(subset=["Advies"])
             df = df.iloc[-stappen:].copy()
-            df = df[::-1]  # laatste bovenaan
+            df = df[::-1]
 
             waarden = []
             for i in range(stappen):
@@ -301,42 +301,63 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
     # HTML-rendering
     html = "<div style='font-family: monospace;'>"
-    html += "<div style='display: flex; align-items: flex-start;'>"
+    html += "<div style='display: flex;'>"
 
     for interval, specs in INTERVALLEN.items():
         waarden = matrix[interval]
-        blokken_html = f"<div style='margin-right: 12px; flex: 0 0 auto;'>"
+        blokken_html = "<div style='margin-right: 12px;'>"
         blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
 
-        # Gebruik flex-wrap voor 15m-blokken
+        # 👇 aangepaste containerstijl voor 15m
         if interval == "15m":
-            blokken_html += "<div style='display: flex; flex-wrap: wrap; flex-direction: row;'>"
+            blokken_html += "<div style='display: flex; flex-wrap: wrap; width: 160px;'>"
         else:
             blokken_html += "<div style='display: flex; flex-direction: column;'>"
-       
+
         for entry in waarden:
             kleur = entry["kleur"]
             tekst = entry["tekst"]
-            bg_kleur = "#2ecc71" if kleur == "🟩" else "#e74c3c" if kleur == "🟥" else "#bdc3c7"
-            blok_html = f"""
-                <div style='
-                    width: {specs['breedte'] * 8}px;
-                    height: {specs['hoogte'] * 3}px;
-                    background-color: {bg_kleur};
-                    color: white;
-                    text-align: center;
-                    font-size: 11px;
-                    margin: 1px;
-                    border-radius: 3px;
-                '>{tekst}</div>
-            """
+            background = "#2ecc71" if kleur == "🟩" else "#e74c3c" if kleur == "🟥" else "#bdc3c7"
+
+            # 👇 aangepaste blokstijl voor 15m
+            if interval == "15m":
+                blok_html = f"""
+                    <div style='
+                        flex: 0 0 25%;
+                        max-width: 25%;
+                        height: 20px;
+                        background-color: {background};
+                        color: white;
+                        text-align: center;
+                        font-size: 10px;
+                        margin: 1px;
+                        border-radius: 2px;
+                    '>{tekst}</div>
+                """
+            else:
+                blok_html = f"""
+                    <div style='
+                        width: {specs['breedte'] * 8}px;
+                        height: {specs['hoogte'] * 3}px;
+                        background-color: {background};
+                        color: white;
+                        text-align: center;
+                        font-size: 11px;
+                        margin-bottom: 1px;
+                        border-radius: 3px;
+                    '>{tekst}</div>
+                """
             blokken_html += blok_html
 
         blokken_html += "</div></div>"
         html += blokken_html
 
     html += "</div></div>"
-    st_html(html, height=600, width=480, scrolling=True)
+
+    st.markdown(html, unsafe_allow_html=True)
+    
+
+            
     
 
                 
