@@ -294,7 +294,11 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                 for dag in gewenste_dagen:
                     for i in range(stappen_per_dag):
                         ts = dag + i * stap
-                        ts = ts.tz_localize("UTC") if df.index.tz else ts
+                        if df.index.tz is None:
+                            ts = ts.tz_localize("UTC")
+                        else:
+                            ts = ts.tz_convert("UTC")
+                      #  ts = ts.tz_localize("UTC") if df.index.tz else ts
                         ts_volgende = ts + stap
                         df_sub = df[(df.index >= ts) & (df.index < ts_volgende)]
                         advies = df_sub["Advies"].values
