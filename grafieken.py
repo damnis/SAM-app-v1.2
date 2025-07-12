@@ -330,7 +330,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         blokken_html += "</div>"
         html += blokken_html
 
-    html += "</div></div>"
+   # html += "</div></div>"
 
     st.markdown(html, unsafe_allow_html=True)
     
