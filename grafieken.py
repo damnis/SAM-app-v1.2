@@ -8,7 +8,9 @@ from datetime import datetime, timedelta, date
 import matplotlib.pyplot as plt
 from ta.trend import ADXIndicator
 import matplotlib.dates as mdates
-from SAMv1 import determine_advice 
+from SAMv1 import determine_advice, fetch_data, fetch_data_cached 
+from fmpfetch import fetch_data_fmp
+
 
 
 # 📆 Periode voor SAM-grafiek op basis van interval
@@ -227,12 +229,6 @@ def plot_sat_debug(df, interval):
 
 
 # matrix
-import streamlit as st
-import pandas as pd
-from datetime import timedelta
-from SAMv1 import determine_advice  # correcte import
-from datafetch import fetch_data  # als je dit gebruikt voor dataload per interval
-
 # Aanpasbare lijst van intervallen
 INTERVALLEN = ["1wk", "1d", "4h", "1h", "15min"]
 
