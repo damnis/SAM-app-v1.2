@@ -233,7 +233,7 @@ def plot_sat_debug(df, interval):
 # Aanpasbare lijst van intervallen
 # INTERVALLEN = ["1wk", "1d", "4h", "1h", "15min"]
 
-def toon_adviesmatrix_automatisch(ticker: str, risk_aversion: int):
+def toon_adviesmatrix_automatisch(ticker, risk_aversion):
     toon_matrix = st.toggle("🧮 Toon automatische Adviesmatrix", value=False)
     if not toon_matrix:
         return
