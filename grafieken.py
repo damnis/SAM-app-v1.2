@@ -256,22 +256,18 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                 df = fetch_data(ticker, interval=interval)
 
             df = df.dropna().copy()
-            if len(df) < stappen:
-                matrix[interval] = [{"kleur": "🟨", "tekst": ""}] * stappen
-                continue
-
             df = calculate_sam(df)
             df = calculate_sat(df)
             df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
-
             df = df.dropna(subset=["Advies"])
-            df = df.iloc[-stappen:].copy()
-            df = df[::-1]
+
+            df = df[::-1]  # jongste bovenaan
 
             waarden = []
 
             if interval == "1d":
-                laatste_datum = df.index.max()
+                # Aanvullen met lege werkdagen
+                laatste_datum = df.index.max().normalize()
                 gewenste_dagen = []
                 while len(gewenste_dagen) < stappen:
                     if laatste_datum.weekday() < 5:
@@ -282,20 +278,22 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                 for dag in gewenste_dagen:
                     if dag in df.index:
                         advies = df.loc[dag]["Advies"]
-                        kleur = "🟩" if advies == "Kopen" else "🔴"
+                        kleur = "🟩" if advies == "Kopen" else "🟥"
                         tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
                     else:
                         kleur = "⬛"
                         tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
+
             else:
+                df = df.iloc[:stappen]
                 for i in range(stappen):
                     if i >= len(df):
                         waarden.append({"kleur": "⬛", "tekst": ""})
                         continue
                     advies = df.iloc[i]["Advies"]
                     datum = df.index[i]
-                    kleur = "🟩" if advies == "Kopen" else "🔴"
+                    kleur = "🟩" if advies == "Kopen" else "🟥"
 
                     if interval == "1wk":
                         tekst = datum.strftime("%Y-%m-%d")
@@ -305,7 +303,6 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                         tekst = str(i % 4 + 1)
                     else:
                         tekst = ""
-
                     waarden.append({"kleur": kleur, "tekst": tekst if specs["show_text"] else ""})
 
             matrix[interval] = waarden
@@ -314,6 +311,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * specs["stappen"]
             st.warning(f"Fout bij {interval}: {e}")
 
+    # HTML-rendering
     html = "<div style='font-family: monospace;'>"
     html += "<div style='display: flex;'>"
 
@@ -325,11 +323,12 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         for entry in waarden:
             kleur = entry["kleur"]
             tekst = entry["tekst"]
+            bg = "#2ecc71" if kleur == "🟩" else "#e74c3c" if kleur == "🟥" else "#bdc3c7"
             blok_html = f"""
                 <div style='
                     width: {specs['breedte'] * 8}px;
                     height: {specs['hoogte'] * 3}px;
-                    background-color: {{'#2ecc71' if kleur=='🟩' else '#e74c3c' if kleur=='🔴' else '#bdc3c7'}};
+                    background-color: {bg};
                     color: white;
                     text-align: center;
                     font-size: 11px;
@@ -345,10 +344,10 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     html += "</div></div>"
 
     st_html(html, height=600, scrolling=True)
-
-
     
-        
+
+            
+                
 
 
 
