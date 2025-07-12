@@ -308,7 +308,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                             gewenste_tijdstippen.append(t.replace(minute=0, second=0, microsecond=0))
                     t -= stap
 
-                gewenste_tijdstippen = gewenste_tijdstippen[::-1]
+          #      gewenste_tijdstippen = gewenste_tijdstippen[::-1]
 
                 for ts in gewenste_tijdstippen:
                     df_sub = df[(df.index >= ts) & (df.index < ts + stap)]
