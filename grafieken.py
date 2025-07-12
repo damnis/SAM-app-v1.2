@@ -227,27 +227,59 @@ def plot_sat_debug(df, interval):
 
 
 # matrix
-def toon_adviesmatrix(df_adviezen):
+import streamlit as st
+import pandas as pd
+from datetime import timedelta
+from SAMv1 import determine_advice  # correcte import
+from datafetch import fetch_data  # als je dit gebruikt voor dataload per interval
+
+# Aanpasbare lijst van intervallen
+INTERVALLEN = ["1wk", "1d", "4h", "1h", "15min"]
+
+def toon_adviesmatrix_automatisch(ticker, risk_aversion=2):
     st.subheader("🧠 Adviesmatrix per interval")
 
-    # Zorg dat Datum datetime is
-    df_adviezen = df_adviezen.copy()
-    df_adviezen["Datum"] = pd.to_datetime(df_adviezen["Datum"])
-    df_adviezen["DatumLabel"] = df_adviezen["Datum"].dt.strftime('%Y-%m-%d %H:%M')
-    df_adviezen["Kleur"] = df_adviezen["Advies"].map({"Kopen": "green", "Verkopen": "red"})
+    alle_resultaten = []
 
-    # Matrix maken
-    matrix = df_adviezen.pivot(index="Interval", columns="DatumLabel", values="Advies")
+    for interval in INTERVALLEN:
+        try:
+            # 🔄 Data ophalen per interval (gebruik je eigen functie zoals fetch_data of build_df)
+            df = fetch_data(ticker, interval=interval)
+            if df is None or df.empty:
+                continue
 
-    # Kleurfunctie
+            # 📊 Advies berekenen met jouw eigen functie
+            df_met_advies = determine_advice(df, interval=interval, risk_aversion=risk_aversion)
+
+            # Laatste X datapunten (bijv. 3 weken bij weekdata, 20 rijen max)
+            df_recent = df_met_advies.tail(20).copy()
+            df_recent["Interval"] = interval
+            df_recent["Datum"] = df_recent.index
+            df_recent["Advies"] = df_recent["Advies"].fillna("n.v.t.")
+
+            alle_resultaten.append(df_recent[["Datum", "Interval", "Advies"]])
+
+        except Exception as e:
+            st.warning(f"Fout bij {interval}: {e}")
+
+    if not alle_resultaten:
+        st.error("❌ Geen geldige data gevonden voor adviesmatrix.")
+        return
+
+    # 👇 Combineer en toon
+    df_all = pd.concat(alle_resultaten)
+    df_all["DatumLabel"] = df_all["Datum"].dt.strftime('%Y-%m-%d %H:%M')
+    df_all["Kleur"] = df_all["Advies"].map({"Kopen": "green", "Verkopen": "red", "n.v.t.": "gray"})
+
+    matrix = df_all.pivot(index="Interval", columns="DatumLabel", values="Advies")
+
     def kleurcode(val):
-        kleur = "green" if val == "Kopen" else "red"
-        return f"background-color: {kleur}; color: white; font-weight: bold"
+        if val == "Kopen": return "background-color: green; color: white; font-weight: bold"
+        if val == "Verkopen": return "background-color: red; color: white; font-weight: bold"
+        return "background-color: lightgray; color: black"
 
-    # Streamlit-tabel tonen
     st.dataframe(matrix.style.applymap(kleurcode), use_container_width=True)
-
-
+    
 
 # ➕ y-as: bepaal min/max + marge
 #    try:
