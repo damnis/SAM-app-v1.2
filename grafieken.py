@@ -313,16 +313,20 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             else:
                 stap = pd.Timedelta("4h") if interval == "4h" else pd.Timedelta("1h") if interval == "1h" else pd.Timedelta("15min")
                 laatste_tijd = df.index.max()
-                count = 0
+                waarden = []
+                gevonden = 0
+                ts = laatste_tijd
 
-                while count < stappen:
-                    ts = laatste_tijd - count * stap
+                # Geldige handelsuren per interval (UTC)
+                geldige_uren = list(range(13, 21)) if ticker.upper() not in ["AEX", "AMX"] else list(range(8, 16))
+
+                while gevonden < specs["stappen"] and ts > df.index.min():
                     if ts.weekday() >= 5:
-                        count += 1
-                        continue  # skip weekends
+                        ts -= stap
+                        continue
                     if ts.hour not in geldige_uren:
-                        count += 1
-                        continue  # skip buiten handelsuren
+                        ts -= stap
+                        continue
 
                     df_sub = df[(df.index >= ts) & (df.index < ts + stap)]
                     advies = df_sub["Advies"].values
@@ -330,13 +334,13 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     if specs["show_text"]:
                         tekst = ts.strftime("%H:%M")
                     else:
-                        tekst = str(count % 4 + 1) if interval == "15m" else ""
+                        tekst = str(gevonden % 4 + 1) if interval == "15m" else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
-                    count += 1
+                    gevonden += 1
+                    ts -= stap
 
-         #       waarden = waarden[::-1]
-
-            matrix[interval] = waarden
+        #        waarden = waarden[::-1]
+                matrix[interval] = waarden
 
         except Exception as e:
             st.warning(f"Fout bij {interval}: {e}")
