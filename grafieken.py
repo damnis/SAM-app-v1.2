@@ -324,12 +324,13 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     df_sub = df[(df.index >= ts) & (df.index < ts + stap)]
                     advies = df_sub["Advies"].values
                     kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                    tekst = ts.strftime("%H:%M") if specs["show_text"] else str(gevonden % 4 + 1) if interval == "15m" else ""
+                    tekst = ts.strftime("%H:%M") if specs["show_text"] else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
                     gevonden += 1
                     ts -= stap
 
 #                waarden = waarden[::-1]
+            # else str(gevonden % 4 + 1) if interval == "15m" bij tekst voor de else ""
             matrix[interval] = waarden
 
         except Exception as e:
