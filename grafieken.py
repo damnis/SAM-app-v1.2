@@ -258,7 +258,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
     # Handelsuren in UTC per regio
     if markt == "eur":
-        geldige_uren = list(range(8, 16))  # 09:00–17:00 CET → UTC+1
+        geldige_uren = list(range(7, 17))  # 09:00–17:00 8,16 CET → UTC+1
     elif markt == "us":
         geldige_uren = list(range(13, 21))  # 09:00–17:00 ET → UTC-5
     else:
@@ -357,7 +357,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     text-align: center;
                     font-size: 11px;
                     margin-bottom: 1px;
-                    border-radius: 3px;
+                    border-radius: 2px;
                 '>{tekst}</div>
             """
             blokken_html += blok_html
