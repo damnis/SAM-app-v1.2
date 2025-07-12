@@ -241,10 +241,10 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 #    import calendar
 
     INTERVALLEN = {
-        "1wk": {"stappen": 3, "breedte": 32, "hoogte": 5, "label": "Week", "show_text": True},
-        "1d": {"stappen": 15, "breedte": 16, "hoogte": 2, "label": "Dag", "show_text": True},
-        "4h": {"stappen": 30, "breedte": 8, "hoogte": 2, "label": "4u", "show_text": True},
-        "1h": {"stappen": 120, "breedte": 4, "hoogte": 1, "label": "1u", "show_text": True},
+        "1wk": {"stappen": 3, "breedte": 10, "hoogte": 32, "label": "Week", "show_text": True},
+        "1d": {"stappen": 15, "breedte": 10, "hoogte": 16, "label": "Dag", "show_text": True},
+        "4h": {"stappen": 30, "breedte": 10, "hoogte": 8, "label": "4u", "show_text": True},
+        "1h": {"stappen": 120, "breedte": 5, "hoogte": 2, "label": "1u", "show_text": True},
         "15m": {"stappen": 480, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
 
