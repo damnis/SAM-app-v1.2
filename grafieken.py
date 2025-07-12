@@ -232,86 +232,100 @@ def plot_sat_debug(df, interval):
 
 # matrix based on fixed calendar structure
 def toon_adviesmatrix_html(ticker, risk_aversion=2):
-    toon_matrix = st.toggle("📊 Toon gecombineerde Adviesmatrix (HTML)", value=False)
+    toon_matrix = st.toggle("📊 Toon Adviesmatrix (HTML)", value=False)
     if not toon_matrix:
         return
 
+    # Intervalconfiguratie: vaste blokhoogte per dag
     INTERVALLEN = {
-        "1wk": {"label": "Week", "stapgrootte": "W", "per_dag": 1, "breedte": 10, "hoogte": 160, "show_text": True},
-        "1d": {"label": "Dag", "stapgrootte": "D", "per_dag": 1, "breedte": 10, "hoogte": 32, "show_text": True},
-        "4h": {"label": "4u", "stapgrootte": "4H", "per_dag": 2, "breedte": 10, "hoogte": 16, "show_text": True},
-        "1h": {"label": "1u", "stapgrootte": "1H", "per_dag": 8, "breedte": 5, "hoogte": 4, "show_text": True},
-        "15m": {"label": "15m", "stapgrootte": "15min", "per_dag": 32, "breedte": 2, "hoogte": 1, "show_text": False}
+        "1wk": {"breedte": 10, "hoogte": 160, "label": "Week", "show_text": True},
+        "1d": {"breedte": 10, "hoogte": 32, "label": "Dag", "show_text": True},
+        "4h": {"breedte": 10, "hoogte": 16, "label": "4u", "show_text": True},
+        "1h": {"breedte": 5, "hoogte": 4, "label": "1u", "show_text": True},
+        "15m": {"breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
 
-    aantal_dagen = 5 * 3  # 3 weken
-    basisdagen = pd.bdate_range(end=pd.Timestamp.today(), periods=aantal_dagen)
-    basisdagen = basisdagen[::-1]  # laatste dag bovenaan
+    dagen = 5  # 5 handelsdagen tonen
+    eind_datum = pd.Timestamp.now(tz="UTC").normalize()
+    gewenste_dagen = []
+    while len(gewenste_dagen) < dagen:
+        if eind_datum.weekday() < 5:  # maandag=0, vrijdag=4
+            gewenste_dagen.append(eind_datum)
+        eind_datum -= pd.Timedelta(days=1)
+    gewenste_dagen = gewenste_dagen[::-1]  # vrijdag bovenaan
 
     matrix = {}
 
     for interval, specs in INTERVALLEN.items():
         try:
-            # Data ophalen
-            if ":" in ticker or ticker.upper() in ["AEX", "AMX"]:
-                df = fetch_data_fmp(ticker, interval=interval)
-            else:
-                df = fetch_data(ticker, interval=interval)
-
+            df = fetch_data_fmp(ticker, interval=interval) if ":" in ticker or ticker.upper() in ["AEX", "AMX"] else fetch_data(ticker, interval=interval)
             df = df.dropna().copy()
             df = calculate_sam(df)
             df = calculate_sat(df)
             df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
-            df = df.dropna(subset=["Advies"]).copy()
+            df = df.dropna(subset=["Advies"])
 
-            waarden = []
-
-            for dag in basisdagen:
-                blokken_per_dag = specs["per_dag"]
-                for i in range(blokken_per_dag):
-                    tijdstap = pd.Timedelta(i * (1440 // blokken_per_dag), unit="m")
-                    ts = pd.Timestamp.combine(dag, pd.Timestamp.min.time()) + tijdstap
-                    match = df[df.index >= ts].head(1)
-                    if not match.empty:
-                        advies = match["Advies"].values[0]
-                        kleur = "#2ecc71" if advies == "Kopen" else "#e74c3c" if advies == "Verkopen" else "#bdc3c7"
-                        tekst = ""
-                        if specs["show_text"]:
-                            if interval == "1wk":
-                                tekst = dag.strftime("%Y-%m-%d")
-                            elif interval == "1d":
-                                tekst = dag.strftime("%a")[:2]
-                            else:
-                                tekst = ts.strftime("%H:%M")
-                        elif interval == "15m":
-                            tekst = str((i % 4) + 1)
-                    else:
-                        kleur = "#bdc3c7"
-                        tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
-
+            if interval == "1wk":
+                df.index = pd.to_datetime(df.index).normalize()
+                waarden = []
+                for dag in gewenste_dagen:
+                    week_start = dag - pd.Timedelta(days=dag.weekday())
+                    week_start = week_start.normalize()
+                    advies = df.loc[df.index == week_start, "Advies"].values
+                    kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+                    tekst = week_start.strftime("%Y-%m-%d") if specs["show_text"] else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
+                matrix[interval] = waarden
 
-            matrix[interval] = waarden
+            elif interval == "1d":
+                df.index = df.index.normalize()
+                waarden = []
+                for dag in gewenste_dagen:
+                    advies = df.loc[df.index == dag, "Advies"].values
+                    kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+                    tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
+                    waarden.append({"kleur": kleur, "tekst": tekst})
+                matrix[interval] = waarden
+
+            else:
+                waarden = []
+                stap = pd.Timedelta("4h") if interval == "4h" else pd.Timedelta("1h") if interval == "1h" else pd.Timedelta("15min")
+                stappen_per_dag = int(pd.Timedelta("1d") / stap)
+                for dag in gewenste_dagen:
+                    for i in range(stappen_per_dag):
+                        ts = dag + i * stap
+                        ts = ts.tz_localize("UTC") if df.index.tz else ts
+                        ts_volgende = ts + stap
+                        df_sub = df[(df.index >= ts) & (df.index < ts_volgende)]
+                        advies = df_sub["Advies"].values
+                        kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+                        if specs["show_text"]:
+                            tekst = ts.strftime("%H:%M") if interval in ["4h", "1h"] else ""
+                        else:
+                            tekst = str(i % 4 + 1) if interval == "15m" else ""
+                        waarden.append({"kleur": kleur, "tekst": tekst})
+                matrix[interval] = waarden
 
         except Exception as e:
             st.warning(f"Fout bij {interval}: {e}")
-            matrix[interval] = [{"kleur": "#bdc3c7", "tekst": ""}] * (len(basisdagen) * specs["per_dag"])
+            matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * dagen
 
-    # HTML-rendering
-    html = "<div style='font-family: monospace;'><div style='display: flex;'>"
+    # HTML rendering
+    html = "<div style='font-family: monospace;'>"
+    html += "<div style='display: flex;'>"
 
     for interval, specs in INTERVALLEN.items():
         waarden = matrix[interval]
-        html += f"<div style='margin-right: 12px;'>"
-        html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
-        for w in waarden:
-            kleur = w["kleur"]
-            tekst = w["tekst"]
+        blokken_html = "<div style='margin-right: 12px;'>"
+        blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
+        for entry in waarden:
+            kleur = entry["kleur"]
+            tekst = entry["tekst"]
             blok_html = f"""
                 <div style='
                     width: {specs['breedte'] * 8}px;
                     height: {specs['hoogte'] * 3}px;
-                    background-color: {kleur};
+                    background-color: {"#2ecc71" if kleur == "🟩" else "#e74c3c" if kleur == "🟥" else "#bdc3c7"};
                     color: white;
                     text-align: center;
                     font-size: 11px;
@@ -319,14 +333,15 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     border-radius: 3px;
                 '>{tekst}</div>
             """
-            html += blok_html
-        html += "</div>"
+            blokken_html += blok_html
+        blokken_html += "</div>"
+        html += blokken_html
 
     html += "</div></div>"
     st_html(html, height=600, scrolling=True)
     
-
-                            
+            
+            
             
     
 
