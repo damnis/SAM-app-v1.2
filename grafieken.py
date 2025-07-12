@@ -237,30 +237,22 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         return
 
     INTERVALLEN = {
-        "1wk": {"breedte": 10, "hoogte": 160, "label": "Week", "show_text": True},
-        "1d": {"breedte": 10, "hoogte": 32, "label": "Dag", "show_text": True},
-        "4h": {"breedte": 10, "hoogte": 16, "label": "4u", "show_text": True},
-        "1h": {"breedte": 5, "hoogte": 4, "label": "1u", "show_text": True},
-        "15m": {"breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
+        "1wk": {"stappen": 3, "breedte": 10, "hoogte": 160, "label": "Week", "show_text": True},
+        "1d": {"stappen": 15, "breedte": 10, "hoogte": 32, "label": "Dag", "show_text": True},
+        "4h": {"stappen": 30, "breedte": 10, "hoogte": 16, "label": "4u", "show_text": True},
+        "1h": {"stappen": 120, "breedte": 5, "hoogte": 4, "label": "1u", "show_text": True},
+        "15m": {"stappen": 480, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
-
-    dagen = 5
-    nu = pd.Timestamp.now(tz="UTC")
-    gewenste_dagen = []
-    while len(gewenste_dagen) < dagen:
-        if nu.weekday() < 5:
-            gewenste_dagen.append(nu.normalize())
-        nu -= pd.Timedelta(days=1)
-#    gewenste_dagen = gewenste_dagen[::-1]  # vrijdag bovenaan
 
     matrix = {}
 
     for interval, specs in INTERVALLEN.items():
+        stappen = specs["stappen"]
         try:
             df = fetch_data_fmp(ticker, interval=interval) if ":" in ticker or ticker.upper() in ["AEX", "AMX"] else fetch_data(ticker, interval=interval)
             df = df.dropna().copy()
 
-            # Tijdzone fix
+            # tijdzonecorrectie
             if df.index.tz is None:
                 df.index = df.index.tz_localize("UTC")
             else:
@@ -270,56 +262,36 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             df = calculate_sat(df)
             df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
             df = df.dropna(subset=["Advies"])
+            df = df.iloc[-stappen:].copy()
+            df = df[::-1]  # laatste bovenaan
 
             waarden = []
+            for i in range(stappen):
+                if i >= len(df):
+                    waarden.append({"kleur": "⬛", "tekst": ""})
+                    continue
+                advies = df.iloc[i]["Advies"]
+                datum = df.index[i]
+                kleur = "🟩" if advies == "Kopen" else "🟥"
 
-            if interval == "1wk":
-                df.index = df.index.normalize()
-                unieke_weken = sorted({(d - pd.Timedelta(days=d.weekday())).normalize() for d in df.index})
-                laatste_weken = unieke_weken[-dagen:]
-                for week in laatste_weken:
-                    advies = df.loc[df.index == week, "Advies"].values
-                    kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                    tekst = week.strftime("%Y-%m-%d") if specs["show_text"] else ""
-                    waarden.append({"kleur": kleur, "tekst": tekst})
+                if interval == "1wk":
+                    tekst = datum.strftime("%Y-%m-%d")
+                elif interval == "1d":
+                    tekst = datum.strftime("%a")[:2]
+                elif interval in ["4h", "1h"]:
+                    tekst = datum.strftime("%H:%M")
+                elif interval == "15m":
+                    tekst = str(i % 4 + 1)
+                else:
+                    tekst = ""
 
-            elif interval == "1d":
-                df.index = df.index.normalize()
-                for dag in gewenste_dagen:
-                    advies = df.loc[df.index == dag, "Advies"].values
-                    kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                    tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
-                    waarden.append({"kleur": kleur, "tekst": tekst})
+                waarden.append({"kleur": kleur, "tekst": tekst if specs["show_text"] else ""})
 
-            else:
-                stap = pd.Timedelta("4h") if interval == "4h" else pd.Timedelta("1h") if interval == "1h" else pd.Timedelta("15min")
-                stappen_per_dag = int(pd.Timedelta("1d") / stap)
-
-                for dag in gewenste_dagen:
-                    for i in range(stappen_per_dag):
-                        ts_start = dag + i * stap
-                        ts_eind = ts_start + stap
-
-                        # Zorg dat ts ook UTC is
-                        ts_start = ts_start.tz_localize("UTC") if ts_start.tzinfo is None else ts_start
-                        ts_eind = ts_eind.tz_localize("UTC") if ts_eind.tzinfo is None else ts_eind
-
-                        df_sub = df[(df.index >= ts_start) & (df.index < ts_eind)]
-                        advies = df_sub["Advies"].values
-                        kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                        if specs["show_text"]:
-                            tekst = ts_start.strftime("%H:%M")
-                        else:
-                            tekst = str(i % 4 + 1) if interval == "15m" else ""
-                        waarden.append({"kleur": kleur, "tekst": tekst})
-
-            if not waarden:
-                waarden = [{"kleur": "⬛", "tekst": ""}] * 5
             matrix[interval] = waarden
 
         except Exception as e:
             st.warning(f"Fout bij {interval}: {e}")
-            matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * 5
+            matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * stappen
 
     # HTML rendering
     html = "<div style='font-family: monospace;'>"
@@ -351,8 +323,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     html += "</div></div>"
     st_html(html, height=600, scrolling=True)
     
-                
-            
+
+                      
     
 
 
