@@ -266,6 +266,16 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             df = df[::-1]  # laatste bovenaan
 
             waarden = []
+            
+            if interval == "1d":
+                # Aanvullen met lege werkdagen
+                laatste_datum = df.index.max().normalize()
+                gewenste_dagen = []
+                while len(gewenste_dagen) < stappen:
+                    if laatste_datum.weekday() < 5:
+                        gewenste_dagen.append(laatste_datum)
+                    laatste_datum -= timedelta(days=1)
+
             for i in range(stappen):
                 if i >= len(df):
                     waarden.append({"kleur": "⬛", "tekst": ""})
