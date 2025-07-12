@@ -238,14 +238,14 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     if not toon_matrix:
         return
 
-    import calendar
+#    import calendar
 
     INTERVALLEN = {
-        "1wk": {"stappen": 3, "breedte": 2, "label": "Week", "show_text": True},
-        "1d": {"stappen": 15, "breedte": 2, "label": "Dag", "show_text": True},
-        "4h": {"stappen": 30, "breedte": 4, "label": "4u", "show_text": True},
-        "1h": {"stappen": 120, "breedte": 8, "label": "1u", "show_text": True},
-        "15m": {"stappen": 480, "breedte": 16, "label": "15m", "show_text": False}
+        "1wk": {"stappen": 3, "breedte": 32, "hoogte": 5, "label": "Week", "show_text": True},
+        "1d": {"stappen": 15, "breedte": 16, "hoogte": 2, "label": "Dag", "show_text": True},
+        "4h": {"stappen": 30, "breedte": 8, "hoogte": 2, "label": "4u", "show_text": True},
+        "1h": {"stappen": 120, "breedte": 4, "hoogte": 1, "label": "1u", "show_text": True},
+        "15m": {"stappen": 480, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
 
     matrix = {}
@@ -315,8 +315,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             tekst = entry["tekst"]
             blok_html = f"""
                 <div style='
-                    width: {specs['breedte'] * 6}px;
-                    height: 20px;
+                    width: {specs['breedte'] * 8}px;
+                    height: {specs['hoogte'] * 4}px;  
                     background-color: {"#2ecc71" if kleur=="🟩" else "#e74c3c" if kleur=="🟥" else "#bdc3c7"};
                     color: white;
                     text-align: center;
