@@ -516,6 +516,8 @@ with col2:
 
 # -------------
 
+# Stel dat je de geselecteerde ticker als 'ticker' hebt
+toon_adviesmatrix_automatisch(ticker, risk_aversion=risk_aversion)
 # weergave grafieken via py
 
 plot_overlay_grafiek(df, ticker_name, interval) 
