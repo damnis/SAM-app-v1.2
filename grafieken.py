@@ -258,7 +258,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
             df = df.dropna().copy()
             if len(df) < stappen:
-                matrix[interval] = [{"kleur": "🏨", "tekst": ""}] * stappen
+                matrix[interval] = [{"kleur": "🟨", "tekst": ""}] * stappen
                 continue
 
             df = calculate_sam(df)
@@ -266,38 +266,25 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
 
             df = df.dropna(subset=["Advies"])
-
-            # Niet-handelsdagen zichtbaar maken voor dag-niveau
-            if interval == "1d":
-                df["date"] = df.index.date
-                laatste_datum = df["date"].max()
-                gewenste_dagen = pd.date_range(end=laatste_datum, periods=stappen, freq="B")
-                bestaande_dagen = set(df["date"])
-
-                for dag in gewenste_dagen:
-                    if dag.date() not in bestaande_dagen:
-                        lege_rij = pd.Series(index=df.columns, name=pd.Timestamp(dag))
-                        df.loc[pd.Timestamp(dag)] = lege_rij
-
-                df = df.sort_index()
-
             df = df.iloc[-stappen:].copy()
             df = df[::-1]  # laatste bovenaan
 
             waarden = []
             for i in range(stappen):
-                if i >= len(df) or pd.isna(df.iloc[i].get("Advies")):
+                if i >= len(df):
                     waarden.append({"kleur": "⬛", "tekst": ""})
                     continue
                 advies = df.iloc[i]["Advies"]
                 datum = df.index[i]
-                kleur = "🟩" if advies == "Kopen" else "🔵" if advies == "Verkopen" else "🏨"
+                kleur = "🟩" if advies == "Kopen" else "🟥"
 
                 if interval == "1wk":
                     tekst = datum.strftime("%Y-%m-%d")
                 elif interval == "1d":
                     tekst = datum.strftime("%a")[:2]
-                elif interval in ["4h", "1h"]:
+                elif interval == "4h":
+                    tekst = datum.strftime("%H:%M")
+                elif interval == "1h":
                     tekst = datum.strftime("%H:%M")
                 elif interval == "15m":
                     tekst = str(i % 4 + 1)
@@ -313,57 +300,45 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             st.warning(f"Fout bij {interval}: {e}")
 
     # HTML-rendering
-    html = "<div style='font-family: monospace;'><div style='display: flex;'>"
+    html = "<div style='font-family: monospace;'>"
+    html += "<div style='display: flex; align-items: flex-start;'>"
 
     for interval, specs in INTERVALLEN.items():
         waarden = matrix[interval]
-        blokken_html = "<div style='margin-right: 12px;'>"
+        blokken_html = f"<div style='margin-right: 12px; flex: 0 0 auto;'>"
         blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
 
-        if interval == "15m":
-            blokken_html += f"<div style='display: flex; flex-wrap: wrap; width: {specs['breedte'] * 4 * 8}px;'>"
-            for entry in waarden:
-                kleur = entry["kleur"]
-                tekst = entry["tekst"]
-                blok_html = f"""
-                    <div style='
-                        width: {specs['breedte'] * 8}px;
-                        height: {specs['hoogte'] * 3}px;
-                        background-color: {{'#2ecc71' if kleur=='🟩' else '#e74c3c' if kleur=='🔵' else '#bdc3c7'}};
-                        color: white;
-                        text-align: center;
-                        font-size: 10px;
-                        margin: 1px;
-                        border-radius: 3px;
-                    '>{tekst}</div>
-                """
-                blokken_html += blok_html
-            blokken_html += "</div>"
-        else:
-            for entry in waarden:
-                kleur = entry["kleur"]
-                tekst = entry["tekst"]
-                blok_html = f"""
-                    <div style='
-                        width: {specs['breedte'] * 8}px;
-                        height: {specs['hoogte'] * 3}px;
-                        background-color: {{'#2ecc71' if kleur=='🟩' else '#e74c3c' if kleur=='🔵' else '#bdc3c7'}};
-                        color: white;
-                        text-align: center;
-                        font-size: 10px;
-                        margin-bottom: 1px;
-                        border-radius: 3px;
-                    '>{tekst}</div>
-                """
-                blokken_html += blok_html
+        # Gebruik flex-wrap voor 15m-blokken
+        wrap_style = "flex-wrap: wrap;" if interval == "15m" else "flex-direction: column;"
+        blokken_html += f"<div style='display: flex; {wrap_style}'>"
 
-        blokken_html += "</div>"
+        for entry in waarden:
+            kleur = entry["kleur"]
+            tekst = entry["tekst"]
+            bg_kleur = "#2ecc71" if kleur == "🟩" else "#e74c3c" if kleur == "🟥" else "#bdc3c7"
+            blok_html = f"""
+                <div style='
+                    width: {specs['breedte'] * 8}px;
+                    height: {specs['hoogte'] * 3}px;
+                    background-color: {bg_kleur};
+                    color: white;
+                    text-align: center;
+                    font-size: 11px;
+                    margin: 1px;
+                    border-radius: 3px;
+                '>{tekst}</div>
+            """
+            blokken_html += blok_html
+
+        blokken_html += "</div></div>"
         html += blokken_html
 
     html += "</div></div>"
-
     st_html(html, height=600, scrolling=True)
+    
 
+                
+    
         
 
 
