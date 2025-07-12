@@ -336,7 +336,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         html += blokken_html
 
     html += "</div></div>"
-    st_html(html, height=600, scrolling=True)
+    st_html(html, height=600, width=480, scrolling=True)
     
 
                 
