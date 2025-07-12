@@ -243,11 +243,11 @@ def toon_adviesmatrix_markdown(ticker, risk_aversion=2):
     st.markdown("De matrix toont adviezen per interval (jongste data bovenaan).")
 
     interval_specs = {
-        "1wk": {"stappen": 3, "breedte": 2},
+        "1wk": {"stappen": 5, "breedte": 2},
         "1d": {"stappen": 5, "breedte": 2},
         "4h": {"stappen": 10, "breedte": 4},
-        "1h": {"stappen": 24, "breedte": 8},
-        "15m": {"stappen": 96, "breedte": 16},
+        "1h": {"stappen": 40, "breedte": 8},
+        "15m": {"stappen": 160, "breedte": 16},
     }
 
     matrix = {}
