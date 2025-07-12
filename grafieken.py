@@ -232,105 +232,105 @@ def plot_sat_debug(df, interval):
 
 # matrix old working
 def toon_adviesmatrix_html(ticker, risk_aversion=2):
-toon_matrix = st.toggle("📊 Toon gecombineerde Adviesmatrix (HTML)", value=False)
-if not toon_matrix:
-return
+    toon_matrix = st.toggle("📊 Toon gecombineerde Adviesmatrix (HTML)", value=False)
+    if not toon_matrix:
+        return
 
-import calendar
+    import calendar
 
-INTERVALLEN = {  
-    "1wk": {"stappen": 3, "breedte": 10, "hoogte": 160, "label": "Week", "show_text": True},  
-    "1d": {"stappen": 15, "breedte": 10, "hoogte": 32, "label": "Dag", "show_text": True},  
-    "4h": {"stappen": 30, "breedte": 10, "hoogte": 16, "label": "4u", "show_text": True},  
-    "1h": {"stappen": 120, "breedte": 5, "hoogte": 4, "label": "1u", "show_text": True},  
-    "15m": {"stappen": 480, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}  
-}  
+    INTERVALLEN = {  
+        "1wk": {"stappen": 3, "breedte": 10, "hoogte": 160, "label": "Week", "show_text": True},  
+        "1d": {"stappen": 15, "breedte": 10, "hoogte": 32, "label": "Dag", "show_text": True},  
+        "4h": {"stappen": 30, "breedte": 10, "hoogte": 16, "label": "4u", "show_text": True},  
+        "1h": {"stappen": 120, "breedte": 5, "hoogte": 4, "label": "1u", "show_text": True},  
+        "15m": {"stappen": 480, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}  
+    }  
 
-matrix = {}  
+    matrix = {}  
 
-for interval, specs in INTERVALLEN.items():  
-    stappen = specs["stappen"]  
-    try:  
-        if ":" in ticker or ticker.upper() in ["AEX", "AMX"]:  
-            df = fetch_data_fmp(ticker, interval=interval)  
-        else:  
-            df = fetch_data(ticker, interval=interval)  
-
-        df = df.dropna().copy()  
-        if len(df) < stappen:  
-            matrix[interval] = [{"kleur": "🟨", "tekst": ""}] * stappen  
-            continue  
-
-        df = calculate_sam(df)  
-        df = calculate_sat(df)  
-        df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)  
-
-        df = df.dropna(subset=["Advies"])  
-        df = df.iloc[-stappen:].copy()  
-        df = df[::-1]  # laatste bovenaan  
-
-        waarden = []  
-        for i in range(stappen):  
-            if i >= len(df):  
-                waarden.append({"kleur": "⬛", "tekst": ""})  
-                continue  
-            advies = df.iloc[i]["Advies"]  
-            datum = df.index[i]  
-            kleur = "🟩" if advies == "Kopen" else "🟥"  
-
-            if interval == "1wk":  
-                tekst = datum.strftime("%Y-%m-%d")  
-            elif interval == "1d":  
-                tekst = datum.strftime("%a")[:2]  
-            elif interval == "4h":  
-                tekst = datum.strftime("%H:%M")  
-            elif interval == "1h":  
-                tekst = datum.strftime("%H:%M")  
-            elif interval == "15m":  
-                tekst = str(i % 4 + 1)  
+    for interval, specs in INTERVALLEN.items():  
+        stappen = specs["stappen"]  
+        try:  
+            if ":" in ticker or ticker.upper() in ["AEX", "AMX"]:  
+                df = fetch_data_fmp(ticker, interval=interval)  
             else:  
-                tekst = ""  
+                df = fetch_data(ticker, interval=interval)  
 
-            waarden.append({"kleur": kleur, "tekst": tekst if specs["show_text"] else ""})  
+            df = df.dropna().copy()  
+            if len(df) < stappen:  
+                matrix[interval] = [{"kleur": "🟨", "tekst": ""}] * stappen  
+                continue  
 
-        matrix[interval] = waarden  
+            df = calculate_sam(df)  
+            df = calculate_sat(df)  
+            df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)  
 
-    except Exception as e:  
-        matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * specs["stappen"]  
-        st.warning(f"Fout bij {interval}: {e}")  
+            df = df.dropna(subset=["Advies"])  
+            df = df.iloc[-stappen:].copy()  
+            df = df[::-1]  # laatste bovenaan  
 
-# HTML-rendering  
-html = "<div style='font-family: monospace;'>"  
-html += "<div style='display: flex;'>"  
+            waarden = []  
+            for i in range(stappen):  
+                 if i >= len(df):  
+                    waarden.append({"kleur": "⬛", "tekst": ""})  
+                    continue  
+                advies = df.iloc[i]["Advies"]  
+                datum = df.index[i]  
+                kleur = "🟩" if advies == "Kopen" else "🟥"  
 
-for interval, specs in INTERVALLEN.items():  
-    waarden = matrix[interval]  
-    blokken_html = "<div style='margin-right: 12px;'>"  
-    blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"  
+                if interval == "1wk":  
+                    tekst = datum.strftime("%Y-%m-%d")  
+                elif interval == "1d":  
+                    tekst = datum.strftime("%a")[:2]  
+                elif interval == "4h":  
+                    tekst = datum.strftime("%H:%M")  
+                elif interval == "1h":  
+                    tekst = datum.strftime("%H:%M")  
+                elif interval == "15m":  
+                    tekst = str(i % 4 + 1)  
+                else:  
+                    tekst = ""  
 
-    for entry in waarden:  
-        kleur = entry["kleur"]  
-        tekst = entry["tekst"]  
-        blok_html = f"""  
-            <div style='  
-                width: {specs['breedte'] * 8}px;  
-                height: {specs['hoogte'] * 3}px;    
-                background-color: {"#2ecc71" if kleur=="🟩" else "#e74c3c" if kleur=="🟥" else "#bdc3c7"};  
-                color: white;  
-                text-align: center;  
-                font-size: 11px;  
-                margin-bottom: 1px;  
-                border-radius: 3px;  
-            '>{tekst}</div>  
-        """  
-        blokken_html += blok_html  
+                waarden.append({"kleur": kleur, "tekst": tekst if specs["show_text"] else ""})  
 
-    blokken_html += "</div>"  
-    html += blokken_html
+            matrix[interval] = waarden  
 
-html += "</div></div>"
+        except Exception as e:  
+            matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * specs["stappen"]  
+            st.warning(f"Fout bij {interval}: {e}")  
 
-st_html(html, height=600, scrolling=True)
+    # HTML-rendering  
+    html = "<div style='font-family: monospace;'>"  
+    html += "<div style='display: flex;'>"  
+
+    for interval, specs in INTERVALLEN.items():  
+        waarden = matrix[interval]  
+        blokken_html = "<div style='margin-right: 12px;'>"  
+        blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"  
+
+        for entry in waarden:  
+            kleur = entry["kleur"]  
+            tekst = entry["tekst"]  
+            blok_html = f"""  
+                <div style='  
+                    width: {specs['breedte'] * 8}px;  
+                    height: {specs['hoogte'] * 3}px;    
+                    background-color: {"#2ecc71" if kleur=="🟩" else "#e74c3c" if kleur=="🟥" else "#bdc3c7"};  
+                    color: white;  
+                    text-align: center;  
+                    font-size: 11px;  
+                    margin-bottom: 1px;  
+                    border-radius: 3px;  
+                '>{tekst}</div>  
+            """  
+            blokken_html += blok_html  
+
+        blokken_html += "</div>"  
+        html += blokken_html
+
+    html += "</div></div>"
+
+    st_html(html, height=600, scrolling=True)
 
 
 
