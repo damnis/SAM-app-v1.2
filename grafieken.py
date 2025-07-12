@@ -230,6 +230,7 @@ def plot_sat_debug(df, interval):
     st.pyplot(fig)
 
 
+
 # matrix old working
 def toon_adviesmatrix_html(ticker, risk_aversion=2):
     toon_matrix = st.toggle("📊 Toon gecombineerde Adviesmatrix (HTML)", value=False)
@@ -237,11 +238,11 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         return
 
     INTERVALLEN = {
-        "1wk": {"stappen": 3, "breedte": 10, "hoogte": 160, "label": "Week", "show_text": True, "freq": "W-FRI"},
-        "1d": {"stappen": 15, "breedte": 10, "hoogte": 32, "label": "Dag", "show_text": True, "freq": "B"},
-        "4h": {"stappen": 30, "breedte": 10, "hoogte": 16, "label": "4u", "show_text": True, "freq": "4H"},
-        "1h": {"stappen": 120, "breedte": 5, "hoogte": 4, "label": "1u", "show_text": True, "freq": "1H"},
-        "15m": {"stappen": 480, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False, "freq": "15min"}
+        "1wk": {"stappen": 3, "breedte": 10, "hoogte": 160, "label": "Week", "show_text": True},
+        "1d": {"stappen": 15, "breedte": 10, "hoogte": 32, "label": "Dag", "show_text": True},
+        "4h": {"stappen": 30, "breedte": 10, "hoogte": 16, "label": "4u", "show_text": True},
+        "1h": {"stappen": 120, "breedte": 5, "hoogte": 4, "label": "1u", "show_text": True},
+        "15m": {"stappen": 480, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
 
     matrix = {}
@@ -255,43 +256,64 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                 df = fetch_data(ticker, interval=interval)
 
             df = df.dropna().copy()
-            if len(df) < 1:
-                matrix[interval] = [{"kleur": "⬛", "tekst": ""}] * stappen
+            if len(df) < stappen:
+                matrix[interval] = [{"kleur": "🟨", "tekst": ""}] * stappen
                 continue
 
             df = calculate_sam(df)
             df = calculate_sat(df)
             df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
-            df = df.dropna(subset=["Advies"]).copy()
 
-            laatste_datum = df.index[-1]
-            verwachte_index = pd.date_range(end=laatste_datum, periods=stappen, freq=specs["freq"])
-            verwachte_index = verwachte_index[::-1]  # jongste boven
+            df = df.dropna(subset=["Advies"])
+            df = df.iloc[-stappen:].copy()
+            df = df[::-1]  # laatste bovenaan
 
-            df = df.reindex(verwachte_index)  # missing rows = NaN
+            # 🔧 Voor interval '1d' aanvullen met lege werkdagen
+            if interval == "1d":
+                laatste_datum = df.index.max()
+                gewenste_dagen = []
+                while len(gewenste_dagen) < stappen:
+                    if laatste_datum.weekday() < 5:  # maandag=0, zondag=6
+                        gewenste_dagen.append(laatste_datum)
+                    laatste_datum -= timedelta(days=1)
+                gewenste_dagen = gewenste_dagen[::-1]  # jongste bovenaan
 
-            waarden = []
-            for datum, row in df.iterrows():
-                advies = row["Advies"] if pd.notna(row.get("Advies")) else None
-                kleur = "🟩" if advies == "Kopen" else "🟥" if advies == "Verkopen" else "⬛"
+                waarden = []
+                df.index = df.index.normalize()  # vergelijk op datumniveau
+                for dag in gewenste_dagen:
+                    if dag in df.index:
+                        advies = df.loc[dag]["Advies"]
+                        kleur = "🟩" if advies == "Kopen" else "🟥"
+                        tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
+                    else:
+                        kleur = "⬛"
+                        tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
+                    waarden.append({"kleur": kleur, "tekst": tekst})
+            else:
+                waarden = []
+                for i in range(stappen):
+                    if i >= len(df):
+                        waarden.append({"kleur": "⬛", "tekst": ""})
+                        continue
+                    advies = df.iloc[i]["Advies"]
+                    datum = df.index[i]
+                    kleur = "🟩" if advies == "Kopen" else "🟥"
 
-                if interval == "1wk":
-                    tekst = datum.strftime("%Y-%m-%d")
-                elif interval == "1d":
-                    tekst = datum.strftime("%a")[:2]
-                elif interval in ["4h", "1h"]:
-                    tekst = datum.strftime("%H:%M")
-                elif interval == "15m":
-                    tekst = str((datum.minute // 15) + 1)
-                else:
-                    tekst = ""
+                    if interval == "1wk":
+                        tekst = datum.strftime("%Y-%m-%d")
+                    elif interval == "4h" or interval == "1h":
+                        tekst = datum.strftime("%H:%M")
+                    elif interval == "15m":
+                        tekst = str(i % 4 + 1)
+                    else:
+                        tekst = ""
 
-                waarden.append({"kleur": kleur, "tekst": tekst if specs["show_text"] else ""})
+                    waarden.append({"kleur": kleur, "tekst": tekst if specs["show_text"] else ""})
 
             matrix[interval] = waarden
 
         except Exception as e:
-            matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * stappen
+            matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * specs["stappen"]
             st.warning(f"Fout bij {interval}: {e}")
 
     # HTML-rendering
@@ -302,9 +324,6 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         waarden = matrix[interval]
         blokken_html = "<div style='margin-right: 12px;'>"
         blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
-
-        wrap_style = "flex-wrap: wrap;" if interval == "15m" else "flex-direction: column;"
-        blokken_html += f"<div style='display: flex; {wrap_style}'>"
 
         for entry in waarden:
             kleur = entry["kleur"]
@@ -317,13 +336,13 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     color: white;
                     text-align: center;
                     font-size: 11px;
-                    margin: 1px;
+                    margin-bottom: 1px;
                     border-radius: 3px;
                 '>{tekst}</div>
             """
             blokken_html += blok_html
 
-        blokken_html += "</div></div>"
+        blokken_html += "</div>"
         html += blokken_html
 
     html += "</div></div>"
