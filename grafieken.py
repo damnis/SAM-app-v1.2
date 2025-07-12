@@ -332,7 +332,10 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
    # html += "</div></div>"
 
-    st.markdown(html, unsafe_allow_html=True)
+    st_html(html, height=600, scrolling=True)
+
+
+
     
 # Aanpasbare lijst van intervallen
 def toon_adviesmatrix_markdown_flex(ticker, risk_aversion=2):
