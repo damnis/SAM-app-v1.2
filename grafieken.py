@@ -245,6 +245,23 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         "15m": {"stappen": 480, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
 
+    # 🔁 Bepaal gewenste werkdagen op basis van laatste handelsdatum van 1d
+    try:
+        df_dag = fetch_data_fmp(ticker, interval="1d") if ":" in ticker or ticker.upper() in ["AEX", "AMX"] else fetch_data(ticker, interval="1d")
+        df_dag = df_dag.dropna()
+        laatste_datum = df_dag.index.max()
+    except:
+        st.warning("Geen dagdata beschikbaar voor matrix.")
+        return
+
+    gewenste_dagen = []
+    datum = laatste_datum
+    while len(gewenste_dagen) < INTERVALLEN["1d"]["stappen"]:
+        if datum.weekday() < 5:
+            gewenste_dagen.append(datum)
+        datum -= timedelta(days=1)
+    gewenste_dagen = gewenste_dagen[::-1]  # oudste onderaan, jongste bovenaan
+
     matrix = {}
 
     for interval, specs in INTERVALLEN.items():
@@ -256,67 +273,57 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                 df = fetch_data(ticker, interval=interval)
 
             df = df.dropna().copy()
-            if len(df) < stappen:
-                matrix[interval] = [{"kleur": "🟨", "tekst": ""}] * stappen
-                continue
-
             df = calculate_sam(df)
             df = calculate_sat(df)
             df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
-
             df = df.dropna(subset=["Advies"])
-            df = df.iloc[-stappen:].copy()
-            df = df[::-1]  # laatste bovenaan
+            df["Dag"] = df.index.normalize()
 
-            # 🔧 Voor interval '1d' aanvullen met lege werkdagen
-            if interval == "1d":
-                laatste_datum = df.index.max()
-                gewenste_dagen = []
-                while len(gewenste_dagen) < stappen:
-                    if laatste_datum.weekday() < 5:  # maandag=0, zondag=6
-                        gewenste_dagen.append(laatste_datum)
-                    laatste_datum -= timedelta(days=1)
-            #    gewenste_dagen = gewenste_dagen[::-1]  # jongste bovenaan
+            waarden = []
 
-                waarden = []
-                df.index = df.index.normalize()  # vergelijk op datumniveau
-                for dag in gewenste_dagen:
-                    if dag in df.index:
-                        advies = df.loc[dag]["Advies"]
+            for dag in gewenste_dagen:
+                dag_data = df[df["Dag"] == dag]
+                if interval == "1d":
+                    if not dag_data.empty:
+                        advies = dag_data.iloc[-1]["Advies"]
                         kleur = "🟩" if advies == "Kopen" else "🟥"
-                        tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
                     else:
                         kleur = "⬛"
-                        tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
+                    tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
-            else:
-                waarden = []
-                for i in range(stappen):
-                    if i >= len(df):
-                        waarden.append({"kleur": "⬛", "tekst": ""})
-                        continue
-                    advies = df.iloc[i]["Advies"]
-                    datum = df.index[i]
-                    kleur = "🟩" if advies == "Kopen" else "🟥"
 
-                    if interval == "1wk":
-                        tekst = datum.strftime("%Y-%m-%d")
-                    elif interval == "4h" or interval == "1h":
-                        tekst = datum.strftime("%H:%M")
-                    elif interval == "15m":
-                        tekst = str(i % 4 + 1)
+                else:
+                    blokken_per_dag = stappen // INTERVALLEN["1d"]["stappen"]
+                    entries = []
+
+                    if not dag_data.empty:
+                        recent = dag_data.sort_index(ascending=False).iloc[:blokken_per_dag]
+                        for i in range(blokken_per_dag):
+                            if i < len(recent):
+                                advies = recent.iloc[i]["Advies"]
+                                kleur = "🟩" if advies == "Kopen" else "🟥"
+                                if interval == "4h" or interval == "1h":
+                                    tekst = recent.index[i].strftime("%H:%M") if specs["show_text"] else ""
+                                elif interval == "15m":
+                                    tekst = str(i % 4 + 1)
+                                else:
+                                    tekst = ""
+                            else:
+                                kleur = "⬛"
+                                tekst = ""
+                            entries.append({"kleur": kleur, "tekst": tekst})
                     else:
-                        tekst = ""
+                        entries = [{"kleur": "⬛", "tekst": ""}] * blokken_per_dag
 
-                    waarden.append({"kleur": kleur, "tekst": tekst if specs["show_text"] else ""})
+                    waarden.extend(entries)
 
             matrix[interval] = waarden
 
         except Exception as e:
-            matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * specs["stappen"]
+            matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * stappen
             st.warning(f"Fout bij {interval}: {e}")
 
-    # HTML-rendering
+    # 📊 HTML-rendering
     html = "<div style='font-family: monospace;'>"
     html += "<div style='display: flex;'>"
 
