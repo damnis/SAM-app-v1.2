@@ -257,13 +257,26 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         markt = "us"
 
     # Handelsuren in UTC per regio
+    # Kies handelsuren per dagsegment (UTC)
     if markt == "eur":
-        geldige_uren = list(range(7, 16))  # 09:00–17:00 8,16 CET → UTC+1
+        dag_start = 7  # 08:00 CET zomer
     elif markt == "us":
-        geldige_uren = list(range(12, 21))  # 09:00–17:00 13,21 ET → UTC-5
+        dag_start = 12  # 08:00 ET = 13:00 CET
     else:
-        geldige_uren = list(range(0, 24))  # crypto
+        dag_start = 7  # crypto mag alles aan, maar we nemen zelfde structuur
 
+    if interval == "4h":
+        tijdvakken = [dag_start + i*4 for i in range(3)]  # 3 blokken van 4 uur
+    elif interval == "1h":
+        tijdvakken = list(range(dag_start, dag_start + 8))  # 8 blokken per dag
+    elif interval == "15m":
+        tijdvakken = []
+        for uur in range(dag_start, dag_start + 8):
+            for kwart in range(0, 60, 15):
+                tijdvakken.append(dag + pd.Timedelta(hours=uur, minutes=kwart))
+    else:
+        tijdvakken = []
+    
     matrix = {}
 
     for interval, specs in INTERVALLEN.items():
