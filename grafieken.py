@@ -234,62 +234,136 @@ def plot_sat_debug(df, interval):
 # matrix
 # Aanpasbare lijst van intervallen
 # INTERVALLEN = ["1wk", "1d", "4h", "1h", "15min"]
-
-def toon_adviesmatrix_automatisch(ticker, risk_aversion):
-    toon_matrix = st.toggle("🧮 Toon automatische Adviesmatrix", value=False)
+def toon_adviesmatrix_markdown(ticker, risk_aversion=2):
+    toon_matrix = st.toggle("📊 Toon automatische Adviesmatrix (Markdown-versie)", value=False)
     if not toon_matrix:
         return
 
     st.subheader("📊 Automatische Adviesmatrix")
+    st.markdown("De matrix toont adviezen per interval (jongste data bovenaan).")
 
-    intervallen = {
-        "1wk": 3,    # laatste 3 weken
-        "1d": 15,    # laatste 3 dagen
-        "4h": 30,    # laatste 15 dagen
-        "1h": 60,    # laatste 30 dagen
-        "15m": 96    # laatste 4 dagen
+    interval_specs = {
+        "1wk": {"stappen": 3, "breedte": 2},
+        "1d": {"stappen": 5, "breedte": 2},
+        "4h": {"stappen": 10, "breedte": 4},
+        "1h": {"stappen": 24, "breedte": 8},
+        "15m": {"stappen": 96, "breedte": 16},
     }
 
-    matrix_data = {}
+    matrix = {}
 
-    for interval, stappen in intervallen.items():
+    for interval, specs in interval_specs.items():
+        stappen = specs["stappen"]
         try:
-            # Kies juiste fetch functie op basis van ticker
+            # Data ophalen
             if ":" in ticker or ticker.upper() in ["AEX", "AMX"]:
                 df = fetch_data_fmp(ticker, interval=interval)
             else:
                 df = fetch_data(ticker, interval=interval)
 
             df = df.dropna().copy()
-            if df.empty or len(df) < stappen:
-                matrix_data[interval] = ["⛔"] * stappen
+            if len(df) < stappen:
+                matrix[interval] = ["🟨"] * stappen
                 continue
 
-            # Advies berekenen met meegegeven risk_aversion
-            df = calculate_sam(df)
-            df = calculate_sat(df)
-            df = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
+            df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
 
-            waarden = []
-            for i in range(-stappen, 0):
-                try:
-                    advies = df.iloc[i]["Advies"]
-                    kleur = "🟩" if advies == "Kopen" else "🟥"
-                except:
-                    kleur = "❓"
-                waarden.append(kleur)
+            adviezen = df["Advies"].dropna().iloc[-stappen:].tolist()
+            adviezen = adviezen[::-1]  # Laatste eerst
 
-            matrix_data[interval] = waarden
+            kleuren = []
+            for advies in adviezen:
+                if advies == "Kopen":
+                    kleuren.append("🟩")
+                elif advies == "Verkopen":
+                    kleuren.append("🟥")
+                else:
+                    kleuren.append("🟨")
+            # Aanvullen als te kort
+            while len(kleuren) < stappen:
+                kleuren.append("⬛")
+
+            matrix[interval] = kleuren
 
         except Exception as e:
-            matrix_data[interval] = ["⚠️"] * stappen
+            matrix[interval] = ["⚠️"] * specs["stappen"]
             st.warning(f"Fout bij {interval}: {e}")
 
-    matrix_df = pd.DataFrame(matrix_data).T
-    matrix_df.columns = [f"⏱️-{i+1}" for i in range(matrix_df.shape[1])]
-    matrix_df.index.name = "Interval"
+    # 🧱 Weergave op schaal: [2,2,4,8,16]
+    max_stappen = max(spec["stappen"] for spec in interval_specs.values())
+    rijen = []
 
-    st.dataframe(matrix_df, use_container_width=True)
+    for i in range(max_stappen):
+        rij = ""
+        for interval, spec in interval_specs.items():
+            blokken = spec["breedte"]
+            waarden = matrix.get(interval, [])
+            if i < len(waarden):
+                rij += waarden[i] * blokken
+            else:
+                rij += "⬛" * blokken
+        rijen.append(rij)
+
+    # 🔁 Omgekeerd (jongste boven)
+    rijen = rijen[::-1]
+
+    st.markdown("```\n" + "\n".join(rijen) + "\n```")
+    
+#def toon_adviesmatrix_automatisch(ticker, risk_aversion):
+#    toon_matrix = st.toggle("🧮 Toon automatische Adviesmatrix", value=False)
+#    if not toon_matrix:
+#        return
+
+#    st.subheader("📊 Automatische Adviesmatrix")
+
+#    intervallen = {
+ #       "1wk": 3,    # laatste 3 weken
+#        "1d": 15,    # laatste 3 dagen
+#        "4h": 30,    # laatste 15 dagen
+#        "1h": 60,    # laatste 30 dagen
+ #       "15m": 96    # laatste 4 dagen
+#    }
+
+#    matrix_data = {}
+
+#    for interval, stappen in intervallen.items():
+#        try:
+            # Kies juiste fetch functie op basis van ticker
+#            if ":" in ticker or ticker.upper() in ["AEX", "AMX"]:
+#                df = fetch_data_fmp(ticker, interval=interval)
+ #           else:
+ #               df = fetch_data(ticker, interval=interval)
+
+#            df = df.dropna().copy()
+ #           if df.empty or len(df) < stappen:
+  #              matrix_data[interval] = ["⛔"] * stappen
+  #              continue
+
+            # Advies berekenen met meegegeven risk_aversion
+#            df = calculate_sam(df)
+#            df = calculate_sat(df)
+  #          df = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
+
+#            waarden = []
+ #           for i in range(-stappen, 0):
+ #               try:
+ #                   advies = df.iloc[i]["Advies"]
+ #                   kleur = "🟩" if advies == "Kopen" else "🟥"
+  #              except:
+  #                  kleur = "❓"
+  #              waarden.append(kleur)
+
+ #           matrix_data[interval] = waarden
+
+#        except Exception as e:
+#            matrix_data[interval] = ["⚠️"] * stappen
+#            st.warning(f"Fout bij {interval}: {e}")
+
+#    matrix_df = pd.DataFrame(matrix_data).T
+#    matrix_df.columns = [f"⏱️-{i+1}" for i in range(matrix_df.shape[1])]
+#    matrix_df.index.name = "Interval"
+
+#    st.dataframe(matrix_df, use_container_width=True)
     
 
 # ➕ y-as: bepaal min/max + marge
