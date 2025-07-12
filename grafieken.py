@@ -245,13 +245,13 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     }
 
     dagen = 5
-    eind_datum = pd.Timestamp.now(tz="UTC").normalize()
+    nu = pd.Timestamp.now(tz="UTC")
     gewenste_dagen = []
     while len(gewenste_dagen) < dagen:
-        if eind_datum.weekday() < 5:
-            gewenste_dagen.append(eind_datum)
-        eind_datum -= pd.Timedelta(days=1)
-    gewenste_dagen = gewenste_dagen[::-1]
+        if nu.weekday() < 5:
+            gewenste_dagen.append(nu.normalize())
+        nu -= pd.Timedelta(days=1)
+    gewenste_dagen = gewenste_dagen[::-1]  # vrijdag bovenaan
 
     matrix = {}
 
@@ -260,6 +260,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             df = fetch_data_fmp(ticker, interval=interval) if ":" in ticker or ticker.upper() in ["AEX", "AMX"] else fetch_data(ticker, interval=interval)
             df = df.dropna().copy()
 
+            # Tijdzone fix
             if df.index.tz is None:
                 df.index = df.index.tz_localize("UTC")
             else:
@@ -274,35 +275,43 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
             if interval == "1wk":
                 df.index = df.index.normalize()
-                for dag in gewenste_dagen:
-                    week_start = dag - pd.Timedelta(days=dag.weekday())
-                    week_start = week_start.normalize()
-                    advies = df.loc[df.index == week_start, "Advies"].values
-                    tekst = week_start.strftime("%Y-%m-%d")
+                unieke_weken = sorted({(d - pd.Timedelta(days=d.weekday())).normalize() for d in df.index})
+                laatste_weken = unieke_weken[-dagen:]
+                for week in laatste_weken:
+                    advies = df.loc[df.index == week, "Advies"].values
                     kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                    waarden.append({"kleur": kleur, "tekst": tekst if specs["show_text"] else ""})
+                    tekst = week.strftime("%Y-%m-%d") if specs["show_text"] else ""
+                    waarden.append({"kleur": kleur, "tekst": tekst})
 
             elif interval == "1d":
                 df.index = df.index.normalize()
                 for dag in gewenste_dagen:
-                    advies = df.loc[df.index == dag.normalize(), "Advies"].values
-                    tekst = dag.strftime("%a")[:2]
+                    advies = df.loc[df.index == dag, "Advies"].values
                     kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                    waarden.append({"kleur": kleur, "tekst": tekst if specs["show_text"] else ""})
+                    tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
+                    waarden.append({"kleur": kleur, "tekst": tekst})
 
             else:
+                stap = pd.Timedelta("4h") if interval == "4h" else pd.Timedelta("1h") if interval == "1h" else pd.Timedelta("15min")
+                stappen_per_dag = int(pd.Timedelta("1d") / stap)
+
                 for dag in gewenste_dagen:
-                    df_dag = df[df.index.date == dag.date()]
-                    blokken = []
-                    for ts, row in df_dag.iterrows():
-                        advies = row["Advies"]
-                        kleur = "🟩" if advies == "Kopen" else "🟥" if advies == "Verkopen" else "⬛"
-                        tekst = ts.strftime("%H:%M") if specs["show_text"] else str(len(blokken) % 4 + 1) if interval == "15m" else ""
-                        blokken.append({"kleur": kleur, "tekst": tekst})
-                    # minimaal 1 blok per dag, anders dummy-blokken
-                    if not blokken:
-                        blokken = [{"kleur": "⬛", "tekst": ""}] * 6
-                    waarden.extend(blokken)
+                    for i in range(stappen_per_dag):
+                        ts_start = dag + i * stap
+                        ts_eind = ts_start + stap
+
+                        # Zorg dat ts ook UTC is
+                        ts_start = ts_start.tz_localize("UTC") if ts_start.tzinfo is None else ts_start
+                        ts_eind = ts_eind.tz_localize("UTC") if ts_eind.tzinfo is None else ts_eind
+
+                        df_sub = df[(df.index >= ts_start) & (df.index < ts_eind)]
+                        advies = df_sub["Advies"].values
+                        kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+                        if specs["show_text"]:
+                            tekst = ts_start.strftime("%H:%M")
+                        else:
+                            tekst = str(i % 4 + 1) if interval == "15m" else ""
+                        waarden.append({"kleur": kleur, "tekst": tekst})
 
             if not waarden:
                 waarden = [{"kleur": "⬛", "tekst": ""}] * 5
@@ -341,8 +350,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
     html += "</div></div>"
     st_html(html, height=600, scrolling=True)
-                        
-            
+    
+                
             
     
 
