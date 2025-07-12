@@ -8,9 +8,9 @@ def fetch_data_cached(ticker, interval, period):
     return yf.download(ticker, interval=interval, period=period)
 
 # ✅ Weighted Moving Average functie
-def weighted_moving_average(series, window):
-    weights = np.arange(1, window + 1)
-    return series.rolling(window).apply(lambda x: np.dot(x, weights) / weights.sum(), raw=True)
+#def weighted_moving_average(series, window):
+#    weights = np.arange(1, window + 1)
+#    return series.rolling(window).apply(lambda x: np.dot(x, weights) / weights.sum(), raw=True)
 
 # ✅ Wrapper-functie met dataschoonmaak en fallback
 def fetch_data(ticker, interval):
