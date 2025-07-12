@@ -309,9 +309,11 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
 
         # Gebruik flex-wrap voor 15m-blokken
-        wrap_style = "flex-wrap: wrap;" if interval == "15m" else "flex-direction: column;"
-        blokken_html += f"<div style='display: flex; {wrap_style}'>"
-
+        if interval == "15m":
+            blokken_html += "<div style='display: flex; flex-wrap: wrap; flex-direction: row;'>"
+        else:
+            blokken_html += "<div style='display: flex; flex-direction: column;'>"
+       
         for entry in waarden:
             kleur = entry["kleur"]
             tekst = entry["tekst"]
