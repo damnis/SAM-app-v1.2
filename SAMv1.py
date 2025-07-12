@@ -19,8 +19,8 @@ from tickers import (
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
 # grafieken en tabellen
-from grafieken import plot_koersgrafiek, plot_sam_trend, plot_sat_debug, bepaal_grafiekperiode, plot_overlay_grafiek, toon_adviesmatrix_automatisch 
-from sam_tabel import toon_sam_tabel
+from grafieken import plot_koersgrafiek, plot_sam_trend, plot_sat_debug, bepaal_grafiekperiode, plot_overlay_grafiek 
+from grafieken import toon_adviesmatrix_automatisch 
 # Backtestfunctie 
 from backtest import backtest_functie, bereken_sam_rendement
 # trading bot
