@@ -10,6 +10,8 @@ from ta.trend import ADXIndicator
 import matplotlib.dates as mdates
 from yffetch import fetch_data, fetch_data_cached 
 from fmpfetch import fetch_data_fmp
+from sam_indicator import calculate_sam 
+from sat_indicator import calculate_sat 
 from adviezen import determine_advice 
 
 
@@ -264,6 +266,8 @@ def toon_adviesmatrix_automatisch(ticker, risk_aversion):
                 continue
 
             # Advies berekenen met meegegeven risk_aversion
+            df = calculate_sam(df)
+            df = calculate_sat(df)
             df = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
 
             waarden = []
