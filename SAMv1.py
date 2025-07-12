@@ -22,7 +22,7 @@ from sat_indicator import calculate_sat
 from adviezen import determine_advice, weighted_moving_average 
 # grafieken en tabellen
 from grafieken import plot_koersgrafiek, plot_sam_trend, plot_sat_debug, bepaal_grafiekperiode, plot_overlay_grafiek 
-from grafieken import toon_adviesmatrix_markdown_flex
+from grafieken import toon_adviesmatrix_html
 from sam_tabel import toon_sam_tabel 
 # Backtestfunctie 
 from backtest import backtest_functie, bereken_sam_rendement
@@ -318,7 +318,7 @@ with col2:
 # -------------
 
 # Stel dat je de geselecteerde ticker als 'ticker' hebt
-toon_adviesmatrix_markdown_flex(ticker, risk_aversion=risk_aversion)
+toon_adviesmatrix_html(ticker, risk_aversion=risk_aversion)
 # weergave grafieken via py
 
 plot_overlay_grafiek(df, ticker_name, interval) 
