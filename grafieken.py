@@ -258,9 +258,9 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
     # Handelsuren in UTC per regio
     if markt == "eur":
-        geldige_uren = list(range(8, 16))  # 9:00 – 17:00 CET ~ UTC+1
+        geldige_uren = list(range(8, 16))  # 09:00–17:00 CET → UTC+1
     elif markt == "us":
-        geldige_uren = list(range(14, 22))  # 9:00 – 17:00 ET ~ UTC-5
+        geldige_uren = list(range(13, 21))  # 09:00–17:00 ET → UTC-5
     else:
         geldige_uren = list(range(0, 24))  # crypto
 
@@ -275,24 +275,25 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             df = calculate_sat(df)
             df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
             df = df.dropna(subset=["Advies"])
-            df.index = pd.to_datetime(df.index).tz_localize(None)  # maak tijdzone-naïef voor consistentie
+            df.index = pd.to_datetime(df.index).tz_localize(None)
 
             waarden = []
 
             if interval == "1wk":
-                laatste_datum = df.index.max()
-                weekdagen = []
-                while len(weekdagen) < stappen:
-                    start_maandag = laatste_datum - pd.Timedelta(days=laatste_datum.weekday())
-                    if start_maandag not in weekdagen:
-                        weekdagen.append(start_maandag)
+                laatste_datum = df.index.max().normalize()
+                week_start = lambda d: d - pd.Timedelta(days=d.weekday())
+                weekdatums = []
+                while len(weekdatums) < stappen:
+                    ws = week_start(laatste_datum)
+                    if ws not in weekdatums:
+                        weekdatums.append(ws)
                     laatste_datum -= pd.Timedelta(days=1)
-                weekdagen = sorted(weekdagen, reverse=True)
+                weekdatums = sorted(weekdatums, reverse=True)
 
-                for week_start in weekdagen:
-                    advies = df.loc[df.index.normalize() == week_start, "Advies"].values
+                for ws in weekdatums:
+                    advies = df.loc[df.index.normalize() == ws, "Advies"].values
                     kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                    tekst = week_start.strftime("%Y-%m-%d") if specs["show_text"] else ""
+                    tekst = ws.strftime("%Y-%m-%d") if specs["show_text"] else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
 
             elif interval == "1d":
@@ -313,39 +314,28 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             else:
                 stap = pd.Timedelta("4h") if interval == "4h" else pd.Timedelta("1h") if interval == "1h" else pd.Timedelta("15min")
                 laatste_tijd = df.index.max()
-                waarden = []
                 gevonden = 0
                 ts = laatste_tijd
 
-                # Geldige handelsuren per interval (UTC)
-                geldige_uren = list(range(13, 21)) if ticker.upper() not in ["AEX", "AMX"] else list(range(8, 16))
-
-                while gevonden < specs["stappen"] and ts > df.index.min():
-                    if ts.weekday() >= 5:
+                while gevonden < stappen and ts > df.index.min():
+                    if ts.weekday() >= 5 or ts.hour not in geldige_uren:
                         ts -= stap
                         continue
-                    if ts.hour not in geldige_uren:
-                        ts -= stap
-                        continue
-
                     df_sub = df[(df.index >= ts) & (df.index < ts + stap)]
                     advies = df_sub["Advies"].values
                     kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                    if specs["show_text"]:
-                        tekst = ts.strftime("%H:%M")
-                    else:
-                        tekst = str(gevonden % 4 + 1) if interval == "15m" else ""
+                    tekst = ts.strftime("%H:%M") if specs["show_text"] else str(gevonden % 4 + 1) if interval == "15m" else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
                     gevonden += 1
                     ts -= stap
 
-        #        waarden = waarden[::-1]
-                matrix[interval] = waarden
+#                waarden = waarden[::-1]
+            matrix[interval] = waarden
 
         except Exception as e:
             st.warning(f"Fout bij {interval}: {e}")
             matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * stappen
-
+            
     # ─────────────────────────────────────────────
     # HTML rendering
     html = "<div style='font-family: monospace;'>"
