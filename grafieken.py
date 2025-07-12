@@ -247,7 +247,6 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     }
 
     # ─────────────────────────────────────────────
-    # ─────────────────────────────────────────────
     # Marktsegment bepalen op basis van ticker
     ticker_lower = ticker.lower()
     if "crypto" in ticker_lower or ticker_lower.startswith("btc") or ticker_lower.startswith("eth"):
@@ -315,8 +314,6 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     laatste_dag -= pd.Timedelta(days=1)
                 dagen = sorted(dagen, reverse=True)
 
-                waarden = []
-
                 for dag in dagen:
                     if markt == "eur":
                         start_uur = 8
@@ -346,12 +343,13 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                             tekst = str((tijdvakken.index(ts) % 4) + 1) if interval == "15m" else ""
                         waarden.append({"kleur": kleur, "tekst": tekst})
 
-                matrix[interval] = waarden
-                
+            matrix[interval] = waarden
+
         except Exception as e:
             st.warning(f"Fout bij {interval}: {e}")
             matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * stappen
             
+        
     # ─────────────────────────────────────────────
     # HTML rendering
     html = "<div style='font-family: monospace;'>"
