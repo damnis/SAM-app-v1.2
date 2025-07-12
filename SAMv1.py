@@ -22,7 +22,7 @@ from sat_indicator import calculate_sat
 from adviezen import determine_advice, weighted_moving_average 
 # grafieken en tabellen
 from grafieken import plot_koersgrafiek, plot_sam_trend, plot_sat_debug, bepaal_grafiekperiode, plot_overlay_grafiek 
-from grafieken import toon_adviesmatrix_automatisch, toon_adviesmatrix_markdown
+from grafieken import toon_adviesmatrix_markdown
 from sam_tabel import toon_sam_tabel 
 # Backtestfunctie 
 from backtest import backtest_functie, bereken_sam_rendement
