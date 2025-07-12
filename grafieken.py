@@ -236,6 +236,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     if not toon_matrix:
         return
 
+    # ─────────────────────────────────────────────
+    # Instellingen per interval
     INTERVALLEN = {
         "1wk": {"stappen": 3, "breedte": 10, "hoogte": 160, "label": "Week", "show_text": True},
         "1d": {"stappen": 15, "breedte": 10, "hoogte": 32, "label": "Dag", "show_text": True},
@@ -244,16 +246,23 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         "15m": {"stappen": 480, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
 
-    # Marktlogica: bepaal type op basis van ticker
+    # ─────────────────────────────────────────────
+    # Marktsegment bepalen op basis van ticker
     ticker_lower = ticker.lower()
-    if any(x in ticker_lower for x in [":us", "nasdaq", "nyse"]):
-        markt = "us"
-    elif any(x in ticker_lower for x in [":as", ".ams", "aex", "amx"]):
-        markt = "eur"
-    elif any(x in ticker_lower for x in ["btc", "eth", "crypto"]):
+    if "crypto" in ticker_lower or ticker_lower.startswith("btc") or ticker_lower.startswith("eth"):
         markt = "crypto"
+    elif ".as" in ticker_lower or ticker.upper() in ["AEX", "AMX"]:
+        markt = "eur"
     else:
         markt = "us"
+
+    # Handelsuren in UTC per regio
+    if markt == "eur":
+        geldige_uren = list(range(8, 16))  # 9:00 – 17:00 CET ~ UTC+1
+    elif markt == "us":
+        geldige_uren = list(range(14, 22))  # 9:00 – 17:00 ET ~ UTC-5
+    else:
+        geldige_uren = list(range(0, 24))  # crypto
 
     matrix = {}
 
@@ -266,68 +275,75 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             df = calculate_sat(df)
             df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
             df = df.dropna(subset=["Advies"])
+            df.index = pd.to_datetime(df.index).tz_localize(None)  # maak tijdzone-naïef voor consistentie
 
             waarden = []
 
-            if interval in ["1wk", "1d"]:
-                df.index = pd.to_datetime(df.index).normalize()
+            if interval == "1wk":
                 laatste_datum = df.index.max()
-                gewenste_dagen = []
-                while len(gewenste_dagen) < stappen:
-                    if laatste_datum.weekday() < 5:
-                        gewenste_dagen.append(laatste_datum)
+                weekdagen = []
+                while len(weekdagen) < stappen:
+                    start_maandag = laatste_datum - pd.Timedelta(days=laatste_datum.weekday())
+                    if start_maandag not in weekdagen:
+                        weekdagen.append(start_maandag)
                     laatste_datum -= pd.Timedelta(days=1)
-   #             gewenste_dagen = gewenste_dagen[::-1]  # vrijdag bovenaan
+                weekdagen = sorted(weekdagen, reverse=True)
 
-                for dag in gewenste_dagen:
-                    advies = df.loc[df.index == dag, "Advies"].values
+                for week_start in weekdagen:
+                    advies = df.loc[df.index.normalize() == week_start, "Advies"].values
                     kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                    tekst = dag.strftime("%Y-%m-%d") if interval == "1wk" else dag.strftime("%a")[:2]
-                    waarden.append({"kleur": kleur, "tekst": tekst if specs["show_text"] else ""})
+                    tekst = week_start.strftime("%Y-%m-%d") if specs["show_text"] else ""
+                    waarden.append({"kleur": kleur, "tekst": tekst})
+
+            elif interval == "1d":
+                laatste_datum = df.index.max().normalize()
+                dagen = []
+                while len(dagen) < stappen:
+                    if laatste_datum.weekday() < 5:
+                        dagen.append(laatste_datum)
+                    laatste_datum -= pd.Timedelta(days=1)
+                dagen = sorted(dagen, reverse=True)
+
+                for dag in dagen:
+                    advies = df.loc[df.index.normalize() == dag, "Advies"].values
+                    kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+                    tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
+                    waarden.append({"kleur": kleur, "tekst": tekst})
 
             else:
-                df.index = pd.to_datetime(df.index).tz_convert("UTC")
-                eind_datum = pd.Timestamp.now(tz="UTC").normalize()
-                gewenste_tijdstippen = []
-
-                uren = []
-                if markt == "us":
-                    uren = range(14, 22)  # 09:00–17:00 ET = 14:00–22:00 UTC
-                elif markt == "eur":
-                    uren = range(8, 16)   # 09:00–17:00 CET = 08:00–16:00 UTC
-                elif markt == "crypto":
-                    uren = range(0, 24)   # 24/7
-
                 stap = pd.Timedelta("4h") if interval == "4h" else pd.Timedelta("1h") if interval == "1h" else pd.Timedelta("15min")
-                max_tijd = pd.Timestamp.now(tz="UTC")
+                laatste_tijd = df.index.max()
+                count = 0
 
-                t = max_tijd
-                while len(gewenste_tijdstippen) < stappen and t > max_tijd - pd.Timedelta(days=15):
-                    if t.weekday() < 5 or markt == "crypto":
-                        if t.hour in uren:
-                            gewenste_tijdstippen.append(t.replace(minute=0, second=0, microsecond=0))
-                    t -= stap
+                while count < stappen:
+                    ts = laatste_tijd - count * stap
+                    if ts.weekday() >= 5:
+                        count += 1
+                        continue  # skip weekends
+                    if ts.hour not in geldige_uren:
+                        count += 1
+                        continue  # skip buiten handelsuren
 
-          #      gewenste_tijdstippen = gewenste_tijdstippen[::-1]
-
-                for ts in gewenste_tijdstippen:
                     df_sub = df[(df.index >= ts) & (df.index < ts + stap)]
                     advies = df_sub["Advies"].values
                     kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-
                     if specs["show_text"]:
                         tekst = ts.strftime("%H:%M")
                     else:
-                        tekst = str(len(waarden) % 4 + 1) if interval == "15m" else ""
-
+                        tekst = str(count % 4 + 1) if interval == "15m" else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
+                    count += 1
+
+                waarden = waarden[::-1]
+
             matrix[interval] = waarden
 
         except Exception as e:
             st.warning(f"Fout bij {interval}: {e}")
             matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * stappen
 
-    # HTML-rendering
+    # ─────────────────────────────────────────────
+    # HTML rendering
     html = "<div style='font-family: monospace;'>"
     html += "<div style='display: flex;'>"
 
@@ -356,10 +372,9 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
     html += "</div></div>"
     st_html(html, height=600, scrolling=True)
-                
-        
-      
-                      
+    
+
+                       
     
 
 
