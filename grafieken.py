@@ -307,12 +307,14 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
                 laatste_dag = df.index.max().normalize()
                 dagen = []
-                blokken_per_dag = 6 if interval == "4h" else 8 if interval == "1h" else 32
-                while len(dagen) < stappen // blokken_per_dag:
+                blokjes_per_dag = 3 if interval == "4h" else 8 if interval == "1h" else 32
+                while len(dagen) < int(stappen / blokjes_per_dag):
                     if laatste_dag.weekday() < 5:
                         dagen.append(laatste_dag)
                     laatste_dag -= pd.Timedelta(days=1)
                 dagen = sorted(dagen, reverse=True)
+
+                waarden = []
 
                 for dag in dagen:
                     if markt == "eur":
@@ -321,11 +323,12 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                         start_uur = 13
                     else:
                         start_uur = 0
-                    uren_range = list(range(start_uur, start_uur + 8))
 
+                    uren_range = list(range(start_uur, start_uur + blokjes_per_dag * (4 if interval == "4h" else 1)))
                     tijdvakken = []
+
                     if interval == "4h":
-                        tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + 8, 4)]
+                        tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + 12, 4)]
                     elif interval == "1h":
                         tijdvakken = [dag + pd.Timedelta(hours=h) for h in uren_range]
                     elif interval == "15m":
@@ -340,10 +343,10 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                         if specs["show_text"]:
                             tekst = ts.strftime("%H:%M")
                         else:
-                            tekst = str((tijdvakken.index(ts) % 4) + 1) if interval == "15m" else ""
+                        tekst = str((tijdvakken.index(ts) % 4) + 1) if interval == "15m" else ""
                         waarden.append({"kleur": kleur, "tekst": tekst})
 
-            matrix[interval] = waarden
+                matrix[interval] = waarden
 
         except Exception as e:
             st.warning(f"Fout bij {interval}: {e}")
