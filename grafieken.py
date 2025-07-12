@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, date
 import matplotlib.pyplot as plt
 from ta.trend import ADXIndicator
 import matplotlib.dates as mdates
+from SAMv1 import determine_advice 
 
 
 # 📆 Periode voor SAM-grafiek op basis van interval
@@ -222,7 +223,31 @@ def plot_sat_debug(df, interval):
     fig.tight_layout()
     st.pyplot(fig)
     
-    
+
+
+
+# matrix
+def toon_adviesmatrix(df_adviezen):
+    st.subheader("🧠 Adviesmatrix per interval")
+
+    # Zorg dat Datum datetime is
+    df_adviezen = df_adviezen.copy()
+    df_adviezen["Datum"] = pd.to_datetime(df_adviezen["Datum"])
+    df_adviezen["DatumLabel"] = df_adviezen["Datum"].dt.strftime('%Y-%m-%d %H:%M')
+    df_adviezen["Kleur"] = df_adviezen["Advies"].map({"Kopen": "green", "Verkopen": "red"})
+
+    # Matrix maken
+    matrix = df_adviezen.pivot(index="Interval", columns="DatumLabel", values="Advies")
+
+    # Kleurfunctie
+    def kleurcode(val):
+        kleur = "green" if val == "Kopen" else "red"
+        return f"background-color: {kleur}; color: white; font-weight: bold"
+
+    # Streamlit-tabel tonen
+    st.dataframe(matrix.style.applymap(kleurcode), use_container_width=True)
+
+
 
 # ➕ y-as: bepaal min/max + marge
 #    try:
