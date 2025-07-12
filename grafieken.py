@@ -13,6 +13,7 @@ from fmpfetch import fetch_data_fmp
 from sam_indicator import calculate_sam 
 from sat_indicator import calculate_sat 
 from adviezen import determine_advice 
+from streamlit.components.v1 import html as st_html
 
 
 
@@ -409,14 +410,7 @@ def toon_adviesmatrix_markdown_flex(ticker, risk_aversion=2):
 
     html += "</div></div>"
 
-    st.markdown(
-        f"""
-        <div style="overflow-x: auto; padding: 10px;">
-            {html}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    st_html(html, height=600, scrolling=True)
 
 
 
