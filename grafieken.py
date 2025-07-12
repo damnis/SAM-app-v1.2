@@ -8,8 +8,9 @@ from datetime import datetime, timedelta, date
 import matplotlib.pyplot as plt
 from ta.trend import ADXIndicator
 import matplotlib.dates as mdates
-from SAMv1 import determine_advice, fetch_data, fetch_data_cached 
+from SAMv1 import fetch_data, fetch_data_cached 
 from fmpfetch import fetch_data_fmp
+from adviezen import determine_advice 
 
 
 
