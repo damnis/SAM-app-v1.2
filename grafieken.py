@@ -305,28 +305,27 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
     for interval, specs in INTERVALLEN.items():
         waarden = matrix[interval]
-        blokken_html = "<div style='margin-right: 12px;'>"
-        blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
+        html += "<div style='margin-right: 12px;'>"
+        html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
 
-        # 👇 aangepaste containerstijl voor 15m
+        # ✅ Container per interval
         if interval == "15m":
-            blokken_html += "<div style='display: flex; flex-wrap: wrap; width: 160px;'>"
+            html += "<div style='display: flex; flex-wrap: wrap; width: 160px;'>"
         else:
-            blokken_html += "<div style='display: flex; flex-direction: column;'>"
+            html += "<div style='display: flex; flex-direction: column;'>"
 
         for entry in waarden:
             kleur = entry["kleur"]
             tekst = entry["tekst"]
-            background = "#2ecc71" if kleur == "🟩" else "#e74c3c" if kleur == "🟥" else "#bdc3c7"
+            achtergrond = "#2ecc71" if kleur == "🟩" else "#e74c3c" if kleur == "🟥" else "#bdc3c7"
 
-            # 👇 aangepaste blokstijl voor 15m
             if interval == "15m":
-                blok_html = f"""
+                html += f"""
                     <div style='
                         flex: 0 0 25%;
                         max-width: 25%;
                         height: 20px;
-                        background-color: {background};
+                        background-color: {achtergrond};
                         color: white;
                         text-align: center;
                         font-size: 10px;
@@ -335,11 +334,11 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     '>{tekst}</div>
                 """
             else:
-                blok_html = f"""
+                html += f"""
                     <div style='
                         width: {specs['breedte'] * 8}px;
                         height: {specs['hoogte'] * 3}px;
-                        background-color: {background};
+                        background-color: {achtergrond};
                         color: white;
                         text-align: center;
                         font-size: 11px;
@@ -347,20 +346,15 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                         border-radius: 3px;
                     '>{tekst}</div>
                 """
-            blokken_html += blok_html
 
-        blokken_html += "</div></div>"
-        html += blokken_html
+        html += "</div>"  # sluit div voor waarden
+        html += "</div>"  # sluit div voor kolom
 
-    html += "</div></div>"
+    html += "</div></div>"  # sluit alle wrappers
 
     st.markdown(html, unsafe_allow_html=True)
     
-
             
-    
-
-                
     
         
 
