@@ -407,17 +407,20 @@ def toon_adviesmatrix_markdown_flex(ticker, risk_aversion=2):
         per_dag = int(len(kleuren) / dagen)
         matrix[interval] = [kleuren[i*per_dag:(i+1)*per_dag] for i in range(dagen)]
 
-    st.markdown("```")
-    for i in range(dagen):
-        regel = ""
-        for interval, specs in interval_specs.items():
-            blok = matrix[interval][i]
-            if isinstance(blok, list):
-                regel += "".join(blok)
-            else:
-                regel += blok * specs["breedte"]
-        st.markdown(regel)
-    st.markdown("```")
+    html += "</div></div>"
+
+    st.markdown(
+        f"""
+        <div style="overflow-x: auto; padding: 10px;">
+            {html}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+
+
 
 # INTERVALLEN = ["1wk", "1d", "4h", "1h", "15min"]
 def toon_adviesmatrix_markdown(ticker, risk_aversion=2):
