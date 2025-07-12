@@ -251,7 +251,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         if nu.weekday() < 5:
             gewenste_dagen.append(nu.normalize())
         nu -= pd.Timedelta(days=1)
-    gewenste_dagen = gewenste_dagen[::-1]  # vrijdag bovenaan
+#    gewenste_dagen = gewenste_dagen[::-1]  # vrijdag bovenaan
 
     matrix = {}
 
