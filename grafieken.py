@@ -343,7 +343,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                         if specs["show_text"]:
                             tekst = ts.strftime("%H:%M")
                         else:
-                            ""
+                        ""
              #               tekst = str((tijdvakken.index(ts) % 4) + 1) if interval == "15m" else ""
                         waarden.append({"kleur": kleur, "tekst": tekst})
 
