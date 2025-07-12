@@ -334,7 +334,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     waarden.append({"kleur": kleur, "tekst": tekst})
                     count += 1
 
-                waarden = waarden[::-1]
+         #       waarden = waarden[::-1]
 
             matrix[interval] = waarden
 
