@@ -277,7 +277,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     if laatste_datum.weekday() < 5:
                         gewenste_dagen.append(laatste_datum)
                     laatste_datum -= pd.Timedelta(days=1)
-                gewenste_dagen = gewenste_dagen[::-1]  # vrijdag bovenaan
+   #             gewenste_dagen = gewenste_dagen[::-1]  # vrijdag bovenaan
 
                 for dag in gewenste_dagen:
                     advies = df.loc[df.index == dag, "Advies"].values
