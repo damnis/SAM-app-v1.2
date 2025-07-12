@@ -194,7 +194,7 @@ def determine_advice(df, threshold, risk_aversion=0):
             
             if stage_1 >= 1.5 and stage_2 >= 1.5 and stage_1 > 0 and stage_2 > 0 and stage_3 > 0 and stage_4 > 0 and stage_5 > 0 and trend_1 >= trend_2 and sam_1 > 0 and sam_2 > 0 and sam_1 >= sam_2 and trends_1 > trends_2 and trend_1 > 0:
                 df.at[df.index[i], "Advies"] = "Kopen"
-            elif sam_1 < 0 and sam_2 < 0 and trends_1 < trends_2:
+            elif stage_1 < 2 and sam_1 < 0 and sam_2 < 0 and trends_1 < trends_2:
                 df.at[df.index[i], "Advies"] = "Verkopen"
 
         df["Advies"] = df["Advies"].ffill()
