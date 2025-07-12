@@ -233,7 +233,7 @@ def plot_sat_debug(df, interval):
 
 
 # matrix
-def toon_adviesmatrix_html(ticker, risk_aversion=2):
+def toon_adviesmatrix_html_kut(ticker, risk_aversion=2):
     toon_matrix = st.toggle("📊 Toon gecombineerde Adviesmatrix (HTML)", value=False)
     if not toon_matrix:
         return
