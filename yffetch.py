@@ -2,7 +2,7 @@ import pandas as pd
 import requests
 import streamlit as st
 import pandas_market_calendars as mcal
-
+import yfinance as yf
 
 
 
