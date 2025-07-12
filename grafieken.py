@@ -291,7 +291,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                         tijdstempels.append(nu.floor(stap_grootte))
                     nu -= pd.Timedelta(stap_grootte)
 
-                tijdstempels = tijdstempels[::-1]  # laatste bovenaan
+     #           tijdstempels = tijdstempels[::-1]  # laatste bovenaan
 
                 for ts in tijdstempels:
                     df_match = df[(df.index >= ts) & (df.index < ts + pd.Timedelta(stap_grootte))]
