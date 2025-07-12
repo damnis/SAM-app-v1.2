@@ -236,7 +236,6 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     if not toon_matrix:
         return
 
-    # Intervalconfiguratie: vaste blokhoogte per dag
     INTERVALLEN = {
         "1wk": {"breedte": 10, "hoogte": 160, "label": "Week", "show_text": True},
         "1d": {"breedte": 10, "hoogte": 32, "label": "Dag", "show_text": True},
@@ -245,11 +244,11 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         "15m": {"breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
 
-    dagen = 5  # 5 handelsdagen tonen
+    dagen = 5  # Laatste 5 handelsdagen
     eind_datum = pd.Timestamp.now(tz="UTC").normalize()
     gewenste_dagen = []
     while len(gewenste_dagen) < dagen:
-        if eind_datum.weekday() < 5:  # maandag=0, vrijdag=4
+        if eind_datum.weekday() < 5:
             gewenste_dagen.append(eind_datum)
         eind_datum -= pd.Timedelta(days=1)
     gewenste_dagen = gewenste_dagen[::-1]  # vrijdag bovenaan
@@ -264,57 +263,47 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             df = calculate_sat(df)
             df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
             df = df.dropna(subset=["Advies"])
+            df.index = pd.to_datetime(df.index).tz_convert("UTC")
 
-            if interval == "1wk":
-                df.index = pd.to_datetime(df.index).normalize()
-                waarden = []
-                for dag in gewenste_dagen:
-                    week_start = dag - pd.Timedelta(days=dag.weekday())
-                    week_start = week_start.normalize()
-                    advies = df.loc[df.index == week_start, "Advies"].values
-                    kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                    tekst = week_start.strftime("%Y-%m-%d") if specs["show_text"] else ""
-                    waarden.append({"kleur": kleur, "tekst": tekst})
-                matrix[interval] = waarden
+            waarden = []
 
-            elif interval == "1d":
+            if interval in ["1wk", "1d"]:
                 df.index = df.index.normalize()
-                waarden = []
                 for dag in gewenste_dagen:
-                    advies = df.loc[df.index == dag, "Advies"].values
+                    if interval == "1wk":
+                        week_start = dag - pd.Timedelta(days=dag.weekday())
+                        week_start = week_start.normalize()
+                        advies = df.loc[df.index == week_start, "Advies"].values
+                        tekst = week_start.strftime("%Y-%m-%d")
+                    else:
+                        advies = df.loc[df.index == dag.normalize(), "Advies"].values
+                        tekst = dag.strftime("%a")[:2]
+
                     kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                    tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
-                    waarden.append({"kleur": kleur, "tekst": tekst})
-                matrix[interval] = waarden
+                    waarden.append({"kleur": kleur, "tekst": tekst if specs["show_text"] else ""})
 
             else:
-                waarden = []
-                stap = pd.Timedelta("4h") if interval == "4h" else pd.Timedelta("1h") if interval == "1h" else pd.Timedelta("15min")
-                stappen_per_dag = int(pd.Timedelta("1d") / stap)
                 for dag in gewenste_dagen:
-                    for i in range(stappen_per_dag):
-                        ts = dag + i * stap
-                        if df.index.tz is None:
-                            ts = ts.tz_localize("UTC")
-                        else:
-                            ts = ts.tz_convert("UTC")
-                      #  ts = ts.tz_localize("UTC") if df.index.tz else ts
-                        ts_volgende = ts + stap
-                        df_sub = df[(df.index >= ts) & (df.index < ts_volgende)]
-                        advies = df_sub["Advies"].values
-                        kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                        if specs["show_text"]:
-                            tekst = ts.strftime("%H:%M") if interval in ["4h", "1h"] else ""
-                        else:
-                            tekst = str(i % 4 + 1) if interval == "15m" else ""
-                        waarden.append({"kleur": kleur, "tekst": tekst})
-                matrix[interval] = waarden
+                    df_dag = df[df.index.date == dag.date()]
+                    if df_dag.empty:
+                        waarden.extend([{"kleur": "⬛", "tekst": ""}] * 6)  # bijv. 6 blokken per dag
+                        continue
+
+                    blokken = []
+                    for ts, row in df_dag.iterrows():
+                        advies = row["Advies"]
+                        kleur = "🟩" if advies == "Kopen" else "🟥" if advies == "Verkopen" else "⬛"
+                        tekst = ts.strftime("%H:%M") if specs["show_text"] else str(len(blokken) % 4 + 1) if interval == "15m" else ""
+                        blokken.append({"kleur": kleur, "tekst": tekst})
+                    waarden.extend(blokken)
+
+            matrix[interval] = waarden
 
         except Exception as e:
             st.warning(f"Fout bij {interval}: {e}")
-            matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * dagen
+            matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * 10
 
-    # HTML rendering
+    # HTML render
     html = "<div style='font-family: monospace;'>"
     html += "<div style='display: flex;'>"
 
@@ -322,6 +311,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         waarden = matrix[interval]
         blokken_html = "<div style='margin-right: 12px;'>"
         blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
+
         for entry in waarden:
             kleur = entry["kleur"]
             tekst = entry["tekst"]
@@ -344,6 +334,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     html += "</div></div>"
     st_html(html, height=600, scrolling=True)
     
+   
             
             
             
