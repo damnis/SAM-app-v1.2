@@ -233,6 +233,91 @@ def plot_sat_debug(df, interval):
 
 # matrix
 # Aanpasbare lijst van intervallen
+def toon_adviesmatrix_markdown_flex(ticker, risk_aversion=2):
+    toon_matrix = st.toggle("📊 Toon automatische Adviesmatrix (Flex-weergave)", value=False)
+    if not toon_matrix:
+        return
+
+    st.subheader("📊 Automatische Adviesmatrix")
+    st.markdown("De matrix toont adviezen per interval per dag (jongste boven). Visueel geschaald naar tijdsresolutie.")
+
+    interval_specs = {
+        "1wk": {"stappen": 3, "breedte": 16},     # 1 advies per week, herhalen per 5 dagen
+        "1d":  {"stappen": 15, "breedte": 8},      # 1 advies per dag
+        "4h":  {"stappen": 30, "breedte": 16},     # 2 per dag
+        "1h":  {"stappen": 120, "breedte": 32},    # 8 per dag
+        "15m": {"stappen": 480, "breedte": 64}     # 32 per dag
+    }
+
+    dagen = 15  # 3 weken
+    matrix = {interval: ["⬛"] * dagen for interval in interval_specs}
+    submatrix = {interval: ["⬛"] * interval_specs[interval]["stappen"] for interval in interval_specs}
+
+    for interval, specs in interval_specs.items():
+        stappen = specs["stappen"]
+        try:
+            # Data ophalen
+            if ":" in ticker or ticker.upper() in ["AEX", "AMX"]:
+                df = fetch_data_fmp(ticker, interval=interval)
+            else:
+                df = fetch_data(ticker, interval=interval)
+
+            df = df.dropna().copy()
+            if len(df) < stappen:
+                continue
+
+            df = calculate_sam(df)
+            df = calculate_sat(df)
+            df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
+
+            adviezen = df["Advies"].dropna().iloc[-stappen:].tolist()
+            adviezen = adviezen[::-1]  # Laatste eerst
+
+            kleuren = []
+            for advies in adviezen:
+                if advies == "Kopen":
+                    kleuren.append("🟩")
+                elif advies == "Verkopen":
+                    kleuren.append("🟥")
+                else:
+                    kleuren.append("🟨")
+            while len(kleuren) < stappen:
+                kleuren.append("⬛")
+
+            submatrix[interval] = kleuren
+
+        except Exception as e:
+            st.warning(f"Fout bij {interval}: {e}")
+            submatrix[interval] = ["⚠️"] * specs["stappen"]
+
+    # Weekadvies herhalen 5 dagen lang
+    if "1wk" in submatrix:
+        herhaald = []
+        for kleur in submatrix["1wk"]:
+            herhaald.extend([kleur] * 5)
+        matrix["1wk"] = herhaald[::-1][:dagen]
+
+    # Dagadvies (rechtstreeks)
+    matrix["1d"] = submatrix["1d"][::-1][:dagen]
+
+    # 4h, 1h, 15m -> splits in groepen per dag
+    for interval in ["4h", "1h", "15m"]:
+        kleuren = submatrix[interval][::-1]
+        per_dag = int(len(kleuren) / dagen)
+        matrix[interval] = [kleuren[i*per_dag:(i+1)*per_dag] for i in range(dagen)]
+
+    st.markdown("```")
+    for i in range(dagen):
+        regel = ""
+        for interval, specs in interval_specs.items():
+            blok = matrix[interval][i]
+            if isinstance(blok, list):
+                regel += "".join(blok)
+            else:
+                regel += blok * specs["breedte"]
+        st.markdown(regel)
+    st.markdown("```")
+
 # INTERVALLEN = ["1wk", "1d", "4h", "1h", "15min"]
 def toon_adviesmatrix_markdown(ticker, risk_aversion=2):
     toon_matrix = st.toggle("📊 Toon automatische Adviesmatrix (Markdown-versie)", value=False)
