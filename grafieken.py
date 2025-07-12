@@ -244,14 +244,14 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         "15m": {"breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
 
-    dagen = 5  # Laatste 5 handelsdagen
+    dagen = 5
     eind_datum = pd.Timestamp.now(tz="UTC").normalize()
     gewenste_dagen = []
     while len(gewenste_dagen) < dagen:
         if eind_datum.weekday() < 5:
             gewenste_dagen.append(eind_datum)
         eind_datum -= pd.Timedelta(days=1)
-    gewenste_dagen = gewenste_dagen[::-1]  # vrijdag bovenaan
+    gewenste_dagen = gewenste_dagen[::-1]
 
     matrix = {}
 
@@ -259,51 +259,60 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         try:
             df = fetch_data_fmp(ticker, interval=interval) if ":" in ticker or ticker.upper() in ["AEX", "AMX"] else fetch_data(ticker, interval=interval)
             df = df.dropna().copy()
+
+            if df.index.tz is None:
+                df.index = df.index.tz_localize("UTC")
+            else:
+                df.index = df.index.tz_convert("UTC")
+
             df = calculate_sam(df)
             df = calculate_sat(df)
             df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
             df = df.dropna(subset=["Advies"])
-            df.index = pd.to_datetime(df.index).tz_convert("UTC")
 
             waarden = []
 
-            if interval in ["1wk", "1d"]:
+            if interval == "1wk":
                 df.index = df.index.normalize()
                 for dag in gewenste_dagen:
-                    if interval == "1wk":
-                        week_start = dag - pd.Timedelta(days=dag.weekday())
-                        week_start = week_start.normalize()
-                        advies = df.loc[df.index == week_start, "Advies"].values
-                        tekst = week_start.strftime("%Y-%m-%d")
-                    else:
-                        advies = df.loc[df.index == dag.normalize(), "Advies"].values
-                        tekst = dag.strftime("%a")[:2]
+                    week_start = dag - pd.Timedelta(days=dag.weekday())
+                    week_start = week_start.normalize()
+                    advies = df.loc[df.index == week_start, "Advies"].values
+                    tekst = week_start.strftime("%Y-%m-%d")
+                    kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+                    waarden.append({"kleur": kleur, "tekst": tekst if specs["show_text"] else ""})
 
+            elif interval == "1d":
+                df.index = df.index.normalize()
+                for dag in gewenste_dagen:
+                    advies = df.loc[df.index == dag.normalize(), "Advies"].values
+                    tekst = dag.strftime("%a")[:2]
                     kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
                     waarden.append({"kleur": kleur, "tekst": tekst if specs["show_text"] else ""})
 
             else:
                 for dag in gewenste_dagen:
                     df_dag = df[df.index.date == dag.date()]
-                    if df_dag.empty:
-                        waarden.extend([{"kleur": "⬛", "tekst": ""}] * 6)  # bijv. 6 blokken per dag
-                        continue
-
                     blokken = []
                     for ts, row in df_dag.iterrows():
                         advies = row["Advies"]
                         kleur = "🟩" if advies == "Kopen" else "🟥" if advies == "Verkopen" else "⬛"
                         tekst = ts.strftime("%H:%M") if specs["show_text"] else str(len(blokken) % 4 + 1) if interval == "15m" else ""
                         blokken.append({"kleur": kleur, "tekst": tekst})
+                    # minimaal 1 blok per dag, anders dummy-blokken
+                    if not blokken:
+                        blokken = [{"kleur": "⬛", "tekst": ""}] * 6
                     waarden.extend(blokken)
 
+            if not waarden:
+                waarden = [{"kleur": "⬛", "tekst": ""}] * 5
             matrix[interval] = waarden
 
         except Exception as e:
             st.warning(f"Fout bij {interval}: {e}")
-            matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * 10
+            matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * 5
 
-    # HTML render
+    # HTML rendering
     html = "<div style='font-family: monospace;'>"
     html += "<div style='display: flex;'>"
 
@@ -311,7 +320,6 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         waarden = matrix[interval]
         blokken_html = "<div style='margin-right: 12px;'>"
         blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
-
         for entry in waarden:
             kleur = entry["kleur"]
             tekst = entry["tekst"]
@@ -333,9 +341,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
     html += "</div></div>"
     st_html(html, height=600, scrolling=True)
-    
-   
-            
+                        
             
             
     
