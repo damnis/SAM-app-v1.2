@@ -282,9 +282,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     tekst = datum.strftime("%Y-%m-%d")
                 elif interval == "1d":
                     tekst = datum.strftime("%a")[:2]
-                elif interval == "4h":
-                    tekst = datum.strftime("%H:%M")
-                elif interval == "1h":
+                elif interval in ["4h", "1h"]:
                     tekst = datum.strftime("%H:%M")
                 elif interval == "15m":
                     tekst = str(i % 4 + 1)
@@ -299,62 +297,55 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * specs["stappen"]
             st.warning(f"Fout bij {interval}: {e}")
 
-    # HTML-rendering
     html = "<div style='font-family: monospace;'>"
     html += "<div style='display: flex;'>"
 
     for interval, specs in INTERVALLEN.items():
         waarden = matrix[interval]
-        html += "<div style='margin-right: 12px;'>"
-        html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
+        blokken_html = "<div style='margin-right: 12px;'>"
+        blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
 
-        # ✅ Container per interval
-        if interval == "15m":
-            html += "<div style='display: flex; flex-wrap: wrap; width: 160px;'>"
-        else:
-            html += "<div style='display: flex; flex-direction: column;'>"
+        # Voor 15m wrapping, anders standaard kolom
+        wrap_style = "flex-wrap: wrap;" if interval == "15m" else "flex-direction: column;"
+        blokken_html += f"<div style='display: flex; {wrap_style} width: {specs['breedte'] * 8 + 4}px;'>"
 
         for entry in waarden:
             kleur = entry["kleur"]
             tekst = entry["tekst"]
-            achtergrond = "#2ecc71" if kleur == "🟩" else "#e74c3c" if kleur == "🟥" else "#bdc3c7"
+            bg_color = (
+                "#2ecc71" if kleur == "🟩"
+                else "#e74c3c" if kleur == "🟥"
+                else "#bdc3c7" if kleur == "🟨"
+                else "#34495e" if kleur == "⬛"
+                else "#f1c40f" if kleur == "⚠️"
+                else "#7f8c8d"
+            )
+            blok_html = f"""
+                <div style='
+                    width: {specs['breedte'] * 8}px;
+                    height: {specs['hoogte'] * 3}px;
+                    background-color: {bg_color};
+                    color: white;
+                    text-align: center;
+                    font-size: 11px;
+                    margin: 1px;
+                    border-radius: 3px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                '>{tekst}</div>
+            """
+            blokken_html += blok_html
 
-            if interval == "15m":
-                html += f"""
-                    <div style='
-                        flex: 0 0 25%;
-                        max-width: 25%;
-                        height: 20px;
-                        background-color: {achtergrond};
-                        color: white;
-                        text-align: center;
-                        font-size: 10px;
-                        margin: 1px;
-                        border-radius: 2px;
-                    '>{tekst}</div>
-                """
-            else:
-                html += f"""
-                    <div style='
-                        width: {specs['breedte'] * 8}px;
-                        height: {specs['hoogte'] * 3}px;
-                        background-color: {achtergrond};
-                        color: white;
-                        text-align: center;
-                        font-size: 11px;
-                        margin-bottom: 1px;
-                        border-radius: 3px;
-                    '>{tekst}</div>
-                """
+        blokken_html += "</div></div>"
+        html += blokken_html
 
-        html += "</div>"  # sluit div voor waarden
-        html += "</div>"  # sluit div voor kolom
-
-    html += "</div></div>"  # sluit alle wrappers
+    html += "</div></div>"
 
     st.markdown(html, unsafe_allow_html=True)
     
-            
+
+        
     
         
 
