@@ -3,6 +3,10 @@ import numpy as np
 
 
 
+# ✅ Weighted Moving Average functie
+def weighted_moving_average(series, window):
+    weights = np.arange(1, window + 1)
+    return series.rolling(window).apply(lambda x: np.dot(x, weights) / weights.sum(), raw=True)
 
 
 def determine_advice(df, threshold, risk_aversion=0):
