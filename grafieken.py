@@ -230,9 +230,103 @@ def plot_sat_debug(df, interval):
     st.pyplot(fig)
 
 
+# matrix based on fixed calendar structure
+def toon_adviesmatrix_html(ticker, risk_aversion=2):
+    toon_matrix = st.toggle("📊 Toon gecombineerde Adviesmatrix (HTML)", value=False)
+    if not toon_matrix:
+        return
+
+    from modules import fetch_data, fetch_data_fmp, calculate_sam, calculate_sat, determine_advice
+
+    INTERVALLEN = {
+        "1wk": {"tijdstippen": [time(17, 0)], "breedte": 10, "hoogte": 160, "label": "Week", "show_text": True},
+        "1d": {"tijdstippen": [time(17, 0)], "breedte": 10, "hoogte": 32, "label": "Dag", "show_text": True},
+        "4h": {"tijdstippen": [time(9, 0), time(13, 0), time(17, 0)], "breedte": 10, "hoogte": 16, "label": "4u", "show_text": True},
+        "1h": {"tijdstippen": [time(h, 0) for h in range(9, 17)], "breedte": 5, "hoogte": 4, "label": "1u", "show_text": True},
+        "15m": {"tijdstippen": [time(h, m) for h in range(9, 17) for m in [0, 15, 30, 45]], "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
+    }
+
+    matrix = {}
+    vandaag = datetime.today().date()
+    werkdagen = []
+    dag = vandaag
+    while len(werkdagen) < 15:
+        if dag.weekday() < 5:
+            werkdagen.append(dag)
+        dag -= timedelta(days=1)
+    werkdagen.reverse()  # van oud naar jong
+
+    for interval, specs in INTERVALLEN.items():
+        tijdstippen = specs["tijdstippen"]
+        blokken = []
+
+        for dag in werkdagen:
+            for tijd in tijdstippen:
+                ts = datetime.combine(dag, tijd)
+                blokken.append({"ts": ts, "kleur": "⬛", "tekst": ts.strftime("%H:%M") if interval != "1d" and interval != "1wk" else dag.strftime("%a")[:2]})
+
+        try:
+            if ":" in ticker or ticker.upper() in ["AEX", "AMX"]:
+                df = fetch_data_fmp(ticker, interval=interval)
+            else:
+                df = fetch_data(ticker, interval=interval)
+
+            df = df.dropna().copy()
+            df = calculate_sam(df)
+            df = calculate_sat(df)
+            df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
+            df.index = df.index.tz_localize(None) if df.index.tz else df.index
+
+            for blok in blokken:
+                rij = df[df.index == blok["ts"]]
+                if not rij.empty:
+                    advies = rij["Advies"].values[0]
+                    kleur = "🟩" if advies == "Kopen" else "🟥" if advies == "Verkopen" else "🟨"
+                    tekst = blok["tekst"] if specs["show_text"] else ""
+                    blok.update({"kleur": kleur, "tekst": tekst})
+
+        except Exception as e:
+            st.warning(f"Fout bij {interval}: {e}")
+
+        blokken.reverse()  # jongste bovenaan
+        matrix[interval] = blokken
+
+    # HTML-rendering
+    html = "<div style='font-family: monospace;'>"
+    html += "<div style='display: flex;'>"
+
+    for interval, specs in INTERVALLEN.items():
+        waarden = matrix[interval]
+        blokken_html = "<div style='margin-right: 12px;'>"
+        blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
+
+        for entry in waarden:
+            kleur = entry["kleur"]
+            tekst = entry["tekst"]
+            blok_html = f"""
+                <div style='
+                    width: {specs['breedte'] * 8}px;
+                    height: {specs['hoogte'] * 3}px;
+                    background-color: {"#2ecc71" if kleur=="🟩" else "#e74c3c" if kleur=="🟥" else "#bdc3c7"};
+                    color: white;
+                    text-align: center;
+                    font-size: 11px;
+                    margin-bottom: 1px;
+                    border-radius: 3px;
+                '>{tekst}</div>
+            """
+            blokken_html += blok_html
+
+        blokken_html += "</div>"
+        html += blokken_html
+
+    html += "</div></div>"
+    st.markdown(html, unsafe_allow_html=True)
+
+
 
 # matrix old working
-def toon_adviesmatrix_html(ticker, risk_aversion=2):
+def toon_adviesmatrix_html_old(ticker, risk_aversion=2):
     toon_matrix = st.toggle("📊 Toon gecombineerde Adviesmatrix (HTML)", value=False)
     if not toon_matrix:
         return
