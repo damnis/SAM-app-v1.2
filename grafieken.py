@@ -236,7 +236,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     if not toon_matrix:
         return
 
-    import calendar
+#    import calendar
 
     INTERVALLEN = {  
         "1wk": {"stappen": 3, "breedte": 10, "hoogte": 160, "label": "Week", "show_text": True},  
@@ -248,7 +248,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
     matrix = {}  
 
-    for interval, specs in INTERVALLEN.items():  
+    for interval, specs in INTERVALLEN.items():
         stappen = specs["stappen"]  
         try:  
             if ":" in ticker or ticker.upper() in ["AEX", "AMX"]:  
@@ -270,8 +270,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             df = df[::-1]  # laatste bovenaan  
 
             waarden = []  
-            for i in range(stappen):  
-                 if i >= len(df):  
+            for i in range(stappen):
+                if i >= len(df):
                     waarden.append({"kleur": "⬛", "tekst": ""})  
                     continue  
                 advies = df.iloc[i]["Advies"]  
