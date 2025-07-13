@@ -283,6 +283,11 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
     for interval, specs in intervallen_gekozen.items():
         waarden = matrix.get(interval, [])
+        
+        # 🔁 Alleen voor '1wk' en '1d' de volgorde omdraaien (oud → nieuw)
+        if interval in ["1wk", "1d"]:
+            waarden = waarden[::-1]
+
         html += f"<div style='margin-bottom: 8px;'>"
         html += f"<div style='font-weight: bold; color: white; margin-bottom: 4px;'>{interval}</div>"
         html += "<div style='display: flex;'>"
