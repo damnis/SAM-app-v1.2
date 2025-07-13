@@ -284,7 +284,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     for interval, specs in intervallen_gekozen.items():
         waarden = matrix.get(interval, [])
         
-        # 🔁 Alleen voor '1wk' en '1d' de volgorde omdraaien (oud → nieuw)
+        # 🔁 Alleen voor '1wk' en '1d' de volgorde omdraaien (oud → nieuw) LATEN STAAN SOMS NODIG 
 #        if interval in ["1wk", "1d"]:
    #         waarden = waarden[::-1]
 
@@ -312,12 +312,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     flex-shrink: 0;
                 '>{tekst}</div>
             """
-
-            
-                        
-                       
-            
-            
+          
             html += blok_html
         html += "</div></div>"
 
