@@ -372,6 +372,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
   #          st.warning(f"\u26A0\ufe0f Fout bij interval {interval}: {e}")
    #         matrix[interval] = [{"kleur": "\u26A0\ufe0f", "tekst": ""} for _ in range(specs.get("stappen", 10))]
 
+    st.write(f"Interval: {interval} | kleur: {kleur} | tekst: {tekst}")
+    
     # HTML rendering
     html = "<div style='font-family: monospace;'>"
     html += "<div style='display: flex;'>"
