@@ -297,7 +297,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             achtergrondkleur = kleurmap.get(kleur, "#95a5a6")
             blok_html = f"""
                 <div style='
-                    width: {specs['breedte'] * 6}px;
+                    width: {specs['breedte'] * 8}px;
                     height: {specs['hoogte'] * 3}px;
                     background-color: {achtergrondkleur};
                     color: white;
