@@ -21,10 +21,10 @@ from streamlit.components.v1 import html as st_html
 # matrix based on fixed calendar structure
 
 def genereer_adviesmatrix(ticker, risk_aversion=2):
-    toon_matrix = st.toggle("🟩🟥 Toon Adviesmatrix (HTML)", value=False)
+  #  toon_matrix = st.toggle("🟩🟥 Toon Adviesmatrix (HTML)", value=False)
 #    toon_matrix = st.toggle("📊 Toon Adviesmatrix (HTML)", value=False)
-    if not toon_matrix:
-        return
+#    if not toon_matrix:
+  #      return
 
     INTERVALLEN = {
         "1wk": {"stappen": 3, "breedte": 10, "hoogte": 240, "label": "Week", "show_text": True},
@@ -152,6 +152,32 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
             st.warning(f"⚠️ Fout bij interval {interval}: {e}")
             matrix[interval] = [{"kleur": "⚠️", "tekst": ""} for _ in range(int(stappen))]
 
+
+
+
+
+
+
+
+#           matrix[interval] = [{"kleur": "⚠️", "tekst": ""} for _ in range(specs.get("stappen", 10))]
+ #       except Exception as e:
+  #          st.warning(f"\u26A0\ufe0f Fout bij interval {interval}: {e}")
+   #         matrix[interval] = [{"kleur": "\u26A0\ufe0f", "tekst": ""} for _ in range(specs.get("stappen", 10))]
+
+#    st.write(f"Interval: {interval} | kleur: {kleur} | tekst: {tekst}")
+    # Debug: controleer alle intervallen en adviesresultaten
+#    st.write("🔍 Adviesmatrix Debug Output")
+
+#    for interval, waarden_lijst in matrix.items():
+ #       st.write(f"📈 Interval: {interval} | Aantal blokken: {len(waarden_lijst)}")
+
+ #       for i, entry in enumerate(waarden_lijst[:5]):  # Max 5 blokjes per interval voor overzicht
+  #          kleur = entry["kleur"]
+    #        tekst = entry["tekst"]
+   #         st.write(f"  Blok {i+1}: kleur = {kleur} | tekst = {tekst}")
+
+  #      if len(waarden_lijst) == 0:
+  #          st.warning(f"⚠️ Geen waarden in matrix voor interval {interval}!")
 
 
 
