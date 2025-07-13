@@ -5,7 +5,7 @@ from datafund import (
     get_profile, get_key_metrics, get_earning_calendar,
     get_dividend_history, get_quarterly_eps, get_eps_forecast
 )
-from utils import format_value  # hulpfunctie voor formatting
+#from utils import format_value  # hulpfunctie voor formatting
 
 
 
