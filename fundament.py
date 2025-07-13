@@ -105,7 +105,8 @@ def toon_datums(earnings, dividends):
 
 
 # fundamentals voor main
-def toon_fundamentals(ticker): st.subheader("📊 Fundamentals")
+def toon_fundamentals(ticker): 
+    st.subheader("📊 Fundamentals")
 
 if not ticker or not isinstance(ticker, str):
     st.warning("⚠️ Geen geldige ticker opgegeven.")
