@@ -29,7 +29,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
 
 
     INTERVALLEN = {
-        "1wk": {"stappen": 3, "breedte": 223, "hoogte": 20, "label": "Week", "show_text": True},
+        "1wk": {"stappen": 3, "breedte": 223.5, "hoogte": 20, "label": "Week", "show_text": True},
         "1d": {"stappen": 15, "breedte": 44.58, "hoogte": 20, "label": "Dag", "show_text": True},
         "4h": {"stappen": 45, "breedte": 14.76, "hoogte": 10, "label": "4u", "show_text": True},
         "1h": {"stappen": 135, "breedte": 4.825, "hoogte": 10, "label": "1u", "show_text": True},
