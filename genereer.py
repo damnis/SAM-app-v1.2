@@ -63,7 +63,8 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
     for interval, specs in intervallen_gekozen.items():
         try:
             stappen = specs["stappen"]
-            df = fetch_data_fmp(ticker, interval=interval) if ":" in ticker or ticker.upper() in ["AEX", "AMX"] else fetch_data(ticker, interval=interval)
+            df = fetch_data(ticker, interval=interval) if not (":" in ticker or ticker.upper() in ["AEX", "AMX"]) else fetch_data_fmp(ticker, interval=interval)
+ #           df = fetch_data_fmp(ticker, interval=interval) if ":" in ticker or ticker.upper() in ["AEX", "AMX"] else fetch_data(ticker, interval=interval)
             df = df.dropna().copy()
             df = calculate_sam(df)
             df = calculate_sat(df)
