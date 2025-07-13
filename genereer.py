@@ -154,8 +154,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
             matrix[interval] = [{"kleur": "⚠️", "tekst": ""} for _ in range(int(stappen))]
 
 
-
-return matrix, intervallen_gekozen
+    return matrix, intervallen_gekozen
 
 
 
