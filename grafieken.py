@@ -249,7 +249,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     ticker_lower = ticker.lower()
 
     eu_suffixes = [
-        ".as", ".be", ".br", ".pa", ".mc", ".mi", ".de", ".l", ".es", ".pl", ".he",
+        ".as", ".br", ".pa", ".mc", ".mi", ".de", ".l", ".es", ".pl", ".he",
         ".fi", ".at", ".co", ".sw", ".vi", ".ol", ".st", ".ir", ".ls"
     ]
 
