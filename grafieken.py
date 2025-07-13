@@ -309,10 +309,12 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    flex-shrink: 0;
                 '>{tekst}</div>
             """
 
             
+                        
                        
             
             
