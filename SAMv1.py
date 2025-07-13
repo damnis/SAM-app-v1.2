@@ -26,7 +26,7 @@ from genereer import genereer_adviesmatrix
 from grafieken import toon_adviesmatrix_html
 from sam_tabel import toon_sam_tabel 
 # fundamentals 
-from fundamenteel import (
+from fundamental import (
     toon_profiel_en_kerninfo, toon_omzet_winst_eps, toon_ratios,
     toon_datums
 )
