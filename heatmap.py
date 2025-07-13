@@ -33,6 +33,10 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
                     advies = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
 
                 # DEBUG/test override:
+      #          if isinstance(ticker, str) and ticker.strip().upper().startswith("A"):
+      #              advies = "Kopen"
+      #          else:
+      #              advies = "Verkopen"
              #       advies = "Kopen" if ticker.startswith("A") else "Verkopen"
 
             except Exception as e:
