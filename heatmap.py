@@ -14,7 +14,7 @@ kleurmap = {
 }
 
 @st.cache_data(ttl=900)
-def genereer_sector_heatmap(interval):
+def genereer_sector_heatmap(interval, risk_aversion=risk_aversion):
     html = "<div style='font-family: monospace;'>"
 
     for sector, tickers in sector_tickers.items():
