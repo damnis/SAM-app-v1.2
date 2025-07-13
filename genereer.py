@@ -44,7 +44,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
         "15m": {"stappen": 540, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
 
-     INTERVALLEN_CRYPTO = {
+      INTERVALLEN_CRYPTO = {
         "1wk": {"stappen": 3, "breedte": 845, "hoogte": 20, "label": "Week", "show_text": True},
         "1d": {"stappen": 21, "breedte": 121, "hoogte": 20, "label": "Dag", "show_text": True},
         "4h": {"stappen": 126, "breedte": 20, "hoogte": 10, "label": "4u", "show_text": True},
