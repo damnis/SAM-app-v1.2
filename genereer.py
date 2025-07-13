@@ -179,7 +179,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
                         df_sub = df[(df.index >= ts) & (df.index < ts + stap)]
                         advies = df_sub["Advies"].values
                         kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                        tekst = ts.strftime("%H:%M") if specs["show_text"] else ""
+                        tekst = ts.strftime("H:%M") if specs["show_text"] else ""
                         tijdvak_entries.append((ts, {"kleur": kleur, "tekst": tekst}))
 
                     tijdvak_entries = sorted(tijdvak_entries, key=lambda x: x[0], reverse=True)
