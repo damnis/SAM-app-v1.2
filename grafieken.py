@@ -288,23 +288,63 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             waarden = []
 
             if interval == "1wk":
-                laatste_maandag = df.index.max().normalize() - pd.Timedelta(days=df.index.max().weekday())
-                weekmomenten = [laatste_maandag - pd.Timedelta(weeks=i) for i in range(stappen)]
-                weekmomenten = sorted(weekmomenten, reverse=True)
+                if markt == "crypto":
+                    weekmomenten = sorted(df.index.normalize().unique(), reverse=True)
+                    weekmomenten = [d for d in weekmomenten if d.weekday() == 0]  # alleen maandagen
+                    weekmomenten = weekmomenten[:stappen]
 
-                df_weeks = df.index.isocalendar()
-                df["week"] = df_weeks.week
-                df["jaar"] = df_weeks.year
+                    df_weeks = df.index.isocalendar()
+                    df["week"] = df_weeks.week
+                    df["jaar"] = df_weeks.year
 
-                for week_start in weekmomenten:
-                    week_nr = week_start.isocalendar().week
-                    jaar = week_start.isocalendar().year
-                    match = df[(df["week"] == week_nr) & (df["jaar"] == jaar)]
+                    for week_start in weekmomenten:
+                        week_nr = week_start.isocalendar().week
+                        jaar = week_start.isocalendar().year
+                        match = df[(df["week"] == week_nr) & (df["jaar"] == jaar)]
 
-                    advies = match["Advies"].values
-                    kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                    tekst = week_start.strftime("%Y-%m-%d") if specs["show_text"] else ""
-                    waarden.append({"kleur": kleur, "tekst": tekst})
+                        advies = match["Advies"].values
+                        kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+                        tekst = week_start.strftime("%Y-%m-%d") if specs["show_text"] else ""
+                        waarden.append({"kleur": kleur, "tekst": tekst})
+    
+                else:
+                    laatste_maandag = df.index.max().normalize() - pd.Timedelta(days=df.index.max().weekday())
+                    weekmomenten = [laatste_maandag - pd.Timedelta(weeks=i) for i in range(stappen)]
+                    weekmomenten = sorted(weekmomenten, reverse=True)
+
+                    df_weeks = df.index.isocalendar()
+                    df["week"] = df_weeks.week
+                    df["jaar"] = df_weeks.year
+
+                    for week_start in weekmomenten:
+                        week_nr = week_start.isocalendar().week
+                        jaar = week_start.isocalendar().year
+                        match = df[(df["week"] == week_nr) & (df["jaar"] == jaar)]
+
+                        advies = match["Advies"].values
+                        kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+                        tekst = week_start.strftime("%Y-%m-%d") if specs["show_text"] else ""
+                        waarden.append({"kleur": kleur, "tekst": tekst})
+            
+
+   #         if interval == "1wk":
+    #            laatste_maandag = df.index.max().normalize() - pd.Timedelta(days=df.index.max().weekday())
+     #           weekmomenten = [laatste_maandag - pd.Timedelta(weeks=i) for i in range(stappen)]
+     #           weekmomenten = sorted(weekmomenten, reverse=True)
+
+      #          df_weeks = df.index.isocalendar()
+      #          df["week"] = df_weeks.week
+    #            df["jaar"] = df_weeks.year
+
+       #         for week_start in weekmomenten:
+      #              week_nr = week_start.isocalendar().week
+     #               jaar = week_start.isocalendar().year
+      #              match = df[(df["week"] == week_nr) & (df["jaar"] == jaar)]
+
+     #               advies = match["Advies"].values
+      #              kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+       #             tekst = week_start.strftime("%Y-%m-%d") if specs["show_text"] else ""
+       #             waarden.append({"kleur": kleur, "tekst": tekst})
 
             elif interval == "1d":
                 laatste_datum = df.index.max().normalize()
