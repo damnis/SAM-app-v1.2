@@ -141,7 +141,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
                 dagen = sorted(dagen, reverse=True)
 
                 for dag in dagen:
-                    start_uur = 8.5 if markt == "eur" else 14.5 if markt == "us" else 0
+                    start_uur = 8.75 if markt == "eur" else 14.5 if markt == "us" else 0
                     start_uur_uren = int(start_uur)
                     start_uur_minuten = int((start_uur - start_uur_uren) * 60)
                     tijdvakken = []
