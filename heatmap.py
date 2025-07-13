@@ -1,5 +1,3 @@
-# === heatmap.py ===
-
 import streamlit as st
 from sectorticker import sector_tickers
 from yffetch import fetch_data_cached
@@ -8,7 +6,11 @@ from sat_indicator import calculate_sat
 from adviezen import determine_advice
 
 # Kleuren voor de heatmap
-kleurmap = {"Kopen": "#2ecc71", "Verkopen": "#e74c3c", "Neutraal": "#95a5a6"}
+kleurmap = {
+    "Kopen": "#2ecc71",
+    "Verkopen": "#e74c3c",
+    "Neutraal": "#95a5a6"
+}
 
 @st.cache_data(ttl=900)
 def genereer_sector_heatmap(interval):
@@ -16,23 +18,22 @@ def genereer_sector_heatmap(interval):
 
     for sector, tickers in sector_tickers.items():
         html += f"<h4 style='color: white;'>{sector}</h4>"
-        html += "<div style='display: flex; flex-wrap: wrap; max-width: 540px;'>"
+        html += "<div style='display: flex; flex-wrap: wrap; max-width: 600px;'>"
 
-        for ticker in tickers[:20]:
+        for ticker in tickers[:20]:  # max 20 per sector
             try:
                 df = fetch_data_cached(ticker, interval=interval)
-                df = df.dropna()
-                if df.empty:
+                if df is None or df.empty or len(df) < 50:
                     advies = "Neutraal"
                 else:
-                    # SAM en SAT berekenen vóór advies
                     df = calculate_sam(df)
                     df = calculate_sat(df)
-                    st.write(f"{ticker}:", df.tail())  # ⬅️ tijdelijk toevoegen
+                 #   advies = determine_advice(df)[-1]
 
+                # DEBUG/test override:
                     advies = "Kopen" if ticker.startswith("A") else "Verkopen"
-    #                advies = determine_advice(df)[-1]
-            except:
+
+            except Exception as e:
                 advies = "Neutraal"
 
             kleur = kleurmap.get(advies, "#7f8c8d")
@@ -50,6 +51,7 @@ def genereer_sector_heatmap(interval):
                     align-items: center;
                     border-radius: 6px;
                     font-size: 11px;
+                    text-align: center;
                 '>
                     <div><b>{ticker}</b></div>
                     <div>{advies}</div>
@@ -64,7 +66,7 @@ def genereer_sector_heatmap(interval):
 def toon_sector_heatmap(interval):
     st.markdown("### 🔥 Sector Heatmap")
     html = genereer_sector_heatmap(interval)
-    st.components.v1.html(html, height=1200, scrolling=True)
+    st.components.v1.html(html, height=1400, scrolling=True)
 
 
 
@@ -84,3 +86,5 @@ def toon_sector_heatmap(interval):
 
 
 # w
+
+
