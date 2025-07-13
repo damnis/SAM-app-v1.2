@@ -25,6 +25,11 @@ from grafieken import plot_koersgrafiek, plot_sam_trend, plot_sat_debug, bepaal_
 from genereer import genereer_adviesmatrix 
 from grafieken import toon_adviesmatrix_html
 from sam_tabel import toon_sam_tabel 
+# fundamentals 
+from fundamenteel import (
+    toon_profiel_en_kerninfo, toon_omzet_winst_eps, toon_ratios,
+    toon_datums
+)
 # Backtestfunctie 
 from backtest import backtest_functie, bereken_sam_rendement
 # trading bot
@@ -338,6 +343,19 @@ plot_sat_debug(df, interval)
 # later in je code, waar de tabel moet komen
 toon_sam_tabel(df, selected_tab, signaalkeuze)
 #st.subheader("Laatste signalen en rendement")
+
+# Bedrijfsprofiel fmp (fundamental):
+profile = get_profile(ticker)
+key_metrics = get_key_metrics(ticker)
+income_data = get_income_statement(ticker)
+ratio_data = get_ratios(ticker)
+earnings = get_earning_calendar(ticker)
+dividends = get_dividend_history(ticker)
+
+toon_profiel_en_kerninfo(profile, key_metrics, st)
+toon_omzet_winst_eps(income_data, st)
+toon_ratios(ratio_data, st)
+toon_datums(earnings, dividends, st)
 
 
 #st.write("DEBUG signaalkeuze boven Backtest:", signaalkeuze)
