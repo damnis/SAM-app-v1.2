@@ -52,8 +52,6 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
 
     if ticker.upper() in crypto_tickers or ticker_lower.endswith("-usd"):
         markt = "crypto"
-#    if "btc-" or "-usd" in ticker_lower or ticker_lower.startswith("btc-") or ticker_lower.startswith("eth-"):
-#        markt = "crypto"
     elif any(suffix in ticker_lower for suffix in eu_suffixes) or ticker.upper() in ["AEX", "AMX"]:
         markt = "eur"
     else:
@@ -75,9 +73,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
                 df.index = pd.to_datetime(df.index).tz_localize("UTC").tz_convert("Europe/Amsterdam")
             else:
                 df.index = pd.to_datetime(df.index).tz_convert("Europe/Amsterdam")
-     #       df.index = pd.to_datetime(df.index).tz_localize("UTC").tz_convert("Europe/Amsterdam")
-   #         df.index = pd.to_datetime(df.index).tz_localize(None)
-
+     
             waarden = []
 
             if interval == "1wk":
@@ -179,42 +175,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
                     tijdvak_entries = sorted(tijdvak_entries, key=lambda x: x[0], reverse=True)
                     waarden.extend([entry for _, entry in tijdvak_entries])
     
-    #            for dag in dagen:
-     #               start_uur = 8.5 if markt == "eur" else 13.5 if markt == "us" else 0
-     #               start_uur_uren = int(start_uur)
-     #               start_uur_minuten = int((start_uur - start_uur_uren) * 60)
-     #               start_uur = 8 if markt == "eur" else 14 if markt == "us" else 0
-     #               tijdvakken = []
-     #               eind_uur = 24 if markt == "crypto" else (12 if interval == "4h" else 9)
-
-     #               if interval == "4h":
-   #                     tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + eind_uur, 4)]
-     #               elif interval == "1h":
-     #                   tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + eind_uur)]
-     #               elif interval == "15m":
-     #                   tijdvakken = []
-    #                    stappen = int(eind_uur * 60 / 15)  # aantal kwartieren
-    #                    for i in range(stappen):
-     #                       tijdstip = dag + pd.Timedelta(hours=start_uur + i * 0.25)
-      #                      tijdvakken.append(tijdstip)
-        
-           #         elif interval == "15m":
-          #              for uur in range(start_uur, start_uur + eind_uur):
-           #                 for kwart in range(0, 60, 15):
-             #                   tijdstip = dag + pd.Timedelta(hours=uur, minutes=kwart)
-            #                    tijdvakken.append(tijdstip)
-
-   #                 tijdvak_entries = []
-    #                for ts in tijdvakken:
-     #                   df_sub = df[(df.index >= ts) & (df.index < ts + stap)]
-       #                 advies = df_sub["Advies"].values
-       #                 kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-       #                 tekst = ts.strftime("%H:%M") if specs["show_text"] else ""
-        #                tijdvak_entries.append((ts, {"kleur": kleur, "tekst": tekst}))
-
-        #            tijdvak_entries = sorted(tijdvak_entries, key=lambda x: x[0], reverse=True)
-        #            waarden.extend([entry for _, entry in tijdvak_entries])
-
+    
             matrix[interval] = waarden
 
         except Exception as e:
