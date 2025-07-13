@@ -301,7 +301,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     jaar = week_start.isocalendar().year
                     match = df[(df["week"] == week_nr) & (df["jaar"] == jaar)]
                     advies = match["Advies"].values
-                    kleur = "\U0001F7E9" if "Kopen" in advies else "\U0001F7E5" if "Verkopen" in advies else "⬛"
+                    kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+                #    kleur = "\U0001F7E9" if "Kopen" in advies else "\U0001F7E5" if "Verkopen" in advies else "⬛"
                     tekst = week_start.strftime("%Y-%m-%d") if specs["show_text"] else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
 
@@ -316,7 +317,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
                 for dag in dagen:
                     advies = df.loc[df.index.normalize() == dag, "Advies"].values
-                    kleur = "\U0001F7E9" if "Kopen" in advies else "\U0001F7E5" if "Verkopen" in advies else "⬛"
+                    kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+                #    kleur = "\U0001F7E9" if "Kopen" in advies else "\U0001F7E5" if "Verkopen" in advies else "⬛"
                     tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
 
@@ -351,7 +353,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     for ts in tijdvakken:
                         df_sub = df[(df.index >= ts) & (df.index < ts + stap)]
                         advies = df_sub["Advies"].values
-                        kleur = "\U0001F7E9" if "Kopen" in advies else "\U0001F7E5" if "Verkopen" in advies else "⬛"
+                        kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+                #        kleur = "\U0001F7E9" if "Kopen" in advies else "\U0001F7E5" if "Verkopen" in advies else "⬛"
                         tekst = ts.strftime("%H:%M") if specs["show_text"] else ""
                         tijdvak_entries.append((ts, {"kleur": kleur, "tekst": tekst}))
 
@@ -361,8 +364,13 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             matrix[interval] = waarden
 
         except Exception as e:
-            st.warning(f"\u26A0\ufe0f Fout bij interval {interval}: {e}")
-            matrix[interval] = [{"kleur": "\u26A0\ufe0f", "tekst": ""} for _ in range(specs.get("stappen", 10))]
+        st.warning(f"⚠️ Fout bij interval {interval}: {e}")
+ #       matrix[interval] = [{"kleur": "⚠️", "tekst": ""} for _ in range(int(stappen))]
+
+        matrix[interval] = [{"kleur": "⚠️", "tekst": ""} for _ in range(specs.get("stappen", 10))]
+ #       except Exception as e:
+  #          st.warning(f"\u26A0\ufe0f Fout bij interval {interval}: {e}")
+   #         matrix[interval] = [{"kleur": "\u26A0\ufe0f", "tekst": ""} for _ in range(specs.get("stappen", 10))]
 
     # HTML rendering
     html = "<div style='font-family: monospace;'>"
