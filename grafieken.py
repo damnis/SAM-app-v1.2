@@ -347,7 +347,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     tijdvak_entries = sorted(tijdvak_entries, key=lambda x: x[0], reverse=True)
                     waarden.extend([entry for _, entry in tijdvak_entries])
 
-                matrix[interval] = waarden[:stappen]
+                matrix[interval] = waarden
 
         except Exception as e:
             st.warning(f"Fout bij {interval}: {e}")
