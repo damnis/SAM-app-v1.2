@@ -25,6 +25,7 @@ from grafieken import plot_koersgrafiek, plot_sam_trend, plot_sat_debug, bepaal_
 from genereer import genereer_adviesmatrix 
 from grafieken import toon_adviesmatrix_html
 from sam_tabel import toon_sam_tabel 
+from heatmap import toon_sector_heatmap
 # --- Fundamentele data ophalen en tonen ---
 from datafund import get_income_statement, get_ratios
 from datafund import (
