@@ -1,11 +1,9 @@
 # === heatmap.py ===
 
 import streamlit as st
-import pandas as pd
 from sectorticker import sector_tickers
 from adviezen import determine_advice
 from yffetch import fetch_data_cached
-
 
 # Kleuren voor de heatmap
 kleurmap = {"Kopen": "#2ecc71", "Verkopen": "#e74c3c", "Neutraal": "#95a5a6"}
@@ -16,16 +14,16 @@ def genereer_sector_heatmap(interval):
 
     for sector, tickers in sector_tickers.items():
         html += f"<h4 style='color: white;'>{sector}</h4>"
-        html += "<div style='display: flex; flex-wrap: wrap;'>"
+        html += "<div style='display: flex; flex-wrap: wrap; max-width: 540px;'>"
 
-        for ticker in tickers:
+        for ticker in tickers[:20]:  # maximaal 20 tickers per sector
             try:
                 df = fetch_data_cached(ticker, interval=interval)
                 df = df.dropna()
                 if df.empty:
                     advies = "Neutraal"
                 else:
-                    advies = determine_advice(df)[-1]  # Laatste advies
+                    advies = determine_advice(df)[-1]
             except:
                 advies = "Neutraal"
 
@@ -59,10 +57,6 @@ def toon_sector_heatmap(interval):
     st.markdown("### 🔥 Sector Heatmap")
     html = genereer_sector_heatmap(interval)
     st.components.v1.html(html, height=1200, scrolling=True)
-
-
-
-
 
 
 
