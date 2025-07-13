@@ -372,7 +372,21 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
   #          st.warning(f"\u26A0\ufe0f Fout bij interval {interval}: {e}")
    #         matrix[interval] = [{"kleur": "\u26A0\ufe0f", "tekst": ""} for _ in range(specs.get("stappen", 10))]
 
-    st.write(f"Interval: {interval} | kleur: {kleur} | tekst: {tekst}")
+#    st.write(f"Interval: {interval} | kleur: {kleur} | tekst: {tekst}")
+    # Debug: controleer alle intervallen en adviesresultaten
+    st.write("🔍 Adviesmatrix Debug Output")
+
+    for interval, waarden_lijst in matrix.items():
+        st.write(f"📈 Interval: {interval} | Aantal blokken: {len(waarden_lijst)}")
+
+        for i, entry in enumerate(waarden_lijst[:5]):  # Max 5 blokjes per interval voor overzicht
+            kleur = entry["kleur"]
+            tekst = entry["tekst"]
+            st.write(f"  Blok {i+1}: kleur = {kleur} | tekst = {tekst}")
+
+        if len(waarden_lijst) == 0:
+            st.warning(f"⚠️ Geen waarden in matrix voor interval {interval}!")
+        
     
     # HTML rendering
     html = "<div style='font-family: monospace;'>"
