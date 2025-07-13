@@ -231,6 +231,7 @@ def plot_sat_debug(df, interval):
 
 
 # matrix based on fixed calendar structure
+# matrix based on fixed calendar structure
 def toon_adviesmatrix_html(ticker, risk_aversion=2):
     toon_matrix = st.toggle("📊 Toon Adviesmatrix (HTML)", value=False)
     if not toon_matrix:
@@ -347,13 +348,13 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     tijdvak_entries = sorted(tijdvak_entries, key=lambda x: x[0], reverse=True)
                     waarden.extend([entry for _, entry in tijdvak_entries])
 
-                matrix[interval] = waarden
+            matrix[interval] = waarden
 
         except Exception as e:
-            st.warning(f"Fout bij {interval}: {e}")
-            matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * stappen
+            st.warning(f"⚠️ Fout bij interval {interval}: {e}")
+            matrix[interval] = [{"kleur": "⚠️", "tekst": ""} for _ in range(int(stappen))]
             
-
+                        
             
                 
         
