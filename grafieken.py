@@ -236,8 +236,6 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     if not toon_matrix:
         return
 
-    # ─────────────────────────────────────────────
-    # Instellingen per interval
     INTERVALLEN = {
         "1wk": {"stappen": 3, "breedte": 10, "hoogte": 250, "label": "Week", "show_text": True},
         "1d": {"stappen": 15, "breedte": 10, "hoogte": 50, "label": "Dag", "show_text": True},
@@ -246,8 +244,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         "15m": {"stappen": 480, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
 
-    # ─────────────────────────────────────────────
-    # Marktsegment bepalen op basis van ticker
+    # Markt bepalen
     ticker_lower = ticker.lower()
     if "crypto" in ticker_lower or ticker_lower.startswith("btc") or ticker_lower.startswith("eth"):
         markt = "crypto"
@@ -273,16 +270,22 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
             if interval == "1wk":
                 laatste_maandag = df.index.max().normalize() - pd.Timedelta(days=df.index.max().weekday())
-                weekdagen = [laatste_maandag - pd.Timedelta(weeks=i) for i in range(stappen)]
-                weekdagen = sorted(weekdagen, reverse=True)
+                weekmomenten = [laatste_maandag - pd.Timedelta(weeks=i) for i in range(stappen)]
+                weekmomenten = sorted(weekmomenten, reverse=True)
 
-                for week_start in weekdagen:
-                    advies = df.loc[df.index.isocalendar().week == week_start.isocalendar().week, "Advies"].values
-        #            advies = df.loc[df.index.normalize() == week_start, "Advies"].values
+                df_weeks = df.index.isocalendar()
+                df["week"] = df_weeks.week
+                df["jaar"] = df_weeks.year
+
+                for week_start in weekmomenten:
+                    week_nr = week_start.isocalendar().week
+                    jaar = week_start.isocalendar().year
+                    match = df[(df["week"] == week_nr) & (df["jaar"] == jaar)]
+
+                    advies = match["Advies"].values
                     kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
                     tekst = week_start.strftime("%Y-%m-%d") if specs["show_text"] else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
-        
 
             elif interval == "1d":
                 laatste_datum = df.index.max().normalize()
@@ -301,17 +304,14 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
             else:
                 stap = pd.Timedelta("4h") if interval == "4h" else pd.Timedelta("1h") if interval == "1h" else pd.Timedelta("15min")
-
-                laatste_dag = df.index.max().normalize()
-                dagen = []
                 blokjes_per_dag = 3 if interval == "4h" else 8 if interval == "1h" else 32
+                dagen = []
+                laatste_dag = df.index.max().normalize()
                 while len(dagen) < int(stappen / blokjes_per_dag):
                     if laatste_dag.weekday() < 5:
                         dagen.append(laatste_dag)
                     laatste_dag -= pd.Timedelta(days=1)
                 dagen = sorted(dagen, reverse=True)
-
-                waarden = []
 
                 for dag in dagen:
                     if markt == "eur":
@@ -340,16 +340,18 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                         if specs["show_text"]:
                             tekst = ts.strftime("%H:%M")
                         else:
-                            ""
-             #               tekst = str((tijdvakken.index(ts) % 4) + 1) if interval == "15m" else ""
+                            tekst = ""
                         waarden.append({"kleur": kleur, "tekst": tekst})
 
-                matrix[interval] = waarden
+            matrix[interval] = waarden
 
         except Exception as e:
             st.warning(f"Fout bij {interval}: {e}")
             matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * stappen
             
+
+            
+                
         
     # ─────────────────────────────────────────────
     # HTML rendering
