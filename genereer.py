@@ -92,7 +92,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
                 df["jaar"] = df_weeks.year
 
                 if markt == "crypto":
-                    weekmomenten = sorted(set(df.index.normalize()), reverse=False)
+                    weekmomenten = sorted(set(df.index.normalize()), reverse=True)
                     weekmomenten = [d for d in weekmomenten if d.weekday() == 0][:stappen]
                 else:
                     laatste_maandag = df.index.max().normalize() - pd.Timedelta(days=df.index.max().weekday())
