@@ -285,7 +285,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     
 #    for interval, specs in INTERVALLEN.items():
 #        stappen = specs["stappen"]
-        try:
+#        try:
             df = fetch_data_fmp(ticker, interval=interval) if ":" in ticker or ticker.upper() in ["AEX", "AMX"] else fetch_data(ticker, interval=interval)
             df = df.dropna().copy()
             df = calculate_sam(df)
@@ -307,8 +307,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     weekmomenten = weekmomenten[:stappen]
 
                 else:
-                    if df.index.max() is pd.NaT:
-                        raise ValueError("Geen geldige data in df.index voor 1wk.")
+          #          if df.index.max() is pd.NaT:
+          #              raise ValueError("Geen geldige data in df.index voor 1wk.")
                     laatste_maandag = df.index.max().normalize() - pd.Timedelta(days=df.index.max().weekday())
                     weekmomenten = [laatste_maandag - pd.Timedelta(weeks=i) for i in range(stappen)]
                     weekmomenten = sorted(weekmomenten, reverse=True)
