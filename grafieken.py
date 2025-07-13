@@ -245,6 +245,15 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         "15m": {"stappen": 540, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
 
+    INTERVALLEN_CRYPTO = {
+        "1wk": {"stappen": 3, "breedte": 10, "hoogte": 240, "label": "Week", "show_text": True},
+        "1d": {"stappen": 15, "breedte": 10, "hoogte": 47.7, "label": "Dag", "show_text": True},
+        "4h": {"stappen": 90, "breedte": 10, "hoogte": 15.68, "label": "4u", "show_text": True},
+        "1h": {"stappen": 360, "breedte": 5, "hoogte": 5, "label": "1u", "show_text": True},
+        "15m": {"stappen": 1440, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
+    }
+
+    
     # Markt bepalen
     ticker_lower = ticker.lower()
 
@@ -262,6 +271,9 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         
     matrix = {}
 
+    if markt == "crypto":
+    INTERVALLEN = INTERVALLEN_CRYPTO
+    
     for interval, specs in INTERVALLEN.items():
         stappen = specs["stappen"]
         try:
