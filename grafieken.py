@@ -319,9 +319,9 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
                 for dag in dagen:
                     if markt == "eur":
-                        start_uur = 8
+                        start_uur = 7
                     elif markt == "us":
-                        start_uur = 13
+                        start_uur = 13.5 
                     else:
                         start_uur = 0
 
