@@ -249,7 +249,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     ticker_lower = ticker.lower()
     if "crypto" in ticker_lower or ticker_lower.startswith("btc") or ticker_lower.startswith("eth"):
         markt = "crypto"
-    elif ".as" in ticker_lower or ticker.upper() in ["AEX", "AMX"]:
+    elif ".as" in ticker_lower or ticker.upper() in ["AEX", "AMX", "Eurostoxx"]:
         markt = "eur"
     else:
         markt = "us"
