@@ -348,44 +348,10 @@ plot_sat_debug(df, interval)
 # later in je code, waar de tabel moet komen
 toon_sam_tabel(df, selected_tab, signaalkeuze)
 
-
-
 # Toon Fundamentals
 toon_fundamentals(ticker)
 
-# st.subheader("📊 Fundamentals")
 
-# Controleer of ticker geldig is
-try:
-    if not ticker or not isinstance(ticker, str) or len(ticker.strip()) == 0:
-        st.warning("⚠️ Geen geldige ticker opgegeven.")
-    else:
-        ticker_clean = ticker.strip().upper()
-
-        # Haal fundamentele data op met foutafhandeling
-        try:
-            profile = get_profile(ticker_clean)
-            key_metrics = get_key_metrics(ticker_clean)
-            income_data = get_income_statement(ticker_clean)
-            ratio_data = get_ratios(ticker_clean)
-            earnings = get_earning_calendar(ticker_clean)
-            dividends = get_dividend_history(ticker_clean)
-        except Exception as e:
-            st.error(f"❌ Fout bij ophalen van fundamentele data: {e}")
-            profile = key_metrics = income_data = ratio_data = earnings = dividends = None
-
-        # Check of profile geldig is (anders geen verdere output)
-        if profile:
-            toon_profiel_en_kerninfo(profile, key_metrics)
-            toon_omzet_winst_eps(income_data)
-            toon_ratios(ratio_data)
-            toon_datums(earnings, dividends)
-        else:
-            st.warning("📭 Geen fundamentele data gevonden voor deze ticker.")
-
-except Exception as outer_e:
-    st.error(f"🔧 Er trad een fout op in het fundamentals-gedeelte: {outer_e}")
-    
 
 
 #st.subheader("Fundamentals")
