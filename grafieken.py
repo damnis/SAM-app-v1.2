@@ -272,13 +272,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             waarden = []
 
             if interval == "1wk":
-                laatste_datum = df.index.max()
-                weekdagen = []
-                while len(weekdagen) < stappen:
-                    start_maandag = laatste_datum - pd.Timedelta(days=laatste_datum.weekday())
-                    if start_maandag not in weekdagen:
-                        weekdagen.append(start_maandag)
-                    laatste_datum -= pd.Timedelta(days=1)
+                laatste_maandag = df.index.max().normalize() - pd.Timedelta(days=df.index.max().weekday())
+                weekdagen = [laatste_maandag - pd.Timedelta(weeks=i) for i in range(stappen)]
                 weekdagen = sorted(weekdagen, reverse=True)
 
                 for week_start in weekdagen:
@@ -286,6 +281,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
                     tekst = week_start.strftime("%Y-%m-%d") if specs["show_text"] else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
+        
 
             elif interval == "1d":
                 laatste_datum = df.index.max().normalize()
