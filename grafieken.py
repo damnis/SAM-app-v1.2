@@ -329,10 +329,11 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     elif interval == "1h":
                         tijdvakken = [dag + pd.Timedelta(hours=h) for h in uren_range]
                     elif interval == "15m":
-                        for uur in uren_range:
+                        for uur in range(start_uur, start_uur + blokjes_per_dag):  # 8 uur
                             for kwart in range(0, 60, 15):
-                                tijdvakken.append(dag + pd.Timedelta(hours=uur, minutes=kwart))
-
+                                tijdstip = dag + pd.Timedelta(hours=uur, minutes=kwart)
+                                tijdvakken.append(tijdstip)
+        
                     tijdvak_entries = []
 
                     for ts in tijdvakken:
