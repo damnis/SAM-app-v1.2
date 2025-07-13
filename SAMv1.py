@@ -347,7 +347,7 @@ plot_sat_debug(df, interval)
 # --- Tabel met signalen en rendement ---
 # later in je code, waar de tabel moet komen
 toon_sam_tabel(df, selected_tab, signaalkeuze)
-#st.subheader("Laatste signalen en rendement")
+st.subheader("Fundamentals")
 
 # Bedrijfsprofiel fmp (fundamental):
 profile = get_profile(ticker)
