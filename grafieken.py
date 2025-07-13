@@ -234,7 +234,7 @@ def plot_sat_debug(df, interval):
 # matrix based on fixed calendar structure
 # matrix based on fixed calendar structure
 
-def toon_adviesmatrix_html(ticker, risk_aversion=2):
+def toon_adviesmatrix_html_py(ticker, risk_aversion=2):
     toon_matrix = st.toggle("🟩🟥 Toon Adviesmatrix (HTML)", value=False)
 #    toon_matrix = st.toggle("📊 Toon Adviesmatrix (HTML)", value=False)
     if not toon_matrix:
@@ -385,8 +385,13 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
   #      if len(waarden_lijst) == 0:
   #          st.warning(f"⚠️ Geen waarden in matrix voor interval {interval}!")
+
+def toon_adviesmatrix_html(ticker, risk_aversion=2):
+    toon_matrix = st.toggle("🟩🟥 Toon Adviesmatrix (HTML)", value=False)
         
-    
+  
+    matrix, intervallen_gekozen = genereer_adviesmatrix(ticker, risk_aversion)
+  
     # HTML rendering
     html = "<div style='font-family: monospace;'>"
     html += "<div style='display: flex;'>"
