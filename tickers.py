@@ -64,7 +64,6 @@ amx_tickers = {
 }
 
 crypto_tickers = {
-    crypto_tickerlijst = {
     "BTC-USD": "Bitcoin",
     "ETH-USD": "Ethereum",
     "BNB-USD": "BNB",
