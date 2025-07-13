@@ -321,7 +321,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     if markt == "eur":
                         start_uur = 7
                     elif markt == "us":
-                        start_uur = 13:30
+                        start_uur = 13
                     else:
                         start_uur = 0
 
