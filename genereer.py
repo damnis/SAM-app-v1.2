@@ -145,7 +145,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
                 dagen = sorted(dagen, reverse=True)
 
                 for dag in dagen:
-                    start_uur = 9 if markt == "eur" else 14 if markt == "us" else 0
+                    start_uur = 8.5 if markt == "eur" else 14 if markt == "us" else 0
                     tijdvakken = []
                     eind_uur = 24 if markt == "crypto" else (12 if interval == "4h" else 9)
 
@@ -154,10 +154,17 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
                     elif interval == "1h":
                         tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + eind_uur)]
                     elif interval == "15m":
-                        for uur in range(start_uur, start_uur + eind_uur):
-                            for kwart in range(0, 60, 15):
-                                tijdstip = dag + pd.Timedelta(hours=uur, minutes=kwart)
-                                tijdvakken.append(tijdstip)
+                        tijdvakken = []
+                        stappen = int(eind_uur * 60 / 15)  # aantal kwartieren
+                        for i in range(stappen):
+                            tijdstip = dag + pd.Timedelta(hours=start_uur + i * 0.25)
+                            tijdvakken.append(tijdstip)
+        
+           #         elif interval == "15m":
+          #              for uur in range(start_uur, start_uur + eind_uur):
+           #                 for kwart in range(0, 60, 15):
+             #                   tijdstip = dag + pd.Timedelta(hours=uur, minutes=kwart)
+            #                    tijdvakken.append(tijdstip)
 
                     tijdvak_entries = []
                     for ts in tijdvakken:
