@@ -387,9 +387,11 @@ def toon_adviesmatrix_html_py(ticker, risk_aversion=2):
   #          st.warning(f"⚠️ Geen waarden in matrix voor interval {interval}!")
 
 def toon_adviesmatrix_html(ticker, risk_aversion=2):
-#    toon_matrix = st.toggle("🟩🟥 Toon Adviesmatrix (HTML)", value=False)
-        
-  
+    toon_matrix = st.toggle("🟩🟥 Toon Adviesmatrix (HTML)", value=False)
+#    toon_matrix = st.toggle("📊 Toon Adviesmatrix (HTML)", value=False)
+    if not toon_matrix:
+        return
+
     matrix, intervallen_gekozen = genereer_adviesmatrix(ticker, risk_aversion)
   
     # HTML rendering
