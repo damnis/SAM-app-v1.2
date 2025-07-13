@@ -331,7 +331,7 @@ with col2:
 # ------- Toggle voor sector-heatmap (bijv. onder je matrix/tabellen) ---
 
 if st.toggle("📌 Toon sector-heatmap"):
-    toon_sector_heatmap(interval, risk_aversion=True)
+    toon_sector_heatmap(interval, risk_aversion=risk_aversion)
     # toon_sector_heatmap(interval)
 
 # Stel dat je de geselecteerde ticker als 'ticker' hebt
