@@ -5,12 +5,7 @@ from sectorticker import sector_tickers
 from yffetch import fetch_data_cached
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
-from adviezen import determine_advice, weighted_moving_average 
- 
-
-# ✅ Altijd SAM en SAT berekenen
-    df = calculate_sam(df)
-    df = calculate_sat(df)
+from adviezen import determine_advice
 
 # Kleuren voor de heatmap
 kleurmap = {"Kopen": "#2ecc71", "Verkopen": "#e74c3c", "Neutraal": "#95a5a6"}
@@ -23,13 +18,16 @@ def genereer_sector_heatmap(interval):
         html += f"<h4 style='color: white;'>{sector}</h4>"
         html += "<div style='display: flex; flex-wrap: wrap; max-width: 540px;'>"
 
-        for ticker in tickers[:20]:  # maximaal 20 tickers per sector
+        for ticker in tickers[:20]:
             try:
                 df = fetch_data_cached(ticker, interval=interval)
                 df = df.dropna()
                 if df.empty:
                     advies = "Neutraal"
                 else:
+                    # SAM en SAT berekenen vóór advies
+                    df = calculate_sam(df)
+                    df = calculate_sat(df)
                     advies = determine_advice(df)[-1]
             except:
                 advies = "Neutraal"
