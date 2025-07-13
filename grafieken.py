@@ -272,7 +272,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     matrix = {}
 
     if markt == "crypto":
-    INTERVALLEN = INTERVALLEN_CRYPTO
+        INTERVALLEN = INTERVALLEN_CRYPTO
     
     for interval, specs in INTERVALLEN.items():
         stappen = specs["stappen"]
