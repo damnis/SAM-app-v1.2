@@ -1,7 +1,8 @@
 import requests
 import streamlit as st
 
-API_KEY = "D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5"
+API_KEY = st.secrets["FMP_API_KEY"]
+
 BASE_URL = "https://financialmodelingprep.com/api/v3"
 
 @st.cache_data(ttl=3600)
