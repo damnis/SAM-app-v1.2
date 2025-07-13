@@ -304,14 +304,17 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
             else:
                 stap = pd.Timedelta("4h") if interval == "4h" else pd.Timedelta("1h") if interval == "1h" else pd.Timedelta("15min")
-                blokjes_per_dag = 3 if interval == "4h" else 8 if interval == "1h" else 32
-                dagen = []
+
                 laatste_dag = df.index.max().normalize()
+                dagen = []
+                blokjes_per_dag = 3 if interval == "4h" else 8 if interval == "1h" else 32
                 while len(dagen) < int(stappen / blokjes_per_dag):
                     if laatste_dag.weekday() < 5:
                         dagen.append(laatste_dag)
                     laatste_dag -= pd.Timedelta(days=1)
                 dagen = sorted(dagen, reverse=True)
+
+                waarden = []
 
                 for dag in dagen:
                     if markt == "eur":
@@ -321,19 +324,17 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     else:
                         start_uur = 0
 
-                    uren_range = list(range(start_uur, start_uur + blokjes_per_dag * (4 if interval == "4h" else 1)))
                     tijdvakken = []
-
                     if interval == "4h":
                         tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + 12, 4)]
                     elif interval == "1h":
-                        tijdvakken = [dag + pd.Timedelta(hours=h) for h in uren_range]
+                        tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + 8)]
                     elif interval == "15m":
-                        for uur in range(start_uur, start_uur + blokjes_per_dag):  # 8 uur
+                        for uur in range(start_uur, start_uur + 8):
                             for kwart in range(0, 60, 15):
                                 tijdstip = dag + pd.Timedelta(hours=uur, minutes=kwart)
                                 tijdvakken.append(tijdstip)
-        
+
                     tijdvak_entries = []
 
                     for ts in tijdvakken:
@@ -343,12 +344,10 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                         tekst = ts.strftime("%H:%M") if specs["show_text"] else ""
                         tijdvak_entries.append((ts, {"kleur": kleur, "tekst": tekst}))
 
-                    # Sorteer op ts, reversed om recentste boven te hebben
                     tijdvak_entries = sorted(tijdvak_entries, key=lambda x: x[0], reverse=True)
                     waarden.extend([entry for _, entry in tijdvak_entries])
 
-                    
-            matrix[interval] = waarden
+                matrix[interval] = waarden[:stappen]
 
         except Exception as e:
             st.warning(f"Fout bij {interval}: {e}")
