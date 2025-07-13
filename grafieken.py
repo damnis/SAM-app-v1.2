@@ -333,16 +333,20 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                             for kwart in range(0, 60, 15):
                                 tijdvakken.append(dag + pd.Timedelta(hours=uur, minutes=kwart))
 
+                    tijdvak_entries = []
+
                     for ts in tijdvakken:
                         df_sub = df[(df.index >= ts) & (df.index < ts + stap)]
                         advies = df_sub["Advies"].values
                         kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                        if specs["show_text"]:
-                            tekst = ts.strftime("%H:%M")
-                        else:
-                            tekst = ""
-                        waarden.append({"kleur": kleur, "tekst": tekst})
+                        tekst = ts.strftime("%H:%M") if specs["show_text"] else ""
+                        tijdvak_entries.append((ts, {"kleur": kleur, "tekst": tekst}))
 
+                    # Sorteer op ts, reversed om recentste boven te hebben
+                    tijdvak_entries = sorted(tijdvak_entries, key=lambda x: x[0], reverse=True)
+                    waarden.extend([entry for _, entry in tijdvak_entries])
+
+                    
             matrix[interval] = waarden
 
         except Exception as e:
