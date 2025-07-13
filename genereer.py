@@ -126,12 +126,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
 
                     waarden.append({"kleur": kleur, "tekst": tekst})
 
-   #             for dag in dagen:
-    #                advies = df.loc[df.index.normalize() == dag, "Advies"].values
-    #                kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-     #               tekst = dag.strftime("%A")<br>dag.strftime("%Y-%m-%d")<br>{ if specs["show_text"] else ""
-    #                waarden.append({"kleur": kleur, "tekst": tekst})
-
+   
             else:
                 stap = pd.Timedelta("4h") if interval == "4h" else pd.Timedelta("1h") if interval == "1h" else pd.Timedelta("15min")
                 laatste_dag = df.index.max().normalize()
@@ -145,7 +140,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
                 dagen = sorted(dagen, reverse=True)
 
                 for dag in dagen:
-                    start_uur = 7 if markt == "eur" else 12 if markt == "us" else 0
+                    start_uur = 7 if markt == "eur" else 12 if markt == "us" else 1
                     tijdvakken = []
                     eind_uur = 24 if markt == "crypto" else (12 if interval == "4h" else 9)
 
@@ -179,6 +174,15 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
 
     return matrix, intervallen_gekozen
 
+
+
+
+
+#             for dag in dagen:
+    #                advies = df.loc[df.index.normalize() == dag, "Advies"].values
+    #                kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+     #               tekst = dag.strftime("%A")<br>dag.strftime("%Y-%m-%d")<br>{ if specs["show_text"] else ""
+    #                waarden.append({"kleur": kleur, "tekst": tekst})
 
 
 
