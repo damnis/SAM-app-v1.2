@@ -241,38 +241,70 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
     matrix, intervallen_gekozen = genereer_adviesmatrix(ticker, risk_aversion)
   
-    # HTML rendering
-    html = "<div style='font-family: monospace;'>"
-    html += "<div style='display: flex;'>"
+    # HTML rendering - long#
+#    html = "<div style='font-family: monospace;'>"
+#    html += "<div style='display: flex;'>"
 
-    kleurmap = {"🟩": "#2ecc71", "🟥": "#e74c3c", "⬛": "#7f8c8d"}  # grijs voor neutraal
+#    kleurmap = {"🟩": "#2ecc71", "🟥": "#e74c3c", "⬛": "#7f8c8d"}  # grijs voor neutraal
+
+#    for interval, specs in intervallen_gekozen.items():
+   #     waarden = matrix.get(interval, [])
+ #       blokken_html = "<div style='margin-right: 10px;'>"
+ #       blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px; color: #FFFF00;'>{interval}</div>"
+ #       for entry in waarden:
+  #          kleur = entry["kleur"]
+ #           tekst = entry["tekst"]
+ #           achtergrondkleur = kleurmap.get(kleur, "#95a5a6")  # fallback: lichtgrijs
+ #           blok_html = f"""
+  #              <div style='
+  #                  width: {specs['breedte'] * 16}px;
+   #                 height: {specs['hoogte'] * 3}px;
+   #                 background-color: {achtergrondkleur};
+     #               color: white;
+     #               text-align: center;
+        #            font-size: 11px;
+     #               margin-bottom: 1px;
+    #                border-radius: 2px;
+     #           '>{tekst}</div>
+   #         """
+  #          blokken_html += blok_html
+#        blokken_html += "</div>"
+#        html += blokken_html
+
+#    html += "</div></div>"
+#    st_html(html, height=600, scrolling=True)
+
+    
+    # HTML rendering - wide
+    # Verticale weergave (1 interval per rij)
+    html = "<div style='font-family: monospace;'>"
 
     for interval, specs in intervallen_gekozen.items():
         waarden = matrix.get(interval, [])
-        blokken_html = "<div style='margin-right: 10px;'>"
-        blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px; color: #FFFF00;'>{interval}</div>"
+        html += f"<div style='margin-bottom: 8px;'>"
+        html += f"<div style='font-weight: bold; color: white; margin-bottom: 4px;'>{interval}</div>"
+        html += "<div style='display: flex;'>"
         for entry in waarden:
             kleur = entry["kleur"]
             tekst = entry["tekst"]
-            achtergrondkleur = kleurmap.get(kleur, "#95a5a6")  # fallback: lichtgrijs
+            achtergrondkleur = kleurmap.get(kleur, "#95a5a6")
             blok_html = f"""
                 <div style='
-                    width: {specs['breedte'] * 16}px;
+                    width: {specs['breedte'] * 8}px;
                     height: {specs['hoogte'] * 3}px;
                     background-color: {achtergrondkleur};
                     color: white;
                     text-align: center;
                     font-size: 11px;
-                    margin-bottom: 1px;
+                    margin-right: 1px;
                     border-radius: 2px;
                 '>{tekst}</div>
             """
-            blokken_html += blok_html
-        blokken_html += "</div>"
-        html += blokken_html
+            html += blok_html
+        html += "</div></div>"
 
-    html += "</div></div>"
-    st_html(html, height=600, scrolling=True)
+    html += "</div>"
+    st_html(html, height=800, scrolling=True)
 
 
  
