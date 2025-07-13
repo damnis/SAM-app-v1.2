@@ -304,9 +304,18 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     text-align: center;
                     font-size: 11px;
                     margin-right: 1px;
+                    margin-bottom: 1px;
                     border-radius: 2px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                 '>{tekst}</div>
             """
+
+            
+                       
+            
+            
             html += blok_html
         html += "</div></div>"
 
