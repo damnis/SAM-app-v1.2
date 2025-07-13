@@ -241,8 +241,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         "1wk": {"stappen": 3, "breedte": 10, "hoogte": 225, "label": "Week", "show_text": True},
         "1d": {"stappen": 15, "breedte": 10, "hoogte": 45, "label": "Dag", "show_text": True},
         "4h": {"stappen": 45, "breedte": 10, "hoogte": 15, "label": "4u", "show_text": True},
-        "1h": {"stappen": 135, "breedte": 5, "hoogte": 4.8, "label": "1u", "show_text": True},
-        "15m": {"stappen": 540, "breedte": 2, "hoogte": 0.96, "label": "15m", "show_text": False}
+        "1h": {"stappen": 135, "breedte": 5, "hoogte": 5, "label": "1u", "show_text": True},
+        "15m": {"stappen": 540, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
 
     # Markt bepalen
