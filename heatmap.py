@@ -71,7 +71,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
 
 def toon_sector_heatmap(interval):
     st.markdown("### 🔥 Sector Heatmap")
-    html = genereer_sector_heatmap(interval)
+    html = genereer_sector_heatmap(interval, risk_aversion=2)
     st.components.v1.html(html, height=1400, scrolling=True)
 
 
