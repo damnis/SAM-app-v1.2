@@ -25,7 +25,7 @@ from grafieken import plot_koersgrafiek, plot_sam_trend, plot_sat_debug, bepaal_
 from genereer import genereer_adviesmatrix 
 from grafieken import toon_adviesmatrix_html
 from sam_tabel import toon_sam_tabel 
-# fundamentals 
+# --- Fundamentele data ophalen en tonen ---
 from datafund import get_income_statement, get_ratios
 from datafund import (
     get_profile, get_key_metrics, get_earning_calendar,
@@ -33,7 +33,7 @@ from datafund import (
 )
 from fundament import (
     toon_profiel_en_kerninfo, toon_omzet_winst_eps, toon_ratios,
-    toon_datums
+    toon_datums, toon_fundamentals
 )
 # Backtestfunctie 
 from backtest import backtest_functie, bereken_sam_rendement
@@ -348,8 +348,12 @@ plot_sat_debug(df, interval)
 # later in je code, waar de tabel moet komen
 toon_sam_tabel(df, selected_tab, signaalkeuze)
 
-# --- Fundamentele data ophalen en tonen ---
-st.subheader("📊 Fundamentals")
+
+
+# Toon Fundamentals
+toon_fundamentals(ticker)
+
+# st.subheader("📊 Fundamentals")
 
 # Controleer of ticker geldig is
 try:
