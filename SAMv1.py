@@ -26,15 +26,16 @@ from genereer import genereer_adviesmatrix
 from grafieken import toon_adviesmatrix_html
 from sam_tabel import toon_sam_tabel 
 # --- Fundamentele data ophalen en tonen ---
-from datafund import get_income_statement, get_ratios
-from datafund import (
-    get_profile, get_key_metrics, get_earning_calendar,
-    get_dividend_history, get_quarterly_eps, get_eps_forecast
-)
-from fundament import (
-    toon_profiel_en_kerninfo, toon_omzet_winst_eps, toon_ratios,
-    toon_datums, toon_fundamentals
-)
+#from datafund import get_income_statement, get_ratios
+#from datafund import (
+#    get_profile, get_key_metrics, get_earning_calendar,
+#    get_dividend_history, get_quarterly_eps, get_eps_forecast
+#)
+#from fundament import (
+#    toon_profiel_en_kerninfo, toon_omzet_winst_eps, toon_ratios,
+#    toon_datums, toon_fundamentals
+#)
+from fundament import toon_fundamentals 
 # Backtestfunctie 
 from backtest import backtest_functie, bereken_sam_rendement
 # trading bot
