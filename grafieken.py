@@ -313,18 +313,21 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     html += blok_html
     html += "</div></div>"  # sluit alles af
 
-    scroll_html = """
+    scroll_html = f"""
     <style>
-        .scroll-container {
-            max-width: 100%;
+        .scroll-container {{
+            max-width: 1200px;  /* optioneel, of 100% */
             overflow-x: auto;
             padding-bottom: 10px;
-        }
+        }}
     </style>
     <div class='scroll-container'>
-    """ + html + "</div>"
+    {html}
+    </div>
+    """
 
     st_html(scroll_html, height=800, scrolling=True)
+
     
 
 #    st_html(html, height=800, width=600, scrolling=True)
