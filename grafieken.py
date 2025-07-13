@@ -316,7 +316,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     scroll_html = f"""
     <style>
         .scroll-container {{
-            max-width: 1200px;  /* optioneel, of 100% */
+            max-width: 600px;  /* optioneel, of 100% */
             overflow-x: auto;
             padding-bottom: 10px;
         }}
