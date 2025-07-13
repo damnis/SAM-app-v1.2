@@ -247,13 +247,19 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
     # Markt bepalen
     ticker_lower = ticker.lower()
+
+    eu_suffixes = [
+        ".as", ".be", ".br", ".pa", ".mc", ".mi", ".de", ".l", ".es", ".pl", ".he",
+        ".fi", ".at", ".co", ".sw", ".vi", ".ol", ".st", ".ir", ".ls"
+    ]
+
     if "crypto" in ticker_lower or ticker_lower.startswith("btc") or ticker_lower.startswith("eth"):
         markt = "crypto"
-    elif ".as" or ".de" or ".pa" or ".be" or ".mi" or ".mc" or ".l" in ticker_lower or ticker.upper() in ["AEX", "AMX"]:
+    elif any(suffix in ticker_lower for suffix in eu_suffixes) or ticker.upper() in ["AEX", "AMX"]:
         markt = "eur"
     else:
         markt = "us"
-
+        
     matrix = {}
 
     for interval, specs in INTERVALLEN.items():
