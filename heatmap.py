@@ -28,7 +28,10 @@ def genereer_sector_heatmap(interval):
                     # SAM en SAT berekenen vóór advies
                     df = calculate_sam(df)
                     df = calculate_sat(df)
-                    advies = determine_advice(df)[-1]
+                    st.write(f"{ticker}:", df.tail())  # ⬅️ tijdelijk toevoegen
+
+                    advies = "Kopen" if ticker.startswith("A") else "Verkopen"
+    #                advies = determine_advice(df)[-1]
             except:
                 advies = "Neutraal"
 
