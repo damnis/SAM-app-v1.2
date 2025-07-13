@@ -330,9 +330,9 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     blokjes_per_dag = 6 if interval == "4h" else 24 if interval == "1h" else 96
                 else:
                     blokjes_per_dag = 3 if interval == "4h" else 9 if interval == "1h" else 36
-      #          blokjes_per_dag = 3 if interval == "4h" else 9 if interval == "1h" else 36
+     
                 while len(dagen) < int(stappen / blokjes_per_dag):
-                    if laatste_dag.weekday() < 5:
+                    if markt == "crypto" or laatste_dag.weekday() < 5:
                         dagen.append(laatste_dag)
                     laatste_dag -= pd.Timedelta(days=1)
                 dagen = sorted(dagen, reverse=True)
