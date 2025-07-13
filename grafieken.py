@@ -297,7 +297,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     weekmomenten = [d for d in weekmomenten if d.weekday() == 0]  # maandagen
                     weekmomenten = weekmomenten[:stappen]
 
-               else:
+                else:
                     if df.index.max() is pd.NaT:
                         raise ValueError("Geen geldige data in df.index voor 1wk.")
                     laatste_maandag = df.index.max().normalize() - pd.Timedelta(days=df.index.max().weekday())
