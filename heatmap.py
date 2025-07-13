@@ -2,9 +2,11 @@
 
 import streamlit as st
 from sectorticker import sector_tickers
-from adviezen import determine_advice
 from yffetch import fetch_data_cached
-from 
+from sam_indicator import calculate_sam
+from sat_indicator import calculate_sat
+from adviezen import determine_advice, weighted_moving_average 
+ 
 
 # ✅ Altijd SAM en SAT berekenen
     df = calculate_sam(df)
