@@ -104,25 +104,25 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
                 dagen = sorted(dagen, reverse=True)
 
                 for dag in dagen:
-                  advies = df.loc[df.index.normalize() == dag, "Advies"].values
-                  kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+                    advies = df.loc[df.index.normalize() == dag, "Advies"].values
+                    kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
 
-                  dagnaam = dag.strftime("%A")  # Volledige dagnaam, bijv. "Sunday"
-                  datum = dag.strftime("%Y-%m-%d")
+                    dagnaam = dag.strftime("%A")  # Volledige dagnaam, bijv. "Sunday"
+                    datum = dag.strftime("%Y-%m-%d")
     
-                  # Probeer de close waarde op te halen van de desbetreffende dag
-                  try:
-                    koers = df.loc[df.index.normalize() == dag, "Close"].iloc[-1]
-                    koers_str = f"${koers:,.2f}"
-                  except Exception:
-                    koers_str = "n/a"
+                    # Probeer de close waarde op te halen van de desbetreffende dag
+                    try:
+                        koers = df.loc[df.index.normalize() == dag, "Close"].iloc[-1]
+                        koers_str = f"${koers:,.2f}"
+                    except Exception:
+                        koers_str = "n/a"
 
-                  if specs["show_text"]:
-                    tekst = f"{dagnaam}<br>{datum}<br>{koers_str}"
-                  else:
-                    tekst = ""
+                    if specs["show_text"]:
+                        tekst = f"{dagnaam}<br>{datum}<br>{koers_str}"
+                    else:
+                        tekst = ""
 
-                  waarden.append({"kleur": kleur, "tekst": tekst})
+                    waarden.append({"kleur": kleur, "tekst": tekst})
 
    #             for dag in dagen:
     #                advies = df.loc[df.index.normalize() == dag, "Advies"].values
