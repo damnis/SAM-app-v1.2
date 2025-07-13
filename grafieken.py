@@ -102,7 +102,7 @@ def plot_overlay_grafiek(df, ticker_name, interval):
     
 # --- Koersgrafiek ---
 def plot_koersgrafiek(df, ticker_name, interval):
-    toon_koersgrafiek = st.toggle("\U0001F4C8 Toon koersgrafiek", value=False)
+    toon_koersgrafiek = st.toggle("📊 Toon koersgrafiek", value=False)
     if not toon_koersgrafiek:
         return
 
@@ -234,7 +234,8 @@ def plot_sat_debug(df, interval):
 # matrix based on fixed calendar structure
 
 def toon_adviesmatrix_html(ticker, risk_aversion=2):
-    toon_matrix = st.toggle("📊 Toon Adviesmatrix (HTML)", value=False)
+    toon_matrix = st.toggle("🟩🟥 Toon Adviesmatrix (HTML)", value=False)
+#    toon_matrix = st.toggle("📊 Toon Adviesmatrix (HTML)", value=False)
     if not toon_matrix:
         return
 
@@ -249,7 +250,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     INTERVALLEN_CRYPTO = {
         "1wk": {"stappen": 3, "breedte": 10, "hoogte": 240, "label": "Week", "show_text": True},
         "1d": {"stappen": 21, "breedte": 10, "hoogte": 47.7, "label": "Dag", "show_text": True},
-        "4h": {"stappen": 126, "breedte": 10, "hoogte": 15.68, "label": "4u", "show_text": True},
+        "4h": {"stappen": 126, "breedte": 10, "hoogte": 22, "label": "4u", "show_text": True},
         "1h": {"stappen": 504, "breedte": 5, "hoogte": 5, "label": "1u", "show_text": True},
         "15m": {"stappen": 2016, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
