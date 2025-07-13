@@ -308,18 +308,19 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
             elif interval == "1d":
                 laatste_datum = df.index.max().normalize()
-                    dagen = []
-                    while len(dagen) < stappen:
-                        if markt == "crypto" or laatste_datum.weekday() < 5:
-                            dagen.append(laatste_datum)
-                        laatste_datum -= pd.Timedelta(days=1)
-                    dagen = sorted(dagen, reverse=True)
+                dagen = []
+                while len(dagen) < stappen:
+                    if markt == "crypto" or laatste_datum.weekday() < 5:
+                        dagen.append(laatste_datum)
+                    laatste_datum -= pd.Timedelta(days=1)
+                dagen = sorted(dagen, reverse=True)
 
-                    for dag in dagen:
-                        advies = df.loc[df.index.normalize() == dag, "Advies"].values
-                        kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                        tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
-                        waarden.append({"kleur": kleur, "tekst": tekst})
+                for dag in dagen:
+                    advies = df.loc[df.index.normalize() == dag, "Advies"].values
+                    kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
+                    tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
+                    waarden.append({"kleur": kleur, "tekst": tekst})
+                    
             else:
                 stap = pd.Timedelta("4h") if interval == "4h" else pd.Timedelta("1h") if interval == "1h" else pd.Timedelta("15min")
 
