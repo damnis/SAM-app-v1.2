@@ -262,7 +262,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         ".fi", ".at", ".co", ".sw", ".vi", ".ol", ".st", ".ir", ".ls"
     ]
 
-    if "crypto" in ticker_lower or ticker_lower.startswith("btc") or ticker_lower.startswith("eth"):
+    if "btc-" in ticker_lower or ticker_lower.startswith("btc") or ticker_lower.startswith("eth"):
         markt = "crypto"
     elif any(suffix in ticker_lower for suffix in eu_suffixes) or ticker.upper() in ["AEX", "AMX"]:
         markt = "eur"
