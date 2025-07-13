@@ -330,11 +330,8 @@ with col2:
 
 # ------- Toggle voor sector-heatmap (bijv. onder je matrix/tabellen) ---
 
-with st.expander("🧠 Sector-Heatmap Matrix (interval-advies per sector)"):
-    show_heatmap = st.toggle("Toon sector heatmap (op basis van interval)", value=False) 
-    if show_heatmap: 
-        toon_sector_heatmap(interval=interval)
-
+if st.toggle("📌 Toon sector-heatmap"):
+    toon_sector_heatmap(selected_interval)
 
 # Stel dat je de geselecteerde ticker als 'ticker' hebt
 toon_adviesmatrix_html(ticker, risk_aversion=risk_aversion)
