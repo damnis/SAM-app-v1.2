@@ -145,7 +145,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
                 dagen = sorted(dagen, reverse=True)
 
                 for dag in dagen:
-                    start_uur = 7 if markt == "eur" else 12 if markt == "us" else 0
+                    start_uur = 9 if markt == "eur" else 14 if markt == "us" else 0
                     tijdvakken = []
                     eind_uur = 24 if markt == "crypto" else (12 if interval == "4h" else 9)
 
