@@ -316,7 +316,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
             html += blok_html
         html += "</div></div>"
 
-    html += blok_html
+#    html += blok_html
     html += "</div></div>"  # sluit alles af
 
     scroll_html = f"""
