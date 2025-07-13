@@ -345,12 +345,12 @@ toon_sam_tabel(df, selected_tab, signaalkeuze)
 #st.subheader("Laatste signalen en rendement")
 
 # Bedrijfsprofiel fmp (fundamental):
-profile = get_profile(ticker)
-key_metrics = get_key_metrics(ticker)
-income_data = get_income_statement(ticker)
-ratio_data = get_ratios(ticker)
-earnings = get_earning_calendar(ticker)
-dividends = get_dividend_history(ticker)
+#profile = get_profile(ticker)
+#key_metrics = get_key_metrics(ticker)
+#income_data = get_income_statement(ticker)
+#ratio_data = get_ratios(ticker)
+#earnings = get_earning_calendar(ticker)
+#dividends = get_dividend_history(ticker)
 
 toon_profiel_en_kerninfo(profile, key_metrics, st)
 toon_omzet_winst_eps(income_data, st)
