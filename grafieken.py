@@ -241,8 +241,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         "1wk": {"stappen": 3, "breedte": 10, "hoogte": 200, "label": "Week", "show_text": True},
         "1d": {"stappen": 15, "breedte": 10, "hoogte": 40, "label": "Dag", "show_text": True},
         "4h": {"stappen": 45, "breedte": 10, "hoogte": 13.5, "label": "4u", "show_text": True},
-        "1h": {"stappen": 120, "breedte": 5, "hoogte": 5, "label": "1u", "show_text": True},
-        "15m": {"stappen": 480, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
+        "1h": {"stappen": 150, "breedte": 5, "hoogte": 5, "label": "1u", "show_text": True},
+        "15m": {"stappen": 600, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
     }
 
     # Markt bepalen
@@ -308,7 +308,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
                 laatste_dag = df.index.max().normalize()
                 dagen = []
-                blokjes_per_dag = 3 if interval == "4h" else 8 if interval == "1h" else 32
+                blokjes_per_dag = 3 if interval == "4h" else 10 if interval == "1h" else 40
                 while len(dagen) < int(stappen / blokjes_per_dag):
                     if laatste_dag.weekday() < 5:
                         dagen.append(laatste_dag)
@@ -321,7 +321,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     if markt == "eur":
                         start_uur = 7
                     elif markt == "us":
-                        start_uur = 13
+                        start_uur = 12
                     else:
                         start_uur = 0
 
@@ -329,9 +329,9 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     if interval == "4h":
                         tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + 12, 4)]
                     elif interval == "1h":
-                        tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + 8)]
+                        tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + 10)]
                     elif interval == "15m":
-                        for uur in range(start_uur, start_uur + 8):
+                        for uur in range(start_uur, start_uur + 10):
                             for kwart in range(0, 60, 15):
                                 tijdstip = dag + pd.Timedelta(hours=uur, minutes=kwart)
                                 tijdvakken.append(tijdstip)
