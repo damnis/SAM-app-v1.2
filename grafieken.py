@@ -262,7 +262,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         ".fi", ".at", ".co", ".sw", ".vi", ".ol", ".st", ".ir", ".ls"
     ]
 
-    if "btc-" in ticker_lower or ticker_lower.startswith("btc") or ticker_lower.startswith("eth"):
+    if "btc-" in ticker_lower or ticker_lower.startswith("btc-") or ticker_lower.startswith("eth-"):
         markt = "crypto"
     elif any(suffix in ticker_lower for suffix in eu_suffixes) or ticker.upper() in ["AEX", "AMX"]:
         markt = "eur"
@@ -385,7 +385,10 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     html = "<div style='font-family: monospace;'>"
     html += "<div style='display: flex;'>"
 
-    for interval, specs in INTERVALLEN.items():
+    intervallen_gekozen = INTERVALLEN_CRYPTO if markt == "crypto" else INTERVALLEN
+
+    for interval, specs in intervallen_gekozen.items():
+#    for interval, specs in INTERVALLEN.items():
         waarden = matrix[interval]
         blokken_html = "<div style='margin-right: 12px;'>"
         blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
