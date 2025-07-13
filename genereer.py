@@ -110,24 +110,24 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
                   dagnaam = dag.strftime("%A")  # Volledige dagnaam, bijv. "Sunday"
                   datum = dag.strftime("%Y-%m-%d")
     
-                # Probeer de close waarde op te halen van de desbetreffende dag
-                try:
+                  # Probeer de close waarde op te halen van de desbetreffende dag
+                  try:
                     koers = df.loc[df.index.normalize() == dag, "Close"].iloc[-1]
                     koers_str = f"${koers:,.2f}"
-                except Exception:
+                  except Exception:
                     koers_str = "n/a"
 
-                if specs["show_text"]:
+                  if specs["show_text"]:
                     tekst = f"{dagnaam}<br>{datum}<br>{koers_str}"
-                else:
+                  else:
                     tekst = ""
 
-                waarden.append({"kleur": kleur, "tekst": tekst})
+                  waarden.append({"kleur": kleur, "tekst": tekst})
 
    #             for dag in dagen:
     #                advies = df.loc[df.index.normalize() == dag, "Advies"].values
     #                kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-     #               tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
+     #               tekst = dag.strftime("%A")<br>dag.strftime("%Y-%m-%d")<br>{ if specs["show_text"] else ""
     #                waarden.append({"kleur": kleur, "tekst": tekst})
 
             else:
