@@ -332,7 +332,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     </div>
     """
 
-    st_html(scroll_html, height=800, scrolling=True)
+    st_html(scroll_html, height=400, scrolling=True)
 
     
 
