@@ -19,8 +19,9 @@ from streamlit.components.v1 import html as st_html
 
 
 # matrix based on fixed calendar structure
-
+@st.cache_data(ttl=900)
 def genereer_adviesmatrix(ticker, risk_aversion=2):
+#def genereer_adviesmatrix(ticker, risk_aversion=2):
   #  toon_matrix = st.toggle("🟩🟥 Toon Adviesmatrix (HTML)", value=False)
 #    toon_matrix = st.toggle("📊 Toon Adviesmatrix (HTML)", value=False)
 #    if not toon_matrix:
@@ -154,7 +155,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
 
 
 
-
+return matrix, intervallen_gekozen
 
 
 
