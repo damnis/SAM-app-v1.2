@@ -103,7 +103,7 @@ def plot_overlay_grafiek(df, ticker_name, interval):
     
 # --- Koersgrafiek ---
 def plot_koersgrafiek(df, ticker_name, interval):
-    toon_koersgrafiek = st.toggle("📊 Toon koersgrafiek", value=False)
+    toon_koersgrafiek = st.toggle("📈 Toon koersgrafiek", value=False)
     if not toon_koersgrafiek:
         return
 
