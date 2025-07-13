@@ -277,7 +277,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                 weekdagen = sorted(weekdagen, reverse=True)
 
                 for week_start in weekdagen:
-                    advies = df.loc[df.index.normalize() == week_start, "Advies"].values
+                    advies = df.loc[df.index.dt.isocalendar().week == week_start.isocalendar().week, "Advies"].values
+        #            advies = df.loc[df.index.normalize() == week_start, "Advies"].values
                     kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
                     tekst = week_start.strftime("%Y-%m-%d") if specs["show_text"] else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
