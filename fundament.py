@@ -20,7 +20,7 @@ def format_value(value, is_percent=False):
         return "-"
 
 # kerninfo
-def toon_profiel_en_kerninfo(profile, key_metrics, st):
+def toon_profiel_en_kerninfo(profile, key_metrics):
     if profile and key_metrics:
         with st.expander("🧾 Bedrijfsprofiel & Kerninfo", expanded=True):
             col1, col2, col3 = st.columns(3)
@@ -32,7 +32,7 @@ def toon_profiel_en_kerninfo(profile, key_metrics, st):
             st.caption(profile.get("description", ""))
 
 # omzet en winst
-def toon_omzet_winst_eps(income_data, st):
+def toon_omzet_winst_eps(income_data):
     if income_data:
         df = pd.DataFrame(income_data)
         df["revenue"] = df["revenue"].apply(format_value)
@@ -44,19 +44,19 @@ def toon_omzet_winst_eps(income_data, st):
             st.dataframe(df.set_index("Jaar")[["Omzet", "Winst", "WPA"]])
 
         # 🔹 Grafieken
-        with st.expander("📊 Grafieken"):
-            col1, col2 = st.columns(2)
-            with col1:
-                st.line_chart(df_income.set_index("date")[["revenue", "netIncome"]])
-            with col2:
-                chart_df = df_ratio.set_index("date")[["priceEarningsRatio", "returnOnEquity"]].copy()
-                chart_df["returnOnEquity"] *= 100
-                chart_df.rename(columns={"priceEarningsRatio": "K/W", "returnOnEquity": "ROE (%)"}, inplace=True)
-                st.line_chart(chart_df)
+#        with st.expander("📊 Grafieken"):
+ #           col1, col2 = st.columns(2)
+   #         with col1:
+   #             st.line_chart(df_income.set_index("date")[["revenue", "netIncome"]])
+   #         with col2:
+     #           chart_df = df_ratio.set_index("date")[["priceEarningsRatio", "returnOnEquity"]].copy()
+      #          chart_df["returnOnEquity"] *= 100
+     #           chart_df.rename(columns={"priceEarningsRatio": "K/W", "returnOnEquity": "ROE (%)"}, inplace=True)
+    #            st.line_chart(chart_df)
 
 
 # ratio's fmp
-def toon_ratios(ratio_data, st):
+def toon_ratios(ratio_data):
     if ratio_data:
         col_renames = {
             "currentRatio": "Current ratio",
@@ -86,7 +86,7 @@ def toon_ratios(ratio_data, st):
             st.dataframe(df_extra.set_index("Jaar")[list(col_renames.values())])
 
 # belangrijke datums 
-def toon_datums(earnings, dividends, st):
+def toon_datums(earnings, dividends):
     with st.expander("📅 Belangrijke datums"):
         if isinstance(earnings, list) and len(earnings) > 0:
             df_earn = pd.DataFrame(earnings)[["date", "eps", "epsEstimated"]]
