@@ -348,6 +348,10 @@ plot_sat_debug(df, interval)
 # later in je code, waar de tabel moet komen
 toon_sam_tabel(df, selected_tab, signaalkeuze)
 st.subheader("Fundamentals")
+st.write("✅ Profiel:", profile)
+st.write("✅ Key metrics:", key_metrics)
+st.write("✅ Income data:", income_data[:1])  # eerste record
+st.write("✅ Ratio data:", ratio_data[:1])
 
 # Bedrijfsprofiel fmp (fundamental):
 profile = get_profile(ticker)
@@ -357,10 +361,10 @@ ratio_data = get_ratios(ticker)
 earnings = get_earning_calendar(ticker)
 dividends = get_dividend_history(ticker)
 
-toon_profiel_en_kerninfo(profile, key_metrics, st)
-toon_omzet_winst_eps(income_data, st)
-toon_ratios(ratio_data, st)
-toon_datums(earnings, dividends, st)
+toon_profiel_en_kerninfo(profile, key_metrics)
+toon_omzet_winst_eps(income_data)
+toon_ratios(ratio_data)
+toon_datums(earnings, dividends)
 
 
 #st.write("DEBUG signaalkeuze boven Backtest:", signaalkeuze)
