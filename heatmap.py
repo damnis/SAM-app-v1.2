@@ -28,10 +28,10 @@ def genereer_sector_heatmap(interval):
                 else:
                     df = calculate_sam(df)
                     df = calculate_sat(df)
-                 #   advies = determine_advice(df)[-1]
+                    advies = determine_advice(df)[-1]
 
                 # DEBUG/test override:
-                    advies = "Kopen" if ticker.startswith("A") else "Verkopen"
+             #       advies = "Kopen" if ticker.startswith("A") else "Verkopen"
 
             except Exception as e:
                 advies = "Neutraal"
