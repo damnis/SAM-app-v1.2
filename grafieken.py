@@ -13,6 +13,7 @@ from fmpfetch import fetch_data_fmp
 from sam_indicator import calculate_sam 
 from sat_indicator import calculate_sat 
 from adviezen import determine_advice 
+from genereer import genereer_adviesmatrix
 from streamlit.components.v1 import html as st_html
 
 
