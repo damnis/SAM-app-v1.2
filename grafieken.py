@@ -278,6 +278,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     # HTML rendering - wide
     # Verticale weergave (1 interval per rij)
     html = "<div style='font-family: monospace;'>"
+    kleurmap = {"🟩": "#2ecc71", "🟥": "#e74c3c", "⬛": "#7f8c8d"}  # grijs voor neutraal
+
 
     for interval, specs in intervallen_gekozen.items():
         waarden = matrix.get(interval, [])
