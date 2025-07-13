@@ -372,10 +372,10 @@ try:
 
         # Check of profile geldig is (anders geen verdere output)
         if profile:
-            toon_profiel_en_kerninfo(profile, key_metrics, st)
-            toon_omzet_winst_eps(income_data, st)
-            toon_ratios(ratio_data, st)
-            toon_datums(earnings, dividends, st)
+            toon_profiel_en_kerninfo(profile, key_metrics)
+            toon_omzet_winst_eps(income_data)
+            toon_ratios(ratio_data)
+            toon_datums(earnings, dividends)
         else:
             st.warning("📭 Geen fundamentele data gevonden voor deze ticker.")
 
