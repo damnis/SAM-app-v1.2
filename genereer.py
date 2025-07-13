@@ -14,7 +14,7 @@ from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat 
 from adviezen import determine_advice 
 from streamlit.components.v1 import html as st_html
-
+from tickers import ticker_lijst 
 
 
 
@@ -50,8 +50,10 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
         ".fi", ".at", ".co", ".sw", ".vi", ".ol", ".st", ".ir", ".ls"
     ]
 
-    if "btc-" or "-usd" in ticker_lower or ticker_lower.startswith("btc-") or ticker_lower.startswith("eth-"):
+    if ticker.upper() in ticker_lijst or ticker_lower.endswith("-usd"):
         markt = "crypto"
+#    if "btc-" or "-usd" in ticker_lower or ticker_lower.startswith("btc-") or ticker_lower.startswith("eth-"):
+#        markt = "crypto"
     elif any(suffix in ticker_lower for suffix in eu_suffixes) or ticker.upper() in ["AEX", "AMX"]:
         markt = "eur"
     else:
