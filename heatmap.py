@@ -36,6 +36,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
                 st.write(f"⚠️ Fout bij {ticker}: {e}")
                 advies = "Neutraal"
 
+            advies = "Kopen" if ticker.startswith("A") else "Verkopen"
             kleur = kleurmap.get(advies, "#7f8c8d")
 
             html += f"""
