@@ -403,7 +403,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     for interval, specs in intervallen_gekozen.items():
         waarden = matrix.get(interval, [])
         blokken_html = "<div style='margin-right: 12px;'>"
-        blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px; color:"yellow";'>{interval}</div>"
+        blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px; color: #bdc3c7;'>{interval}</div>"
         for entry in waarden:
             kleur = entry["kleur"]
             tekst = entry["tekst"]
