@@ -3,10 +3,8 @@ from sectorticker import sector_tickers
 from yffetch import fetch_data_cached
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
-from adviezen import determine_advice, weighted_moving_average 
-# 
+from adviezen import determine_advice
 
-# Kleuren voor de heatmap
 kleurmap = {
     "Kopen": "#2ecc71",
     "Verkopen": "#e74c3c",
@@ -21,7 +19,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
         html += f"<h4 style='color: white;'>{sector}</h4>"
         html += "<div style='display: flex; flex-wrap: wrap; max-width: 600px;'>"
 
-        for ticker in tickers[:20]:  # max 20 per sector
+        for ticker in tickers[:20]:
             try:
                 df = fetch_data_cached(ticker, interval=interval)
                 if df is None or df.empty or len(df) < 50:
@@ -29,17 +27,13 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
                 else:
                     df = calculate_sam(df)
                     df = calculate_sat(df)
-        #            advies = determine_advice(df)[-1]
-         #           advies = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
 
-                # DEBUG/test override:
-                if isinstance(ticker, str) and ticker.strip().upper().startswith("A"):
-                    advies = "Kopen"
-                else:
-                    advies = "Verkopen"
-             #       advies = "Kopen" if ticker.startswith("A") else "Verkopen"
+                    # ✅ Correcte aanroep met risk_aversion
+                    df, adviezen = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
+                    advies = adviezen[-1] if len(adviezen) > 0 else "Neutraal"
 
             except Exception as e:
+                st.write(f"⚠️ Fout bij {ticker}: {e}")
                 advies = "Neutraal"
 
             kleur = kleurmap.get(advies, "#7f8c8d")
@@ -71,7 +65,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
 
 def toon_sector_heatmap(interval, risk_aversion=2):
     st.markdown("### 🔥 Sector Heatmap")
-    html = genereer_sector_heatmap(interval, risk_aversion=2)
+    html = genereer_sector_heatmap(interval, risk_aversion)
     st.components.v1.html(html, height=1400, scrolling=True)
 
 
@@ -91,6 +85,9 @@ def toon_sector_heatmap(interval, risk_aversion=2):
 
 
 
+
+
+
+
+
 # w
-
-
