@@ -307,7 +307,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     waarden.append({"kleur": kleur, "tekst": tekst})
 
             elif interval == "1d":
-                 laatste_datum = df.index.max().normalize()
+                laatste_datum = df.index.max().normalize()
                    dagen = []
                   while len(dagen) < stappen:
                       if markt == "crypto" or laatste_datum.weekday() < 5:
