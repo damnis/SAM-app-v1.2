@@ -234,7 +234,7 @@ def plot_sat_debug(df, interval):
 # matrix based on fixed calendar structure
 
 def toon_adviesmatrix_html(ticker, risk_aversion=2):
-    toon_matrix = st.toggle("\U0001F4CA Toon Adviesmatrix (HTML)", value=False)
+    toon_matrix = st.toggle("📊 Toon Adviesmatrix (HTML)", value=False)
     if not toon_matrix:
         return
 
@@ -302,7 +302,6 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     match = df[(df["week"] == week_nr) & (df["jaar"] == jaar)]
                     advies = match["Advies"].values
                     kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                #    kleur = "\U0001F7E9" if "Kopen" in advies else "\U0001F7E5" if "Verkopen" in advies else "⬛"
                     tekst = week_start.strftime("%Y-%m-%d") if specs["show_text"] else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
 
@@ -318,7 +317,6 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                 for dag in dagen:
                     advies = df.loc[df.index.normalize() == dag, "Advies"].values
                     kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                #    kleur = "\U0001F7E9" if "Kopen" in advies else "\U0001F7E5" if "Verkopen" in advies else "⬛"
                     tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
                     waarden.append({"kleur": kleur, "tekst": tekst})
 
@@ -354,7 +352,6 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                         df_sub = df[(df.index >= ts) & (df.index < ts + stap)]
                         advies = df_sub["Advies"].values
                         kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-                #        kleur = "\U0001F7E9" if "Kopen" in advies else "\U0001F7E5" if "Verkopen" in advies else "⬛"
                         tekst = ts.strftime("%H:%M") if specs["show_text"] else ""
                         tijdvak_entries.append((ts, {"kleur": kleur, "tekst": tekst}))
 
@@ -365,9 +362,9 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
         except Exception as e:
             st.warning(f"⚠️ Fout bij interval {interval}: {e}")
- #       matrix[interval] = [{"kleur": "⚠️", "tekst": ""} for _ in range(int(stappen))]
+            matrix[interval] = [{"kleur": "⚠️", "tekst": ""} for _ in range(int(stappen))]
 
-            matrix[interval] = [{"kleur": "⚠️", "tekst": ""} for _ in range(specs.get("stappen", 10))]
+ #           matrix[interval] = [{"kleur": "⚠️", "tekst": ""} for _ in range(specs.get("stappen", 10))]
  #       except Exception as e:
   #          st.warning(f"\u26A0\ufe0f Fout bij interval {interval}: {e}")
    #         matrix[interval] = [{"kleur": "\u26A0\ufe0f", "tekst": ""} for _ in range(specs.get("stappen", 10))]
