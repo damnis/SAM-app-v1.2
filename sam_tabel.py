@@ -16,8 +16,8 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
             st.session_state.tabel_lengte = 16
 
     knoptekst = {
-        16: "📈 Toon 50 rijen",
-        50: "📈 Toon 150 rijen",
+        16: "🧮 Toon 50 rijen",
+        50: "🧮 Toon 150 rijen",
         150: "🔁 Toon minder rijen"
     }[st.session_state.tabel_lengte]
 
