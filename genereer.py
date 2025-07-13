@@ -71,7 +71,11 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
             df = calculate_sat(df)
             df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
             df = df.dropna(subset=["Advies"])
-            df.index = pd.to_datetime(df.index).tz_localize("UTC").tz_convert("Europe/Amsterdam")
+            if df.index.tz is None:
+                df.index = pd.to_datetime(df.index).tz_localize("UTC").tz_convert("Europe/Amsterdam")
+            else:
+                df.index = pd.to_datetime(df.index).tz_convert("Europe/Amsterdam")
+     #       df.index = pd.to_datetime(df.index).tz_localize("UTC").tz_convert("Europe/Amsterdam")
    #         df.index = pd.to_datetime(df.index).tz_localize(None)
 
             waarden = []
