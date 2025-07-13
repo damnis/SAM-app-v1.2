@@ -339,6 +339,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
                 waarden = []
 
+                
                 for dag in dagen:
                     if markt == "eur":
                         start_uur = 7
@@ -349,11 +350,14 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 
                     tijdvakken = []
                     if interval == "4h":
-                        tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + 12, 4)]
+                        eind_uur = 24 if markt == "crypto" else 12
+                        tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + eind_uur, 4)]
                     elif interval == "1h":
-                        tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + 9)]
+                        eind_uur = 24 if markt == "crypto" else 9
+                        tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + eind_uur)]
                     elif interval == "15m":
-                        for uur in range(start_uur, start_uur + 9):
+                        eind_uur = 24 if markt == "crypto" else 9
+                        for uur in range(start_uur, start_uur + eind_uur):
                             for kwart in range(0, 60, 15):
                                 tijdstip = dag + pd.Timedelta(hours=uur, minutes=kwart)
                                 tijdvakken.append(tijdstip)
@@ -370,7 +374,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     tijdvak_entries = sorted(tijdvak_entries, key=lambda x: x[0], reverse=True)
                     waarden.extend([entry for _, entry in tijdvak_entries])
 
-            matrix[interval] = waarden
+                matrix[interval] = waarden
+    #        matrix[interval] = waarden
 
         except Exception as e:
             st.warning(f"⚠️ Fout bij interval {interval}: {e}")
