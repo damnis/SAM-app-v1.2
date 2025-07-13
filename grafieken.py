@@ -311,7 +311,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                     if laatste_dag.weekday() < 5:
                         dagen.append(laatste_dag)
                     laatste_dag -= pd.Timedelta(days=1)
-                dagen = sorted(dagen, reverse=True)
+                dagen = sorted(dagen, reverse=False)
 
                 for dag in dagen:
                     if markt == "eur":
