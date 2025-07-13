@@ -389,6 +389,8 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
     html = "<div style='font-family: monospace;'>"
     html += "<div style='display: flex;'>"
 
+    kleurmap = {"🟩": "#2ecc71", "🟥": "#e74c3c", "⬛": "#7f8c8d"}  # grijs voor neutraal
+
     for interval, specs in intervallen_gekozen.items():
         waarden = matrix.get(interval, [])
         blokken_html = "<div style='margin-right: 12px;'>"
@@ -396,12 +398,11 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
         for entry in waarden:
             kleur = entry["kleur"]
             tekst = entry["tekst"]
+            achtergrondkleur = kleurmap.get(kleur, "#95a5a6")  # fallback: lichtgrijs
             blok_html = f"""
                 <div style='
                     width: {specs['breedte'] * 8}px;
                     height: {specs['hoogte'] * 3}px;
-                    kleurmap = {"🟩": "#2ecc71", "🟥": "#e74c3c", "⬛": "#7f8c8d"}  # grijs voor neutraal
-                    achtergrondkleur = kleurmap.get(kleur, "#95a5a6")  # fallback: lichtgrijs
                     background-color: {achtergrondkleur};
                     color: white;
                     text-align: center;
