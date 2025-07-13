@@ -2,36 +2,83 @@
 
 import streamlit as st
 import pandas as pd
-from genereer import genereer_adviesmatrix  # bestaande functie
 from sectorticker import sector_tickers
-from streamlit import cache_data
+from adviezen import determine_advice
+from yffetch import fetch_data_cached
+from utils import format_value  # optioneel
 
-kleurmap = {"Kopen": "#2ecc71", "Verkopen": "#e74c3c", "Neutraal": "#7f8c8d"}
+# Kleuren voor de heatmap
+kleurmap = {"Kopen": "#2ecc71", "Verkopen": "#e74c3c", "Neutraal": "#95a5a6"}
 
 @st.cache_data(ttl=900)
-def genereer_sector_heatmap(sector, interval):
-    tickers = sector_tickers.get(sector, [])
-    matrix_data = []
+def genereer_sector_heatmap(interval):
+    html = "<div style='font-family: monospace;'>"
 
-    for ticker in tickers:
-        matrix = genereer_adviesmatrix(ticker)
-        advies = matrix.get(interval, {}).get("advies", "Neutraal")
-        matrix_data.append({"ticker": ticker, "advies": advies})
+    for sector, tickers in sector_tickers.items():
+        html += f"<h4 style='color: white;'>{sector}</h4>"
+        html += "<div style='display: flex; flex-wrap: wrap;'>"
 
-    return pd.DataFrame(matrix_data)
+        for ticker in tickers:
+            try:
+                df = fetch_data_cached(ticker, interval=interval)
+                df = df.dropna()
+                if df.empty:
+                    advies = "Neutraal"
+                else:
+                    advies = determine_advice(df)[-1]  # Laatste advies
+            except:
+                advies = "Neutraal"
+
+            kleur = kleurmap.get(advies, "#7f8c8d")
+
+            html += f"""
+                <div style='
+                    width: 100px;
+                    height: 60px;
+                    margin: 4px;
+                    background-color: {kleur};
+                    color: white;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    border-radius: 6px;
+                    font-size: 11px;
+                '>
+                    <div><b>{ticker}</b></div>
+                    <div>{advies}</div>
+                </div>
+            """
+
+        html += "</div><hr style='margin: 20px 0;'>"
+
+    html += "</div>"
+    return html
 
 def toon_sector_heatmap(interval):
-    st.subheader(f"📊 Sector Heatmap – Interval: {interval}")
-    for sector in sector_tickers:
-        df = genereer_sector_heatmap(sector, interval)
-        st.markdown(f"### {sector}")
-        cols = st.columns(4)  # 4 kolommen x 4 rijen = 16 blokken
-        for i, row in df.iterrows():
-            kleur = kleurmap.get(row["advies"], "#bdc3c7")
-            with cols[i % 4]:
-                st.markdown(f"""
-                    <div style='background-color:{kleur}; padding:16px; border-radius:8px; text-align:center; color:white;'>
-                        {row['ticker']}<br><small>{row['advies']}</small>
-                    </div>
-                """, unsafe_allow_html=True)
+    st.markdown("### 🔥 Sector Heatmap")
+    html = genereer_sector_heatmap(interval)
+    st.components.v1.html(html, height=1200, scrolling=True)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# w
