@@ -413,10 +413,13 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                 matrix[interval] = waarden
     #        matrix[interval] = waarden
 
+ #       except Exception as e:
+  #          st.warning(f"⚠️ Fout bij interval {interval}: {e}")
+  #          matrix[interval] = [{"kleur": "⚠️", "tekst": ""} for _ in range(int(stappen))]
         except Exception as e:
-            st.warning(f"⚠️ Fout bij interval {interval}: {e}")
-            matrix[interval] = [{"kleur": "⚠️", "tekst": ""} for _ in range(int(stappen))]
-            
+            matrix[interval] = [{"kleur": "⚠️", "tekst": ""}] * specs["stappen"]
+            st.warning(f"Fout bij {interval}: {e}")
+   
           
     # ─────────────────────────────────────────────
     # HTML rendering
