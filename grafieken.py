@@ -232,7 +232,171 @@ def plot_sat_debug(df, interval):
 
 # matrix based on fixed calendar structure
 # matrix based on fixed calendar structure
+
 def toon_adviesmatrix_html(ticker, risk_aversion=2):
+    toon_matrix = st.toggle("\U0001F4CA Toon Adviesmatrix (HTML)", value=False)
+    if not toon_matrix:
+        return
+
+    INTERVALLEN = {
+        "1wk": {"stappen": 3, "breedte": 10, "hoogte": 240, "label": "Week", "show_text": True},
+        "1d": {"stappen": 15, "breedte": 10, "hoogte": 47.7, "label": "Dag", "show_text": True},
+        "4h": {"stappen": 45, "breedte": 10, "hoogte": 15.68, "label": "4u", "show_text": True},
+        "1h": {"stappen": 135, "breedte": 5, "hoogte": 5, "label": "1u", "show_text": True},
+        "15m": {"stappen": 540, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
+    }
+
+    INTERVALLEN_CRYPTO = {
+        "1wk": {"stappen": 3, "breedte": 10, "hoogte": 240, "label": "Week", "show_text": True},
+        "1d": {"stappen": 21, "breedte": 10, "hoogte": 47.7, "label": "Dag", "show_text": True},
+        "4h": {"stappen": 126, "breedte": 10, "hoogte": 15.68, "label": "4u", "show_text": True},
+        "1h": {"stappen": 504, "breedte": 5, "hoogte": 5, "label": "1u", "show_text": True},
+        "15m": {"stappen": 2016, "breedte": 2, "hoogte": 1, "label": "15m", "show_text": False}
+    }
+
+    # Markt bepalen
+    ticker_lower = ticker.lower()
+    eu_suffixes = [
+        ".as", ".br", ".pa", ".mc", ".mi", ".de", ".l", ".es", ".pl", ".he",
+        ".fi", ".at", ".co", ".sw", ".vi", ".ol", ".st", ".ir", ".ls"
+    ]
+
+    if "btc-" in ticker_lower or ticker_lower.startswith("btc-") or ticker_lower.startswith("eth-"):
+        markt = "crypto"
+    elif any(suffix in ticker_lower for suffix in eu_suffixes) or ticker.upper() in ["AEX", "AMX"]:
+        markt = "eur"
+    else:
+        markt = "us"
+
+    matrix = {}
+    intervallen_gekozen = INTERVALLEN_CRYPTO if markt == "crypto" else INTERVALLEN
+
+    for interval, specs in intervallen_gekozen.items():
+        try:
+            stappen = specs["stappen"]
+            df = fetch_data_fmp(ticker, interval=interval) if ":" in ticker or ticker.upper() in ["AEX", "AMX"] else fetch_data(ticker, interval=interval)
+            df = df.dropna().copy()
+            df = calculate_sam(df)
+            df = calculate_sat(df)
+            df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
+            df = df.dropna(subset=["Advies"])
+            df.index = pd.to_datetime(df.index).tz_localize(None)
+
+            waarden = []
+
+            if interval == "1wk":
+                df_weeks = df.index.isocalendar()
+                df["week"] = df_weeks.week
+                df["jaar"] = df_weeks.year
+
+                if markt == "crypto":
+                    weekmomenten = sorted(set(df.index.normalize()), reverse=True)
+                    weekmomenten = [d for d in weekmomenten if d.weekday() == 0][:stappen]
+                else:
+                    laatste_maandag = df.index.max().normalize() - pd.Timedelta(days=df.index.max().weekday())
+                    weekmomenten = [laatste_maandag - pd.Timedelta(weeks=i) for i in range(stappen)]
+
+                for week_start in weekmomenten:
+                    week_nr = week_start.isocalendar().week
+                    jaar = week_start.isocalendar().year
+                    match = df[(df["week"] == week_nr) & (df["jaar"] == jaar)]
+                    advies = match["Advies"].values
+                    kleur = "\U0001F7E9" if "Kopen" in advies else "\U0001F7E5" if "Verkopen" in advies else "⬛"
+                    tekst = week_start.strftime("%Y-%m-%d") if specs["show_text"] else ""
+                    waarden.append({"kleur": kleur, "tekst": tekst})
+
+            elif interval == "1d":
+                laatste_datum = df.index.max().normalize()
+                dagen = []
+                while len(dagen) < stappen:
+                    if markt == "crypto" or laatste_datum.weekday() < 5:
+                        dagen.append(laatste_datum)
+                    laatste_datum -= pd.Timedelta(days=1)
+                dagen = sorted(dagen, reverse=True)
+
+                for dag in dagen:
+                    advies = df.loc[df.index.normalize() == dag, "Advies"].values
+                    kleur = "\U0001F7E9" if "Kopen" in advies else "\U0001F7E5" if "Verkopen" in advies else "⬛"
+                    tekst = dag.strftime("%a")[:2] if specs["show_text"] else ""
+                    waarden.append({"kleur": kleur, "tekst": tekst})
+
+            else:
+                stap = pd.Timedelta("4h") if interval == "4h" else pd.Timedelta("1h") if interval == "1h" else pd.Timedelta("15min")
+                laatste_dag = df.index.max().normalize()
+                dagen = []
+                blokjes_per_dag = (6 if interval == "4h" else 24 if interval == "1h" else 96) if markt == "crypto" else (3 if interval == "4h" else 9 if interval == "1h" else 36)
+
+                while len(dagen) < int(stappen / blokjes_per_dag):
+                    if markt == "crypto" or laatste_dag.weekday() < 5:
+                        dagen.append(laatste_dag)
+                    laatste_dag -= pd.Timedelta(days=1)
+                dagen = sorted(dagen, reverse=True)
+
+                for dag in dagen:
+                    start_uur = 7 if markt == "eur" else 12 if markt == "us" else 0
+                    tijdvakken = []
+                    eind_uur = 24 if markt == "crypto" else (12 if interval == "4h" else 9)
+
+                    if interval == "4h":
+                        tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + eind_uur, 4)]
+                    elif interval == "1h":
+                        tijdvakken = [dag + pd.Timedelta(hours=h) for h in range(start_uur, start_uur + eind_uur)]
+                    elif interval == "15m":
+                        for uur in range(start_uur, start_uur + eind_uur):
+                            for kwart in range(0, 60, 15):
+                                tijdstip = dag + pd.Timedelta(hours=uur, minutes=kwart)
+                                tijdvakken.append(tijdstip)
+
+                    tijdvak_entries = []
+                    for ts in tijdvakken:
+                        df_sub = df[(df.index >= ts) & (df.index < ts + stap)]
+                        advies = df_sub["Advies"].values
+                        kleur = "\U0001F7E9" if "Kopen" in advies else "\U0001F7E5" if "Verkopen" in advies else "⬛"
+                        tekst = ts.strftime("%H:%M") if specs["show_text"] else ""
+                        tijdvak_entries.append((ts, {"kleur": kleur, "tekst": tekst}))
+
+                    tijdvak_entries = sorted(tijdvak_entries, key=lambda x: x[0], reverse=True)
+                    waarden.extend([entry for _, entry in tijdvak_entries])
+
+            matrix[interval] = waarden
+
+        except Exception as e:
+            st.warning(f"\u26A0\ufe0f Fout bij interval {interval}: {e}")
+            matrix[interval] = [{"kleur": "\u26A0\ufe0f", "tekst": ""} for _ in range(specs.get("stappen", 10))]
+
+    # HTML rendering
+    html = "<div style='font-family: monospace;'>"
+    html += "<div style='display: flex;'>"
+
+    for interval, specs in intervallen_gekozen.items():
+        waarden = matrix.get(interval, [])
+        blokken_html = "<div style='margin-right: 12px;'>"
+        blokken_html += f"<div style='text-align: center; font-weight: bold; margin-bottom: 6px;'>{interval}</div>"
+        for entry in waarden:
+            kleur = entry["kleur"]
+            tekst = entry["tekst"]
+            blok_html = f"""
+                <div style='
+                    width: {specs['breedte'] * 8}px;
+                    height: {specs['hoogte'] * 3}px;
+                    background-color: {{'#2ecc71' if kleur == '🟩' else '#e74c3c' if kleur == '🟥' else '#bdc3c7'}};
+                    color: white;
+                    text-align: center;
+                    font-size: 11px;
+                    margin-bottom: 1px;
+                    border-radius: 2px;
+                '>{tekst}</div>
+            """
+            blokken_html += blok_html
+        blokken_html += "</div>"
+        html += blokken_html
+
+    html += "</div></div>"
+    st_html(html, height=600, scrolling=True)
+
+
+# matrix based on fixed calendar structure
+def toon_adviesmatrix_html_bijna(ticker, risk_aversion=2):
     toon_matrix = st.toggle("📊 Toon Adviesmatrix (HTML)", value=False)
     if not toon_matrix:
         return
