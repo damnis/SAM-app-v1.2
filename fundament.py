@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-from fmp_api import get_income_statement, get_ratios
-from extra_data import (
+from datafund import get_income_statement, get_ratios
+from datafund import (
     get_profile, get_key_metrics, get_earning_calendar,
     get_dividend_history, get_quarterly_eps, get_eps_forecast
 )
@@ -107,52 +107,7 @@ if ticker:
                     df_extra[col] = df_extra[col].apply(lambda x: format_value(x, is_percent=is_pct))
             st.dataframe(df_extra.set_index("Jaar")[list(col_renames.values())])
 
-        # 🔹 Extra ratio's per kwartaal (geschat)
- #       with st.expander("🧮 Extra Ratio's per kwartaal (geschat)"):
-   #         if "date" in df_ratio.columns:
-    #            df_ratio["date"] = pd.to_datetime(df_ratio["date"])
-    #            last_date = df_ratio["date"].max()
-     #           quarter_ends = [last_date - pd.DateOffset(months=3 * i) for i in range(4)]
-     #           quarter_rows = []
-
-     #           for q_end in quarter_ends:
-     #               closest_row = df_ratio.iloc[(df_ratio["date"] - q_end).abs().argsort()[:1]]
-      #              quarter_rows.append(closest_row)
-
-     #           df_quarters = pd.concat(quarter_rows).reset_index(drop=True)
-
-                # ❗ Zorg dat lengte overeenkomt
-    #            if len(df_quarters) == len(quarter_ends):
-            #        df_quarters["Kwartaal"] = [q.date() for q in reversed(quarter_ends)]
-#
-       #         df_quarters.rename(columns=col_renames, inplace=True)
-
-                # Format waardes
-    #            for col in col_renames.values():
-    #                if col in df_quarters.columns:
-     #                   is_pct = "marge" in col.lower()
-      #                  df_quarters[col] = df_quarters[col].apply(lambda x: format_value(x, is_percent=is_pct))
-
-       #          if "Kwartaal" in df_quarters.columns:
-       #             st.dataframe(df_quarters.set_index("Kwartaal")[list(col_renames.values())])
-           #     else:
-      #              st.dataframe(df_quarters[list(col_renames.values())])
-   #         
-  #      with st.expander("🧮 Extra Ratio's per kwartaal (geschat)"):
-  #          if "date" in df_ratio.columns:
-  #              df_ratio["date"] = pd.to_datetime(df_ratio["date"])
-  #              last_date = df_ratio["date"].max()
-   #             quarter_ends = [last_date - pd.DateOffset(months=3 * i) for i in range(4)]
-    #            quarter_rows = [df_ratio.iloc[(df_ratio["date"] - q_end).abs().argsort()[:1]] for q_end in quarter_ends]
-     #           df_quarters = pd.concat(quarter_rows).drop_duplicates().copy()
-    #            df_quarters.rename(columns=col_renames, inplace=True)
-    #            df_quarters["Kwartaal"] = [q.date() for q in reversed(quarter_ends)]
-     #           for col in col_renames.values():
-     #               if col in df_quarters.columns:
-     #                   is_pct = "marge" in col.lower()
-     #                   df_quarters[col] = df_quarters[col].apply(lambda x: format_value(x, is_percent=is_pct))
-      #          st.dataframe(df_quarters.set_index("Kwartaal")[list(col_renames.values())])
-
+        
         # 🔹 Extra ratio's per kwartaal (FMP-data)
         with st.expander("🧮 Extra Ratio's per kwartaal (FMP-data)"):
             df_qr = get_ratios(ticker + "?period=quarter")
