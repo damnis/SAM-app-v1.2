@@ -280,7 +280,7 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
 #        INTERVALLEN = INTERVALLEN_CRYPTO
     
 #    for interval, specs in INTERVALLEN.items():
-#        stappen = specs["stappen"]
+        stappen = specs["stappen"]
         try:
             df = fetch_data_fmp(ticker, interval=interval) if ":" in ticker or ticker.upper() in ["AEX", "AMX"] else fetch_data(ticker, interval=interval)
             df = df.dropna().copy()
