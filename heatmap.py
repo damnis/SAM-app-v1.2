@@ -21,7 +21,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
 
         for ticker in tickers[:20]:
             try:
-                df = fetch_data_cached(ticker, interval=interval)
+                df = fetch_data_cached(ticker, interval=interval, period="6mo")
                 if df is None or df.empty or len(df) < 50:
                     advies = "Neutraal"
                 else:
