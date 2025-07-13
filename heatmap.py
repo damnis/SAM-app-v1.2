@@ -4,6 +4,11 @@ import streamlit as st
 from sectorticker import sector_tickers
 from adviezen import determine_advice
 from yffetch import fetch_data_cached
+from 
+
+# ✅ Altijd SAM en SAT berekenen
+    df = calculate_sam(df)
+    df = calculate_sat(df)
 
 # Kleuren voor de heatmap
 kleurmap = {"Kopen": "#2ecc71", "Verkopen": "#e74c3c", "Neutraal": "#95a5a6"}
