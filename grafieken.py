@@ -403,7 +403,9 @@ def toon_adviesmatrix_html(ticker, risk_aversion=2):
                 <div style='
                     width: {specs['breedte'] * 8}px;
                     height: {specs['hoogte'] * 3}px;
-                    background-color: {{'#2ecc71' if kleur == '🟩' else '#e74c3c' if kleur == '🟥' else '#bdc3c7'}};
+                    kleurmap = {"🟩": "#2ecc71", "🟥": "#e74c3c", "⬛": "#7f8c8d"}  # grijs voor neutraal
+                    achtergrondkleur = kleurmap.get(kleur, "#95a5a6")  # fallback: lichtgrijs
+                    background-color: {achtergrondkleur};
                     color: white;
                     text-align: center;
                     font-size: 11px;
