@@ -318,6 +318,12 @@ with col2:
     )
 
 # ------- Toggle voor sector-heatmap (bijv. onder je matrix/tabellen) ---
+from heatmap import toon_sector_heatmap
+
+# Bijvoorbeeld ergens onder je toggle:
+if st.toggle("Toon sector heatmap"):
+    sortering = st.radio("Sorteer tickers per sector op:", ["marktkapitalisatie", "alfabetisch"], horizontal=True)
+    toon_sector_heatmap(sortering=sortering)
 #toon_heatmap = st.toggle("📊 Toon sector heatmap", value=False)
 
 #if toon_heatmap:
@@ -326,12 +332,12 @@ with col2:
 
    # toon_sector_heatmap(interval, risk_aversion, alfabetisch)
     
-if st.toggle("📌 Toon sector-heatmap"):
-    alfabetisch = "Alfabetisch"
-    toon_sector_heatmap(interval, risk_aversion, alfabetisch)
+#if st.toggle("📌 Toon sector-heatmap"):
+#    alfabetisch = "Alfabetisch"
+#    toon_sector_heatmap(interval, risk_aversion, alfabetisch)
  #    toon_sector_heatmap(interval)
 
-# Stel dat je de geselecteerde ticker als 'ticker' hebt
+# advies matrix
 toon_adviesmatrix_html(ticker, risk_aversion=risk_aversion)
 # weergave grafieken via py
 
