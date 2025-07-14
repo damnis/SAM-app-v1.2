@@ -1,89 +1,83 @@
 import streamlit as st
+from datetime import datetime
 from sectorticker import sector_tickers
-from yffetch import fetch_data
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
 from adviezen import determine_advice, weighted_moving_average
 from grafieken import bepaal_grafiekperiode_heat
-from datetime import datetime
 
+import yfinance as yf
+import pandas as pd
+
+# Kleuren voor de heatmap
 kleurmap = {
     "Kopen": "#2ecc71",
     "Verkopen": "#e74c3c",
     "Neutraal": "#95a5a6"
 }
 
+# Lokale data-ophaalfunctie met startdatum
+@st.cache_data(ttl=900)
+def fetch_data_by_dates(ticker, interval, start, end=None):
+    if end is None:
+        end = datetime.today()
+    df = yf.download(ticker, interval=interval, start=start, end=end)
+    if df.empty or "Close" not in df.columns:
+        return pd.DataFrame()
+
+    df.index = pd.to_datetime(df.index, errors="coerce")
+    df = df[~df.index.isna()]
+    df = df[(df["Volume"] > 0) & ((df["Open"] != df["Close"]) | (df["High"] != df["Low"]))]
+    for col in ["Close", "Open", "High", "Low", "Volume"]:
+        df[col] = df[col].fillna(method="ffill").fillna(method="bfill")
+    return df
+
 @st.cache_data(ttl=900)
 def genereer_sector_heatmap(interval, risk_aversion=2):
     html = "<div style='font-family: monospace;'>"
 
+    periode = bepaal_grafiekperiode_heat(interval)
+    start_date = datetime.today() - periode
+
     for sector, tickers in sector_tickers.items():
         html += f"<h4 style='color: white;'>{sector}</h4>"
-        html += "<div style='display: flex; flex-wrap: wrap; max-width: 620px;'>"
+        html += "<div style='display: flex; flex-wrap: wrap; max-width: 600px;'>"
 
-        blokken = []  # tijdelijke opslag voor sortering
+        adviezen_lijst = []
 
         for ticker in tickers[:20]:
             try:
-                periode = bepaal_grafiekperiode_heat(interval)
-                eind_datum = datetime.now()
-                start_datum = eind_datum - periode
-                
-                df = fetch_data(ticker, interval)
-                df = df[df.index >= start_datum]
-
-                if df is None or df.empty or len(df) < 50:
+                df = fetch_data_by_dates(ticker, interval=interval, start=start_date)
+                if df.empty or len(df) < 50:
                     advies = "Neutraal"
+                    tooltip = "Geen data"
                 else:
                     df = calculate_sam(df)
                     df = calculate_sat(df)
-                    advies_lijst, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
-                    advies = advies_lijst[-1] if len(advies_lijst) > 0 else "Neutraal"
-
-                kleur = kleurmap.get(advies, "#7f8c8d")
-                laatste_koers = df["Close"].iloc[-1] if not df.empty else "-"
-                laatste_datum = df.index[-1].strftime("%Y-%m-%d") if not df.empty else "-"
-
-                blokken.append({
-                    "ticker": ticker,
-                    "advies": advies,
-                    "kleur": kleur,
-                    "koers": laatste_koers,
-                    "datum": laatste_datum
-                })
-
+                    adviezen = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
+                    advies = adviezen[-1] if len(adviezen) else "Neutraal"
+                    laatste_koers = df["Close"].iloc[-1]
+                    laatste_datum = df.index[-1].strftime("%Y-%m-%d")
+                    tooltip = f"Laatste koers: {laatste_koers:.2f} op {laatste_datum}"
             except Exception as e:
-                blokken.append({
-                    "ticker": ticker,
-                    "advies": "Neutraal",
-                    "kleur": kleurmap["Neutraal"],
-                    "koers": "-",
-                    "datum": "-"
-                })
+                st.warning(f"⚠️ Fout bij {ticker}: {e}")
+                advies = "Neutraal"
+                tooltip = "Fout"
 
-        # Sorteren op kleurvolgorde (Kopen, Neutraal, Verkopen)
+            adviezen_lijst.append((advies, ticker, tooltip))
+
+        # Sorteer op advieskleur: Kopen > Neutraal > Verkopen
         volgorde = {"Kopen": 0, "Neutraal": 1, "Verkopen": 2}
-        blokken.sort(key=lambda x: volgorde.get(x["advies"], 99))
+        adviezen_lijst.sort(key=lambda x: volgorde.get(x[0], 3))
 
-        for blok in blokken:
-            tooltip = f"Laatste koers: {blok['koers']}\nDatum: {blok['datum']}"
+        for advies, ticker, tooltip in adviezen_lijst:
+            kleur = kleurmap.get(advies, "#7f8c8d")
             html += f"""
-                <div title='{tooltip}' style='
-                    width: 100px;
-                    height: 60px;
-                    margin: 4px;
-                    background-color: {blok['kleur']};
-                    color: white;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    border-radius: 6px;
-                    font-size: 11px;
-                    text-align: center;
-                '>
-                    <div><b>{blok['ticker']}</b></div>
-                    <div>{blok['advies']}</div>
+                <div style='width: 100px; height: 60px; margin: 4px; background-color: {kleur}; color: white;
+                    display: flex; flex-direction: column; justify-content: center; align-items: center;
+                    border-radius: 6px; font-size: 11px; text-align: center;' title='{tooltip}'>
+                    <div><b>{ticker}</b></div>
+                    <div>{advies}</div>
                 </div>
             """
 
@@ -95,7 +89,15 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
 def toon_sector_heatmap(interval, risk_aversion=2):
     st.markdown("### 🔥 Sector Heatmap")
     html = genereer_sector_heatmap(interval, risk_aversion=risk_aversion)
-    st.components.v1.html(html, height=1500, scrolling=True)
+    st.components.v1.html(html, height=1400, scrolling=True)
+
+
+
+
+
+
+
+
 
 
 
