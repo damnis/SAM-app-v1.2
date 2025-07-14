@@ -2,7 +2,6 @@
 import requests
 import json
 
-API_KEY = st.secrets["FMP_API_KEY"]
 
 def test_fmp_endpoint():
     st.subheader("🧪 FMP API Test Tool")
