@@ -67,7 +67,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
             adviezen_lijst.append((advies, ticker, tooltip))
 
         # Sorteer op advieskleur: Kopen > Neutraal > Verkopen
-        volgorde = {"Kopen": 0, "Neutraal": 1, "Verkopen": 2}
+        volgorde = {"Kopen": 0, "Verkopen": 1, "Neutraal": 2}
         adviezen_lijst.sort(key=lambda x: volgorde.get(x[0], 3))
 
         for advies, ticker, tooltip in adviezen_lijst:
