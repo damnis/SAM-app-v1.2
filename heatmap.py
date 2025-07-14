@@ -6,7 +6,7 @@ from yffetch import fetch_data_cached
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
 from adviezen import determine_advice, weighted_moving_average
-from grafieken import bepaal_grafiekperiode
+from grafieken import bepaal_grafiekperiode_heat
 from datetime import timedelta
 
 # Kleuren voor de heatmap
