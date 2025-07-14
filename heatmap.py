@@ -93,7 +93,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2, alfabetisch=False):
     return html
 
 def toon_sector_heatmap(interval, risk_aversion=2, alfabetisch=False):
-    st.markdown("### \ud83d\udd25 Sector Heatmap")
+    st.markdown("### 🔥 Sector Heatmap")
     html = genereer_sector_heatmap(interval, risk_aversion=risk_aversion, alfabetisch=alfabetisch)
     st.components.v1.html(html, height=1400, scrolling=True)
 
