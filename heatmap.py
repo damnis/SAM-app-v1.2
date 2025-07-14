@@ -49,29 +49,37 @@ def genereer_sector_heatmap_old(interval, risk_aversion=2):
                     else:
                         advies = "Neutraal"
 
+# === heatmap.py ===
+
+
+# Kleuren voor de heatmap
+kleurmap = {
+    "Kopen": "#2ecc71",
+    "Verkopen": "#e74c3c",
+    "Neutraal": "#95a5a6"
+}
 
 @st.cache_data(ttl=900)
 def genereer_sector_heatmap(interval, risk_aversion=2):
     html = "<div style='font-family: monospace;'>"
 
-    period = bepaal_grafiekperiode_heat(interval)
-#    periode_td = bepaal_grafiekperiode_heat(interval)
-#    period = timedelta_to_yf_period(periode_td)
-
     for sector, tickers in sector_tickers.items():
         html += f"<h4 style='color: white;'>{sector}</h4>"
         html += "<div style='display: flex; flex-wrap: wrap; max-width: 600px;'>"
 
-        for ticker in tickers[:20]:  # maximaal 20 per sector
+        for ticker in tickers[:20]:  # max 20 per sector
             try:
-                df = fetch_data_cached(ticker, interval, period)
+                start_date = datetime.now() - bepaal_grafiekperiode_heat(interval)
+                df = fetch_data_cached(ticker, interval=interval, start=start_date)
+
                 if df is None or df.empty or len(df) < 50:
                     advies = "Neutraal"
                 else:
                     df = calculate_sam(df)
                     df = calculate_sat(df)
-                    adviezen = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
-                    advies = adviezen[-1] if isinstance(adviezen, list) and adviezen else "Neutraal"
+                    df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
+                    advies = df["Advies"].iloc[-1]
+
             except Exception as e:
                 st.write(f"⚠️ Fout bij {ticker}: {e}")
                 advies = "Neutraal"
@@ -97,11 +105,8 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
                     <div>{advies}</div>
                 </div>
             """
-     #  DEBUG
-            st.write(f"ðŸ“ˆ {ticker} ({interval}): {advies}")
-            if "Advies" in df.columns:
-                st.dataframe(df[["Close", "SAM", "Trend", "Advies"]].tail(3))
- #       html += "</div><hr style='margin: 20px 0;'>"
+
+        html += "</div><hr style='margin: 20px 0;'>"
 
     html += "</div>"
     return html
@@ -110,6 +115,7 @@ def toon_sector_heatmap(interval, risk_aversion=2):
     st.markdown("### 🔥 Sector Heatmap")
     html = genereer_sector_heatmap(interval, risk_aversion=risk_aversion)
     st.components.v1.html(html, height=1400, scrolling=True)
+
 
 
 
