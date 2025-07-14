@@ -62,7 +62,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2, alfabetisch=False):
                     adviezen = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
                     advies = adviezen[-1] if len(adviezen) else "Neutraal"
             except Exception as e:
-                st.warning(f"\u26a0\ufe0f Fout bij {ticker}: {e}")
+                st.warning(f"⚠️ Fout bij {ticker}: {e}")
                 advies = "Neutraal"
 
             kleur = kleurmap.get(advies, "#7f8c8d")
