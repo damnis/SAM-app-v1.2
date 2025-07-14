@@ -378,6 +378,38 @@ def test_yfinance():
         except Exception as e:
             st.error(f"❌ Fout: {e}")
 
+# toevoeging yfinance test
+
+def test_analyst_data_yf(ticker):
+    st.subheader("🧠 Analystenadviezen (Yahoo Finance)")
+
+    try:
+        yf_ticker = yf.Ticker(ticker)
+        info = yf_ticker.info
+
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Aantal analisten", info.get("numberOfAnalystOpinions", "-"))
+        col2.metric("Gemiddeld advies", info.get("recommendationMean", "-"))
+        col3.metric("Samenvatting", info.get("recommendationKey", "-"))
+
+        st.caption("Legenda advies: 1=Strong Buy, 2=Buy, 3=Hold, 4=Underperform, 5=Sell")
+
+        st.markdown("---")
+        st.markdown("📜 Laatste aanbevelingen van analisten:")
+
+        try:
+            df_rec = yf_ticker.recommendations
+            if df_rec is not None and not df_rec.empty:
+                st.dataframe(df_rec.tail(10))
+            else:
+                st.info("Geen aanbevelingen beschikbaar voor deze ticker.")
+        except Exception as e:
+            st.warning(f"Kon aanbevelingen niet ophalen: {e}")
+
+    except Exception as e:
+        st.error(f"Fout bij ophalen van yfinance-analystdata: {e}")
+
+
 
     
 
