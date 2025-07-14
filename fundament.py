@@ -74,7 +74,13 @@ def toon_ratios(ratio_data):
                     df_extra[col] = df_extra[col].apply(lambda x: format_value(x, is_percent=is_pct))
             st.dataframe(df_extra.set_index("Jaar")[list(col_renames.values())])
 
-# hier geknipt
+        # 🔹 Extra ratio's per kwartaal (FMP-data)
+        with st.expander("🧮 Extra Ratio's per kwartaal (FMP-data)"):
+            df_qr = get_ratios(ticker + "?period=quarter")
+            if isinstance(df_qr, list) and len(df_qr) > 0:
+                df_qr = pd.DataFrame(df_qr)
+
+
         
 
 # belangrijke datums 
@@ -165,19 +171,27 @@ def toon_fundamentals(ticker):
         with st.expander("📐 Ratio's over de jaren"):
             st.dataframe(df_ratio_fmt.set_index("Jaar")[["K/W", "ROE (%)", "Debt/Equity"]])
 
-    # 🔹 Extra ratio's per kwartaal (FMP-data)
-        with st.expander("🧮 Extra Ratio's per kwartaal (FMP-data)"):
+    
+            # 🔹 Kwartaalratio's
+        try:
             df_qr = get_ratios(ticker + "?period=quarter")
             if isinstance(df_qr, list) and len(df_qr) > 0:
                 df_qr = pd.DataFrame(df_qr)
-
-        # Herbenoemen van kolommen waar mogelijk
+                col_renames = {
+                    "currentRatio": "Current ratio",
+                    "quickRatio": "Quick ratio",
+                    "grossProfitMargin": "Bruto marge",
+                    "operatingProfitMargin": "Operationele marge",
+                    "netProfitMargin": "Netto marge",
+                    "returnOnAssets": "Rentabiliteit",
+                    "inventoryTurnover": "Omloopsnelheid",
+                }
+    
                 df_qr.rename(columns=col_renames, inplace=True)
                 df_qr.rename(columns={"date": "Kwartaal"}, inplace=True)
-
                 df_qr["Kwartaal"] = pd.to_datetime(df_qr["Kwartaal"]).dt.date
-
-        # Format alle numerieke kolommen
+    
+                # Format alle numerieke kolommen
                 for col in df_qr.columns:
                     if col == "Kwartaal":
                         continue
@@ -187,11 +201,15 @@ def toon_fundamentals(ticker):
                         else:
                             df_qr[col] = df_qr[col].apply(format_value)
                     except:
-                        pass  # Niet-numeriek of error: negeren
-
-                st.dataframe(df_qr.set_index("Kwartaal"))
+                        pass
+    
+                with st.expander("🧮 Ratio’s per kwartaal"):
+                    st.dataframe(df_qr.set_index("Kwartaal"))
             else:
-                st.warning("Geen kwartaalratio-data gevonden.")
+                st.info("📭 Geen kwartaalratio's gevonden.")
+        except Exception as e:
+            st.warning(f"⚠️ Fout bij kwartaalratio's: {e}")
+
                 
 
     # 🔹 Earnings & Dividends
