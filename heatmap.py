@@ -9,47 +9,6 @@ from adviezen import determine_advice, weighted_moving_average
 from grafieken import bepaal_grafiekperiode_heat
 from datetime import timedelta
 
-# Kleuren voor de heatmap
-kleurmap = {
-    "Kopen": "#2ecc71",
-    "Verkopen": "#e74c3c",
-    "Neutraal": "#95a5a6"
-}
-
-# 🔁 Converteer timedelta naar yfinance-string
-def timedelta_to_yf_period(td):
-    days = td.days
-    if days <= 30:
-        return f"{days}d"
-    elif days <= 365:
-        return f"{days // 30}mo"
-    else:
-        return f"{days // 365}y"
-
-@st.cache_data(ttl=900)
-def genereer_sector_heatmap_old(interval, risk_aversion=2):
-    html = "<div style='font-family: monospace;'>"
-
-    for sector, tickers in sector_tickers.items():
-        html += f"<h4 style='color: white;'>{sector}</h4>"
-        html += "<div style='display: flex; flex-wrap: wrap; max-width: 600px;'>"
-
-        for ticker in tickers[:20]:  # max 20 per sector
-            try:
-                df = fetch_data(ticker, interval)
-                if df is None or df.empty or len(df) < 30:
-                    advies = "Neutraal"
-                else:
-                    df = calculate_sam(df)
-                    df = calculate_sat(df)
-                    df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
-
-                    if "Advies" in df.columns:
-                        advies = df["Advies"].iloc[-1]
-                    else:
-                        advies = "Neutraal"
-
-# === heatmap.py ===
 
 
 # Kleuren voor de heatmap
