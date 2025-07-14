@@ -329,7 +329,7 @@ sortering_nl = st.selectbox(
 volgorde = "marketcap" if sortering_nl == "Marktkapitalisatie" else "alphabetisch"
 
 # 🗺️ Toon de heatmap
-toon_sector_heatmap(interval=gekozen_interval, risk_aversion=gekozen_risk_aversion, volgorde=volgorde)
+toon_sector_heatmap(interval, risk_aversion, volgorde=volgorde)
 
 # Bijvoorbeeld ergens onder je toggle:
 #if st.toggle("📌 Toon sector heatmap"):
