@@ -34,7 +34,7 @@ def format_value(value, is_percent=False):
 
 
 # kerninfo
-def toon_profiel_en_kerninfo(profile, key_metrics):
+def toon_profiel_en_kerninfo(profile, key_metrics, income_statement=None):
     if profile and key_metrics:
         with st.expander("🧾 Bedrijfsprofiel & Kerninfo", expanded=True):
             col1, col2, col3 = st.columns(3)
@@ -44,7 +44,18 @@ def toon_profiel_en_kerninfo(profile, key_metrics):
             col2.metric("Dividendrendement", format_value(key_metrics.get("dividendYield", 0), is_percent=True))
             col3.metric("Payout Ratio", format_value(key_metrics.get("payoutRatio", 0), is_percent=True))
             col3.metric("Aantal medewerkers", format_value(profile.get("fullTimeEmployees")))
+
+            # ➕ Derde rij uit income_statement
+            if income_statement and isinstance(income_statement, list) and len(income_statement) > 0:
+                laatste = income_statement[0]  # meest recente
+                st.markdown("---")
+                col1, col2, col3 = st.columns(3)
+                col1.metric("WPA", format_value(laatste.get("eps")))
+                col2.metric("Netto winst %", format_value(laatste.get("netIncomeRatio", 0), is_percent=True))
+                col3.metric("Bruto winst %", format_value(laatste.get("grossProfitRatio", 0), is_percent=True))
+
             st.caption(profile.get("description", ""))
+
 
 # omzet en winst
 def toon_omzet_winst_eps(income_data):
@@ -142,12 +153,15 @@ def toon_fundamentals(ticker):
         st.warning("📭 Geen fundamentele data gevonden voor deze ticker.")
         return
 
+    # ------------------------------------------------------
     # ALLES WAT NU KOMT moet dus binnen de functie blijven!
+    # ------------------------------------------------------
     # 🔹 Profiel
     with st.expander("🧾 Bedrijfsprofiel & Kerninfo", expanded=True):
         ...
 
     # 🔹 Profiel
+     
     with st.expander("🧾 Bedrijfsprofiel & Kerninfo", expanded=True):
         col1, col2, col3 = st.columns(3)
         col1.metric("Prijs", format_value(profile.get("price")))
@@ -156,6 +170,16 @@ def toon_fundamentals(ticker):
         col2.metric("Dividendrendement", format_value(key_metrics.get("dividendYield", 0), is_percent=True) if key_metrics else "-")
         col3.metric("Payout Ratio", format_value(key_metrics.get("payoutRatio", 0), is_percent=True) if key_metrics else "-")
         col3.metric("Aantal medewerkers", format_value(profile.get("fullTimeEmployees")))
+        
+        # ➕ Derde rij uit income_statement
+        if income_statement and isinstance(income_statement, list) and len(income_statement) > 0:
+            laatste = income_statement[0]  # meest recente
+            st.markdown("---")
+            col1, col2, col3 = st.columns(3)
+            col1.metric("WPA", format_value(laatste.get("eps")))
+            col2.metric("Netto winst %", format_value(laatste.get("netIncomeRatio", 0), is_percent=True))
+            col3.metric("Bruto winst %", format_value(laatste.get("grossProfitRatio", 0), is_percent=True))
+        
         st.caption(profile.get("description", ""))
 
     # 🔹 Omzet, Winst, EPS
