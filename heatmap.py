@@ -3,6 +3,7 @@
 import streamlit as st
 from sectorticker import sector_tickers
 from yffetch import fetch_data
+from grafieken import bepaal_grafiekperiode
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
 from adviezen import determine_advice, weighted_moving_average
