@@ -351,33 +351,48 @@ def test_fmp_endpoint():
  # ---------------
 # yfinance test
 
+@st.cache_data(ttl=1800)  # cache 30 minuten
+def get_yf_data(ticker):
+    yf_ticker = yf.Ticker(ticker)
+    return {
+        "info": yf_ticker.info,
+        "dividends": yf_ticker.dividends,
+        "splits": yf_ticker.splits,
+        "financials": yf_ticker.financials,
+        "balance_sheet": yf_ticker.balance_sheet,
+        "cashflow": yf_ticker.cashflow,
+        "recommendations": yf_ticker.recommendations,
+    }
+
 def test_yfinance():
     st.subheader("📊 YFinance Test Tool")
 
     ticker = st.text_input("Voer een ticker in (bijv. AAPL, ASML):", key="yf_ticker")
     if st.button("🔍 Haal YF Data op"):
         try:
-            yf_ticker = yf.Ticker(ticker)
+            data = get_yf_data(ticker)
+
             st.write("💡 Informatie:")
-            st.json(yf_ticker.info)
+            st.json(data["info"])
 
             st.write("📈 Dividenden:")
-            st.dataframe(yf_ticker.dividends)
+            st.dataframe(data["dividends"])
 
             st.write("📉 Splitsingen:")
-            st.dataframe(yf_ticker.splits)
+            st.dataframe(data["splits"])
 
             st.write("💵 Financiële data:")
-            st.dataframe(yf_ticker.financials)
+            st.dataframe(data["financials"])
 
             st.write("💰 Balans:")
-            st.dataframe(yf_ticker.balance_sheet)
+            st.dataframe(data["balance_sheet"])
 
             st.write("📊 Cashflow:")
-            st.dataframe(yf_ticker.cashflow)
+            st.dataframe(data["cashflow"])
 
         except Exception as e:
             st.error(f"❌ Fout: {e}")
+
 
 # toevoeging yfinance test
 
@@ -385,8 +400,8 @@ def test_analyst_data_yf(ticker):
     st.subheader("🧠 Analystenadviezen (Yahoo Finance)")
 
     try:
-        yf_ticker = yf.Ticker(ticker)
-        info = yf_ticker.info
+        data = get_yf_data(ticker)
+        info = data["info"]
 
         col1, col2, col3 = st.columns(3)
         col1.metric("Aantal analisten", info.get("numberOfAnalystOpinions", "-"))
@@ -398,24 +413,14 @@ def test_analyst_data_yf(ticker):
         st.markdown("---")
         st.markdown("📜 Laatste aanbevelingen van analisten:")
 
-        try:
-            df_rec = yf_ticker.recommendations
-            if df_rec is not None and not df_rec.empty:
-                st.dataframe(df_rec.tail(10))
-            else:
-                st.info("Geen aanbevelingen beschikbaar voor deze ticker.")
-        except Exception as e:
-            st.warning(f"Kon aanbevelingen niet ophalen: {e}")
+        df_rec = data["recommendations"]
+        if df_rec is not None and not df_rec.empty:
+            st.dataframe(df_rec.tail(10))
+        else:
+            st.info("Geen aanbevelingen beschikbaar voor deze ticker.")
 
     except Exception as e:
         st.error(f"Fout bij ophalen van yfinance-analystdata: {e}")
-
-
-
-    
-
-
-
 
 
 
