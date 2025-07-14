@@ -324,11 +324,7 @@ if toon_heatmap:
     sortering = st.radio("📚 Sorteer tickers", ["Origineel", "Alfabetisch"], horizontal=True)
     alfabetisch = sortering == "Alfabetisch"
 
-    toon_sector_heatmap(
-        interval,
-        risk_aversion,
-        alfabetisch=alfabetisch
-    )
+    toon_sector_heatmap(interval, risk_aversion, alfabetisch)
     
 #if st.toggle("📌 Toon sector-heatmap"):
    # toon_sector_heatmap(interval, risk_aversion=risk_aversion)
