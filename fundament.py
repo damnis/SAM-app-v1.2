@@ -5,9 +5,6 @@ from datafund import (
     get_profile, get_key_metrics, get_earning_calendar,
     get_dividend_history, get_quarterly_eps, get_eps_forecast
 )
-#from utils import format_value  # hulpfunctie voor formatting
-
-
 
 def format_value(value, is_percent=False):
     try:
@@ -46,18 +43,7 @@ def toon_omzet_winst_eps(income_data):
         with st.expander("📈 Omzet, Winst en EPS"):
             st.dataframe(df.set_index("Jaar")[["Omzet", "Winst", "WPA"]])
 
-        # 🔹 Grafieken
-#        with st.expander("📊 Grafieken"):
- #           col1, col2 = st.columns(2)
-   #         with col1:
-   #             st.line_chart(df_income.set_index("date")[["revenue", "netIncome"]])
-   #         with col2:
-     #           chart_df = df_ratio.set_index("date")[["priceEarningsRatio", "returnOnEquity"]].copy()
-      #          chart_df["returnOnEquity"] *= 100
-     #           chart_df.rename(columns={"priceEarningsRatio": "K/W", "returnOnEquity": "ROE (%)"}, inplace=True)
-    #            st.line_chart(chart_df)
-
-
+        
 # ratio's fmp
 def toon_ratios(ratio_data):
     if ratio_data:
