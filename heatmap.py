@@ -45,6 +45,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
 
         adviezen_lijst = []
 
+  #      for ticker in sorted(tickers[:20]):  # alfabetische volgorde
         for ticker in tickers[:20]:
             try:
                 df = fetch_data_by_dates(ticker, interval=interval, start=start_date)
