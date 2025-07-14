@@ -64,9 +64,9 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
             """
 
             # 🐞 DEBUG
-            st.write(f"📈 {ticker} ({interval}): {advies}")
-            if "Advies" in df.columns:
-                st.dataframe(df[["Close", "SAM", "Trend", "Advies"]].tail(3))
+  #          st.write(f"📈 {ticker} ({interval}): {advies}")
+  #          if "Advies" in df.columns:
+   #             st.dataframe(df[["Close", "SAM", "Trend", "Advies"]].tail(3))
 
         html += "</div><hr style='margin: 20px 0;'>"
 
