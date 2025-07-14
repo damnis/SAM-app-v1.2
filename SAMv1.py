@@ -326,7 +326,7 @@ if toon_heatmap:
 
     toon_sector_heatmap(
         interval,
-        risk_aversion=gekozen_risk,
+        risk_aversion=risk_aversion,
         alfabetisch=alfabetisch
     )
     
