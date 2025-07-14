@@ -113,7 +113,7 @@ def toon_sector_heatmap(interval, risk_aversion=2, sorteer_op="marktkapitalisati
     )
 
     html = genereer_sector_heatmap(interval, risk_aversion=risk_aversion, sorteer_op=sorteer_optie)
-    st.components.v1.html(html, height=1500, scrolling=True)
+    st.components.v1.html(html, height=500, scrolling=True)
 
 
 
