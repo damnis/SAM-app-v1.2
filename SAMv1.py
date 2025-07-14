@@ -34,7 +34,8 @@ from datafund import (
 )
 from fundament import (
     toon_profiel_en_kerninfo, toon_omzet_winst_eps, toon_ratios,
-    toon_datums, test_fmp_endpoint, test_yfinance, test_analyst_data_yf
+    toon_datums, test_fmp_endpoint, test_yfinance, test_analyst_data_yf,
+    get_yf_data
 )
 from fundament import toon_fundamentals 
 # Backtestfunctie 
