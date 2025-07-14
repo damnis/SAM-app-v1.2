@@ -43,8 +43,9 @@ def toon_profiel_en_kerninfo(profile, key_metrics):
             col2.metric("Dividend (per aandeel)", format_value(profile.get("lastDiv")))
             col2.metric("Dividendrendement", format_value(key_metrics.get("dividendYield", 0), is_percent=True))
             col3.metric("Payout Ratio", format_value(key_metrics.get("payoutRatio", 0), is_percent=True))
-            st.write("✅ fullTimeEmployees:", profile.get("fullTimeEmployees"))
-            col3.metric("Aantal medewerkers", format_value(profile.get("fullTimeEmployees")))
+            col3.metric("Aantal medewerkers", format_value(123456))
+#            st.write("✅ fullTimeEmployees:", profile.get("fullTimeEmployees"))
+ #           col3.metric("Aantal medewerkers", format_value(profile.get("fullTimeEmployees")))
             st.caption(profile.get("description", ""))
 
 # omzet en winst
