@@ -346,7 +346,38 @@ def test_fmp_endpoint():
             st.error(f"❌ Fout: {e}")
 
     
-    
+ # ---------------
+# yfinance test
+
+def test_yfinance():
+    st.subheader("📊 YFinance Test Tool")
+
+    ticker = st.text_input("Voer een ticker in (bijv. AAPL, ASML):", key="yf_ticker")
+    if st.button("🔍 Haal YF Data op"):
+        try:
+            yf_ticker = yf.Ticker(ticker)
+            st.write("💡 Informatie:")
+            st.json(yf_ticker.info)
+
+            st.write("📈 Dividenden:")
+            st.dataframe(yf_ticker.dividends)
+
+            st.write("📉 Splitsingen:")
+            st.dataframe(yf_ticker.splits)
+
+            st.write("💵 Financiële data:")
+            st.dataframe(yf_ticker.financials)
+
+            st.write("💰 Balans:")
+            st.dataframe(yf_ticker.balance_sheet)
+
+            st.write("📊 Cashflow:")
+            st.dataframe(yf_ticker.cashflow)
+
+        except Exception as e:
+            st.error(f"❌ Fout: {e}")
+
+
     
 
 
