@@ -1,21 +1,19 @@
 import streamlit as st
 from datetime import datetime
-from sectorticker import sector_tickers
+from sectorticker import sector_tickers, market_caps
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
-from adviezen import determine_advice, weighted_moving_average
+from adviezen import determine_advice
 from grafieken import bepaal_grafiekperiode_heat
 import yfinance as yf
 import pandas as pd
 
-# Kleuren voor de heatmap
 kleurmap = {
     "Kopen": "#2ecc71",
     "Verkopen": "#e74c3c",
     "Neutraal": "#95a5a6"
 }
 
-# Ophalen van data binnen bepaalde periode
 @st.cache_data(ttl=900)
 def fetch_data_by_dates(ticker, interval, start, end=None):
     if end is None:
@@ -23,6 +21,7 @@ def fetch_data_by_dates(ticker, interval, start, end=None):
     df = yf.download(ticker, interval=interval, start=start, end=end)
     if df.empty or "Close" not in df.columns:
         return pd.DataFrame()
+
     df.index = pd.to_datetime(df.index, errors="coerce")
     df = df[~df.index.isna()]
     df = df[(df["Volume"] > 0) & ((df["Open"] != df["Close"]) | (df["High"] != df["Low"]))]
@@ -31,15 +30,27 @@ def fetch_data_by_dates(ticker, interval, start, end=None):
     return df
 
 @st.cache_data(ttl=900)
-def genereer_sector_heatmap(interval, risk_aversion=2, sorteer_op="marktkapitalisatie"):
-    html = "<div style='font-family: monospace;'>"
+def genereer_sector_heatmap(interval, risk_aversion=2, sortering="Marktkapitalisatie"):
     periode = bepaal_grafiekperiode_heat(interval)
     start_date = datetime.today() - periode
 
+    # Sorteer tickers per sector
+    sectoren = {}
     for sector, tickers in sector_tickers.items():
-        alle_adviezen = {}
+        if sortering == "Alfabetisch":
+            sectoren[sector] = sorted(tickers)
+        else:  # sorteer op marktkapitalisatie
+            sectoren[sector] = sorted(
+                tickers,
+                key=lambda t: market_caps.get(t, 0),
+                reverse=True
+            )
 
-        for ticker in tickers[:20]:
+    resultaten = {}
+
+    for sector, tickers in sectoren.items():
+        blokken = ""
+        for ticker in tickers[:20]:  # max 20 per sector
             try:
                 df = fetch_data_by_dates(ticker, interval=interval, start=start_date)
                 if df.empty or len(df) < 50:
@@ -52,55 +63,45 @@ def genereer_sector_heatmap(interval, risk_aversion=2, sorteer_op="marktkapitali
             except Exception as e:
                 st.warning(f"⚠️ Fout bij {ticker}: {e}")
                 advies = "Neutraal"
-            alle_adviezen[ticker] = advies
 
-        # Sorteer tickers volgens gekozen methode
-        if sorteer_op == "alfabetisch":
-            gesorteerde_tickers = sorted(alle_adviezen.keys())
-        else:
-            gesorteerde_tickers = tickers[:20]  # volgorde uit de lijst
+            kleur = kleurmap.get(advies, "#7f8c8d")
 
-        # Sectortitel en uitklapbare box
-        with st.expander(f"📌 {sector}", expanded=sector in list(sector_tickers.keys())[:2]):
-            html += f"<h4 style='color: white;'>{sector}</h4>"
-            html += "<div style='display: flex; flex-wrap: wrap; max-width: 600px;'>"
+            blokken += f"""
+                <div style='
+                    width: 100px;
+                    height: 60px;
+                    margin: 4px;
+                    background-color: {kleur};
+                    color: white;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    border-radius: 6px;
+                    font-size: 11px;
+                    text-align: center;
+                '>
+                    <div><b>{ticker}</b></div>
+                    <div>{advies}</div>
+                </div>
+            """
 
-            for ticker in gesorteerde_tickers:
-                advies = alle_adviezen.get(ticker, "Neutraal")
-                kleur = kleurmap.get(advies, "#7f8c8d")
-                html += f"""
-                    <div style='
-                        width: 100px;
-                        height: 60px;
-                        margin: 4px;
-                        background-color: {kleur};
-                        color: white;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        align-items: center;
-                        border-radius: 6px;
-                        font-size: 11px;
-                        text-align: center;
-                    '>
-                        <div><b>{ticker}</b></div>
-                        <div>{advies}</div>
-                    </div>
-                """
+        resultaten[sector] = blokken
 
-            html += "</div><hr style='margin: 20px 0;'>"
+    return resultaten
 
-    html += "</div>"
-    return html
-
-def toon_sector_heatmap(interval, risk_aversion=2):
+def toon_sector_heatmap(interval, risk_aversion=2, sortering="Marktkapitalisatie"):
     st.markdown("### 🔥 Sector Heatmap")
-    sorteer_op = st.radio("Sorteer tickers op:", ["marktkapitalisatie", "alfabetisch"], horizontal=True)
-    html = genereer_sector_heatmap(interval, risk_aversion=risk_aversion, sorteer_op=sorteer_op)
-    st.components.v1.html(html, height=1400, scrolling=True)
 
+    resultaten = genereer_sector_heatmap(interval, risk_aversion=risk_aversion, sortering=sortering)
 
-
+    for i, (sector, blokken) in enumerate(resultaten.items()):
+        if i < 2:
+            with st.expander(sector, expanded=True):
+                st.components.v1.html(f"<div style='display: flex; flex-wrap: wrap;'>{blokken}</div>", height=350)
+        else:
+            with st.expander(sector, expanded=False):
+                st.components.v1.html(f"<div style='display: flex; flex-wrap: wrap;'>{blokken}</div>", height=350)
 
 
 
