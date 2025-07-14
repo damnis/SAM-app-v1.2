@@ -318,9 +318,20 @@ with col2:
     )
 
 # ------- Toggle voor sector-heatmap (bijv. onder je matrix/tabellen) ---
+toon_heatmap = st.toggle("📊 Toon sector heatmap", value=False)
 
-if st.toggle("📌 Toon sector-heatmap"):
-    toon_sector_heatmap(interval, risk_aversion=risk_aversion)
+if toon_heatmap:
+    sortering = st.radio("📚 Sorteer tickers", ["Origineel", "Alfabetisch"], horizontal=True)
+    alfabetisch = sortering == "Alfabetisch"
+
+    toon_sector_heatmap(
+        interval=gekozen_interval,
+        risk_aversion=gekozen_risk,
+        alfabetisch=alfabetisch
+    )
+    
+#if st.toggle("📌 Toon sector-heatmap"):
+   # toon_sector_heatmap(interval, risk_aversion=risk_aversion)
     # toon_sector_heatmap(interval)
 
 # Stel dat je de geselecteerde ticker als 'ticker' hebt
