@@ -43,7 +43,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2, sortering="Marktkapitalis
         else:  # sorteer op marktkapitalisatie
             sectoren[sector] = sorted(
                 tickers,
-                key=lambda t: market_caps.get(t, 0),
+                key=lambda t: get_profile(t).get("marketCap", 0),
                 reverse=True
             )
 
