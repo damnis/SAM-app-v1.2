@@ -8,6 +8,7 @@ from datafund import (
 import requests
 import json
 
+FMP_API_KEY = st.secrets["FMP_API_KEY"]
 
 def format_value(value, is_percent=False):
     try:
