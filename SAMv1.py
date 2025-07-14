@@ -318,10 +318,23 @@ with col2:
     )
 
 # ------- Toggle voor sector-heatmap (bijv. onder je matrix/tabellen) ---
+# 🔽 Sortering voor sector heatmap
+sortering_nl = st.selectbox(
+    "Sorteer sectoren op:",
+    options=["Marktkapitalisatie", "Alfabetisch"],
+    index=0
+)
+
+# 🔁 Vertaal naar interne code
+volgorde = "marketcap" if sortering_nl == "Marktkapitalisatie" else "alphabetisch"
+
+# 🗺️ Toon de heatmap
+toon_sector_heatmap(interval=gekozen_interval, risk_aversion=gekozen_risk_aversion, volgorde=volgorde)
+
 # Bijvoorbeeld ergens onder je toggle:
-if st.toggle("📌 Toon sector heatmap"):
-    sortering = st.radio("Sorteer tickers per sector op:", ["marktkapitalisatie", "alfabetisch"], horizontal=True)
-    toon_sector_heatmap(interval, risk_aversion)
+#if st.toggle("📌 Toon sector heatmap"):
+#    sortering = st.radio("Sorteer tickers per sector op:", ["marktkapitalisatie", "alfabetisch"], horizontal=True)
+ #   toon_sector_heatmap(interval, risk_aversion)
 #    toon_sector_heatmap(sortering=marktkapitalisatie)
 #toon_heatmap = st.toggle("📊 Toon sector heatmap", value=False)
 
