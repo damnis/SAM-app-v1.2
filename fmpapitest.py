@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import json
 
-API_KEY = "D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5"  # jouw FMP API-sleutel
+API_KEY = st.secrets["FMP_API_KEY"]
 
 # Beschikbare endpoints voor testdoeleinden
 ENDPOINTS = [
