@@ -13,16 +13,25 @@ FMP_API_KEY = st.secrets["FMP_API_KEY"]
 
 def format_value(value, is_percent=False):
     try:
-        if value is None:
+        if value is None or value == "":
             return "-"
-        value = float(value)
+        if isinstance(value, str) and value.replace(",", "").isdigit():
+            value = float(value.replace(",", ""))
+        else:
+            value = float(value)
+
         if is_percent:
             return f"{value:.2%}"
         if abs(value) >= 99_000_000:
             return f"{value / 1_000_000_000:,.2f} mld"
+        elif abs(value) >= 1_000_000:
+            return f"{value / 1_000_000:,.2f} mln"
+        elif abs(value) >= 1_000:
+            return f"{value / 1_000:,.1f}k"
         return f"{value:,.2f}"
     except:
         return "-"
+
 
 # kerninfo
 def toon_profiel_en_kerninfo(profile, key_metrics):
@@ -34,7 +43,7 @@ def toon_profiel_en_kerninfo(profile, key_metrics):
             col2.metric("Dividend (per aandeel)", format_value(profile.get("lastDiv")))
             col2.metric("Dividendrendement", format_value(key_metrics.get("dividendYield", 0), is_percent=True))
             col3.metric("Payout Ratio", format_value(key_metrics.get("payoutRatio", 0), is_percent=True))
-            col3.metric("Aantal medewerkers", format_value(profile.get("fullTimeEmployees", "-")))
+            col3.metric("Aantal medewerkers", format_value(profile.get("fullTimeEmployees")))
             st.caption(profile.get("description", ""))
 
 # omzet en winst
