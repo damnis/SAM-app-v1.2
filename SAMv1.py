@@ -333,7 +333,7 @@ with col2:
 
 # Bijvoorbeeld ergens onder je toggle:
 if st.toggle("🔥 Toon sector heatmap"):
-#    sortering = st.radio("Sorteer tickers per sector op:", ["marktkapitalisatie", "alfabetisch"], horizontal=True)
+#    sortering = st.radio("Sorteer tickers per sector op:", ["💰 Marktkapitalisatie", "🔠 Alfabetisch"], horizontal=True)
     toon_sector_heatmap(interval, risk_aversion)
 #    toon_sector_heatmap(sortering=marktkapitalisatie)
 #toon_heatmap = st.toggle("📊 Toon sector heatmap", value=False)
