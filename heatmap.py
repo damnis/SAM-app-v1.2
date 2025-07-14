@@ -1,3 +1,5 @@
+# === heatmap.py ===
+
 import streamlit as st
 from datetime import datetime
 from sectorticker import sector_tickers
@@ -5,7 +7,6 @@ from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
 from adviezen import determine_advice, weighted_moving_average
 from grafieken import bepaal_grafiekperiode_heat
-
 import yfinance as yf
 import pandas as pd
 
@@ -33,66 +34,68 @@ def fetch_data_by_dates(ticker, interval, start, end=None):
     return df
 
 @st.cache_data(ttl=900)
-def genereer_sector_heatmap(interval, risk_aversion=2):
+def genereer_sector_heatmap(interval, risk_aversion=2, alfabetisch=False):
     html = "<div style='font-family: monospace;'>"
 
     periode = bepaal_grafiekperiode_heat(interval)
     start_date = datetime.today() - periode
 
-    for sector, tickers in sector_tickers.items():
-        html += f"<h4 style='color: white;'>{sector}</h4>"
-        html += "<div style='display: flex; flex-wrap: wrap; max-width: 600px;'>"
+    for i, (sector, tickers) in enumerate(sector_tickers.items()):
+        if alfabetisch:
+            tickers = sorted(tickers)
+        open_attr = "open" if i < 2 else ""
 
-        adviezen_lijst = []
+        html += f"""
+        <details {open_attr} style='margin-bottom: 10px;'>
+        <summary style='font-size: 18px; color: white; cursor: pointer;'>{sector}</summary>
+        <div style='display: flex; flex-wrap: wrap; max-width: 600px; margin-top: 10px;'>
+        """
 
-        for ticker in sorted(tickers[:20]):  # alfabetische volgorde
-  #      for ticker in tickers[:20]:
+        for ticker in tickers[:20]:
             try:
                 df = fetch_data_by_dates(ticker, interval=interval, start=start_date)
                 if df.empty or len(df) < 50:
                     advies = "Neutraal"
-                    tooltip = "Geen data"
                 else:
                     df = calculate_sam(df)
                     df = calculate_sat(df)
                     adviezen = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
                     advies = adviezen[-1] if len(adviezen) else "Neutraal"
-                    laatste_koers = df["Close"].iloc[-1]
-                    laatste_datum = df.index[-1].strftime("%Y-%m-%d")
-                    tooltip = f"Laatste koers: {laatste_koers:.2f} op {laatste_datum}"
             except Exception as e:
-                st.warning(f"⚠️ Fout bij {ticker}: {e}")
+                st.warning(f"\u26a0\ufe0f Fout bij {ticker}: {e}")
                 advies = "Neutraal"
-                tooltip = "Fout"
 
-            adviezen_lijst.append((advies, ticker, tooltip))
-
-        # Sorteer op advieskleur: Kopen > Neutraal > Verkopen
-        volgorde = {"Kopen": 0, "Verkopen": 1, "Neutraal": 2}
-        adviezen_lijst.sort(key=lambda x: volgorde.get(x[0], 3))
-
-        for advies, ticker, tooltip in adviezen_lijst:
             kleur = kleurmap.get(advies, "#7f8c8d")
+
             html += f"""
-                <div style='width: 100px; height: 60px; margin: 4px; background-color: {kleur}; color: white;
-                    display: flex; flex-direction: column; justify-content: center; align-items: center;
-                    border-radius: 6px; font-size: 11px; text-align: center;' title='{tooltip}'>
+                <div style='
+                    width: 100px;
+                    height: 60px;
+                    margin: 4px;
+                    background-color: {kleur};
+                    color: white;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    border-radius: 6px;
+                    font-size: 11px;
+                    text-align: center;
+                '>
                     <div><b>{ticker}</b></div>
                     <div>{advies}</div>
                 </div>
             """
 
-        html += "</div><hr style='margin: 20px 0;'>"
+        html += "</div></details><hr style='margin: 20px 0;'>"
 
     html += "</div>"
     return html
 
-def toon_sector_heatmap(interval, risk_aversion=2):
-    st.markdown("### 🔥 Sector Heatmap")
-    html = genereer_sector_heatmap(interval, risk_aversion=risk_aversion)
+def toon_sector_heatmap(interval, risk_aversion=2, alfabetisch=False):
+    st.markdown("### \ud83d\udd25 Sector Heatmap")
+    html = genereer_sector_heatmap(interval, risk_aversion=risk_aversion, alfabetisch=alfabetisch)
     st.components.v1.html(html, height=1400, scrolling=True)
-
-
 
 
 
