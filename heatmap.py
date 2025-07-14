@@ -43,62 +43,61 @@ def sorteer_tickers(tickers, methode):
     else:
         return tickers
 
+
+                
 @st.cache_data(ttl=900)
 def genereer_sector_heatmap(interval, risk_aversion=2, sorteer_op="marktkapitalisatie"):
-    html = "<div style='font-family: monospace;'>"
     periode = bepaal_grafiekperiode_heat(interval)
     start_date = datetime.today() - periode
 
     for i, (sector, tickers) in enumerate(sector_tickers.items()):
         gesorteerde_tickers = sorteer_tickers(tickers, sorteer_op)[:20]
 
-        # ✅ Titel boven dropdown
-        html += f"<h4 style='color: white; margin-top: 30px;'>{sector}</h4>"
+        blok_html = "<div style='display: flex; flex-wrap: wrap; max-width: 600px;'>"
 
-        # ✅ Uitklapbare sectie
-        with st.expander(f"📊 {sector}", expanded=(i < 2)):  # Eerste 2 open
-            html += "<div style='display: flex; flex-wrap: wrap; max-width: 600px;'>"
-
-            for ticker in gesorteerde_tickers:
-                try:
-                    df = fetch_data_by_dates(ticker, interval=interval, start=start_date)
-                    if df.empty or len(df) < 50:
-                        advies = "Neutraal"
-                    else:
-                        df = calculate_sam(df)
-                        df = calculate_sat(df)
-                        adviezen = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
-                        advies = adviezen[-1] if len(adviezen) else "Neutraal"
-                except Exception as e:
-                    st.warning(f"⚠️ Fout bij {ticker}: {e}")
+        for ticker in gesorteerde_tickers:
+            try:
+                df = fetch_data_by_dates(ticker, interval=interval, start=start_date)
+                if df.empty or len(df) < 50:
                     advies = "Neutraal"
+                else:
+                    df = calculate_sam(df)
+                    df = calculate_sat(df)
+                    adviezen = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
+                    advies = adviezen[-1] if len(adviezen) else "Neutraal"
+            except Exception as e:
+                st.warning(f"⚠️ Fout bij {ticker}: {e}")
+                advies = "Neutraal"
 
-                kleur = kleurmap.get(advies, "#7f8c8d")
+            kleur = kleurmap.get(advies, "#7f8c8d")
 
-                html += f"""
-                    <div style='
-                        width: 100px;
-                        height: 60px;
-                        margin: 4px;
-                        background-color: {kleur};
-                        color: white;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        align-items: center;
-                        border-radius: 6px;
-                        font-size: 11px;
-                        text-align: center;
-                    '>
-                        <div><b>{ticker}</b></div>
-                        <div>{advies}</div>
-                    </div>
-                """
+            blok_html += f"""
+                <div style='
+                    width: 100px;
+                    height: 60px;
+                    margin: 4px;
+                    background-color: {kleur};
+                    color: white;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    border-radius: 6px;
+                    font-size: 11px;
+                    text-align: center;
+                '>
+                    <div><b>{ticker}</b></div>
+                    <div>{advies}</div>
+                </div>
+            """
 
-            html += "</div><hr style='margin: 20px 0;'>"
+        blok_html += "</div><hr style='margin: 20px 0;'>"
 
-    html += "</div>"
-    return html
+        with st.expander(f"📊 {sector}", expanded=(i < 2)):  # eerste 2 open
+            st.markdown(f"#### {sector}")
+            st.components.v1.html(blok_html, height=400, scrolling=True)
+
+
 
 def toon_sector_heatmap(interval, risk_aversion=2, sorteer_op="marktkapitalisatie"):
     st.markdown("### 🔥 Sector Heatmap")
