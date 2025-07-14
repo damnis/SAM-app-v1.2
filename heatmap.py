@@ -104,9 +104,15 @@ def genereer_sector_heatmap(interval, risk_aversion=2, sorteer_op="marktkapitali
 
 def toon_sector_heatmap(interval, risk_aversion=2, sorteer_op="marktkapitalisatie"):
     st.markdown("### 🔥 Sector Heatmap")
-
-    html = genereer_sector_heatmap(interval, risk_aversion=risk_aversion, sorteer_op=sorteer_optie)
+    html = genereer_sector_heatmap(interval, risk_aversion=risk_aversion, sorteer_op=sorteer_op)
     st.components.v1.html(html, height=500, scrolling=True)
+
+
+#def toon_sector_heatmap(interval, risk_aversion=2, sorteer_op="marktkapitalisatie"):
+ #   st.markdown("### 🔥 Sector Heatmap")
+
+  #  html = genereer_sector_heatmap(interval, risk_aversion=risk_aversion, sorteer_op=sorteer_optie)
+   # st.components.v1.html(html, height=500, scrolling=True)
 
 
  
