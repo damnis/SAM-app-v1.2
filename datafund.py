@@ -67,7 +67,7 @@ def get_quarterly_eps(ticker):
 
 @st.cache_data(ttl=3600)
 def get_eps_forecast(ticker):
-    url = f"{BASE_URL}/analyst-estimates/{ticker}?limit=20&apikey={API_KEY}"
+    url = f"{BASE_URL}/analyst-estimates/{ticker}?limit=5&apikey={API_KEY}"
     try:
         return requests.get(url).json()
     except:
