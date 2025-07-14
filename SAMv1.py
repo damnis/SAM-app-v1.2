@@ -52,18 +52,7 @@ from alpaca.trading.enums import OrderSide, TimeInForce
 from fmpfetch import fetch_data_fmp, search_ticker_fmp
 
 
-
-#--- Functie om data op te halen ---
-# ✅ Gecachete downloadfunctie (15 minuten geldig)
-# verplaatst 
-
-
-#--- Advies en rendementen ---
-# verplaatst naar adviezen.py            
-#--- Advies en rendement EINDE
-
-
-  
+ 
 # --- Streamlit UI ---
 #st.title("SAM Trading Indicator")
 # Titel met kleur en grootte tonen
@@ -73,7 +62,7 @@ from fmpfetch import fetch_data_fmp, search_ticker_fmp
 # SAM TITLE
 st.markdown(
     f"""
-    <h1>SAM Trading Indicator<span style='color:#3366cc'>   </span></h1>
+    <h1>SAT+SAM Trading Indicator<span style='color:#3366cc'>   </span></h1>
     """,
     unsafe_allow_html=True
 )
@@ -97,14 +86,14 @@ st.markdown("""
 
 <div class="sam-uitleg" style='display: flex; justify-content: space-between; align-items: top;'>
   <div style='flex: 1;'>
-    <h5 style='margin: 0;'>Simple Alert Monitor</h5>
+    <h5 style='margin: 0;'>Stage and Trend Simple Alert Monitor</h5>
   </div>
   <div style='flex: 1; text-align: right;'>
     <details>
-      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg SAM Trading Indicator</summary>
+      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg SAT+SAM Trading Indicator</summary>
       <div style='margin-top: 10px;'>
         <p style='font-size: 13px; color: #333; text-align: left'>
-        Gebruik de <strong>SAM Trading Indicator</strong> door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
+        Gebruik de <strong>SAT+SAM Trading Indicator</strong> door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
         de trendlijn. De groene en rode SAM waarden (vaak perioden) geven het momentum weer...<br><br>
         Het advies is hiervan afgeleid en kan bijgesteld worden door de gevoeligheid aan te passen.<br>
         De indicator is oorspronkelijk bedoeld voor de <strong>middellange termijn belegger</strong>.
