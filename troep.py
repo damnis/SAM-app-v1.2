@@ -523,7 +523,58 @@ def toon_sector_heatmap(interval, risk_aversion=2):
 
 
 
+🧱 Bakstenen / Gebouwen / Fundament
+🧱 = baksteen
 
+🏗️ = in aanbouw
+
+🏢 = kantoorgebouw
+
+🏛️ = klassiek gebouw (fundament / instituut)
+
+🏠 = huis
+
+🧰 = gereedschapskist (bouwtools)
+
+⚙️ = tandwiel (constructie / instellingen)
+
+💰 Geld / Waarde / Munten / Briefgeld
+💰 = geldzak
+
+💵 = briefgeld (dollar)
+
+💶 = eurobiljet
+
+💷 = pond
+
+💴 = yen
+
+🪙 = munt
+
+🏦 = bank
+
+💳 = betaalpas
+
+📈 = koers omhoog
+
+📉 = koers omlaag
+
+💹 = grafiek met yen (maar werkt goed als "marktgrafiek")
+
+🔠 Alfabet / Letters / Tekst
+🔠 = hoofdletters
+
+🔡 = kleine letters
+
+🔤 = abc
+
+🔢 = cijfers
+
+🔤 = letters met volgorde (sortering)
+
+🆎 = "AB" knop
+
+🅰️ / 🅱️ / 🆎 = afzonderlijke letters als icoon
 
 
 
