@@ -34,7 +34,7 @@ from datafund import (
 )
 from fundament import (
     toon_profiel_en_kerninfo, toon_omzet_winst_eps, toon_ratios,
-    toon_datums, test_fmp_endpoint
+    toon_datums, test_fmp_endpoint, test_yfinance
 )
 from fundament import toon_fundamentals 
 # Backtestfunctie 
@@ -416,8 +416,10 @@ toon_trading_bot_interface(selected_ticker, huidig_advies)
 #FMP testapi
 if st.sidebar.checkbox("🧪 FMP Test Tool"):
     test_fmp_endpoint()
-
-
+#yfinance testapi
+if st.sidebar.checkbox("🧪 yfinance Test Tool"):
+    test_yfinance()
+ 
 ###### oud
 
 #    for i in range(2, len(df)):
