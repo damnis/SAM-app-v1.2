@@ -327,7 +327,7 @@ with col2:
    # toon_sector_heatmap(interval, risk_aversion, alfabetisch)
     
 if st.toggle("📌 Toon sector-heatmap"):
-    alfabetisch = sortering == "Alfabetisch"
+    alfabetisch = "Alfabetisch"
     toon_sector_heatmap(interval, risk_aversion, alfabetisch)
  #    toon_sector_heatmap(interval)
 
