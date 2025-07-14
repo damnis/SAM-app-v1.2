@@ -44,7 +44,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2, volgorde="marketcap"):
     for i, (sector, tickers) in enumerate(sector_tickers.items()):
 
         # Sorteer tickers
-        if volgorde == "alfabetisch":
+        if volgorde == "alphabetisch":
             sorted_tickers = sorted(tickers[:20])
         else:
             def get_cap(t):
@@ -100,16 +100,6 @@ def genereer_sector_heatmap(interval, risk_aversion=2, volgorde="marketcap"):
     return html_output
 
 # ✅ Aanroepfunctie
-
-def toon_sector_heatmap(interval, risk_aversion=2, volgorde="marketcap"):
-    st.markdown("### 🔥 Sector Heatmap")
-
-    sorteer_optie = st.radio(
-        "📌 Sorteer tickers per sector op:",
-        ["marktkapitalisatie", "alfabetisch"],
-        index=0,
-        horizontal=True
-    )
 
 def toon_sector_heatmap(interval, risk_aversion=2, volgorde="marketcap"):
     st.markdown("### 🔥 Sector Heatmap")
