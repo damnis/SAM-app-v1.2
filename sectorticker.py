@@ -6,9 +6,7 @@ sector_tickers = {
 #    "Financials": ["JPM", "BAC", "WFC", "C", "GS", "MS", "AXP", "BK", "USB", "SCHW", "TFC", "COF", "MTB", "FITB", "HBAN", "PNC"],
 #    "Energy": ["XOM", "CVX", "COP", "EOG", "PSX", "VLO", "MPC", "HES", "OKE", "PXD", "WMB", "KMI", "SLB", "BKR", "HAL", "APA"],
 #    "Crypto": ["BTC-USD", "ETH-USD", "SOL-USD", "BNB-USD", "XRP-USD", "ADA-USD", "DOGE-USD", "DOT-USD", "AVAX-USD", "LINK-USD", "MATIC-USD", "LTC-USD", "BCH-USD", "XLM-USD", "ATOM-USD", "UNI-USD"],
-    "Nederland": ["ABN.AS": "ABN AMRO", "ADYEN.AS": "Adyen", "AGN.AS": "Aegon", "AD.AS": "Ahold Delhaize", "AKZA.AS": "Akzo Nobel", "MT.AS": "ArcelorMittal", "ASM.AS": "ASM International", "ASML.AS": "ASML Holding", "ASRNL.AS": "ASR Nederland",
-    "BESI.AS": "BESI", "DSFIR.AS": "DSM-Firmenich", "GLPG.AS": "Galapagos", "HEIA.AS": "Heineken", "IMCD.AS": "IMCD", "INGA.AS": "ING Groep", "TKWY.AS": "Just Eat Takeaway", "KPN.AS": "KPN",
-    "NN.AS": "NN Group", "PHIA.AS": "Philips", "UNA.AS": "Unilever", "WKL.AS": "Wolters Kluwer"]
+    "Nederland": ["ABN.AS", "ADYEN.AS", "AGN.AS", "AD.AS", "AKZA.AS", "MT.AS", "ASM.AS", "ASML.AS", "ASRNL.AS", "BESI.AS", "DSFIR.AS", "HEIA.AS", "IMCD.AS", "INGA.AS", "TKWY.AS", "KPN.AS", "NN.AS", "PHIA.AS", "UNA.AS", "WKL.AS"]
     
     
     # Voeg eenvoudig meer sectoren toe in hetzelfde formaat
