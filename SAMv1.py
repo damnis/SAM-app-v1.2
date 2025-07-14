@@ -325,7 +325,7 @@ if toon_heatmap:
     alfabetisch = sortering == "Alfabetisch"
 
     toon_sector_heatmap(
-        interval=gekozen_interval,
+        interval,
         risk_aversion=gekozen_risk,
         alfabetisch=alfabetisch
     )
