@@ -108,6 +108,8 @@ def toon_fundamentals(ticker):
         earnings = get_earning_calendar(ticker)
         dividends = get_dividend_history(ticker)
         eps_quarters = get_quarterly_eps(ticker)
+        eps_forecast = get_quarterly_eps(ticker)
+        
     except Exception as e:
         st.error(f"❌ Fout bij ophalen van fundamentele data: {e}")
         return
@@ -204,7 +206,7 @@ def toon_fundamentals(ticker):
             st.bar_chart(df_eps_q)
 
 
- # 🔹 EPS-analyse (grafiek met verwacht & werkelijk)
+     # 🔹 EPS-analyse (grafiek met verwacht & werkelijk)
         with st.expander("📈 EPS analyse"):
             if isinstance(eps_quarters, list) and len(eps_quarters) > 0:
                 df_epsq = pd.DataFrame(eps_quarters)[["date", "eps"]]
