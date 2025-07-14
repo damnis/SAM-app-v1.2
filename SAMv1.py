@@ -323,7 +323,7 @@ from heatmap import toon_sector_heatmap
 # Bijvoorbeeld ergens onder je toggle:
 if st.toggle("Toon sector heatmap"):
     sortering = st.radio("Sorteer tickers per sector op:", ["marktkapitalisatie", "alfabetisch"], horizontal=True)
-    toon_sector_heatmap(sortering=sortering)
+    toon_sector_heatmap(sortering=marktkapitalisatie)
 #toon_heatmap = st.toggle("📊 Toon sector heatmap", value=False)
 
 #if toon_heatmap:
