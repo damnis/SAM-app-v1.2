@@ -34,7 +34,8 @@ def bepaal_grafiekperiode(interval):
         return timedelta(weeks=520)     # 520=0 jaar aan monthly candles (120 candles)
     else:
         return timedelta(weeks=260)     # Fallback = 5 jaar
-# periode voor koersgrafiek 
+
+# periode voor heatmap
 def bepaal_grafiekperiode_heat(interval):
     if interval == "15m":
         return timedelta(days=7)
