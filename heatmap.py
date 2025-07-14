@@ -30,7 +30,7 @@ def timedelta_to_yf_period(td):
 def genereer_sector_heatmap(interval, risk_aversion=2):
     html = "<div style='font-family: monospace;'>"
 
-    periode_td = bepaal_grafiekperiode(interval)
+    periode_td = bepaal_grafiekperiode_heat(interval)
     period = timedelta_to_yf_period(periode_td)
 
     for sector, tickers in sector_tickers.items():
