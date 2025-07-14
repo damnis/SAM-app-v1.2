@@ -5,6 +5,8 @@ from datafund import (
     get_profile, get_key_metrics, get_earning_calendar,
     get_dividend_history, get_quarterly_eps, get_eps_forecast
 )
+from fmpapitest import test_fmp_endpoint
+
 
 def format_value(value, is_percent=False):
     try:
@@ -307,6 +309,10 @@ def toon_fundamentals(ticker):
                 st.dataframe(chart_data.applymap(format_value))
 
 
+
+        # full fmp check
+        if st.sidebar.checkbox("🧪 FMP Test Tool"):
+            test_fmp_endpoint()
 
     
     
