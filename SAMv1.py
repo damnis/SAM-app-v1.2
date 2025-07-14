@@ -34,7 +34,7 @@ from datafund import (
 )
 from fundament import (
     toon_profiel_en_kerninfo, toon_omzet_winst_eps, toon_ratios,
-    toon_datums
+    toon_datums, test_fmp_endpoint
 )
 from fundament import toon_fundamentals 
 # Backtestfunctie 
@@ -413,6 +413,9 @@ backtest_functie(df, signaalkeuze=signaalkeuze, selected_tab=selected_tab, inter
 toon_trading_bot_interface(selected_ticker, huidig_advies)
 # 📌 Verbinding met Alpaca testen (optioneel, pas uit te voeren als gebruiker dit wil)
 
+#FMP testapi
+if st.sidebar.checkbox("🧪 FMP Test Tool"):
+    test_fmp_endpoint()
 
 
 ###### oud
