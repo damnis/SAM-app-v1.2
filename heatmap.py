@@ -3,7 +3,7 @@ from sectorticker import sector_tickers
 from yffetch import fetch_data_cached
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
-from adviezen import determine_advice
+from adviezen import determine_advice, weighted_moving_average
 
 kleurmap = {
     "Kopen": "#2ecc71",
@@ -23,21 +23,22 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
             try:
                 df = fetch_data_cached(ticker, interval=interval, period="6mo")
                 if df is None or df.empty or len(df) < 50:
-                    advies = "Neutraal"
-                else:
-                    df = calculate_sam(df)
-                    df = calculate_sat(df)
+                    raise ValueError("Onvoldoende data")
 
-                    # ✅ Correcte aanroep met risk_aversion
-                    df, adviezen = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
-                    advies = adviezen[-1] if len(adviezen) > 0 else "Neutraal"
-                    st.write(f"{ticker} → Laatste advies: {advies} ({len(adviezen)} adviezen)")
+                df = calculate_sam(df)
+                df = calculate_sat(df)
+
+                df, adviezen = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
+                advies = adviezen[-1] if len(adviezen) > 0 else "Neutraal"
+
+                # Debug
+                if len(adviezen) == 0:
+                    st.write(f"⚠️ Geen adviezen voor {ticker}")
 
             except Exception as e:
                 st.write(f"⚠️ Fout bij {ticker}: {e}")
                 advies = "Neutraal"
 
- #           advies = "Kopen" if ticker.startswith("A") else "Verkopen"
             kleur = kleurmap.get(advies, "#7f8c8d")
 
             html += f"""
@@ -67,11 +68,8 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
 
 def toon_sector_heatmap(interval, risk_aversion=2):
     st.markdown("### 🔥 Sector Heatmap")
-    html = genereer_sector_heatmap(interval, risk_aversion)
+    html = genereer_sector_heatmap(interval, risk_aversion=risk_aversion)
     st.components.v1.html(html, height=1400, scrolling=True)
-
-
-
 
 
 
