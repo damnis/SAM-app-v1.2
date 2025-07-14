@@ -35,17 +35,19 @@ def bepaal_grafiekperiode(interval):
     else:
         return timedelta(weeks=260)     # Fallback = 5 jaar
 # periode voor koersgrafiek 
-#def bepaal_grafiekperiode2(interval):
-#    if interval == "15m":
-#        return timedelta(days=7)
- #   elif interval == "1h":
- #       return timedelta(days=5)
- #   elif interval == "4h":
- #       return timedelta(days=90)
-#    elif interval == "1d":
-#        return timedelta(days=180)
- #   else:
-  #      return timedelta(weeks=260)  # bijv. bij weekly/monthly data
+def bepaal_grafiekperiode_heat(interval):
+    if interval == "15m":
+        return timedelta(days=7)
+    elif interval == "1h":
+        return timedelta(days=15)
+    elif interval == "4h":
+        return timedelta(days=60)
+    elif interval == "1d":
+        return timedelta(days=260)
+    elif interval == "1wk":
+        return timedelta(weeks=240)     # 104=2 jaar aan weekly candles (104 candles)
+    else:
+        return timedelta(weeks=260)  # bijv. bij weekly/monthly data
 
 # aanvullende overlay grafiek
 def plot_overlay_grafiek(df, ticker_name, interval):
