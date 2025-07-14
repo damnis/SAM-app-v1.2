@@ -7,6 +7,7 @@ from datafund import (
 )
 import requests
 import json
+import yfinance as yf
 
 FMP_API_KEY = st.secrets["FMP_API_KEY"]
 
