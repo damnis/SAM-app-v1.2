@@ -152,7 +152,7 @@ def toon_fundamentals(ticker):
     try:
         profile = get_profile(ticker)
         key_metrics = get_key_metrics(ticker)
-        income_data = get_income_statement(ticker)
+        income_statement = get_income_statement(ticker)
         ratio_data = get_ratios(ticker)
         earnings = get_earning_calendar(ticker)
         dividends = get_dividend_history(ticker)
