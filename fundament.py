@@ -171,7 +171,35 @@ def toon_fundamentals(ticker):
         with st.expander("📐 Ratio's over de jaren"):
             st.dataframe(df_ratio_fmt.set_index("Jaar")[["K/W", "ROE (%)", "Debt/Equity"]])
 
+
+            # 🔹 Extra ratio's over de jaren
+        if ratio_data:
+            col_renames = {
+                "currentRatio": "Current ratio",
+                "quickRatio": "Quick ratio",
+                "grossProfitMargin": "Bruto marge",
+                "operatingProfitMargin": "Operationele marge",
+                "netProfitMargin": "Netto marge",
+                "returnOnAssets": "Rentabiliteit",
+                "inventoryTurnover": "Omloopsnelheid",
+            }
     
+            df_extra = df_ratio.copy()
+            df_extra.rename(columns=col_renames, inplace=True)
+            df_extra.rename(columns={"date": "Jaar"}, inplace=True)
+    
+            for col in col_renames.values():
+                if col in df_extra.columns:
+                    is_pct = "marge" in col.lower()
+                    df_extra[col] = df_extra[col].apply(lambda x: format_value(x, is_percent=is_pct))
+    
+            met_ratios = [col for col in col_renames.values() if col in df_extra.columns]
+            if met_ratios:
+                with st.expander("🧮 Extra ratio’s per jaar"):
+                    st.dataframe(df_extra.set_index("Jaar")[met_ratios])
+
+
+        
             # 🔹 Kwartaalratio's
         try:
             df_qr = get_ratios(ticker + "?period=quarter")
