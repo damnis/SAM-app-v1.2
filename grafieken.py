@@ -38,17 +38,33 @@ def bepaal_grafiekperiode(interval):
 # periode voor heatmap
 def bepaal_grafiekperiode_heat(interval):
     if interval == "15m":
-        return timedelta(days=7)
+        period = "7d"
     elif interval == "1h":
-        return timedelta(days=15)
+        period = "15d"
     elif interval == "4h":
-        return timedelta(days=60)
+        period = "60d"
     elif interval == "1d":
-        return timedelta(days=260)
+        period = "2y"
     elif interval == "1wk":
-        return timedelta(weeks=240)     # 104=2 jaar aan weekly candles (104 candles)
+        period = "10y"
+    elif interval == "1mo":
+        period = "25y"
     else:
-        return timedelta(weeks=260)  # bijv. bij weekly/monthly data
+        period = "25y"  # fallback
+        
+ # time delta version       
+ #   if interval == "15m":
+#        return timedelta(days=7)
+#    elif interval == "1h":
+#        return timedelta(days=15)
+#    elif interval == "4h":
+#        return timedelta(days=60)
+#    elif interval == "1d":
+#        return timedelta(days=260)
+#    elif interval == "1wk":
+#        return timedelta(weeks=240)     # 104=2 jaar aan weekly candles (104 candles)
+#    else:
+#        return timedelta(weeks=260)  # bijv. bij weekly/monthly data
 
 # aanvullende overlay grafiek
 def plot_overlay_grafiek(df, ticker_name, interval):
