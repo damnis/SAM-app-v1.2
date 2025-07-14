@@ -31,6 +31,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
                     # ✅ Correcte aanroep met risk_aversion
                     df, adviezen = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
                     advies = adviezen[-1] if len(adviezen) > 0 else "Neutraal"
+                    st.write(f"{ticker} → Laatste advies: {advies} ({len(adviezen)} adviezen)")
 
             except Exception as e:
                 st.write(f"⚠️ Fout bij {ticker}: {e}")
