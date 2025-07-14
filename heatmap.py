@@ -94,7 +94,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2, volgorde="marketcap"):
                 """
 
             sector_html += "</div>"
-            st.components.v1.html(sector_html, height=260, scrolling=False)
+            st.components.v1.html(sector_html, height=300, scrolling=False)
 
     html_output += "</div>"
     return html_output
