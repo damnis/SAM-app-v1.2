@@ -319,36 +319,27 @@ with col2:
     )
 
 # ------- Toggle voor sector-heatmap (bijv. onder je matrix/tabellen) ---
-# 🔽 Sortering voor sector heatmap
-#sortering_nl = st.selectbox(
-#    "Sorteer sectoren op:",
-#    options=["Marktkapitalisatie", "Alfabetisch"],
-#    index=0
-#)
-
-# 🔁 Vertaal naar interne code
-#volgorde = "marketcap" if sortering_nl == "Marktkapitalisatie" else "alphabetisch"
-
-# 🗺️ Toon de heatmap
-#toon_sector_heatmap(interval, risk_aversion, volgorde=volgorde)
-
-# Bijvoorbeeld ergens onder je toggle:
 if st.toggle("🔥 Toon sector heatmap"):
-#    sortering = st.radio("Sorteer tickers per sector op:", ["💰 Marktkapitalisatie", "🔠 Alfabetisch"], horizontal=True)
-    toon_sector_heatmap(interval, risk_aversion)
-#    toon_sector_heatmap(sortering=marktkapitalisatie)
-#toon_heatmap = st.toggle("📊 Toon sector heatmap", value=False)
-
-#if toon_heatmap:
- #   sortering = st.radio("📚 Sorteer tickers", ["Origineel", "Alfabetisch"], horizontal=True)
-   # alfabetisch = sortering == "Alfabetisch"
-
-   # toon_sector_heatmap(interval, risk_aversion, alfabetisch)
+    sortering_nice = st.radio(
+        "Sorteer tickers per sector op:",
+        ["💰 Marktkapitalisatie", "🔠 Alfabetisch"],
+        horizontal=True
+    )
     
-#if st.toggle("📌 Toon sector-heatmap"):
-#    alfabetisch = "Alfabetisch"
-#    toon_sector_heatmap(interval, risk_aversion, alfabetisch)
- #    toon_sector_heatmap(interval)
+    # Vertaal weer terug naar interne waarde
+    mapping = {
+        "💰 Marktkapitalisatie": "marktkapitalisatie",
+        "🔠 Alfabetisch": "alfabetisch"
+    }
+    sortering = mapping.get(sortering_nice, "marktkapitalisatie")
+
+    toon_sector_heatmap(interval, risk_aversion, sorteer_op=sortering)
+
+
+
+ #   sortering = st.radio("📚 Sorteer tickers", ["Origineel", "Alfabetisch"], horizontal=True)
+  #if st.toggle("📌 Toon sector-heatmap"):
+# ----------------------------
 
 # advies matrix
 toon_adviesmatrix_html(ticker, risk_aversion=risk_aversion)
