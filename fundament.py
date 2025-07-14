@@ -54,7 +54,21 @@ def toon_profiel_en_kerninfo(profile, key_metrics, income_statement=None):
                 col2.metric("Netto winst %", format_value(laatste.get("netIncomeRatio", 0), is_percent=True))
                 col3.metric("Bruto winst %", format_value(laatste.get("grossProfitRatio", 0), is_percent=True))
 
-            st.caption(profile.get("description", ""))
+            # Toon alleen de eerste 250 tekens, daarna 'Toon meer' knop
+            omschrijving = profile.get("description", "")
+            MAX_LENGTE = 250
+            key = "toon_volledige_omschrijving"
+            
+            if omschrijving:
+                if len(omschrijving) <= MAX_LENGTE or st.session_state.get(key, False):
+                    st.markdown(f"**Beschrijving:** {omschrijving}")
+                else:
+                    verkort = omschrijving[:MAX_LENGTE].rsplit(" ", 1)[0] + "..."
+                    st.markdown(f"**Beschrijving:** {verkort} [...]")
+                    if st.button("📖 Toon meer", key="meer_knop"):
+                        st.session_state[key] = True
+
+
 
 
 # omzet en winst
@@ -180,7 +194,19 @@ def toon_fundamentals(ticker):
             col2.metric("Netto winst %", format_value(laatste.get("netIncomeRatio", 0), is_percent=True))
             col3.metric("Bruto winst %", format_value(laatste.get("grossProfitRatio", 0), is_percent=True))
         
-        st.caption(profile.get("description", ""))
+        # Toon alleen de eerste 250 tekens, daarna 'Toon meer' knop
+            omschrijving = profile.get("description", "")
+            MAX_LENGTE = 250
+            key = "toon_volledige_omschrijving"
+            
+            if omschrijving:
+                if len(omschrijving) <= MAX_LENGTE or st.session_state.get(key, False):
+                    st.markdown(f"**Beschrijving:** {omschrijving}")
+                else:
+                    verkort = omschrijving[:MAX_LENGTE].rsplit(" ", 1)[0] + "..."
+                    st.markdown(f"**Beschrijving:** {verkort} [...]")
+                    if st.button("📖 Toon meer", key="meer_knop"):
+                        st.session_state[key] = True
 
     # 🔹 Omzet, Winst, EPS
     if income_data:
