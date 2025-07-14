@@ -27,11 +27,36 @@ def timedelta_to_yf_period(td):
         return f"{days // 365}y"
 
 @st.cache_data(ttl=900)
+def genereer_sector_heatmap_old(interval, risk_aversion=2):
+    html = "<div style='font-family: monospace;'>"
+
+    for sector, tickers in sector_tickers.items():
+        html += f"<h4 style='color: white;'>{sector}</h4>"
+        html += "<div style='display: flex; flex-wrap: wrap; max-width: 600px;'>"
+
+        for ticker in tickers[:20]:  # max 20 per sector
+            try:
+                df = fetch_data(ticker, interval)
+                if df is None or df.empty or len(df) < 30:
+                    advies = "Neutraal"
+                else:
+                    df = calculate_sam(df)
+                    df = calculate_sat(df)
+                    df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
+
+                    if "Advies" in df.columns:
+                        advies = df["Advies"].iloc[-1]
+                    else:
+                        advies = "Neutraal"
+
+
+@st.cache_data(ttl=900)
 def genereer_sector_heatmap(interval, risk_aversion=2):
     html = "<div style='font-family: monospace;'>"
 
-    periode_td = bepaal_grafiekperiode_heat(interval)
-    period = timedelta_to_yf_period(periode_td)
+    period = bepaal_grafiekperiode_heat(interval)
+#    periode_td = bepaal_grafiekperiode_heat(interval)
+#    period = timedelta_to_yf_period(periode_td)
 
     for sector, tickers in sector_tickers.items():
         html += f"<h4 style='color: white;'>{sector}</h4>"
