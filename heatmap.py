@@ -1,15 +1,13 @@
-# === heatmap.py ===
-
 import streamlit as st
+from datetime import datetime
 from sectorticker import sector_tickers
-from yffetch import fetch_data_cached
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
 from adviezen import determine_advice, weighted_moving_average
 from grafieken import bepaal_grafiekperiode_heat
-from datetime import datetime 
 
-
+import yfinance as yf
+import pandas as pd
 
 # Kleuren voor de heatmap
 kleurmap = {
@@ -18,29 +16,45 @@ kleurmap = {
     "Neutraal": "#95a5a6"
 }
 
+# Lokale data-ophaalfunctie met startdatum
+@st.cache_data(ttl=900)
+def fetch_data_by_dates(ticker, interval, start, end=None):
+    if end is None:
+        end = datetime.today()
+    df = yf.download(ticker, interval=interval, start=start, end=end)
+    if df.empty or "Close" not in df.columns:
+        return pd.DataFrame()
+    
+    df.index = pd.to_datetime(df.index, errors="coerce")
+    df = df[~df.index.isna()]
+    df = df[(df["Volume"] > 0) & ((df["Open"] != df["Close"]) | (df["High"] != df["Low"]))]
+    for col in ["Close", "Open", "High", "Low", "Volume"]:
+        df[col] = df[col].fillna(method="ffill").fillna(method="bfill")
+    return df
+
 @st.cache_data(ttl=900)
 def genereer_sector_heatmap(interval, risk_aversion=2):
     html = "<div style='font-family: monospace;'>"
+
+    periode = bepaal_grafiekperiode_heat(interval)
+    start_date = datetime.today() - periode
 
     for sector, tickers in sector_tickers.items():
         html += f"<h4 style='color: white;'>{sector}</h4>"
         html += "<div style='display: flex; flex-wrap: wrap; max-width: 600px;'>"
 
-        for ticker in tickers[:20]:  # max 20 per sector
+        for ticker in tickers[:20]:
             try:
-                start_date = datetime.now() - bepaal_grafiekperiode_heat(interval)
-                df = fetch_data_cached(ticker, interval=interval, start=start_date)
-
-                if df is None or df.empty or len(df) < 50:
+                df = fetch_data_by_dates(ticker, interval=interval, start=start_date)
+                if df.empty or len(df) < 50:
                     advies = "Neutraal"
                 else:
                     df = calculate_sam(df)
                     df = calculate_sat(df)
-                    df, _ = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
-                    advies = df["Advies"].iloc[-1]
-
+                    adviezen = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
+                    advies = adviezen[-1] if len(adviezen) else "Neutraal"
             except Exception as e:
-                st.write(f"⚠️ Fout bij {ticker}: {e}")
+                st.warning(f"⚠️ Fout bij {ticker}: {e}")
                 advies = "Neutraal"
 
             kleur = kleurmap.get(advies, "#7f8c8d")
@@ -74,6 +88,9 @@ def toon_sector_heatmap(interval, risk_aversion=2):
     st.markdown("### 🔥 Sector Heatmap")
     html = genereer_sector_heatmap(interval, risk_aversion=risk_aversion)
     st.components.v1.html(html, height=1400, scrolling=True)
+
+
+
 
 
 
