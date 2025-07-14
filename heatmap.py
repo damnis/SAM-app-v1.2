@@ -106,7 +106,7 @@ def toon_sector_heatmap(interval, risk_aversion=2, sorteer_op="marktkapitalisati
     st.markdown("### 🔥 Sector Heatmap")
 
     sorteer_optie = st.radio(
-        "📌 Sorteer tickers per sector op:",
+        "Sorteer tickers per sector op:",
         ["marktkapitalisatie", "alfabetisch"],
         index=0,
         horizontal=True
