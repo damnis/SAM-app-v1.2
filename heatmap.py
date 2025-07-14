@@ -1,6 +1,6 @@
 import streamlit as st
 from sectorticker import sector_tickers
-from yffetch import fetch_data_cached
+from yffetch import fetch_data_cached, fetch_data 
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
 from adviezen import determine_advice, weighted_moving_average
@@ -21,7 +21,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2):
 
         for ticker in tickers[:20]:
             try:
-                df = fetch_data_cached(ticker, interval=interval, period="96mo")
+                df = fetch_data_cached(ticker, interval=interval, period=period)
                 if df is None or df.empty or len(df) < 50:
                     raise ValueError("Onvoldoende data")
 
