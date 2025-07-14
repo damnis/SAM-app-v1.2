@@ -420,8 +420,8 @@ if st.sidebar.checkbox("🧪 FMP Test Tool"):
 if st.sidebar.checkbox("🧪 yfinance Test Tool"):
     test_yfinance()
     if testbron == "yfinance":
-    ...
-    test_analyst_data_yf(ticker)
+        ...
+        test_analyst_data_yf(ticker)
 
  
 ###### oud
