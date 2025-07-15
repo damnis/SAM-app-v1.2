@@ -106,29 +106,29 @@ def toon_ratios(ratio_data):
 
         # 📈 Extra per-share metrics per kwartaal in 1 line chart
 
-        with st.expander("🧮 Per-aandeel kengetallen per kwartaal (FMP-data)"):
-            df_km = get_key_metrics(ticker + "?period=quarter")
+#        with st.expander("🧮 Per-aandeel kengetallen per kwartaal (FMP-data)"):
+#            df_km = get_key_metrics(ticker + "?period=quarter")
         # Zorg dat je def get_key_metrics gelijk werkt als get_ratios (returns list of dicts)
-            if isinstance(df_km, list) and len(df_km) > 0:
-                df_km = pd.DataFrame(df_km)
+  #          if isinstance(df_km, list) and len(df_km) > 0:
+  #              df_km = pd.DataFrame(df_km)
         # Check of de gewenste kolommen bestaan
-                nodig = ["date", "netIncomePerShare", "freeCashFlowPerShare", "bookValuePerShare"]
-                if all(col in df_km.columns for col in nodig):
-                    df_km["date"] = pd.to_datetime(df_km["date"])
-                    df_km = df_km.sort_values("date")
-                    df_km.set_index("date", inplace=True)
-                    df_chart = df_km[["netIncomePerShare", "freeCashFlowPerShare", "bookValuePerShare"]].copy()
-                    st.line_chart(df_chart)
-                else:
-                    st.warning("Niet alle gewenste metrics beschikbaar in de key_metrics data.")
-            else:
-                st.info("Geen key_metrics data gevonden voor dit aandeel.")
+  #              nodig = ["date", "netIncomePerShare", "freeCashFlowPerShare", "bookValuePerShare"]
+  #              if all(col in df_km.columns for col in nodig):
+   #                 df_km["date"] = pd.to_datetime(df_km["date"])
+  #                  df_km = df_km.sort_values("date")
+  #                  df_km.set_index("date", inplace=True)
+   #                 df_chart = df_km[["netIncomePerShare", "freeCashFlowPerShare", "bookValuePerShare"]].copy()
+   #                 st.line_chart(df_chart)
+   #             else:
+   #                 st.warning("Niet alle gewenste metrics beschikbaar in de key_metrics data.")
+   #         else:
+   #             st.info("Geen key_metrics data gevonden voor dit aandeel.")
         
         # 🔹 Extra ratio's per kwartaal (FMP-data)
-  #      with st.expander("🧮 Extra Ratio's per kwartaal (FMP-data)"):
-  #          df_qr = get_ratios(ticker + "?period=quarter")
-  #          if isinstance(df_qr, list) and len(df_qr) > 0:
-  #              df_qr = pd.DataFrame(df_qr)
+        with st.expander("🧮 Extra Ratio's per kwartaal (FMP-data)"):
+            df_qr = get_ratios(ticker + "?period=quarter")
+            if isinstance(df_qr, list) and len(df_qr) > 0:
+                df_qr = pd.DataFrame(df_qr)
 
 
         
@@ -343,62 +343,62 @@ def toon_fundamentals(ticker):
 
     
         # 🔹 EPS en overige per-aandeel metrics per kwartaal
-    with st.expander("📆 WPA & overige per-aandeel metrics per kwartaal"):
+#    with st.expander("📆 WPA & overige per-aandeel metrics per kwartaal"):
         # EPS-data
-        df_eps_q = None
-        if eps_quarters:
-            df_eps_q = pd.DataFrame(eps_quarters)[["date", "eps"]].copy()
-            df_eps_q["date"] = pd.to_datetime(df_eps_q["date"])
-            df_eps_q = df_eps_q.sort_values("date")
-            df_eps_q.set_index("date", inplace=True)
-            df_eps_q = df_eps_q.rename(columns={"eps": "WPA/EPS"})
+#        df_eps_q = None
+  #      if eps_quarters:
+  #          df_eps_q = pd.DataFrame(eps_quarters)[["date", "eps"]].copy()
+    #        df_eps_q["date"] = pd.to_datetime(df_eps_q["date"])
+  #          df_eps_q = df_eps_q.sort_values("date")
+  #          df_eps_q.set_index("date", inplace=True)
+ #           df_eps_q = df_eps_q.rename(columns={"eps": "WPA/EPS"})
     
-        # Key Metrics-data (extra per-share ratios)
-        df_km = get_key_metrics(ticker + "?period=quarter")
-        df_ratios_q = None
-        if isinstance(df_km, list) and len(df_km) > 0:
-            df_km = pd.DataFrame(df_km)
+  #      # Key Metrics-data (extra per-share ratios)
+  #      df_km = get_key_metrics(ticker + "?period=quarter")
+ #       df_ratios_q = None
+ #       if isinstance(df_km, list) and len(df_km) > 0:
+ #           df_km = pd.DataFrame(df_km)
         # Rename kolommen voor duidelijke legenda
-            colmap = {
-                "netIncomePerShare": "WPA/EPS",
-                "freeCashFlowPerShare": "Free Cash Flow p/aandeel",
-                "bookValuePerShare": "Boekwaarde p/aandeel"
-            }
-            for k, v in colmap.items():
-                if k in df_km.columns:
-                    df_km.rename(columns={k: v}, inplace=True)
-            nodig = ["date"] + list(colmap.values())
-            if all(col in df_km.columns for col in nodig):
-                df_km["date"] = pd.to_datetime(df_km["date"])
-                df_km = df_km.sort_values("date")
-                df_km.set_index("date", inplace=True)
-                df_ratios_q = df_km[list(colmap.values())].copy()
+#            colmap = {
+#                "netIncomePerShare": "WPA/EPS",
+#                "freeCashFlowPerShare": "Free Cash Flow p/aandeel",
+#                "bookValuePerShare": "Boekwaarde p/aandeel"
+ #           }
+ #           for k, v in colmap.items():
+ #               if k in df_km.columns:
+ #                   df_km.rename(columns={k: v}, inplace=True)
+ #           nodig = ["date"] + list(colmap.values())
+  #          if all(col in df_km.columns for col in nodig):
+  #              df_km["date"] = pd.to_datetime(df_km["date"])
+   #             df_km = df_km.sort_values("date")
+    #            df_km.set_index("date", inplace=True)
+    #            df_ratios_q = df_km[list(colmap.values())].copy()
     
         # Combineer (inner join) EPS en overige metrics op date
-        if df_eps_q is not None and df_ratios_q is not None:
+  #      if df_eps_q is not None and df_ratios_q is not None:
         # Combineer beide datframes op datum, zonder dubbele WPA/EPS-kolom
-            df_alle = df_eps_q.join(df_ratios_q[[c for c in df_ratios_q.columns if c != "WPA/EPS"]], how="outer")
-            st.line_chart(df_alle)
-        elif df_ratios_q is not None:
-            st.line_chart(df_ratios_q)
-        elif df_eps_q is not None:
-            st.line_chart(df_eps_q)
-        else:
-            st.info("Geen kwartaaldata gevonden voor WPA/EPS of andere per-aandeel metrics.")
+ #           df_alle = df_eps_q.join(df_ratios_q[[c for c in df_ratios_q.columns if c != "WPA/EPS"]], how="outer")
+ #           st.line_chart(df_alle)
+  #      elif df_ratios_q is not None:
+  #          st.line_chart(df_ratios_q)
+  #      elif df_eps_q is not None:
+   #         st.line_chart(df_eps_q)
+   #     else:
+    #        st.info("Geen kwartaaldata gevonden voor WPA/EPS of andere per-aandeel metrics.")
         
     
     # 🔹 EPS per kwartaal
-#    if eps_quarters:
-#        df_eps_q = pd.DataFrame(eps_quarters)[["date", "eps"]].copy()
-#        df_eps_q["date"] = pd.to_datetime(df_eps_q["date"])
-#        df_eps_q = df_eps_q.sort_values("date")
-#        df_eps_q.set_index("date", inplace=True)
-#        with st.expander("📆 WPA per kwartaal"):
- #           st.bar_chart(df_eps_q)
-  #          st.line_chart(df_eps_q)
+    if eps_quarters:
+        df_eps_q = pd.DataFrame(eps_quarters)[["date", "eps"]].copy()
+        df_eps_q["date"] = pd.to_datetime(df_eps_q["date"])
+        df_eps_q = df_eps_q.sort_values("date")
+        df_eps_q.set_index("date", inplace=True)
+        with st.expander("📆 WPA per kwartaal"):
+            st.bar_chart(df_eps_q)
+            st.line_chart(df_eps_q)
             
      # 🔹 EPS-analyse (grafiek met verwacht & werkelijk)
- #       with st.expander("📈 EPS analyse"):
+#        with st.expander("📈 EPS analyse"):
 #            if isinstance(eps_quarters, list) and len(eps_quarters) > 0:
   #              df_epsq = pd.DataFrame(eps_quarters)[["date", "eps"]]
 #                df_epsq.columns = ["Datum", "EPS"]
