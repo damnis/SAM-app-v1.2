@@ -33,7 +33,7 @@ def get_profile(ticker):
         return None
 
 @st.cache_data(ttl=3600)
-def get_key_metrics(ticker):
+def get_key_metrics(ticker, years=20):
     url = f"{BASE_URL}/key-metrics/{ticker}?limit=20&apikey={API_KEY}"
     try:
         data = requests.get(url).json()
