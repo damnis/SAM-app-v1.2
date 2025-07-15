@@ -50,7 +50,7 @@ from alpaca.data.timeframe import TimeFrame
 from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import MarketOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce
-from alpaca.trading.requests import OptionOrderRequest
+#from alpaca.trading.requests import OptionOrderRequest
 
 #import alpaca_trade_api as tradeapi
 from fmpfetch import fetch_data_fmp, search_ticker_fmp
