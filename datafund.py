@@ -34,13 +34,13 @@ def get_profile(ticker):
 
 @st.cache_data(ttl=3600)
 def get_key_metrics(ticker, years=20):
-    url = f"{BASE_URL}/key-metrics/{ticker}?limit=20&apikey={API_KEY}"
+    url = f"{BASE_URL}/key-metrics/{ticker}?limit={years}&apikey={API_KEY}"
     try:
         data = requests.get(url).json()
-        return data[0] if data else None
+        return data if isinstance(data, list) else []
     except:
-        return None
-
+        return []
+        
 @st.cache_data(ttl=3600)
 def get_earning_calendar(ticker):
     url = f"{BASE_URL}/earning_calendar/{ticker}?limit=10&apikey={API_KEY}"
