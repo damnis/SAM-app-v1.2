@@ -342,8 +342,15 @@ def toon_fundamentals(ticker):
 
     with st.expander("📊 Grafieken per aandeel"):
         col1, col2 = st.columns(2)
-        df_ratio = key_metrics  # << Ticker als string, bv. "AAPL"
-        if df_ratio is not None and len(df_ratio) > 0:
+        raw_data = key_metrics
+        if isinstance(raw_data, list) and len(raw_data) > 0:
+            df_ratio = pd.DataFrame(raw_data)
+    # Alleen verder als df_ratio kolommen bevat
+            if "date" in df_ratio.columns:
+                df_ratio["date"] = pd.to_datetime(df_ratio["date"])
+                df_ratio = df_ratio.sort_values("date")
+        # ... vanaf hier je grafiek code (set_index, rename, etc)
+    
         # Links: K/W en WPA/EPS
             with col1:
                 try:
