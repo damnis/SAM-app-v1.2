@@ -340,6 +340,35 @@ def toon_fundamentals(ticker):
             except:
                 st.info("📉 Geen ratio grafiek beschikbaar.")
 
+    with st.expander("📊 Grafieken per aandeel"):
+        col1, col2 = st.columns(2)
+        with col1:
+            try:
+                df_ratio1_graph = df_ratio.set_index("date")[["priceEarningsRatio", "netIncomePerShare"]].copy()
+                df_ratio1_graph.rename(columns={
+                    "priceEarningsRatio": "K/W",
+                    "netIncomePerShare": "WPA/EPS"
+                    
+                }, inplace=True)
+                st.line_chart(df_ratio1_graph)
+                
+
+            except:
+                st.info("📉 Geen grafiek beschikbaar.")
+        with col2:
+            try:
+                df_ratio2_graph = df_ratio.set_index("date")[["freeCashFlowPerShare", "bookValuePerShare"]].copy()
+                df_ratio2_graph["returnOnEquity"] *= 100
+                df_ratio2_graph.rename(columns={
+                    "freeCashFlowPerShare": "Free Cash Flow p/aandeel",
+                    "bookValuePerShare": "Boekwaarde p/aandeel"
+                     
+                }, inplace=True)
+                st.line_chart(df_ratio2_graph)
+            except:
+                st.info("📉 Geen ratio grafiek beschikbaar.")
+
+
 
     
         # 🔹 EPS en overige per-aandeel metrics per kwartaal
