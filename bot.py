@@ -1,4 +1,3 @@
-# bot.py
 import yfinance as yf
 import streamlit as st
 import pandas as pd
@@ -6,11 +5,16 @@ from alpaca.trading.client import TradingClient
 from alpaca.trading.enums import OrderSide, TimeInForce
 from alpaca.trading.requests import MarketOrderRequest, TrailingStopOrderRequest
 
-def verbind_met_alpaca():
+def verbind_met_alpaca(mode):
     try:
-        api_key = st.secrets["ALPACA_API_KEY"]
-        secret_key = st.secrets["ALPACA_SECRET_KEY"]
-        client = TradingClient(api_key, secret_key, paper=True)
+        if mode == "Paper":
+            api_key = st.secrets["alpaca_paper"]["API_KEY"]
+            secret_key = st.secrets["alpaca_paper"]["SECRET_KEY"]
+            client = TradingClient(api_key, secret_key, paper=True)
+        else:
+            api_key = st.secrets["alpaca_live"]["API_KEY"]
+            secret_key = st.secrets["alpaca_live"]["SECRET_KEY"]
+            client = TradingClient(api_key, secret_key, paper=False)
         account = client.get_account()
         return client, account
     except Exception as e:
@@ -74,13 +78,22 @@ def sluit_positie(client, ticker, advies, force=False):
         st.info("📭 Geen open positie of fout bij ophalen: " + str(e))
 
 def toon_trading_bot_interface(ticker, huidig_advies):
-    st.subheader("📥 Plaats live paper trade op basis van advies")
-
+    st.subheader("📥 Plaats live/paper trade op basis van advies")
+    
+    # ⭐ Modekeuze toegevoegd
+    trade_mode = st.selectbox("🔀 Kies Alpaca account type:", ["Paper", "Live"], index=0)
     modus = st.radio("🎛️ Kies handelsmodus", ["Handmatig", "Automatisch", "Beide"], horizontal=True)
 
-    client, account = verbind_met_alpaca()
+    # Verbind met gekozen account
+    client, account = verbind_met_alpaca(trade_mode)
     if client is None:
         return
+
+    # UI waarschuwing bij LIVE
+    if trade_mode == "Live":
+        st.warning("⚠️ LIVE TRADING - ECHT GELD! Dubbelcheck bedrag & ticker!")
+    else:
+        st.info("🧪 Paper Trading (virtueel geld, geen risico)")
 
     if account:
         st.success(f"✅ Verbonden met Alpaca-account ({account.status})")
@@ -88,7 +101,7 @@ def toon_trading_bot_interface(ticker, huidig_advies):
         st.write(f"💰 Beschikbaar cash: ${float(account.cash):,.2f}")
         st.write(f"📈 Portfolio waarde: ${float(account.portfolio_value):,.2f}")
 
-    with st.expander("🧪 Virtuele testorder plaatsen via Alpaca Paper Account"):
+    with st.expander(f"{'💵' if trade_mode=='Live' else '🧪'} Order plaatsen via Alpaca {trade_mode} Account"):
         last = haal_laatste_koers(ticker)
         if last:
             st.write(f"📉 Laatste koers voor {ticker}: **${last:.2f}**")
@@ -117,7 +130,7 @@ def toon_trading_bot_interface(ticker, huidig_advies):
     st.markdown("---")
 
     st.subheader("📤 Verkooppositie controleren en sluiten")
-    with st.expander("📊 Positie check en verkoopactie"):
+    with st.expander(f"{'💵' if trade_mode=='Live' else '🧪'} Positie check en verkoopactie"):
         try:
             positie = client.get_open_position(ticker)
             huidige_qty = int(float(positie.qty))
@@ -142,7 +155,18 @@ def toon_trading_bot_interface(ticker, huidig_advies):
 
 
 
-#  wir
-# trading bot
-#
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+# w
