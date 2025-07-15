@@ -7,19 +7,16 @@ from alpaca.trading.requests import MarketOrderRequest, TrailingStopOrderRequest
 
 def verbind_met_alpaca(mode):
     try:
-        if mode == "Paper":
-            api_key = st.secrets["alpaca_paper"]["API_KEY"]
-            secret_key = st.secrets["alpaca_paper"]["SECRET_KEY"]
-            client = TradingClient(api_key, secret_key, paper=True)
-        else:
-            api_key = st.secrets["alpaca_live"]["API_KEY"]
-            secret_key = st.secrets["alpaca_live"]["SECRET_KEY"]
-            client = TradingClient(api_key, secret_key, paper=False)
+        sectie = "alpaca_paper" if mode == "Paper" else "alpaca_live"
+        api_key = st.secrets[sectie]["ALPACA_API_KEY"]
+        secret_key = st.secrets[sectie]["ALPACA_SECRET_KEY"]
+        client = TradingClient(api_key, secret_key, paper=(mode == "Paper"))
         account = client.get_account()
         return client, account
     except Exception as e:
         st.error(f"❌ Fout bij verbinden met Alpaca: {e}")
         return None, None
+        
 
 def haal_laatste_koers(ticker):
     try:
