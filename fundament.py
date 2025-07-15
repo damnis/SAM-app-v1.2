@@ -341,11 +341,11 @@ def toon_fundamentals(ticker):
         # Links: K/W en WPA/EPS
             with col1:
                 try:
-                    cols1 = [col for col in ["priceEarningsRatio", "netIncomePerShare"] if col in df_ratio.columns]
+                    cols1 = [col for col in ["grahamNetNet", "netIncomePerShare"] if col in df_ratio.columns]
                     if cols1:
                         df_ratio1_graph = df_ratio.set_index("date")[cols1].copy()
                         df_ratio1_graph.rename(columns={
-                            "priceEarningsRatio": "K/W",
+                            "grahamNetNet": "NCAV Graham",
                             "netIncomePerShare": "WPA/EPS"
                         }, inplace=True)
                     st.line_chart(df_ratio1_graph)
