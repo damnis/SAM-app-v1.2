@@ -356,7 +356,7 @@ def toon_fundamentals(ticker):
         # Key Metrics-data (extra per-share ratios)
         df_km = get_key_metrics(ticker + "?period=quarter")
         df_ratios_q = None
-        if isinstance(df_km, list) and len(df_km) > 0
+        if isinstance(df_km, list) and len(df_km) > 0:
             df_km = pd.DataFrame(df_km)
         # Rename kolommen voor duidelijke legenda
             colmap = {
