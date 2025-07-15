@@ -342,7 +342,7 @@ def toon_fundamentals(ticker):
 
     with st.expander("📊 Grafieken per aandeel"):
         col1, col2 = st.columns(2)
-        df_ratio = key_metrics(ticker)  # << Ticker als string, bv. "AAPL"
+        df_ratio = key_metrics  # << Ticker als string, bv. "AAPL"
         if df_ratio is not None and len(df_ratio) > 0:
         # Links: K/W en WPA/EPS
             with col1:
