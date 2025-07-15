@@ -342,31 +342,33 @@ def toon_fundamentals(ticker):
 
     with st.expander("📊 Grafieken per aandeel"):
         col1, col2 = st.columns(2)
-        with col1:
-            try:
-                df_ratio1_graph = df_ratio.set_index("date")[["priceEarningsRatio", "netIncomePerShare"]].copy()
-                df_ratio1_graph.rename(columns={
-                    "priceEarningsRatio": "K/W",
-                    "netIncomePerShare": "WPA/EPS"
-                    
-                }, inplace=True)
-                st.line_chart(df_ratio1_graph)
-                
+        df_ratio = get_key_metrics_annual(ticker)  # << Ticker als string, bv. "AAPL"
+        if df_ratio is not None and len(df_ratio) > 0:
+        # Links: K/W en WPA/EPS
+            with col1:
+                try:
+                    df_ratio1_graph = df_ratio.set_index("date")[["priceEarningsRatio", "netIncomePerShare"]].copy()
+                    df_ratio1_graph.rename(columns={
+                        "priceEarningsRatio": "K/W",
+                        "netIncomePerShare": "WPA/EPS"
+                    }, inplace=True)
+                    st.line_chart(df_ratio1_graph)
+                except Exception as e:
+                    st.info(f"📉 Geen grafiek beschikbaar. ({e})")
 
-            except:
-                st.info("📉 Geen grafiek beschikbaar.")
-        with col2:
-            try:
-                df_ratio2_graph = df_ratio.set_index("date")[["freeCashFlowPerShare", "bookValuePerShare"]].copy()
-                df_ratio2_graph.rename(columns={
-                    "freeCashFlowPerShare": "Free Cash Flow p/aandeel",
-                    "bookValuePerShare": "Boekwaarde p/aandeel"
-                     
-                }, inplace=True)
-                st.line_chart(df_ratio2_graph)
-            except:
-                st.info("📉 Geen ratio grafiek beschikbaar.")
-
+        # Rechts: FCF/aandeel en Boekwaarde/aandeel
+            with col2:
+                try:
+                    df_ratio2_graph = df_ratio.set_index("date")[["freeCashFlowPerShare", "bookValuePerShare"]].copy()
+                    df_ratio2_graph.rename(columns={
+                        "freeCashFlowPerShare": "Free Cash Flow p/aandeel",
+                        "bookValuePerShare": "Boekwaarde p/aandeel"
+                    }, inplace=True)
+                    st.line_chart(df_ratio2_graph)
+                except Exception as e:
+                    st.info(f"📉 Geen ratio grafiek beschikbaar. ({e})")
+        else:
+            st.info("Geen key_metrics jaardata gevonden voor dit aandeel.")
 
 
     
