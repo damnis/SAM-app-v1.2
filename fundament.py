@@ -41,8 +41,12 @@ def toon_profiel_en_kerninfo(profile, key_metrics, income_statement=None):
             col1.metric("Prijs", format_value(profile.get("price")))
             col1.metric("Marktkapitalisatie", format_value(profile.get("mktCap")))
             col2.metric("Dividend (per aandeel)", format_value(profile.get("lastDiv")))
-            col2.metric("Dividendrendement", format_value(key_metrics.get("dividendYield", 0), is_percent=True))
-            col3.metric("Payout Ratio", format_value(key_metrics.get("payoutRatio", 0), is_percent=True))
+            latest_metrics = key_metrics[0] if key_metrics and isinstance(key_metrics, list) and len(key_metrics) > 0 else {}
+            col2.metric("Dividendrendement", format_value(latest_metrics.get("dividendYield", 0), is_percent=True) if latest_metrics else "-")
+            col3.metric("Payout Ratio", format_value(latest_metrics.get("payoutRatio", 0), is_percent=True) if latest_metrics else "-")
+
+    #        col2.metric("Dividendrendement", format_value(key_metrics.get("dividendYield", 0), is_percent=True))
+     #       col3.metric("Payout Ratio", format_value(key_metrics.get("payoutRatio", 0), is_percent=True))
             col3.metric("Aantal medewerkers", format_value(profile.get("fullTimeEmployees")))
 
             # ➕ Derde rij uit income_statement
