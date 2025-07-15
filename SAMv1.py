@@ -120,7 +120,6 @@ valutasymbool = valutasymbool[selected_tab]
 
 #def get_live_ticker_data(tickers_dict):
 # --- Data ophalen voor dropdown live view ---
-#@st.cache_data(ttl=600)
 def get_live_ticker_data(tickers_dict):
     tickers = list(tickers_dict.keys())
     data = yf.download(tickers, period="2d", interval="1d", progress=False, group_by='ticker')
@@ -128,16 +127,43 @@ def get_live_ticker_data(tickers_dict):
 
     for ticker in tickers:
         try:
-            last = data[ticker]['Close'].iloc[-1]
-            prev = data[ticker]['Close'].iloc[-2]
+            df = data[ticker]
+            # Forceer DataFrame indien Series
+            if isinstance(df, pd.Series):
+                df = df.to_frame().T
+            last = df['Close'].iloc[-1]
+            if len(df) >= 2:
+                prev = df['Close'].iloc[-2]
+            else:
+                prev = df['Open'].iloc[-1]
             change = (last - prev) / prev * 100
             kleur = "#00FF00" if change > 0 else "#FF0000" if change < 0 else "#808080"
             naam = tickers_dict[ticker]
             result.append((ticker, naam, last, change, kleur))
-        except Exception:
+        except Exception as e:
+            # st.write(f"Ticker {ticker} error: {e}") # Debug, mag weg
             continue
 
     return result
+    
+#@st.cache_data(ttl=600)
+#def get_live_ticker_data(tickers_dict):
+  #  tickers = list(tickers_dict.keys())
+ #   data = yf.download(tickers, period="2d", interval="1d", progress=False, group_by='ticker')
+#    result = []
+
+ #   for ticker in tickers:
+#        try:
+#            last = data[ticker]['Close'].iloc[-1]
+   #         prev = data[ticker]['Close'].iloc[-2]
+ #           change = (last - prev) / prev * 100
+  #          kleur = "#00FF00" if change > 0 else "#FF0000" if change < 0 else "#808080"
+  #          naam = tickers_dict[ticker]
+   #         result.append((ticker, naam, last, change, kleur))
+  #      except Exception:
+   #         continue
+
+#    return result
 
 # --- Weergave dropdown met live info ---
 live_info = get_live_ticker_data(tabs_mapping[selected_tab])
