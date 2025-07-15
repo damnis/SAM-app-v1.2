@@ -6,7 +6,7 @@ API_KEY = st.secrets["FMP_API_KEY"]
 BASE_URL = "https://financialmodelingprep.com/api/v3"
 
 @st.cache_data(ttl=3600)
-def get_income_statement(ticker, years=5):
+def get_income_statement(ticker, years=20):
     url = f"{BASE_URL}/income-statement/{ticker}?limit={years}&apikey={API_KEY}"
     try:
         response = requests.get(url)
@@ -34,7 +34,7 @@ def get_profile(ticker):
 
 @st.cache_data(ttl=3600)
 def get_key_metrics(ticker):
-    url = f"{BASE_URL}/key-metrics/{ticker}?limit=1&apikey={API_KEY}"
+    url = f"{BASE_URL}/key-metrics/{ticker}?limit=20&apikey={API_KEY}"
     try:
         data = requests.get(url).json()
         return data[0] if data else None
@@ -64,6 +64,11 @@ def get_quarterly_eps(ticker):
         return requests.get(url).json()
     except:
         return []
+
+
+
+
+
 
 @st.cache_data(ttl=3600)
 def get_eps_forecast(ticker):
