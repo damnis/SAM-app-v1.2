@@ -358,7 +358,6 @@ def toon_fundamentals(ticker):
         with col2:
             try:
                 df_ratio2_graph = df_ratio.set_index("date")[["freeCashFlowPerShare", "bookValuePerShare"]].copy()
-                df_ratio2_graph["returnOnEquity"] *= 100
                 df_ratio2_graph.rename(columns={
                     "freeCashFlowPerShare": "Free Cash Flow p/aandeel",
                     "bookValuePerShare": "Boekwaarde p/aandeel"
