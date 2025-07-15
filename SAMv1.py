@@ -122,7 +122,7 @@ valutasymbool = valutasymbool[selected_tab]
 # --- Data ophalen voor dropdown live view ---
 def get_live_ticker_data(tickers_dict):
     tickers = list(tickers_dict.keys())
-    data = yf.download(tickers, period="1d", interval="1d", progress=False, group_by='ticker')
+    data = yf.download(tickers, period="2d", interval="1d", progress=False, group_by='ticker')
     result = []
 
     for ticker in tickers:
