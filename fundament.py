@@ -341,15 +341,18 @@ def toon_fundamentals(ticker):
         # Links: K/W en WPA/EPS
             with col1:
                 try:
-                    df_ratio1_graph = df_ratio.set_index("date")[["priceEarningsRatio", "netIncomePerShare"]].copy()
-                    df_ratio1_graph.rename(columns={
-                        "priceEarningsRatio": "K/W",
-                        "netIncomePerShare": "WPA/EPS"
-                    }, inplace=True)
+                    cols1 = [col for col in ["priceEarningsRatio", "netIncomePerShare"] if col in df_ratio.columns]
+                    if cols1:
+                        df_ratio1_graph = df_ratio.set_index("date")[cols1].copy()
+                        df_ratio1_graph.rename(columns={
+                            "priceEarningsRatio": "K/W",
+                            "netIncomePerShare": "WPA/EPS"
+                        }, inplace=True)
                     st.line_chart(df_ratio1_graph)
-                except Exception as e:
-                    st.info(f"📉 Geen grafiek beschikbaar. ({e})")
-
+                else:
+                    st.info("📉 Geen grafiek beschikbaar (kolommen ontbreken).")
+    
+                    
         # Rechts: FCF/aandeel en Boekwaarde/aandeel
             with col2:
                 try:
