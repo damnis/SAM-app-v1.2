@@ -55,7 +55,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2, sorteer_op="marktkapitali
         gesorteerde_tickers = sorteer_tickers(tickers, sorteer_op)[:20]
 
         # ✅ Titel boven dropdown
-        html += f"<h4 style='color: black; margin-top: 30px;'>{sector}</h4>"
+        html += f"<h4 style='color: #FAFAD2; margin-top: 30px;'>{sector}</h4>"
 
         # ✅ Uitklapbare sectie
         with st.expander(f"📊 {sector}", expanded=(i < 2)):  # Eerste 2 open
