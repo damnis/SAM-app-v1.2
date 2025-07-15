@@ -42,7 +42,7 @@ from fundament import toon_fundamentals
 from backtest import backtest_functie, bereken_sam_rendement
 # trading bot
 from bot import toon_trading_bot_interface
-from optiebot import toon_optie_trading_bot_interface 
+#from optiebot import toon_optie_trading_bot_interface 
 from bot import verbind_met_alpaca, haal_laatste_koers, plaats_order, sluit_positie
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
@@ -404,11 +404,11 @@ backtest_functie(df, signaalkeuze=signaalkeuze, selected_tab=selected_tab, inter
 
 
 # …na de adviezen en grafiek, etc.
-#toon_trading_bot_interface(selected_ticker, huidig_advies)
+# trading bot
 toon_trading_bot_interface(selected_ticker, huidig_advies)
 # 📌 Verbinding met Alpaca testen (optioneel, pas uit te voeren als gebruiker dit wil)
-# Voor standalone testen: 
-toon_optie_trading_bot_interface(selected_ticker, huidig_advies)
+# optiebot
+#toon_optie_trading_bot_interface(selected_ticker, huidig_advies)
 #FMP testapi
 if st.sidebar.checkbox("🧪 FMP Test Tool"):
     test_fmp_endpoint()
