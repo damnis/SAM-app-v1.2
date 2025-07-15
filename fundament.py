@@ -328,29 +328,29 @@ def toon_fundamentals(ticker):
         df_eps_q.set_index("date", inplace=True)
         with st.expander("📆 WPA per kwartaal"):
             st.bar_chart(df_eps_q)
-
-
+            st.line_chart(df_eps_q)
+            
      # 🔹 EPS-analyse (grafiek met verwacht & werkelijk)
-        with st.expander("📈 EPS analyse"):
-            if isinstance(eps_quarters, list) and len(eps_quarters) > 0:
-                df_epsq = pd.DataFrame(eps_quarters)[["date", "eps"]]
-                df_epsq.columns = ["Datum", "EPS"]
-                df_epsq["Datum"] = pd.to_datetime(df_epsq["Datum"])
-                df_epsq = df_epsq.sort_values("Datum")
-                eps_df = df_epsq.copy()
-                eps_df["Verwachte EPS"] = None
-                if isinstance(eps_forecast, list):
-                    for f in eps_forecast:
-                        try:
-                            d = pd.to_datetime(f.get("date"))
-                            est = f.get("estimatedEps")
-                            if d and est is not None:
-                                eps_df.loc[eps_df["Datum"] == d, "Verwachte EPS"] = float(est)
-                        except:
-                            pass
-                chart_data = eps_df.set_index("Datum")[["EPS", "Verwachte EPS"]]
-                st.line_chart(chart_data)
-                st.dataframe(chart_data.applymap(format_value))
+ #       with st.expander("📈 EPS analyse"):
+#            if isinstance(eps_quarters, list) and len(eps_quarters) > 0:
+  #              df_epsq = pd.DataFrame(eps_quarters)[["date", "eps"]]
+#                df_epsq.columns = ["Datum", "EPS"]
+   #             df_epsq["Datum"] = pd.to_datetime(df_epsq["Datum"])
+   #             df_epsq = df_epsq.sort_values("Datum")
+    #            eps_df = df_epsq.copy()
+    #            eps_df["Verwachte EPS"] = None
+   #             if isinstance(eps_forecast, list):
+     #               for f in eps_forecast:
+      #                  try:
+    #                        d = pd.to_datetime(f.get("date"))
+     #                       est = f.get("estimatedEps")
+     #                       if d and est is not None:
+     #                           eps_df.loc[eps_df["Datum"] == d, "Verwachte EPS"] = float(est)
+     #                   except:
+      #                      pass
+      #          chart_data = eps_df.set_index("Datum")[["EPS", "Verwachte EPS"]]
+        #        st.line_chart(chart_data)
+          #      st.dataframe(chart_data.applymap(format_value))
 
 
 
