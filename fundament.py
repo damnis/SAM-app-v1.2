@@ -327,7 +327,7 @@ def toon_fundamentals(ticker):
         df_eps_q = df_eps_q.sort_values("date")
         df_eps_q.set_index("date", inplace=True)
         with st.expander("📆 WPA per kwartaal"):
-            st.bar_chart(df_eps_q)
+ #           st.bar_chart(df_eps_q)
             st.line_chart(df_eps_q)
             
      # 🔹 EPS-analyse (grafiek met verwacht & werkelijk)
