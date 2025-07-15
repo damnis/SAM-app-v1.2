@@ -355,8 +355,8 @@ def toon_fundamentals(ticker):
                 try:
                     df_ratio2_graph = df_ratio.set_index("date")[["freeCashFlowPerShare", "bookValuePerShare"]].copy()
                     df_ratio2_graph.rename(columns={
-                        "freeCashFlowPerShare": "Free Cash Flow p/aandeel",
-                        "bookValuePerShare": "Boekwaarde p/aandeel"
+                        "freeCashFlowPerShare": "Cash Flow p/a",
+                        "bookValuePerShare": "Eigen vermogen p/a"
                     }, inplace=True)
                     st.line_chart(df_ratio2_graph)
                 except Exception as e:
