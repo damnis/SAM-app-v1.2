@@ -349,8 +349,10 @@ def toon_fundamentals(ticker):
                             "netIncomePerShare": "WPA/EPS"
                         }, inplace=True)
                     st.line_chart(df_ratio1_graph)
-                else:
-                    st.info("📉 Geen grafiek beschikbaar (kolommen ontbreken).")
+                except Exception as e:
+                    st.info(f"📉 Geen ratio grafiek beschikbaar. ({e})") 
+         #       else:
+         #           st.info("📉 Geen grafiek beschikbaar (kolommen ontbreken).")
     
                     
         # Rechts: FCF/aandeel en Boekwaarde/aandeel
