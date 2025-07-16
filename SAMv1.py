@@ -14,6 +14,7 @@ from ta.trend import ADXIndicator
 #from ta.momentum import TRIXIndicator
 # from .py imports
 #-- Volledige tickerlijsten ---
+from sectorticker import sector_tickers, sector_tickers_news 
 from tickers import (
     aex_tickers, amx_tickers, dow_tickers, eurostoxx_tickers,
     nasdaq_tickers, ustech_tickers, crypto_tickers, mijn_lijst, 
@@ -400,7 +401,7 @@ toon_sam_tabel(df, selected_tab, signaalkeuze)
 
 # toon news
 # ... selecteer ticker zoals altijd:
-toon_newsfeed(ticker)
+toon_newsfeed()
 #ticker = selected_ticker  # of hoe je hem ook noemt in je app
 #toon_newsfeed(ticker)
 
