@@ -70,8 +70,7 @@ def get_quarterly_eps(ticker):
 def get_news_fmp(ticker):
     url = f"{BASE_URL}/stock_news/{ticker}?}?limit=10&apikey={API_KEY}"
     try:
-        data = requests.get(url).json()
-        return data[0] if data else None
+        return requests.get(url).json()
     except:
         return None
 
