@@ -96,7 +96,8 @@ def plot_overlay_grafiek(df, ticker_name, interval):
     # 2️⃣ Rechteras: SAM + SAT
     ax2 = ax1.twinx()
     ax2.set_ylim(-4.25, 4.25)
-    ax2.set_ylabel("Indicatorwaarden")
+#    ax2.set_ylabel("Indicatorwaarden")
+    ax2.get_yaxis().set_visible(False)
 
     kleuren = ["green" if val >= 0 else "red" for val in df_plot["SAM"]]
     ax2.bar(df_plot["x"], df_plot["SAM"], color=kleuren, alpha=0.3, label="SAM")
