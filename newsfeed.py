@@ -121,6 +121,8 @@ def render_news_card(item):
 
 # ---- Newsfeed hoofdcomponent ----
 def toon_newsfeed():
+    with st.expander("### 📰 Laatste beursnieuws per sector", expanded=False):
+
     st.markdown("### 📰 Laatste beursnieuws per sector")
 
     opties = list(sector_tickers_news.keys()) + ["Market news (algemeen)"]
