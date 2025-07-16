@@ -336,12 +336,23 @@ with col1:
     st.markdown("### Advies voor:")
 
 with col2:
+    laatste_koers = df["Close"].iloc[-1] if not df.empty else 0.0
     st.markdown(
-    f"""
-    <h3><span style='color:#3366cc'>{ticker_name}</span</h3>
-    """,
-    unsafe_allow_html=True
-   )
+        f"""
+        <h3>
+            <span style='color:#3366cc'>{ticker_name}</span>
+            <span style='color:#333;font-weight:400;'>| ${laatste_koers:,.2f}</span>
+        </h3>
+        """,
+        unsafe_allow_html=True
+    )
+    
+#    st.markdown(
+#    f"""
+#    <h3><span style='color:#3366cc'>{ticker_name},["Close"].iloc[-1]</span</h3>
+#    """,
+#    unsafe_allow_html=True
+#   )
 
 # Titel met kleur en grootte tonen - advies
 col1, col2 = st.columns([1, 2])
