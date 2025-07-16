@@ -1,4 +1,8 @@
 import streamlit as st
+# acces control
+from passem import password_gate
+password_gate()
+# needed imports
 import yfinance as yf
 import pandas as pd
 import ta
@@ -54,9 +58,7 @@ from alpaca.trading.enums import OrderSide, TimeInForce
 
 #import alpaca_trade_api as tradeapi
 from fmpfetch import fetch_data_fmp, search_ticker_fmp
-# acces control
-from passem import password_gate
-password_gate()
+
 
  
 # --- Streamlit UI ---
