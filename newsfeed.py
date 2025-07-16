@@ -1,7 +1,7 @@
 import streamlit as st
 from bs4 import BeautifulSoup
 import requests
-from sectorticker import sector_tickers_news  # Jouw nieuwe dict met sectoren!
+from sectorticker import sector_tickers_news  # of jouw bestandsnaam
 
 # --- Finviz ticker nieuws (per aandeel) ---
 @st.cache_data(ttl=600)
@@ -91,9 +91,12 @@ def toon_newsfeed():
         news_items = get_finviz_market_news()
     else:
         # Toon per sector per ticker de headlines (voor max. 3 tickers per sector)
-        news_items = []
-        for t in sector_tickers_news[keuze][:3]:
-            news_items += get_finviz_news(t, max_items=6)
+        tickers = sector_tickers_news.get(keuze, [])
+        st.write(f"DEBUG: Sector '{keuze}' heeft tickers: {tickers}")  # Debug: laat zien wat er in de dict zit
+        for t in tickers[:3]:
+            headlines = get_finviz_news(t, max_items=6)
+            st.write(f"DEBUG: Nieuws voor {t}: {len(headlines)} items")  # Debug: laat aantal gevonden headlines zien
+            news_items += headlines
 
     # Dedupe, sort, toon max 25
     seen = set()
@@ -110,13 +113,6 @@ def toon_newsfeed():
             render_news_card(itm)
     else:
         st.info("Geen nieuws gevonden voor deze selectie.")
-
-
-
-
-
-
-
 
 
 
