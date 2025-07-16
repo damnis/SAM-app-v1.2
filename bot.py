@@ -139,7 +139,7 @@ def sluit_positie(client, ticker, advies, force=False):
             return
 
         # 3. Annuleer eerst ALLE open sell-orders voor deze ticker
-        open_orders = client.get_orders(status="open", symbols=[ticker])
+        open_orders = client.get_orders(status="new", symbols=[ticker])
         canceled = 0
         for order in open_orders:
             if order.side == "sell":
