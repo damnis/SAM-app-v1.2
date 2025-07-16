@@ -1,7 +1,7 @@
 import streamlit as st
 from bs4 import BeautifulSoup
 import requests
-from sector_tickers_news import sector_tickers_news  # Jouw nieuwe dict met sectoren!
+from sectortickers import sector_tickers_news  # Jouw nieuwe dict met sectoren!
 
 # --- Finviz ticker nieuws (per aandeel) ---
 @st.cache_data(ttl=600)
