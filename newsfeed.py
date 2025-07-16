@@ -14,7 +14,7 @@ def toon_newsfeed(ticker):
 
     if filter_choice == "Alle":
         selected_source = st.radio("Bron:", ["FMP"], horizontal=True, index=0)
-        news_items = get_news_fmp(limit=15)
+        news_items = get_news_fmp()
 
     elif filter_choice == "Sector":
         sector = st.selectbox("Sector:", list(sector_dict.keys()))
@@ -30,7 +30,7 @@ def toon_newsfeed(ticker):
         # ticker wordt als argument meegegeven!
         selected_source = st.radio("Bron:", ["FMP", "Yahoo"], horizontal=True, index=0)
         if selected_source == "FMP":
-            news_items = get_news_fmp(ticker, limit=10)
+            news_items = get_news_fmp(ticker)
         else:
             news_items = get_news_yahoo(ticker, limit=10)
 
@@ -43,7 +43,7 @@ def toon_newsfeed(ticker):
             if key and key not in seen:
                 seen.add(key)
                 items.append(item)
-        return items[:15]
+        return items[:10]
 
     news_items = sort_news(news_items)
 
