@@ -167,12 +167,12 @@ def toon_fundamentals(ticker):
     # ALLES WAT NU KOMT moet dus binnen de functie blijven!
     # ------------------------------------------------------
     # 🔹 Profiel
-    with st.expander("🧾 Bedrijfsprofiel & Kerninfo", expanded=True):
+#    with st.expander("🧾 Bedrijfsprofiel & Kerninfo", expanded=True):
         ...
 
     # 🔹 Profiel
      
-    with st.expander("🧾 Bedrijfsprofiel & Kerninfo", expanded=True):
+    with st.expander("🧾 Bedrijfsprofiel & Kerninfo", expanded=False):
         col1, col2, col3 = st.columns(3)
         col1.metric("Prijs", format_value(profile.get("price")))
         col1.metric("Marktkapitalisatie", format_value(profile.get("mktCap")))
