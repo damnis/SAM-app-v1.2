@@ -123,7 +123,50 @@ def koop_en_trailing_stop(client, ticker, bedrag, last_price, trailing_pct):
     except Exception as e:
         st.error(f"❌ Fout bij OTO trailing stop: {e}")
         
+# aanvullende annuleer alles def
+def annuleer_alle_orders_ticker(client, ticker):
+    """
+    Annuleert ALLE open orders (alle soorten!) voor de gekozen ticker.
+    Geeft per order debug-output.
+    """
+    try:
+        orders = client.get_orders()  # Haal ALLE orders op (open, filled, cancelled, enz.)
+        canceled = 0
+        found = 0
+        for order in orders:
+            # Toon alle details voor debug
+            st.write({
+                "id": order.id,
+                "symbol": order.symbol,
+                "side": order.side,
+                "status": order.status,
+                "type": getattr(order, "type", ""),
+                "order_class": getattr(order, "order_class", ""),
+                "parent_order_id": getattr(order, "parent_order_id", None),
+                "qty": order.qty
+            })
+            # Alleen orders van deze ticker én status open/new/pending (sommige brokers gebruiken "new")
+            if order.symbol == ticker and order.status in ("open", "new", "pending"):
+                found += 1
+                try:
+                    client.cancel_order(order.id)
+                    st.info(f"🗑️ Order {order.id} voor {ticker} geannuleerd ({getattr(order,'type','')})")
+                    canceled += 1
+                except Exception as e:
+                    st.warning(f"⚠️ Fout bij annuleren van order {order.id}: {e}")
 
+        if found == 0:
+            st.info(f"ℹ️ Geen open/pending orders gevonden voor {ticker}.")
+        elif canceled == 0:
+            st.warning(f"⚠️ Geen orders konden worden geannuleerd voor {ticker}.")
+        else:
+            st.success(f"✅ {canceled} order(s) geannuleerd voor {ticker}.")
+        return canceled
+    except Exception as e:
+        st.error(f"❌ Fout bij ophalen of annuleren van orders: {e}")
+        return 0
+        
+# actual sluit posities def
 def sluit_positie(client, ticker, advies, force=False):
     try:
         # 1. Controleer positie
@@ -139,23 +182,13 @@ def sluit_positie(client, ticker, advies, force=False):
             return
 
         # 3. Annuleer eerst ALLE open sell-orders voor deze ticker
-        open_orders = client.get_orders()  # Geen arguments!
-        canceled = 0
-        for order in open_orders:
-            if order.status == "open" and order.symbol == ticker and order.side == "sell":
-                try:
-                    client.cancel_order(order.id)
-                    canceled += 1
-                except Exception as e:
-                    st.warning(f"⚠️ Fout bij annuleren van order {order.id}: {e}")
-            
-                if canceled > 0:
-                    st.info(f"🗑️ {canceled} open verkooporder(s) geannuleerd voor {ticker}.")
-                    st.info("⏳ Wachten 10 seconden zodat de stukken vrijkomen...")
-                    time.sleep(6)  # wacht 6 seconden na annuleren
-                else:
-                    st.info("Geen open verkooporders te annuleren. Doorgaan met verkoop.")
-
+        # Eerst alles annuleren
+        aantal_geannuleerd = annuleer_alle_orders_ticker(client, ticker)
+        # Eventueel even wachten na annuleren (optioneel)
+        if aantal_geannuleerd > 0:
+            st.info("⏳ Wachten 8 seconden zodat de stukken vrijkomen...")
+            time.sleep(8)
+    
         # 4. Nu directe market sell plaatsen voor alle stukken
         order = MarketOrderRequest(
             symbol=ticker,
