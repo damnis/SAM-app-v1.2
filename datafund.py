@@ -68,7 +68,7 @@ def get_quarterly_eps(ticker):
         return []
 
 
-@st.cache_data(ttl=3600)
+#@st.cache_data(ttl=3600)
 def get_news_fmp(ticker, api_key, limit=10):
     url = f"https://financialmodelingprep.com/api/v3/stock_news?tickers={ticker}&limit={limit}&apikey={API_KEY}"
     response = requests.get(url)
@@ -77,7 +77,7 @@ def get_news_fmp(ticker, api_key, limit=10):
     return []
 
 
-@st.cache_data(ttl=900)
+#@st.cache_data(ttl=900)
 def get_news_yahoo(ticker, limit=10):
     try:
         stock = yf.Ticker(ticker)
