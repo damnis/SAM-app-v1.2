@@ -1,13 +1,13 @@
 import streamlit as st
 import requests
 from bs4 import BeautifulSoup
-from sectorticker import sector_tickers_news  
+from sectorticker import sector_tickers_news  # <-- jouw dict!
 
 # ---- Finviz news per ticker ----
 @st.cache_data(ttl=600)
 def get_finviz_news(ticker, max_items=7):
     url = f"https://finviz.com/quote.ashx?t={ticker}"
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"}
+    headers = {"User-Agent": "Mozilla/5.0"}
     try:
         resp = requests.get(url, headers=headers, timeout=8)
         soup = BeautifulSoup(resp.content, "html.parser")
@@ -35,7 +35,7 @@ def get_finviz_news(ticker, max_items=7):
 @st.cache_data(ttl=600)
 def get_finviz_market_news(max_items=20):
     url = "https://finviz.com/news.ashx"
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"}
+    headers = {"User-Agent": "Mozilla/5.0"}
     try:
         resp = requests.get(url, headers=headers, timeout=10)
         soup = BeautifulSoup(resp.content, "html.parser")
@@ -148,7 +148,16 @@ def toon_newsfeed():
     for itm in news_items:
         key = itm.get("title", "")
         if key and key not in seen:
-            seen.add(key
+            seen.add(key)
+            unique_news.append(itm)
+        if len(unique_news) >= 24:
+            break
+
+    if unique_news:
+        for itm in unique_news:
+            render_news_card(itm)
+    else:
+        st.info("Geen nieuws gevonden voor deze selectie.")
 
 
 
@@ -171,5 +180,4 @@ def toon_newsfeed():
 
 
 
-
-    
+    # w
