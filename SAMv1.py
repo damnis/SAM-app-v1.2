@@ -341,7 +341,7 @@ with col2:
         f"""
         <h3>
             <span style='color:#3366cc'>{ticker_name}</span>
-            <span style='color:#3366dd;font-weight:400;'>| {laatste_koers:,.2f}</span>
+            <span style='color:#3366dd;font-weight:400;'>| {valutasymbool}{laatste_koers:,.2f}</span>
         </h3>
         """,
         unsafe_allow_html=True
