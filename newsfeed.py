@@ -123,8 +123,6 @@ def render_news_card(item):
 def toon_newsfeed():
     with st.expander("📰 Laatste beursnieuws per sector", expanded=False):
 
-#    st.markdown("### 📰 Laatste beursnieuws per sector")
-
     opties = list(sector_tickers_news.keys()) + ["Market news (algemeen)"]
     keuze = st.selectbox("Kies sector of algemeen nieuws", opties, index=0)
 
