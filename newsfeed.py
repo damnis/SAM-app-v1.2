@@ -141,7 +141,7 @@ def toon_newsfeed():
                     items = get_google_news(t)
                 news_items += items
 
-        # Dedupe, max 24 items, stijlvaste weergave
+        # Dedupe op titel
         seen = set()
         unique_news = []
         for itm in news_items:
@@ -149,14 +149,43 @@ def toon_newsfeed():
             if key and key not in seen:
                 seen.add(key)
                 unique_news.append(itm)
-            if len(unique_news) >= 24:
-                break
+
+        # Sorteren van nieuw naar oud op datum/tijd
+        from dateutil import parser
+        def parse_date(dt):
+            try:
+                return parser.parse(dt)
+            except Exception:
+                return parser.parse("1970-01-01")  # fallback bij fout
+
+        unique_news.sort(key=lambda x: parse_date(x.get("datetime", "")), reverse=True)
+
+        # Max 24 tonen
+        unique_news = unique_news[:24]
 
         if unique_news:
             for itm in unique_news:
                 render_news_card(itm)
         else:
             st.info("Geen nieuws gevonden voor deze selectie.")
+        
+        
+        # Dedupe, max 24 items, stijlvaste weergave
+#        seen = set()
+ #       unique_news = []
+#        for itm in news_items:
+  #          key = itm.get("title", "")
+    #        if key and key not in seen:
+  #              seen.add(key)
+   #             unique_news.append(itm)
+  #          if len(unique_news) >= 24:
+   #             break
+
+  #      if unique_news:
+   #         for itm in unique_news:
+      #          render_news_card(itm)
+  #      else:
+   #         st.info("Geen nieuws gevonden voor deze selectie.")
 
 
 
