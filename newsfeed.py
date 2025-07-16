@@ -5,7 +5,7 @@ from sectorticker import sector_tickers_news  # <-- jouw dict!
 
 # ---- Finviz news per ticker ----
 @st.cache_data(ttl=600)
-def get_finviz_news(ticker, max_items=7):
+def get_finviz_news(ticker, max_items=6):
     url = f"https://finviz.com/quote.ashx?t={ticker}"
     headers = {"User-Agent": "Mozilla/5.0"}
     try:
@@ -60,7 +60,7 @@ def get_finviz_market_news(max_items=20):
 
 # ---- Google News fallback per ticker ----
 @st.cache_data(ttl=600)
-def get_google_news(ticker, max_items=7, lang="en"):
+def get_google_news(ticker, max_items=6, lang="en"):
     url = f"https://news.google.com/rss/search?q={ticker}+stock&hl={lang}-US&gl=US&ceid=US:en"
     try:
         resp = requests.get(url, timeout=10)
@@ -83,7 +83,7 @@ def get_google_news(ticker, max_items=7, lang="en"):
 
 # ---- Google News market fallback ----
 @st.cache_data(ttl=600)
-def get_google_market_news(max_items=20, lang="en"):
+def get_google_market_news(max_items=30, lang="en"):
     url = f"https://news.google.com/rss/search?q=US+stock+market&hl={lang}-US&gl=US&ceid=US:en"
     try:
         resp = requests.get(url, timeout=10)
@@ -132,7 +132,7 @@ def toon_newsfeed():
             if not news_items:  # fallback Google
                 news_items = get_google_market_news()
         else:
-            tickers = sector_tickers_news[keuze][:3]  # max 3 tickers per sector
+            tickers = sector_tickers_news[keuze][:20]  # max 20 tickers per sector
             for t in tickers:
                 # Probeer Finviz
                 items = get_finviz_news(t)
@@ -160,8 +160,8 @@ def toon_newsfeed():
 
         unique_news.sort(key=lambda x: parse_date(x.get("datetime", "")), reverse=True)
 
-        # Max 24 tonen
-        unique_news = unique_news[:24]
+        # Max 32 tonen
+        unique_news = unique_news[:32]
 
         if unique_news:
             for itm in unique_news:
@@ -170,7 +170,7 @@ def toon_newsfeed():
             st.info("Geen nieuws gevonden voor deze selectie.")
         
         
-        # Dedupe, max 24 items, stijlvaste weergave
+        # Dedupe, max 32 items, stijlvaste weergave
 #        seen = set()
  #       unique_news = []
 #        for itm in news_items:
@@ -178,7 +178,7 @@ def toon_newsfeed():
     #        if key and key not in seen:
   #              seen.add(key)
    #             unique_news.append(itm)
-  #          if len(unique_news) >= 24:
+  #          if len(unique_news) >= 32:
    #             break
 
   #      if unique_news:
