@@ -329,14 +329,13 @@ def toon_trading_bot_interface(ticker, huidig_advies):
 
         st.write(f"📌 Huidig advies: **{huidig_advies}**")
         force_verkoop = st.checkbox("🔒 Forceer verkoop, ongeacht advies")
-        with 
-            col1, col2 = st.columns(2)
-        
-        if st.button("❗ Verkooppositie sluiten"):
-            sluit_positie(client, ticker, huidig_advies, force=force_verkoop)
-
-        if st.button("🚨 Sluit ALLES direct (noodstop)"):
-            sluit_alles(client)
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("❗ Verkooppositie sluiten"):
+                sluit_positie(client, ticker, huidig_advies, force=force_verkoop)
+        with col2: 
+            if st.button("🚨 Sluit ALLES direct (noodstop)"):
+                sluit_alles(client)
 
 
 
