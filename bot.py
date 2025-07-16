@@ -202,24 +202,55 @@ def sluit_positie(client, ticker, advies, force=False):
     except Exception as e:
         st.info("📭 Geen open positie of fout bij ophalen: " + str(e))
 
-#def sluit_positie(client, ticker, advies, force=False):
-#    try:
-#        positie = client.get_open_position(ticker)
-#        aantal = int(float(positie.qty))
-#        if not force and advies != "Verkopen":
-#            st.info("ℹ️ Huidig advies is geen 'Verkopen'. Geen actie ondernomen.")
-#            return
-#        order = MarketOrderRequest(
-#            symbol=ticker,
-#            qty=aantal,
- #           side=OrderSide.SELL,
-#            time_in_force=TimeInForce.DAY
-#        )
- #       response = client.submit_order(order)
-#        st.success(f"✅ Verkooporder geplaatst voor {aantal}x {ticker}")
-#        st.write(response)
-#    except Exception as e:
-#        st.info("📭 Geen open positie of fout bij ophalen: " + str(e))
+# PANIEK SLUIT ECHT ALLES
+def sluit_alles(client):
+    st.warning("⚠️ Noodfunctie actief: alle posities en open orders worden nu gesloten/geannuleerd!")
+    try:
+        # 1. Annuleer eerst álle open orders (buy en sell, alle tickers)
+        open_orders = client.get_orders()
+        canceled = 0
+        for order in open_orders:
+            if order.status in ("open", "new", "pending"):
+                try:
+                    client.cancel_order_by_id(order.id)
+                    st.info(f"🗑️ Order {order.id} ({order.symbol}, {order.side}) geannuleerd.")
+                    canceled += 1
+                except Exception as e:
+                    st.warning(f"⚠️ Fout bij annuleren van order {order.id}: {e}")
+        if canceled == 0:
+            st.info("ℹ️ Geen open orders om te annuleren.")
+        else:
+            st.success(f"✅ {canceled} order(s) geannuleerd.")
+            st.info("⏳ Wachten 8 seconden zodat alle stukken worden vrijgegeven...")
+            time.sleep(8)
+
+        # 2. Haal alle open posities op en sluit ze één voor één (market sell)
+        posities = client.get_all_positions()
+        closed = 0
+        for positie in posities:
+            ticker = positie.symbol
+            aantal = int(float(positie.qty))
+            if aantal > 0:
+                try:
+                    order = MarketOrderRequest(
+                        symbol=ticker,
+                        qty=aantal,
+                        side=OrderSide.SELL,
+                        time_in_force=TimeInForce.DAY
+                    )
+                    response = client.submit_order(order)
+                    st.success(f"✅ Market sell geplaatst voor {aantal}x {ticker}.")
+                    closed += 1
+                except Exception as e:
+                    st.warning(f"⚠️ Fout bij sluiten van positie {ticker}: {e}")
+        if closed == 0:
+            st.info("ℹ️ Geen posities om te sluiten.")
+        else:
+            st.success(f"✅ {closed} positie(s) gesloten.")
+    except Exception as e:
+        st.error(f"❌ Fout bij 'sluit alles': {e}")
+
+
 
 def toon_trading_bot_interface(ticker, huidig_advies):
     st.subheader("📥 Plaats live/paper trade op basis van advies")
@@ -298,11 +329,13 @@ def toon_trading_bot_interface(ticker, huidig_advies):
 
         st.write(f"📌 Huidig advies: **{huidig_advies}**")
         force_verkoop = st.checkbox("🔒 Forceer verkoop, ongeacht advies")
-
+        col
+        
         if st.button("❗ Verkooppositie sluiten"):
             sluit_positie(client, ticker, huidig_advies, force=force_verkoop)
 
-
+        if st.button("🚨 Sluit ALLES direct (noodstop)"):
+            sluit_alles(client)
 
 
 
