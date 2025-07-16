@@ -149,7 +149,7 @@ def annuleer_alle_orders_ticker(client, ticker):
             if order.symbol == ticker and order.status in ("open", "new", "pending"):
                 found += 1
                 try:
-                    client.cancel_order(order.id)
+                    client.cancel_order_by_id(order.id)
                     st.info(f"🗑️ Order {order.id} voor {ticker} geannuleerd ({getattr(order,'type','')})")
                     canceled += 1
                 except Exception as e:
