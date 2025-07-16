@@ -139,7 +139,7 @@ def plot_koersgrafiek(df, ticker_name, interval):
     df_koers["x"] = range(len(df_koers))
     datumkolom = df_koers.columns[0]  # meestal 'Date' of 'index'
 
-    fig, ax = plt.subplots(figsize=(14, 6))  # zelfde formaat als SAM/SAT
+    fig, ax = plt.subplots(figsize=(14, 6))
 
     # Koers en MA-lijnen plotten
     ax.plot(df_koers["x"], df_koers["Close"], color="black", linewidth=2.0, label="Koers")
@@ -152,7 +152,7 @@ def plot_koersgrafiek(df, ticker_name, interval):
     ax.set_xticks(df_koers["x"][::step])
     ax.set_xticklabels(labels[::step], rotation=45, ha="right")
 
-    # Y-as instellen
+    # Y-as instellen (koers)
     try:
         koers_values = df_koers["Close"].astype(float).dropna()
         if not koers_values.empty:
@@ -167,11 +167,23 @@ def plot_koersgrafiek(df, ticker_name, interval):
     ax.set_title(f"Koersgrafiek van {ticker_name}")
     ax.set_ylabel("Close")
     ax.set_xlabel("Datum")
-    ax.legend()
+
+    # --- Volume als bars op tweede y-as (rechts) ---
+    if "Volume" in df_koers.columns:
+        ax2 = ax.twinx()
+        ax2.bar(df_koers["x"], df_koers["Volume"], color="#b0c4de", width=0.8, alpha=0.5, label="Volume")
+        ax2.set_ylabel("Volume")
+        ax2.set_ylim(bottom=0)  # Volume altijd vanaf 0
+        ax2.get_yaxis().set_visible(True)
+        ax2.legend(loc="upper right")
+        # optioneel: ax2.set_yticks([])  # geen y-ticks voor volume als je het 'clean' wilt
+
+    ax.legend(loc="upper left")
     fig.tight_layout()
     st.subheader("Koersgrafiek")
     st.pyplot(fig)
-    
+
+
 
 # --- SAM en Trend ---
 def plot_sam_trend(df, interval):
