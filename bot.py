@@ -1,6 +1,7 @@
 import yfinance as yf
 import streamlit as st
 import pandas as pd
+import time
 from alpaca.trading.client import TradingClient
 from alpaca.trading.enums import OrderSide, TimeInForce
 from alpaca.trading.requests import MarketOrderRequest, TrailingStopOrderRequest
@@ -54,6 +55,55 @@ def plaats_order(client, ticker, bedrag, last_price, advies, order_type="Market"
         st.write(response)
     except Exception as e:
         st.error(f"❌ Order kon niet worden geplaatst: {e}")
+
+
+
+def koop_en_trailing_stop(client, ticker, bedrag, last_price, trailing_pct):
+    aantal = int(bedrag / last_price)
+    if aantal <= 0:
+        st.warning("❌ Bedrag is te klein voor aankoop.")
+        return
+
+    # 1. Koop (market)
+    try:
+        kooporder = MarketOrderRequest(
+            symbol=ticker,
+            qty=aantal,
+            side=OrderSide.BUY,
+            time_in_force=TimeInForce.GTC
+        )
+        koopresp = client.submit_order(kooporder)
+        koop_id = koopresp.id
+        st.info(f"⏳ Wachten tot kooporder ({aantal}x {ticker}) is uitgevoerd...")
+
+        # 2. Poll tot filled
+        max_wait = 30  # seconden
+        waited = 0
+        while waited < max_wait:
+            order_status = client.get_order_by_id(koop_id).status
+            if order_status == "filled":
+                break
+            time.sleep(1)
+            waited += 1
+        if order_status != "filled":
+            st.error("❌ Kooporder niet uitgevoerd binnen 30 sec, geen trailing stop geplaatst.")
+            return
+        st.success("✅ Kooporder uitgevoerd! Nu trailing stop plaatsen...")
+
+        # 3. Trailing stop SELL plaatsen voor exact aantal
+        trailing_order = TrailingStopOrderRequest(
+            symbol=ticker,
+            qty=aantal,
+            side=OrderSide.SELL,
+            trail_percent=trailing_pct,
+            time_in_force=TimeInForce.GTC
+        )
+        ts_resp = client.submit_order(trailing_order)
+        st.success(f"✅ Trailing Stop Sell order geplaatst ({aantal}x {ticker}, {trailing_pct}% onder hoogste koers)")
+        st.write(ts_resp)
+    except Exception as e:
+        st.error(f"❌ Fout bij OTO trailing stop: {e}")
+        
 
 def sluit_positie(client, ticker, advies, force=False):
     try:
@@ -109,20 +159,36 @@ def toon_trading_bot_interface(ticker, huidig_advies):
         bedrag = st.number_input("💰 Te investeren bedrag ($)", min_value=10.0, value=1000.0, step=10.0)
         st.write(f"📌 Actueel advies voor {ticker}: **{huidig_advies}**")
 
-        order_type = st.radio("🛒 Kies ordertype", ["Market", "Trailing Stop"], horizontal=True)
+
+        order_type = st.radio("🛒 Kies ordertype", ["Market", "Trailing Stop", "OTO: Market Buy + Trailing Stop Sell"], horizontal=True)
         trailing_pct = None
-        if order_type == "Trailing Stop":
-            trailing_pct = st.slider("📉 Trailing stop (% vanaf hoogste koers)", 1.0, 20.0, 5.0)
+        if order_type in ["Trailing Stop", "OTO: Market Buy + Trailing Stop Sell"]:
+            trailing_pct = st.slider("📉 Trailing stop (% vanaf hoogste koers)", 1.0, 20.0, 2.0)
 
         handmatig = modus in ["Handmatig", "Beide"]
         automatisch = modus in ["Automatisch", "Beide"]
 
         if handmatig and st.button("📤 Handmatig order plaatsen"):
-            plaats_order(client, ticker, bedrag, last, huidig_advies, order_type, trailing_pct)
+            if order_type == "OTO: Market Buy + Trailing Stop Sell":
+                koop_en_trailing_stop(client, ticker, bedrag, last, trailing_pct)
+            else:
+                plaats_order(client, ticker, bedrag, last, huidig_advies, order_type, trailing_pct)
+        
+        
+   #     order_type = st.radio("🛒 Kies ordertype", ["Market", "Trailing Stop"], horizontal=True)
+   #     trailing_pct = None
+  #      if order_type == "Trailing Stop":
+   #         trailing_pct = st.slider("📉 Trailing stop (% vanaf hoogste koers)", 1.0, 20.0, 5.0)
 
-        if automatisch and huidig_advies in ["Kopen", "Verkopen"]:
-            st.info("🤖 Automatisch advies actief...")
-            plaats_order(client, ticker, bedrag, last, huidig_advies, order_type, trailing_pct)
+   #     handmatig = modus in ["Handmatig", "Beide"]
+   #     automatisch = modus in ["Automatisch", "Beide"]
+
+   #     if handmatig and st.button("📤 Handmatig order plaatsen"):
+   #         plaats_order(client, ticker, bedrag, last, huidig_advies, order_type, trailing_pct)
+
+   #     if automatisch and huidig_advies in ["Kopen", "Verkopen"]:
+   #         st.info("🤖 Automatisch advies actief...")
+   #         plaats_order(client, ticker, bedrag, last, huidig_advies, order_type, trailing_pct)
 
     st.markdown("---")
 
