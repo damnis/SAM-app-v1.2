@@ -74,15 +74,6 @@ def get_news_fmp(ticker):
     except:
         return None
 
-#@st.cache_data(ttl=3600)
-#def get_news_fmp(ticker, api_key, limit=10):
-#    url = f"https://financialmodelingprep.com/api/v3/stock_news?tickers={ticker}&limit={limit}&apikey={API_KEY}"
-#    response = requests.get(url)
-#    if response.status_code == 200:
-#        return response.json()
-#    return []
-
-
 #@st.cache_data(ttl=900)
 def get_news_yahoo(ticker, limit=10):
     try:
