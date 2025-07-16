@@ -399,7 +399,7 @@ plot_sat_debug(df, interval)
 toon_sam_tabel(df, selected_tab, signaalkeuze)
 
 # toon news
-# ticker = selected_ticker  # of hoe je hem ook noemt in je app
+ticker = selected_ticker  # of hoe je hem ook noemt in je app
 toon_newsfeed(ticker)
 
 # Toon Fundamentals
