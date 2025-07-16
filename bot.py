@@ -126,11 +126,33 @@ def koop_en_trailing_stop(client, ticker, bedrag, last_price, trailing_pct):
 
 def sluit_positie(client, ticker, advies, force=False):
     try:
+        # 1. Controleer positie
         positie = client.get_open_position(ticker)
         aantal = int(float(positie.qty))
+        if aantal == 0:
+            st.info("ℹ️ Geen open positie om te sluiten.")
+            return
+
+        # 2. Alleen uitvoeren bij force=True of advies == "Verkopen"
         if not force and advies != "Verkopen":
             st.info("ℹ️ Huidig advies is geen 'Verkopen'. Geen actie ondernomen.")
             return
+
+        # 3. Annuleer eerst ALLE open sell-orders voor deze ticker
+        open_orders = client.get_orders(status="open", symbols=[ticker])
+        canceled = 0
+        for order in open_orders:
+            if order.side == "sell":
+                try:
+                    client.cancel_order(order.id)
+                    canceled += 1
+                except Exception as e:
+                    st.warning(f"⚠️ Fout bij annuleren van order {order.id}: {e}")
+
+        if canceled > 0:
+            st.info(f"🗑️ {canceled} open verkooporder(s) geannuleerd voor {ticker}.")
+
+        # 4. Nu directe market sell plaatsen voor alle stukken
         order = MarketOrderRequest(
             symbol=ticker,
             qty=aantal,
@@ -142,6 +164,26 @@ def sluit_positie(client, ticker, advies, force=False):
         st.write(response)
     except Exception as e:
         st.info("📭 Geen open positie of fout bij ophalen: " + str(e))
+        
+
+#def sluit_positie(client, ticker, advies, force=False):
+#    try:
+#        positie = client.get_open_position(ticker)
+#        aantal = int(float(positie.qty))
+#        if not force and advies != "Verkopen":
+#            st.info("ℹ️ Huidig advies is geen 'Verkopen'. Geen actie ondernomen.")
+#            return
+#        order = MarketOrderRequest(
+#            symbol=ticker,
+#            qty=aantal,
+ #           side=OrderSide.SELL,
+#            time_in_force=TimeInForce.DAY
+#        )
+ #       response = client.submit_order(order)
+#        st.success(f"✅ Verkooporder geplaatst voor {aantal}x {ticker}")
+#        st.write(response)
+#    except Exception as e:
+#        st.info("📭 Geen open positie of fout bij ophalen: " + str(e))
 
 def toon_trading_bot_interface(ticker, huidig_advies):
     st.subheader("📥 Plaats live/paper trade op basis van advies")
