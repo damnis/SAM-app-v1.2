@@ -1,5 +1,5 @@
 import streamlit as st
-from datafund import get_news_fmp, get_news_yahoo  # Zorg dat deze functies bestaan (zie vorige berichten)
+from datafund import get_news_fmp, get_news_yahoo  
 from sectorticker import sector_tickers
 
 def toon_newsfeed(ticker):
