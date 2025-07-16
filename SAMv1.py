@@ -55,7 +55,7 @@ from alpaca.trading.enums import OrderSide, TimeInForce
 #import alpaca_trade_api as tradeapi
 from fmpfetch import fetch_data_fmp, search_ticker_fmp
 # acces control
-from pass import password_gate
+from passem import password_gate
 password_gate()
 
  
