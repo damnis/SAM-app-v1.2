@@ -151,6 +151,10 @@ def sluit_positie(client, ticker, advies, force=False):
 
         if canceled > 0:
             st.info(f"🗑️ {canceled} open verkooporder(s) geannuleerd voor {ticker}.")
+            st.info("⏳ Wachten 10 seconden zodat de stukken vrijkomen...")
+            time.sleep(10)  # wacht 10 seconden na annuleren
+        else:
+            st.info("Geen open verkooporders te annuleren. Doorgaan met verkoop.")
 
         # 4. Nu directe market sell plaatsen voor alle stukken
         order = MarketOrderRequest(
@@ -164,7 +168,6 @@ def sluit_positie(client, ticker, advies, force=False):
         st.write(response)
     except Exception as e:
         st.info("📭 Geen open positie of fout bij ophalen: " + str(e))
-        
 
 #def sluit_positie(client, ticker, advies, force=False):
 #    try:
