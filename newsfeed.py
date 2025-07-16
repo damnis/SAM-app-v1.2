@@ -1,17 +1,15 @@
 import streamlit as st
-from bs4 import BeautifulSoup
 import requests
-from sectorticker import sector_tickers_news  # of jouw bestandsnaam
+from bs4 import BeautifulSoup
+from sectorticker import sector_tickers_news  
 
-# --- Finviz ticker nieuws (per aandeel) ---
+# ---- Finviz news per ticker ----
 @st.cache_data(ttl=600)
-def get_finviz_news(ticker="AAPL", max_items=12):
+def get_finviz_news(ticker, max_items=7):
     url = f"https://finviz.com/quote.ashx?t={ticker}"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
-    }
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"}
     try:
-        resp = requests.get(url, headers=headers, timeout=10)
+        resp = requests.get(url, headers=headers, timeout=8)
         soup = BeautifulSoup(resp.content, "html.parser")
         table = soup.find("table", class_="fullview-news-outer")
         news_list = []
@@ -33,13 +31,11 @@ def get_finviz_news(ticker="AAPL", max_items=12):
     except Exception:
         return []
 
-# --- Finviz market news (algemeen) ---
+# ---- Finviz market news ----
 @st.cache_data(ttl=600)
-def get_finviz_market_news(max_items=25):
+def get_finviz_market_news(max_items=20):
     url = "https://finviz.com/news.ashx"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
-    }
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"}
     try:
         resp = requests.get(url, headers=headers, timeout=10)
         soup = BeautifulSoup(resp.content, "html.parser")
@@ -62,7 +58,53 @@ def get_finviz_market_news(max_items=25):
     except Exception:
         return []
 
-# --- Tijdschriftstijl kaartje ---
+# ---- Google News fallback per ticker ----
+@st.cache_data(ttl=600)
+def get_google_news(ticker, max_items=7, lang="en"):
+    url = f"https://news.google.com/rss/search?q={ticker}+stock&hl={lang}-US&gl=US&ceid=US:en"
+    try:
+        resp = requests.get(url, timeout=10)
+        soup = BeautifulSoup(resp.content, "xml")
+        items = soup.find_all("item")[:max_items]
+        news_list = []
+        for item in items:
+            title = item.title.text
+            link = item.link.text
+            date = item.pubDate.text
+            news_list.append({
+                "title": title,
+                "url": link,
+                "datetime": date,
+                "site": "Google News"
+            })
+        return news_list
+    except Exception:
+        return []
+
+# ---- Google News market fallback ----
+@st.cache_data(ttl=600)
+def get_google_market_news(max_items=20, lang="en"):
+    url = f"https://news.google.com/rss/search?q=US+stock+market&hl={lang}-US&gl=US&ceid=US:en"
+    try:
+        resp = requests.get(url, timeout=10)
+        soup = BeautifulSoup(resp.content, "xml")
+        items = soup.find_all("item")[:max_items]
+        news_list = []
+        for item in items:
+            title = item.title.text
+            link = item.link.text
+            date = item.pubDate.text
+            news_list.append({
+                "title": title,
+                "url": link,
+                "datetime": date,
+                "site": "Google News"
+            })
+        return news_list
+    except Exception:
+        return []
+
+# ---- Stijlvolle card ----
 def render_news_card(item):
     title = item.get("title") or ""
     link = item.get("url") or "#"
@@ -77,42 +119,46 @@ def render_news_card(item):
     </div>
     """, unsafe_allow_html=True)
 
-# --- Hoofdnieuwsfeed module ---
+# ---- Newsfeed hoofdcomponent ----
 def toon_newsfeed():
-    st.markdown("### 📰 Laatste beursnieuws")
+    st.markdown("### 📰 Laatste beursnieuws per sector")
 
-    # Dynamisch: sectoren plus market news
     opties = list(sector_tickers_news.keys()) + ["Market news (algemeen)"]
-    keuze = st.selectbox("Kies sector of algemeen nieuws", opties)
+    keuze = st.selectbox("Kies sector of algemeen nieuws", opties, index=0)
 
     news_items = []
 
     if keuze == "Market news (algemeen)":
         news_items = get_finviz_market_news()
+        if not news_items:  # fallback Google
+            news_items = get_google_market_news()
     else:
-        # Toon per sector per ticker de headlines (voor max. 3 tickers per sector)
-        tickers = sector_tickers_news.get(keuze, [])
-        st.write(f"DEBUG: Sector '{keuze}' heeft tickers: {tickers}")  # Debug: laat zien wat er in de dict zit
-        for t in tickers[:3]:
-            headlines = get_finviz_news(t, max_items=6)
-            st.write(f"DEBUG: Nieuws voor {t}: {len(headlines)} items")  # Debug: laat aantal gevonden headlines zien
-            news_items += headlines
+        tickers = sector_tickers_news[keuze][:3]  # max 3 tickers per sector
+        for t in tickers:
+            # Probeer Finviz
+            items = get_finviz_news(t)
+            # Fallback Google als Finviz leeg is
+            if not items:
+                items = get_google_news(t)
+            news_items += items
 
-    # Dedupe, sort, toon max 25
+    # Dedupe, max 24 items, stijlvaste weergave
     seen = set()
-    sorted_news = []
+    unique_news = []
     for itm in news_items:
         key = itm.get("title", "")
         if key and key not in seen:
-            seen.add(key)
-            sorted_news.append(itm)
-    sorted_news = sorted_news[:25]
+            seen.add(key
 
-    if sorted_news:
-        for itm in sorted_news:
-            render_news_card(itm)
-    else:
-        st.info("Geen nieuws gevonden voor deze selectie.")
+
+
+
+
+
+
+
+
+
 
 
 
