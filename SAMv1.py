@@ -30,6 +30,8 @@ from genereer import genereer_adviesmatrix
 from grafieken import toon_adviesmatrix_html
 from sam_tabel import toon_sam_tabel 
 from heatmap import toon_sector_heatmap
+# nieuws
+from newsfeed import toon_newsfeed
 # --- Fundamentele data ophalen en tonen ---
 from datafund import get_income_statement, get_ratios
 from datafund import (
@@ -394,6 +396,10 @@ plot_sat_debug(df, interval)
 # --- Tabel met signalen en rendement ---
 # later in je code, waar de tabel moet komen
 toon_sam_tabel(df, selected_tab, signaalkeuze)
+
+# toon news
+# ticker = selected_ticker  # of hoe je hem ook noemt in je app
+toon_newsfeed(ticker)
 
 # Toon Fundamentals
 toon_fundamentals(ticker)
