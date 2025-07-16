@@ -122,43 +122,41 @@ def render_news_card(item):
 # ---- Newsfeed hoofdcomponent ----
 def toon_newsfeed():
     with st.expander("📰 Laatste beursnieuws per sector", expanded=False):
+        opties = list(sector_tickers_news.keys()) + ["Market news (algemeen)"]
+        keuze = st.selectbox("Kies sector of algemeen nieuws", opties, index=0)
 
-    opties = list(sector_tickers_news.keys()) + ["Market news (algemeen)"]
-    keuze = st.selectbox("Kies sector of algemeen nieuws", opties, index=0)
+        news_items = []
 
-    news_items = []
+        if keuze == "Market news (algemeen)":
+            news_items = get_finviz_market_news()
+            if not news_items:  # fallback Google
+                news_items = get_google_market_news()
+        else:
+            tickers = sector_tickers_news[keuze][:3]  # max 3 tickers per sector
+            for t in tickers:
+                # Probeer Finviz
+                items = get_finviz_news(t)
+                # Fallback Google als Finviz leeg is
+                if not items:
+                    items = get_google_news(t)
+                news_items += items
 
-    if keuze == "Market news (algemeen)":
-        news_items = get_finviz_market_news()
-        if not news_items:  # fallback Google
-            news_items = get_google_market_news()
-    else:
-        tickers = sector_tickers_news[keuze][:3]  # max 3 tickers per sector
-        for t in tickers:
-            # Probeer Finviz
-            items = get_finviz_news(t)
-            # Fallback Google als Finviz leeg is
-            if not items:
-                items = get_google_news(t)
-            news_items += items
+        # Dedupe, max 24 items, stijlvaste weergave
+        seen = set()
+        unique_news = []
+        for itm in news_items:
+            key = itm.get("title", "")
+            if key and key not in seen:
+                seen.add(key)
+                unique_news.append(itm)
+            if len(unique_news) >= 24:
+                break
 
-    # Dedupe, max 24 items, stijlvaste weergave
-    seen = set()
-    unique_news = []
-    for itm in news_items:
-        key = itm.get("title", "")
-        if key and key not in seen:
-            seen.add(key)
-            unique_news.append(itm)
-        if len(unique_news) >= 24:
-            break
-
-    if unique_news:
-        for itm in unique_news:
-            render_news_card(itm)
-    else:
-        st.info("Geen nieuws gevonden voor deze selectie.")
-
+        if unique_news:
+            for itm in unique_news:
+                render_news_card(itm)
+        else:
+            st.info("Geen nieuws gevonden voor deze selectie.")
 
 
 
