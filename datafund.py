@@ -1,5 +1,7 @@
 import requests
 import streamlit as st
+import yfinance as yf
+
 
 API_KEY = st.secrets["FMP_API_KEY"]
 
@@ -75,6 +77,16 @@ def get_news_fmp(ticker, api_key, limit=10):
     return []
 
 
+@st.cache_data(ttl=900)
+def get_news_yahoo(ticker, limit=10):
+    try:
+        stock = yf.Ticker(ticker)
+        news = stock.news
+        if news:
+            return news[:limit]
+        return []
+    except Exception:
+        return []
 
 
 @st.cache_data(ttl=3600)
