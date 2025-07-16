@@ -74,7 +74,7 @@ def get_news_fmp(ticker):
     except:
         return None
 
-#@st.cache_data(ttl=900)
+@st.cache_data(ttl=900)
 def get_news_yahoo(ticker, limit=10):
     try:
         stock = yf.Ticker(ticker)
