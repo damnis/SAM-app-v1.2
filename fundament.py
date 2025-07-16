@@ -168,7 +168,7 @@ def toon_fundamentals(ticker):
     # ------------------------------------------------------
     # 🔹 Profiel
 #    with st.expander("🧾 Bedrijfsprofiel & Kerninfo", expanded=True):
-        ...
+#        ...
 
     # 🔹 Profiel
      
