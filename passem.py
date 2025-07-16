@@ -12,7 +12,7 @@ def password_gate():
         if pw == PASSWORD:
             st.session_state["pw_correct"] = True
             st.success("Inloggen gelukt! Laden...")
-            st.experimental_rerun()  # rerun nodig zodat sessie wordt gezet
+            st.rerun()  # rerun nodig zodat sessie wordt gezet
             st.stop()  # absoluut nodig om te stoppen na rerun-trigger
         else:
             st.error("Wachtwoord onjuist!")
