@@ -9,6 +9,11 @@ def password_gate():
         pw = st.text_input("Wachtwoord", type="password")
         if pw == PASSWORD:
             st.session_state.pw_correct = True
+            st.success("Inloggen gelukt!")
+            try:
+                st.experimental_rerun()
+            except Exception:
+                pass
             
         elif pw:
             st.error("Wachtwoord onjuist!")
