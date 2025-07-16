@@ -1,7 +1,7 @@
 import requests
 import streamlit as st
 import yfinance as yf
-
+from finvizfinance.news import News
 
 API_KEY = st.secrets["FMP_API_KEY"]
 
@@ -97,6 +97,21 @@ def get_eps_forecast(ticker):
 
 
 
+
+@st.cache_data(ttl=600)
+def get_news_finviz(view="STOCKS_NEWS"):
+    """
+    Haal nieuws op van Finviz.
+    view: STOCKS_NEWS / MARKET_NEWS / ETF_NEWS
+    """
+    try:
+        fnews = News(view_option=view)
+        df = fnews.get_news()
+        # blijf bij hoofdkolommen
+        items = df.to_dict("records") if not df.empty else []
+        return items
+    except Exception:
+        return []
 
 
 
