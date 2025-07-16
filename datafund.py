@@ -67,14 +67,21 @@ def get_quarterly_eps(ticker):
     except:
         return []
 
+def get_news_fmp(ticker):
+    url = f"{BASE_URL}/stock_news/{ticker}?}?limit=10&apikey={API_KEY}"
+    try:
+        data = requests.get(url).json()
+        return data[0] if data else None
+    except:
+        return None
 
 #@st.cache_data(ttl=3600)
-def get_news_fmp(ticker, api_key, limit=10):
-    url = f"https://financialmodelingprep.com/api/v3/stock_news?tickers={ticker}&limit={limit}&apikey={API_KEY}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()
-    return []
+#def get_news_fmp(ticker, api_key, limit=10):
+#    url = f"https://financialmodelingprep.com/api/v3/stock_news?tickers={ticker}&limit={limit}&apikey={API_KEY}"
+#    response = requests.get(url)
+#    if response.status_code == 200:
+#        return response.json()
+#    return []
 
 
 #@st.cache_data(ttl=900)
