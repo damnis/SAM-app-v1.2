@@ -174,7 +174,7 @@ def plot_koersgrafiek(df, ticker_name, interval):
         ax2.bar(df_koers["x"], df_koers["Volume"], color="#b0c4de", width=0.8, alpha=0.5, label="Volume")
         ax2.set_ylabel("Volume")
         ax2.set_ylim(bottom=0)  # Volume altijd vanaf 0
-        ax2.get_yaxis().set_visible(True)
+        ax2.get_yaxis().set_visible(False)
         ax2.legend(loc="upper right")
         # optioneel: ax2.set_yticks([])  # geen y-ticks voor volume als je het 'clean' wilt
 
