@@ -153,7 +153,7 @@ def toon_fundamentals(ticker):
         earnings = get_earning_calendar(ticker)
         dividends = get_dividend_history(ticker)
         eps_quarters = get_quarterly_eps(ticker)
-        eps_forecast = get_quarterly_eps(ticker)
+        eps_forecast = get_eps_forecast(ticker)
         
     except Exception as e:
         st.error(f"❌ Fout bij ophalen van fundamentele data: {e}")
