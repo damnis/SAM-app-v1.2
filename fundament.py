@@ -420,28 +420,77 @@ def toon_fundamentals(ticker):
         with st.expander("📆 WPA per kwartaal"):
             st.bar_chart(df_eps_q)
             st.line_chart(df_eps_q)
-            
-      #🔹 EPS-analyse (grafiek met verwacht & werkelijk)
+
+
+     # nieuwe eps analyse grafiek
         with st.expander("📈 EPS analyse"):
-            if isinstance(eps_quarters, list) and len(eps_quarters) > 0:
-                df_epsq = pd.DataFrame(eps_quarters)[["date", "eps"]]
-                df_epsq.columns = ["Datum", "EPS"]
-                df_epsq["Datum"] = pd.to_datetime(df_epsq["Datum"])
-                df_epsq = df_epsq.sort_values("Datum")
-                eps_df = df_epsq.copy()
-                eps_df["Verwachte EPS"] = None
-                if isinstance(eps_forecast, list):
-                    for f in eps_forecast:
-                        try:
-                            d = pd.to_datetime(f.get("date"))
-                            est = f.get("estimatedEpsAvg")
-                            if d and est is not None:
-                                eps_df.loc[eps_df["Datum"] == d, "Verwachte EPS"] = float(est)
-                        except:
-                            pass
-                chart_data = eps_df.set_index("Datum")[["EPS", "Verwachte EPS"]]
-                st.line_chart(chart_data)
-                st.dataframe(chart_data.applymap(format_value))
+        # Zet dataframes klaar voor werkelijk & forecast
+            df_epsq = pd.DataFrame(eps_quarters)[["date", "eps"]]
+            df_epsq.columns = ["Datum", "EPS"]
+            df_epsq["Datum"] = pd.to_datetime(df_epsq["Datum"])
+            df_epsq = df_epsq.sort_values("Datum")
+
+        # Forecast data (kan jaarlijks of per kwartaal zijn, afhankelijk van FMP)
+            forecast_cols = ["date", "estimatedEpsAvg", "estimatedEpsLow", "estimatedEpsHigh"]
+            if isinstance(eps_forecast, list) and len(eps_forecast) > 0:
+                 df_forecast = pd.DataFrame(eps_forecast)[forecast_cols].copy()
+                 df_forecast.columns = ["Datum", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"]
+                 df_forecast["Datum"] = pd.to_datetime(df_forecast["Datum"])
+                 df_forecast = df_forecast.sort_values("Datum")
+            else:
+                df_forecast = pd.DataFrame(columns=["Datum", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"])
+
+         # Merge: alle datums uit werkelijk en forecast
+            df_all = pd.merge(df_epsq, df_forecast, on="Datum", how="outer").sort_values("Datum")
+            df_all.set_index("Datum", inplace=True)
+
+        # Filter: alleen de laatste X jaar of bijvoorbeeld 3 jaar vooruit
+            cutoff = pd.Timestamp.now() + pd.DateOffset(years=3)
+            df_all = df_all[df_all.index <= cutoff]
+
+        # --- Plot ---
+        # Toon alle lijnen (eerst de echte EPS, dan forecast lijnen)
+        
+            fig, ax = plt.subplots(figsize=(10, 4))
+            df_all["EPS"].plot(ax=ax, marker="o", label="Werkelijke EPS", linewidth=2, color="black")
+            df_all["EPS (Avg, forecast)"].plot(ax=ax, marker="o", linestyle="--", label="EPS Forecast (Avg)", color="#1e90ff")
+            df_all["EPS (Low, forecast)"].plot(ax=ax, marker=".", linestyle=":", label="EPS Forecast (Low)", color="#ff6347")
+            df_all["EPS (High, forecast)"].plot(ax=ax, marker=".", linestyle=":", label="EPS Forecast (High)", color="#2ecc71")
+            ax.set_title("Werkelijke EPS en Verwachte EPS (Low/Avg/High)")
+            ax.set_ylabel("EPS")
+            ax.set_xlabel("Datum")
+            ax.legend()
+            fig.tight_layout()
+            st.pyplot(fig)
+
+        # --- Tabel met nette opmaak ---
+            st.dataframe(
+                df_all[["EPS", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"]].applymap(format_value)
+            )
+    
+
+        
+      #🔹 oude EPS-analyse (grafiek met verwacht & werkelijk)
+#        with st.expander("📈 EPS analyse"):
+#            if isinstance(eps_quarters, list) and len(eps_quarters) > 0:
+#                df_epsq = pd.DataFrame(eps_quarters)[["date", "eps"]]
+#                df_epsq.columns = ["Datum", "EPS"]
+  #              df_epsq["Datum"] = pd.to_datetime(df_epsq["Datum"])
+ #               df_epsq = df_epsq.sort_values("Datum")
+#                eps_df = df_epsq.copy()
+#                eps_df["Verwachte EPS"] = None
+ #               if isinstance(eps_forecast, list):
+ #                   for f in eps_forecast:
+  #                      try:
+#                            d = pd.to_datetime(f.get("date"))
+ #                           est = f.get("estimatedEpsAvg")
+#                            if d and est is not None:
+ #                               eps_df.loc[eps_df["Datum"] == d, "Verwachte EPS"] = float(est)
+  #                      except:
+  #                          pass
+  #              chart_data = eps_df.set_index("Datum")[["EPS", "Verwachte EPS"]]
+  #              st.line_chart(chart_data)
+   #             st.dataframe(chart_data.applymap(format_value))
 
 
 
