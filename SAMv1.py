@@ -81,7 +81,7 @@ st.markdown("""
   position: absolute;
   top: 0;
   left: 55%;
-  transform: translateX(-55%);
+  transform: translateX(-45%);
   width: 90vw;
   max-width: 700px;
   z-index: 999;
