@@ -94,7 +94,7 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
     <table>
         <thead>
             <tr>
-                <th style='width: 100px;'>Datum</th>
+                <th style='width: 95px;'>Datum</th>
                 <th style='width: 85px;'>Close</th>
                 <th style='width: 80px;'>Advies</th>
                 <th style='width: 60px;'>SAM</th>
