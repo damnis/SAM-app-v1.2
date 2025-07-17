@@ -7,6 +7,8 @@ API_KEY = st.secrets["FMP_API_KEY"]
 
 BASE_URL = "https://financialmodelingprep.com/api/v3"
 
+
+# income statement - annual 
 @st.cache_data(ttl=3600)
 def get_income_statement(ticker, years=20):
     url = f"{BASE_URL}/income-statement/{ticker}?limit={years}&apikey={API_KEY}"
@@ -16,6 +18,7 @@ def get_income_statement(ticker, years=20):
     except:
         return []
 
+# Ratio's- annual 
 @st.cache_data(ttl=3600)
 def get_ratios(ticker, years=5):
     url = f"{BASE_URL}/ratios/{ticker}?limit={years}&apikey={API_KEY}"
@@ -25,6 +28,7 @@ def get_ratios(ticker, years=5):
     except:
         return []
 
+# company profile 
 @st.cache_data(ttl=3600)
 def get_profile(ticker):
     url = f"{BASE_URL}/profile/{ticker}?apikey={API_KEY}"
@@ -34,6 +38,7 @@ def get_profile(ticker):
     except:
         return None
 
+# key metrics  - annual 
 @st.cache_data(ttl=3600)
 def get_key_metrics(ticker, years=20):
     url = f"{BASE_URL}/key-metrics/{ticker}?limit={years}&apikey={API_KEY}"
@@ -42,7 +47,8 @@ def get_key_metrics(ticker, years=20):
         return data if isinstance(data, list) else []
     except:
         return []
-        
+
+# earnings calendar - does nothing? 
 @st.cache_data(ttl=3600)
 def get_earning_calendar(ticker):
     url = f"{BASE_URL}/earning_calendar/{ticker}?limit=10&apikey={API_KEY}"
@@ -51,6 +57,7 @@ def get_earning_calendar(ticker):
     except:
         return []
 
+# dividend calendar 
 @st.cache_data(ttl=3600)
 def get_dividend_history(ticker):
     url = f"{BASE_URL}/historical-price-full/stock_dividend/{ticker}?apikey={API_KEY}"
@@ -59,6 +66,7 @@ def get_dividend_history(ticker):
     except:
         return []
 
+# income statement- quarterly 
 @st.cache_data(ttl=3600)
 def get_quarterly_eps(ticker):
     url = f"{BASE_URL}/income-statement/{ticker}?period=quarter&limit=20&apikey={API_KEY}"
@@ -67,6 +75,8 @@ def get_quarterly_eps(ticker):
     except:
         return []
 
+
+# analyst-estimates- quarterly 
 @st.cache_data(ttl=3600)
 def get_eps_forecast(ticker):
     url = f"{BASE_URL}/analyst-estimates/{ticker}?period=quarter&limit=20&apikey={API_KEY}"
