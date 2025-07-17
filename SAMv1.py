@@ -98,7 +98,7 @@ st.markdown("""
   </div>
   <div style='width: 40%; text-align: right;'>
     <details>
-      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg SAT+SAM Trading Indicator</summary>
+      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg Indicator</summary>
       <div style='margin-top: 10px;'>
         <p style='font-size: 12px; color: #333; text-align: left'>
         Gebruik de <strong>SAT+SAM Trading Indicator</strong> door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
