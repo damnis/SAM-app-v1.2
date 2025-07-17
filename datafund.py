@@ -88,13 +88,14 @@ def get_news_yahoo(ticker, limit=10):
 
 @st.cache_data(ttl=3600)
 def get_eps_forecast(ticker):
-    url = f"{BASE_URL}/analyst-estimates/{ticker}?limit=5&apikey={API_KEY}"
+    url = f"{BASE_URL}/analyst-estimates/{ticker}?apikey={API_KEY}"
     try:
         return requests.get(url).json()
     except:
         return []
 
-
+# https://financialmodelingprep.com/api/v3/analyst-estimates/AAPL?apikey=D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5
+#https://financialmodelingprep.com/api/v3/analyst-stock-recommendations/AAPL?apikey=D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5
 
 
 
