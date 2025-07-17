@@ -101,9 +101,9 @@ def plot_overlay_grafiek(df, ticker_name, interval):
 
     kleuren = ["green" if val >= 0 else "red" for val in df_plot["SAM"]]
     ax2.bar(df_plot["x"], df_plot["SAM"], color=kleuren, alpha=0.3, label="SAM")
-    ax2.plot(df_plot["x"], df_plot["Trend"], color="orange", linewidth=1.2, marker='.', markersize=3, label="SAM Trend")
+    ax2.plot(df_plot["x"], df_plot["Trend"], color="blue", linewidth=1.4, marker='.', markersize=3, label="SAM Trend")
     ax2.plot(df_plot["x"], df_plot["SAT_Stage"], color="purple", linestyle="--", linewidth=1.2, alpha=0.5, label="SAT Stage")
-    ax2.plot(df_plot["x"], df_plot["SAT_Trend"], color="blue", linewidth=1.5, marker='.', markersize=3, label="SAT Trend")
+    ax2.plot(df_plot["x"], df_plot["SAT_Trend"], color="orange", linewidth=1.2, marker='.', markersize=3, label="SAT Trend")
 
     # --- X-as slimme labels ---
     labels = df_plot[datumkolom].dt.strftime('%Y-%m-%d')
@@ -467,94 +467,6 @@ def toon_adviesmatrix_markdown(ticker, risk_aversion=2):
 
     st.markdown("```\n" + "\n".join(rijen) + "\n```")
     
-#def toon_adviesmatrix_automatisch(ticker, risk_aversion):
-#    toon_matrix = st.toggle("🧮 Toon automatische Adviesmatrix", value=False)
-#    if not toon_matrix:
-#        return
-
-
-#    st.write(f"Interval: {interval} | kleur: {kleur} | tekst: {tekst}")
-    # Debug: controleer alle intervallen en adviesresultaten
-#    st.write("🔍 Adviesmatrix Debug Output")
-
-#    for interval, waarden_lijst in matrix.items():
- #       st.write(f"📈 Interval: {interval} | Aantal blokken: {len(waarden_lijst)}")
-
- #       for i, entry in enumerate(waarden_lijst[:5]):  # Max 5 blokjes per interval voor overzicht
-  #          kleur = entry["kleur"]
-    #        tekst = entry["tekst"]
-   #         st.write(f"  Blok {i+1}: kleur = {kleur} | tekst = {tekst}")
-
-  #      if len(waarden_lijst) == 0:
-  #          st.warning(f"⚠️ Geen waarden in matrix voor interval {interval}!")
-
-#    st.subheader("📊 Automatische Adviesmatrix")
-
-#    intervallen = {
- #       "1wk": 3,    # laatste 3 weken
-#        "1d": 15,    # laatste 3 dagen
-#        "4h": 30,    # laatste 15 dagen
-#        "1h": 60,    # laatste 30 dagen
- #       "15m": 96    # laatste 4 dagen
-#    }
-
-#    matrix_data = {}
-
-#    for interval, stappen in intervallen.items():
-#        try:
-            # Kies juiste fetch functie op basis van ticker
-#            if ":" in ticker or ticker.upper() in ["AEX", "AMX"]:
-#                df = fetch_data_fmp(ticker, interval=interval)
- #           else:
- #               df = fetch_data(ticker, interval=interval)
-
-#            df = df.dropna().copy()
- #           if df.empty or len(df) < stappen:
-  #              matrix_data[interval] = ["⛔"] * stappen
-  #              continue
-
-            # Advies berekenen met meegegeven risk_aversion
-#            df = calculate_sam(df)
-#            df = calculate_sat(df)
-  #          df = determine_advice(df, threshold=2, risk_aversion=risk_aversion)
-
-#            waarden = []
- #           for i in range(-stappen, 0):
- #               try:
- #                   advies = df.iloc[i]["Advies"]
- #                   kleur = "🟩" if advies == "Kopen" else "🟥"
-  #              except:
-  #                  kleur = "❓"
-  #              waarden.append(kleur)
-
- #           matrix_data[interval] = waarden
-
-#        except Exception as e:
-#            matrix_data[interval] = ["⚠️"] * stappen
-#            st.warning(f"Fout bij {interval}: {e}")
-
-#    matrix_df = pd.DataFrame(matrix_data).T
-#    matrix_df.columns = [f"⏱️-{i+1}" for i in range(matrix_df.shape[1])]
-#    matrix_df.index.name = "Interval"
-
-#    st.dataframe(matrix_df, use_container_width=True)
-    
-
-# ➕ y-as: bepaal min/max + marge
-#    try:
-#        koers_values = df_koers["Close"].astype(float).dropna()
-#        if not koers_values.empty:
-#            koers_min = koers_values.min()
- #           koers_max = koers_values.max()
-  #          marge = (koers_max - koers_min) * 0.05
-   #         ax.set_ylim(koers_min - marge, koers_max + marge)
- #       else:
- #           st.warning("Geen geldige koersdata om y-as limieten op te baseren.")
-#    except Exception as e:
-#        st.warning(f"Kon y-as limieten niet instellen: {e}")
-
-
-
 
 
 # ⏱ gecompliceerde koersgrafiek werkt niet geheel
