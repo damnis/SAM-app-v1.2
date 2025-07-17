@@ -24,7 +24,7 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
     st.button(knoptekst, on_click=toggle_lengte)
     weergave_lengte = st.session_state.tabel_lengte
 
-    kolommen = ["Close", "Advies", "SAM", "Trend", "Markt-%", "SAM-%"]
+    kolommen = ["Close", "Advies", "SAM", " SAM Trend", "SAT Trend", "Markt-%", "SAT+SAM-%"]
     tabel = df[kolommen].dropna().copy()
     tabel = tabel.sort_index(ascending=False).head(weergave_lengte)
 
@@ -41,23 +41,26 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
         tabel["Close"] = tabel["Close"].map("{:.2f}".format)
 
     tabel["Markt-%"] = tabel["Markt-%"].astype(float) * 100
-    tabel["SAM-%"] = tabel["SAM-%"].astype(float) * 100
+    tabel["SAT+SAM-%"] = tabel["SAT+SAM-%"].astype(float) * 100
     tabel["Advies"] = tabel["Advies"].astype(str)
 
     if signaalkeuze == "Koop":
-        tabel["SAM-%"] = [sam if adv == "Kopen" else 0.0 for sam, adv in zip(tabel["SAM-%"], tabel["Advies"])]
+        tabel["SAT+SAM-%"] = [sam if adv == "Kopen" else 0.0 for sam, adv in zip(tabel["SAT+SAM-%"], tabel["Advies"])]
     elif signaalkeuze == "Verkoop":
-        tabel["SAM-%"] = [sam if adv == "Verkopen" else 0.0 for sam, adv in zip(tabel["SAM-%"], tabel["Advies"])]
+        tabel["SAT+SAM-%"] = [sam if adv == "Verkopen" else 0.0 for sam, adv in zip(tabel["SAT+SAM-%"], tabel["Advies"])]
 
     tabel["Markt-% weergave"] = tabel["Markt-%"].map("{:+.2f}%".format)
-    tabel["SAM-% weergave"] = tabel["SAM-%"].map("{:+.2f}%".format)
-    tabel["Trend Weergave"] = tabel["Trend"].map("{:+.3f}".format)
-
-    tabel = tabel[["Datum", "Close", "Advies", "SAM", "Trend Weergave", "Markt-% weergave", "SAM-% weergave"]]
+    tabel["SAT+SAM-% weergave"] = tabel["SAT+SAM-%"].map("{:+.2f}%".format)
+    tabel["SAT Trend Weergave"] = tabel["SAT Trend"].map("{:+.3f}".format)
+    tabel["SAM Trend Weergave"] = tabel["SAM Trend"].map("{:+.3f}".format)
+    
+    tabel = tabel[["Datum", "Close", "Advies", "SAM", "SAM Trend Weergave", "SAT Trend Weergave", "Markt-% weergave", "SAT+SAM-% weergave"]]
     tabel = tabel.rename(columns={
         "Markt-% weergave": "Markt-%",
-        "SAM-% weergave": "SAM-%",
-        "Trend Weergave": "Trend"
+        "SAT+SAM-% weergave": "SAT+SAM-%",
+        "SAM Trend Weergave": "SAM Trend",
+        "SAT Trend Weergave": "SAT Trend"
+
     })
 
     html = """
