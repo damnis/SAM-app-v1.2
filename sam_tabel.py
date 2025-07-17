@@ -24,7 +24,7 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
     st.button(knoptekst, on_click=toggle_lengte)
     weergave_lengte = st.session_state.tabel_lengte
 
-    kolommen = ["Close", "Advies", "SAM", " SAM Trend", "SAT Trend", "Markt-%", "SAM-%"]
+    kolommen = ["Close", "Advies", "SAM", "Trend", "SAT_Trend", "Markt-%", "SAM-%"]
     tabel = df[kolommen].dropna().copy()
     tabel = tabel.sort_index(ascending=False).head(weergave_lengte)
 
@@ -51,8 +51,8 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
 
     tabel["Markt-% weergave"] = tabel["Markt-%"].map("{:+.2f}%".format)
     tabel["SAM-% weergave"] = tabel["SAM-%"].map("{:+.2f}%".format)
-    tabel["SAT Trend Weergave"] = tabel["SAT Trend"].map("{:+.3f}".format)
-    tabel["SAM Trend Weergave"] = tabel["SAM Trend"].map("{:+.3f}".format)
+    tabel["SAT Trend Weergave"] = tabel["SAT_Trend"].map("{:+.3f}".format)
+    tabel["SAM Trend Weergave"] = tabel["Trend"].map("{:+.3f}".format)
     
     tabel = tabel[["Datum", "Close", "Advies", "SAM", "SAM Trend Weergave", "SAT Trend Weergave", "Markt-% weergave", "SAM-% weergave"]]
     tabel = tabel.rename(columns={
