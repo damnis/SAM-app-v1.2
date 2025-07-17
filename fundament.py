@@ -516,7 +516,7 @@ def toon_fundamentals(ticker):
                 df_month[kol_volgorde]
                     .assign(**{"Surprise %": df_month["Surprise %"].apply(format_surprise)})
                     .applymap(lambda x: format_value(x) if not isinstance(x, str) or "%" not in x else x)
-         )
+            )
 
 
 
