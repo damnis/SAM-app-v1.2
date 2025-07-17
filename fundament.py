@@ -451,11 +451,16 @@ def toon_fundamentals(ticker):
             df_plot = df_all_plot.groupby('Datum_Grafiek').mean(numeric_only=True)
             df_plot = df_plot.interpolate(method="linear", limit_direction="both")
 
+            # --- FIX: werkelijke EPS mag niet verder lopen dan laatste echte waarde
+            laatste_werkelijke = df_epsq["Datum"].max()
+            df_plot.loc[df_plot.index > laatste_werkelijke, "EPS"] = None
+
             # Toon alleen tot max 3 jaar in de toekomst
             cutoff = pd.Timestamp.now() + pd.DateOffset(years=3)
             df_plot = df_plot[df_plot.index <= cutoff]
 
             # --- Plot ---
+            import matplotlib.pyplot as plt
             fig, ax = plt.subplots(figsize=(10, 4))
             df_plot["EPS"].plot(ax=ax, marker="o", label="Werkelijke EPS", linewidth=2, color="black")
             df_plot["EPS (Avg, forecast)"].plot(ax=ax, marker="o", linestyle="--", label="EPS Forecast (Avg)", color="#1e90ff")
@@ -468,9 +473,11 @@ def toon_fundamentals(ticker):
             fig.tight_layout()
             st.pyplot(fig)
 
-            # --- Originele tabel, met echte datums ---
+            # --- Originele tabel, met nieuwste datum bovenaan ---
             st.dataframe(
-                df_all[["EPS", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"]].applymap(format_value)
+                df_all[["EPS", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"]]
+                .sort_index(ascending=False)
+                .applymap(format_value)
             )
 
         
