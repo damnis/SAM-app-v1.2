@@ -93,7 +93,7 @@ st.markdown("""
 </style>
 
 <div class="sam-uitleg" style='display: flex; justify-content: space-between; align-items: top;'>
-  <div style='flex: 1;'>
+  <div style='flex: 2; min-width:220px; max-width:700px;'>
     <h5 style='margin: 0;'>Stage and Trend Simple Alert Monitor</h5>
   </div>
   <div style='flex: 1; text-align: right;'>
