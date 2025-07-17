@@ -278,8 +278,10 @@ def toon_fundamentals(ticker):
                     if col == "Kwartaal":
                         continue
                     try:
-                        if "marge" in col.lower() or "margin" in col.lower() or "%" in col or "Yield" in col:
+                        if "marge" in col.lower() or "margin" in col.lower() or "Rate" in col.lower() or "%" in col or "Yield" in col:
                             df_qr[col] = df_qr[col].apply(lambda x: format_value(x, is_percent=True))
+                        elif "Year" in col.lower() or "Symbol" in col.lower() or "period" in col.lower():
+                            df_qr[col] = df_qr[col].apply(lambda x: format_value(x, abs(value)=False))
                         else:
                             df_qr[col] = df_qr[col].apply(format_value)
                     except:
