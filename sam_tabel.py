@@ -41,7 +41,7 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
         tabel["Close"] = tabel["Close"].map("{:.2f}".format)
 
     tabel["Markt-%"] = tabel["Markt-%"].astype(float) * 100
-    tabel["SAM-%"] = tabel["SAT+SAM-%"].astype(float) * 100
+    tabel["SAM-%"] = tabel["SAM-%"].astype(float) * 100
     tabel["Advies"] = tabel["Advies"].astype(str)
 
     if signaalkeuze == "Koop":
