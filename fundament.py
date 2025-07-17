@@ -27,7 +27,7 @@ def format_value(value, is_percent=False):
         elif abs(value) >= 1_000_000:
             return f"{value / 1_000_000:,.2f} mln"
         elif abs(value) >= 1_000:
-            return f"{value / 1:.0f}"
+            return f"{value / 1:,.2f}"
         return f"{value:,.2f}"
     except:
         return "-"
@@ -278,7 +278,7 @@ def toon_fundamentals(ticker):
                     if col == "Kwartaal":
                         continue
                     try:
-                        if "marge" in col.lower() or "%" in col or "Yield" in col:
+                        if "marge" in col.lower() or "margin" in col or "%" in col or "Yield" in col:
                             df_qr[col] = df_qr[col].apply(lambda x: format_value(x, is_percent=True))
                         else:
                             df_qr[col] = df_qr[col].apply(format_value)
