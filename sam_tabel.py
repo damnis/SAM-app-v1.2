@@ -51,8 +51,8 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
 
     tabel["Markt-% weergave"] = tabel["Markt-%"].map("{:+.2f}%".format)
     tabel["SAM-% weergave"] = tabel["SAM-%"].map("{:+.2f}%".format)
-    tabel["SAT Trend Weergave"] = tabel["SAT_Trend"].map("{:+.3f}".format)
-    tabel["SAM Trend Weergave"] = tabel["Trend"].map("{:+.3f}".format)
+    tabel["SAT Trend Weergave"] = tabel["SAT_Trend"].map("{:+.2f}".format)
+    tabel["SAM Trend Weergave"] = tabel["Trend"].map("{:+.2f}".format)
     
     tabel = tabel[["Datum", "Close", "Advies", "SAM", "SAM Trend Weergave", "SAT Trend Weergave", "Markt-% weergave", "SAM-% weergave"]]
     tabel = tabel.rename(columns={
@@ -69,17 +69,17 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
             border-collapse: collapse;
             width: 100%;
             font-family: Arial, sans-serif;
-            font-size: 14px;
+            font-size: 13px;
         }
         th {
             background-color: #004080;
             color: white;
-            padding: 6px;
+            padding: 4px;
             text-align: center;
         }
         td {
             border: 1px solid #ddd;
-            padding: 6px;
+            padding: 4px;
             text-align: left;
             background-color: #f9f9f9;
             color: #222222;
@@ -95,13 +95,13 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
         <thead>
             <tr>
                 <th style='width: 100px;'>Datum</th>
-                <th style='width: 80px;'>Close</th>
+                <th style='width: 85px;'>Close</th>
                 <th style='width: 80px;'>Advies</th>
                 <th style='width: 60px;'>SAM</th>
-                <th style='width: 70px;'>SAM Trend</th>
-                <th style='width: 70px;'>SAT Trend</th>
+                <th style='width: 60px;'>SAM Trend</th>
+                <th style='width: 60px;'>SAT Trend</th>
                 <th style='width: 90px;'>Markt-%</th>
-                <th style='width: 90px;'>SAT+SAM-%</th>
+                <th style='width: 95px;'>SAT+SAM-%</th>
             </tr>
         </thead>
         <tbody>
