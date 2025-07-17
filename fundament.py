@@ -8,6 +8,7 @@ from datafund import (
 import requests
 import json
 import yfinance as yf
+import matplotlib.pyplot as plt
 
 FMP_API_KEY = st.secrets["FMP_API_KEY"]
 
