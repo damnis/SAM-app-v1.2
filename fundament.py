@@ -450,21 +450,24 @@ def toon_fundamentals(ticker):
             df_all = df_all[df_all.index <= cutoff]
 
         # --- Plot ---
-        # Toon alle lijnen (eerst de echte EPS, dan forecast lijnen)
         
-            fig, ax = plt.subplots(figsize=(10, 4))
-            df_all["EPS"].plot(ax=ax, marker="o", label="Werkelijke EPS", linewidth=2, color="black")
-            df_all["EPS (Avg, forecast)"].plot(ax=ax, marker="o", linestyle="--", label="EPS Forecast (Avg)", color="#1e90ff")
-            df_all["EPS (Low, forecast)"].plot(ax=ax, marker=".", linestyle=":", label="EPS Forecast (Low)", color="#ff6347")
-            df_all["EPS (High, forecast)"].plot(ax=ax, marker=".", linestyle=":", label="EPS Forecast (High)", color="#2ecc71")
-            ax.set_title("Werkelijke EPS en Verwachte EPS (Low/Avg/High)")
-            ax.set_ylabel("EPS")
-            ax.set_xlabel("Datum")
-            ax.legend()
-            fig.tight_layout()
-            st.pyplot(fig)
+        # ... na de merge van alle EPS-data:
+        # Vul de NaNs op met lineaire interpolatie (alle kolommen tegelijk)
+        df_plot = df_all[["EPS", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"]].copy()
+        df_plot = df_plot.interpolate(method="linear", limit_direction="both")
 
-        # --- Tabel met nette opmaak ---
+        fig, ax = plt.subplots(figsize=(10, 4))
+        df_plot["EPS"].plot(ax=ax, marker="o", label="Werkelijke EPS", linewidth=2, color="black")
+        df_plot["EPS (Avg, forecast)"].plot(ax=ax, marker="o", linestyle="--", label="EPS Forecast (Avg)", color="#1e90ff")
+        df_plot["EPS (Low, forecast)"].plot(ax=ax, marker=".", linestyle=":", label="EPS Forecast (Low)", color="#ff6347")
+        df_plot["EPS (High, forecast)"].plot(ax=ax, marker=".", linestyle=":", label="EPS Forecast (High)", color="#2ecc71")
+        ax.set_title("Werkelijke EPS en Verwachte EPS (Low/Avg/High)")
+        ax.set_ylabel("EPS")
+        ax.set_xlabel("Datum")
+        ax.legend()
+        fig.tight_layout()
+        st.pyplot(fig)
+         # --- Tabel met nette opmaak ---
             st.dataframe(
                 df_all[["EPS", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"]].applymap(format_value)
             )
