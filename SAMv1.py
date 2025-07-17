@@ -80,8 +80,8 @@ st.markdown("""
 .sam-uitleg details[open] {
   position: absolute;
   top: 0;
-  left: 65%;
-  transform: translateX(-50%);
+  left: 55%;
+  transform: translateX(-55%);
   width: 90vw;
   max-width: 700px;
   z-index: 999;
