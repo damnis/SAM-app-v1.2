@@ -94,14 +94,14 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
     <table>
         <thead>
             <tr>
-                <th style='width: 95px;'>Datum</th>
+                <th style='width: 92px;'>Datum</th>
                 <th style='width: 85px;'>Close</th>
                 <th style='width: 80px;'>Advies</th>
                 <th style='width: 60px;'>SAM</th>
                 <th style='width: 60px;'>SAM Trend</th>
                 <th style='width: 60px;'>SAT Trend</th>
                 <th style='width: 90px;'>Markt-%</th>
-                <th style='width: 95px;'>SAT+SAM-%</th>
+                <th style='width: 98px;'>SAT+SAM-%</th>
             </tr>
         </thead>
         <tbody>
