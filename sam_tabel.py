@@ -24,7 +24,7 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
     st.button(knoptekst, on_click=toggle_lengte)
     weergave_lengte = st.session_state.tabel_lengte
 
-    kolommen = ["Close", "Advies", "SAM", " SAM Trend", "SAT Trend", "Markt-%", "SAT+SAM-%"]
+    kolommen = ["Close", "Advies", "SAM", " SAM Trend", "SAT Trend", "Markt-%", "SAM-%"]
     tabel = df[kolommen].dropna().copy()
     tabel = tabel.sort_index(ascending=False).head(weergave_lengte)
 
@@ -41,23 +41,23 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
         tabel["Close"] = tabel["Close"].map("{:.2f}".format)
 
     tabel["Markt-%"] = tabel["Markt-%"].astype(float) * 100
-    tabel["SAT+SAM-%"] = tabel["SAT+SAM-%"].astype(float) * 100
+    tabel["SAM-%"] = tabel["SAT+SAM-%"].astype(float) * 100
     tabel["Advies"] = tabel["Advies"].astype(str)
 
     if signaalkeuze == "Koop":
-        tabel["SAT+SAM-%"] = [sam if adv == "Kopen" else 0.0 for sam, adv in zip(tabel["SAT+SAM-%"], tabel["Advies"])]
+        tabel["SAM-%"] = [sam if adv == "Kopen" else 0.0 for sam, adv in zip(tabel["SAM-%"], tabel["Advies"])]
     elif signaalkeuze == "Verkoop":
-        tabel["SAT+SAM-%"] = [sam if adv == "Verkopen" else 0.0 for sam, adv in zip(tabel["SAT+SAM-%"], tabel["Advies"])]
+        tabel["SAM-%"] = [sam if adv == "Verkopen" else 0.0 for sam, adv in zip(tabel["SAM-%"], tabel["Advies"])]
 
     tabel["Markt-% weergave"] = tabel["Markt-%"].map("{:+.2f}%".format)
-    tabel["SAT+SAM-% weergave"] = tabel["SAT+SAM-%"].map("{:+.2f}%".format)
+    tabel["SAM-% weergave"] = tabel["SAM-%"].map("{:+.2f}%".format)
     tabel["SAT Trend Weergave"] = tabel["SAT Trend"].map("{:+.3f}".format)
     tabel["SAM Trend Weergave"] = tabel["SAM Trend"].map("{:+.3f}".format)
     
-    tabel = tabel[["Datum", "Close", "Advies", "SAM", "SAM Trend Weergave", "SAT Trend Weergave", "Markt-% weergave", "SAT+SAM-% weergave"]]
+    tabel = tabel[["Datum", "Close", "Advies", "SAM", "SAM Trend Weergave", "SAT Trend Weergave", "Markt-% weergave", "SAM-% weergave"]]
     tabel = tabel.rename(columns={
         "Markt-% weergave": "Markt-%",
-        "SAT+SAM-% weergave": "SAT+SAM-%",
+        "SAM-% weergave": "SAT+SAM-%",
         "SAM Trend Weergave": "SAM Trend",
         "SAT Trend Weergave": "SAT Trend"
 
@@ -80,7 +80,7 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
         td {
             border: 1px solid #ddd;
             padding: 6px;
-            text-align: right;
+            text-align: left;
             background-color: #f9f9f9;
             color: #222222;
         }
@@ -94,13 +94,14 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
     <table>
         <thead>
             <tr>
-                <th style='width: 110px;'>Datum</th>
+                <th style='width: 100px;'>Datum</th>
                 <th style='width: 80px;'>Close</th>
-                <th style='width: 90px;'>Advies</th>
+                <th style='width: 80px;'>Advies</th>
                 <th style='width: 60px;'>SAM</th>
-                <th style='width: 70px;'>Trend</th>
+                <th style='width: 70px;'>SAM Trend</th>
+                <th style='width: 70px;'>SAT Trend</th>
                 <th style='width: 90px;'>Markt-%</th>
-                <th style='width: 90px;'>SAM-%</th>
+                <th style='width: 90px;'>SAT+SAM-%</th>
             </tr>
         </thead>
         <tbody>
@@ -116,6 +117,21 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
 
     st.markdown(html, unsafe_allow_html=True)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# w
 
 
 
