@@ -38,8 +38,9 @@ def toon_sam_tabel(df, selected_tab, signaalkeuze):
     if selected_tab == "🌐 Crypto":
         tabel["Close"] = tabel["Close"].map("{:.3f}".format)
     else:
-        tabel["Close"] = tabel["Close"].map("{:.2f}".format)
+        tabel["Close"] = tabel["Close"].map(f"{valutasymbool}{:.2f}".format)
 
+    
     tabel["Markt-%"] = tabel["Markt-%"].astype(float) * 100
     tabel["SAM-%"] = tabel["SAM-%"].astype(float) * 100
     tabel["Advies"] = tabel["Advies"].astype(str)
