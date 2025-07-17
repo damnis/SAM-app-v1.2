@@ -121,8 +121,8 @@ def render_news_card(item):
 
 # ---- Newsfeed hoofdcomponent ----
 def toon_newsfeed():
-    st.subheader("📰 Laatste beursnieuws per sector")
-    with st.expander("📰 Kies sector of algemeen nieuws", expanded=False):
+    st.subheader("📰 Laatste beursnieuws")
+    with st.expander("📰 Kies sector, land of algemeen nieuws", expanded=False):
         opties = list(sector_tickers_news.keys()) + ["Market news (algemeen)"]
         keuze = st.selectbox("", opties, index=0)
 
