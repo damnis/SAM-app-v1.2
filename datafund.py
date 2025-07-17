@@ -67,6 +67,18 @@ def get_quarterly_eps(ticker):
     except:
         return []
 
+@st.cache_data(ttl=3600)
+def get_eps_forecast(ticker):
+    url = f"{BASE_URL}/analyst-estimates/{ticker}?period=quarter&limit=20&apikey={API_KEY}"
+    try:
+        return requests.get(url).json()
+    except:
+        return []
+
+# https://financialmodelingprep.com/api/v3/analyst-estimates/AAPL?apikey=D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5
+#https://financialmodelingprep.com/api/v3/analyst-stock-recommendations/AAPL?apikey=D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5
+
+
 def get_news_fmp(ticker):
     url = f"{BASE_URL}/stock_news/{ticker}?limit=10&apikey={API_KEY}"
     try:
@@ -84,18 +96,6 @@ def get_news_yahoo(ticker, limit=10):
         return []
     except Exception:
         return []
-
-
-@st.cache_data(ttl=3600)
-def get_eps_forecast(ticker):
-    url = f"{BASE_URL}/analyst-estimates/{ticker}?apikey={API_KEY}"
-    try:
-        return requests.get(url).json()
-    except:
-        return []
-
-# https://financialmodelingprep.com/api/v3/analyst-estimates/AAPL?apikey=D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5
-#https://financialmodelingprep.com/api/v3/analyst-stock-recommendations/AAPL?apikey=D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5
 
 
 
