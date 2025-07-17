@@ -123,7 +123,16 @@ def backtest_functie(df, signaalkeuze, selected_tab, interval):
 
         col1, col2 = st.columns(2)
         col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
-        col2.metric(f"SAM-rendement ({signaalkeuze})", f"{sam_rendement:+.2f}%" if isinstance(sam_rendement, (int, float)) else "n.v.t.")
+        if signaalkeuze == "Koop":
+            waarde = rendement_koop
+        elif signaalkeuze == "Verkoop":
+            waarde = rendement_verkoop
+        else:
+            waarde = metric_sam
+
+        col2.metric(f"SAM-rendement ({signaalkeuze})", f"{waarde:+.2f}%" if waarde is not None else "n.v.t.")
+
+   #     col2.metric(f"SAM-rendement ({signaalkeuze})", f"{sam_rendement:+.2f}%" if isinstance(sam_rendement, (int, float)) else "n.v.t.")
         
  #       col2.metric("📊 SAM-rendement", f"{metric_sam:+.2f}%")
   #      col2.metric("SAM-rendement", f"{metric_sam:+.2f}%" if isinstance(sam_rendement, (int, float)) else "n.o.t.")
