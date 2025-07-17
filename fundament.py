@@ -425,53 +425,53 @@ def toon_fundamentals(ticker):
 
      # nieuwe eps analyse grafiek
         with st.expander("📈 EPS analyse"):
-        # Zet dataframes klaar voor werkelijk & forecast
+            # Zet dataframes klaar voor werkelijk & forecast
             df_epsq = pd.DataFrame(eps_quarters)[["date", "eps"]]
             df_epsq.columns = ["Datum", "EPS"]
             df_epsq["Datum"] = pd.to_datetime(df_epsq["Datum"])
             df_epsq = df_epsq.sort_values("Datum")
 
-        # Forecast data (kan jaarlijks of per kwartaal zijn, afhankelijk van FMP)
+            # Forecast data
             forecast_cols = ["date", "estimatedEpsAvg", "estimatedEpsLow", "estimatedEpsHigh"]
             if isinstance(eps_forecast, list) and len(eps_forecast) > 0:
-                 df_forecast = pd.DataFrame(eps_forecast)[forecast_cols].copy()
-                 df_forecast.columns = ["Datum", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"]
-                 df_forecast["Datum"] = pd.to_datetime(df_forecast["Datum"])
-                 df_forecast = df_forecast.sort_values("Datum")
+                df_forecast = pd.DataFrame(eps_forecast)[forecast_cols].copy()
+                df_forecast.columns = ["Datum", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"]
+                df_forecast["Datum"] = pd.to_datetime(df_forecast["Datum"])
+                df_forecast = df_forecast.sort_values("Datum")
             else:
                 df_forecast = pd.DataFrame(columns=["Datum", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"])
 
-         # Merge: alle datums uit werkelijk en forecast
+            # Merge: alle datums uit werkelijk en forecast
             df_all = pd.merge(df_epsq, df_forecast, on="Datum", how="outer").sort_values("Datum")
             df_all.set_index("Datum", inplace=True)
 
-        # Filter: alleen de laatste X jaar of bijvoorbeeld 3 jaar vooruit
+            # Voor grafiek: aggregeer per maand, zodat lijnen netjes aansluiten
+            df_all_plot = df_all.copy()
+            df_all_plot['Datum_Grafiek'] = df_all_plot.index.to_period('M').to_timestamp()  # eerste van de maand
+            df_plot = df_all_plot.groupby('Datum_Grafiek').mean(numeric_only=True)
+            df_plot = df_plot.interpolate(method="linear", limit_direction="both")
+
+            # Toon alleen tot max 3 jaar in de toekomst
             cutoff = pd.Timestamp.now() + pd.DateOffset(years=3)
-            df_all = df_all[df_all.index <= cutoff]
+            df_plot = df_plot[df_plot.index <= cutoff]
 
-        # --- Plot ---
-        
-        # ... na de merge van alle EPS-data:
-        # Vul de NaNs op met lineaire interpolatie (alle kolommen tegelijk)
-        df_plot = df_all[["EPS", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"]].copy()
-        df_plot = df_plot.interpolate(method="linear", limit_direction="both")
+            # --- Plot ---
+            fig, ax = plt.subplots(figsize=(10, 4))
+            df_plot["EPS"].plot(ax=ax, marker="o", label="Werkelijke EPS", linewidth=2, color="black")
+            df_plot["EPS (Avg, forecast)"].plot(ax=ax, marker="o", linestyle="--", label="EPS Forecast (Avg)", color="#1e90ff")
+            df_plot["EPS (Low, forecast)"].plot(ax=ax, marker=".", linestyle=":", label="EPS Forecast (Low)", color="#ff6347")
+            df_plot["EPS (High, forecast)"].plot(ax=ax, marker=".", linestyle=":", label="EPS Forecast (High)", color="#2ecc71")
+            ax.set_title("Werkelijke EPS en Verwachte EPS (Low/Avg/High)")
+            ax.set_ylabel("EPS")
+            ax.set_xlabel("Datum")
+            ax.legend()
+            fig.tight_layout()
+            st.pyplot(fig)
 
-        fig, ax = plt.subplots(figsize=(10, 4))
-        df_plot["EPS"].plot(ax=ax, marker="o", label="Werkelijke EPS", linewidth=2, color="black")
-        df_plot["EPS (Avg, forecast)"].plot(ax=ax, marker="o", linestyle="--", label="EPS Forecast (Avg)", color="#1e90ff")
-        df_plot["EPS (Low, forecast)"].plot(ax=ax, marker=".", linestyle=":", label="EPS Forecast (Low)", color="#ff6347")
-        df_plot["EPS (High, forecast)"].plot(ax=ax, marker=".", linestyle=":", label="EPS Forecast (High)", color="#2ecc71")
-        ax.set_title("Werkelijke EPS en Verwachte EPS (Low/Avg/High)")
-        ax.set_ylabel("EPS")
-        ax.set_xlabel("Datum")
-        ax.legend()
-        fig.tight_layout()
-        st.pyplot(fig)
-         # --- Tabel met nette opmaak ---
+            # --- Originele tabel, met echte datums ---
             st.dataframe(
                 df_all[["EPS", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"]].applymap(format_value)
             )
-    
 
         
       #🔹 oude EPS-analyse (grafiek met verwacht & werkelijk)
