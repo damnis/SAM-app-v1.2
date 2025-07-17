@@ -256,44 +256,44 @@ def toon_fundamentals(ticker):
 
         
         # 🔹 Alle ratio's per jaar
-        try:
-            df_qr = get_ratios(ticker + "?period=quarter")
-            if isinstance(df_qr, list) and len(df_qr) > 0:
-                df_qr = pd.DataFrame(df_qr)
-                col_renames = {
-                    "currentRatio": "Current ratio",
-                    "quickRatio": "Quick ratio",
-                    "grossProfitMargin": "Bruto marge",
-                    "operatingProfitMargin": "Operationele marge",
-                    "netProfitMargin": "Netto marge",
-                    "returnOnAssets": "Rentabiliteit",
-                    "inventoryTurnover": "Omloopsnelheid",
-                }
+ #       try:
+#            df_qr = get_ratios(ticker + "?period=quarter")
+#            if isinstance(df_qr, list) and len(df_qr) > 0:
+#                df_qr = pd.DataFrame(df_qr)
+ #               col_renames = {
+#                    "currentRatio": "Current ratio",
+#                    "quickRatio": "Quick ratio",
+ #                   "grossProfitMargin": "Bruto marge",
+#                    "operatingProfitMargin": "Operationele marge",
+#                    "netProfitMargin": "Netto marge",
+#                    "returnOnAssets": "Rentabiliteit",
+#                    "inventoryTurnover": "Omloopsnelheid",
+#                }
     
-                df_qr.rename(columns=col_renames, inplace=True)
-                df_qr.rename(columns={"date": "Kwartaal"}, inplace=True)
-                df_qr["Kwartaal"] = pd.to_datetime(df_qr["Kwartaal"]).dt.date
+#                df_qr.rename(columns=col_renames, inplace=True)
+#                df_qr.rename(columns={"date": "Kwartaal"}, inplace=True)
+ #               df_qr["Kwartaal"] = pd.to_datetime(df_qr["Kwartaal"]).dt.date
     
                 # Format alle numerieke kolommen
-                for col in df_qr.columns:
-                    if col == "Kwartaal":
-                        continue
-                    try:
-                        if "marge" in col.lower() or "margin" in col.lower() or "Rate" in col or "%" in col or "Yield" in col:
-                            df_qr[col] = df_qr[col].apply(lambda x: format_value(x, is_percent=True))
-                        else:
-                            df_qr[col] = df_qr[col].apply(format_value)
-                    except:
-                        pass
+#                for col in df_qr.columns:
+#                    if col == "Kwartaal":
+#                        continue
+#                    try:
+ #                       if "marge" in col.lower() or "margin" in col.lower() or "Rate" in col or "%" in col or "Yield" in col:
+  #                          df_qr[col] = df_qr[col].apply(lambda x: format_value(x, is_percent=True))
+   #                     else:
+ #                           df_qr[col] = df_qr[col].apply(format_value)
+  #                  except:
+ #                       pass
     
-                with st.expander("🧮 Alle ratio’s per jaar"):
-                    st.dataframe(df_qr.set_index("Kwartaal"))
-            else:
-                st.info("📭 Geen kwartaalratio's gevonden.")
-        except Exception as e:
-            st.warning(f"⚠️ Fout bij kwartaalratio's: {e}")
+ #               with st.expander("🧮 Alle ratio’s per jaar"):
+#                    st.dataframe(df_qr.set_index("Kwartaal"))
+#            else:
+#                st.info("📭 Geen kwartaalratio's gevonden.")
+#        except Exception as e:
+ #           st.warning(f"⚠️ Fout bij kwartaalratio's: {e}")
 
-    # 🔹 Alle ratio's per kwartaal 
+    # 🔹 Alle ratio's per jaar. ?! 
         try:
             df_qr = get_quarterly_eps(ticker + "?period=quarter")
             if isinstance(df_qr, list) and len(df_qr) > 0:
@@ -327,9 +327,9 @@ def toon_fundamentals(ticker):
                 with st.expander("🧮 Alle ratio’s per jaar"):
                     st.dataframe(df_qr.set_index("Kwartaal"))
             else:
-                st.info("📭 Geen kwartaalratio's gevonden.")
+                st.info("📭 Geen ratio's gevonden.")
         except Exception as e:
-            st.warning(f"⚠️ Fout bij kwartaalratio's: {e}")
+            st.warning(f"⚠️ Fout bij ratio's: {e}")
 
     
 
@@ -412,15 +412,15 @@ def toon_fundamentals(ticker):
 
     
             
-    # 🔹 EPS per kwartaal
-    if eps_quarters:
-        df_eps_q = pd.DataFrame(eps_quarters)[["date", "eps"]].copy()
-        df_eps_q["date"] = pd.to_datetime(df_eps_q["date"])
-        df_eps_q = df_eps_q.sort_values("date")
-        df_eps_q.set_index("date", inplace=True)
-        with st.expander("📆 WPA per kwartaal"):
-            st.bar_chart(df_eps_q)
-            st.line_chart(df_eps_q)
+    # 🔹 EPS per kwartaal - eenvoudige grafiek oud
+#    if eps_quarters:
+#        df_eps_q = pd.DataFrame(eps_quarters)[["date", "eps"]].copy()
+#        df_eps_q["date"] = pd.to_datetime(df_eps_q["date"])
+#        df_eps_q = df_eps_q.sort_values("date")
+#        df_eps_q.set_index("date", inplace=True)
+#        with st.expander("📆 WPA per kwartaal"):
+#            st.bar_chart(df_eps_q)
+#            st.line_chart(df_eps_q)
 
      # nieuwe EPS grafiek
         
@@ -466,8 +466,7 @@ def toon_fundamentals(ticker):
             df_plot = df_plot[df_plot.index <= cutoff]
 
             # --- Plot ---
-            import matplotlib.pyplot as plt
-            fig, ax = plt.subplots(figsize=(10, 4))
+            fig, ax = plt.subplots(figsize=(14, 6))
             df_plot["EPS"].plot(ax=ax, marker="o", label="Werkelijke EPS", linewidth=2, color="black")
             df_plot["EPS (Avg, est.)"].plot(ax=ax, marker="o", linestyle="--", label="EPS (Avg, est.)", color="#1e90ff")
             df_plot["EPS (Low, est.)"].plot(ax=ax, marker=".", linestyle=":", label="EPS (Low, est.)", color="#ff6347")
@@ -521,36 +520,8 @@ def toon_fundamentals(ticker):
 
 
 
-
-
-
-            
-
         
-      #🔹 oude EPS-analyse (grafiek met verwacht & werkelijk)
-#        with st.expander("📈 EPS analyse"):
-#            if isinstance(eps_quarters, list) and len(eps_quarters) > 0:
-#                df_epsq = pd.DataFrame(eps_quarters)[["date", "eps"]]
-#                df_epsq.columns = ["Datum", "EPS"]
-  #              df_epsq["Datum"] = pd.to_datetime(df_epsq["Datum"])
- #               df_epsq = df_epsq.sort_values("Datum")
-#                eps_df = df_epsq.copy()
-#                eps_df["Verwachte EPS"] = None
- #               if isinstance(eps_forecast, list):
- #                   for f in eps_forecast:
-  #                      try:
-#                            d = pd.to_datetime(f.get("date"))
- #                           est = f.get("estimatedEpsAvg")
-#                            if d and est is not None:
- #                               eps_df.loc[eps_df["Datum"] == d, "Verwachte EPS"] = float(est)
-  #                      except:
-  #                          pass
-  #              chart_data = eps_df.set_index("Datum")[["EPS", "Verwachte EPS"]]
-  #              st.line_chart(chart_data)
-   #             st.dataframe(chart_data.applymap(format_value))
-
-
-
+      
 # ---------------------------
 # FMP test full
 
