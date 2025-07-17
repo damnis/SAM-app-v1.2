@@ -27,7 +27,7 @@ def format_value(value, is_percent=False):
         elif abs(value) >= 1_000_000:
             return f"{value / 1_000_000:,.2f} mln"
         elif abs(value) >= 1_000:
-            return f"{value / 1:,.0f}"
+            return f"{value / 1:.0f}"
         return f"{value:,.2f}"
     except:
         return "-"
