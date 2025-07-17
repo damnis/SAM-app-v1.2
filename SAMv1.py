@@ -65,13 +65,9 @@ from fmpfetch import fetch_data_fmp, search_ticker_fmp
 
 
  
-# --- Streamlit UI ---
-#st.title("SAM Trading Indicator")
-# Titel met kleur en grootte tonen
-# Kleur bepalen op basis van advies
-#advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies == "Verkopen" else "gray"
-
+# ---------
 # SAM TITLE
+# ---------
 st.markdown(
     f"""
     <h1>SAT+SAM Trading Indicator<span style='color:#3366cc'>   </span></h1>
@@ -154,24 +150,6 @@ def get_live_ticker_data(tickers_dict):
 
     return result
     
-#@st.cache_data(ttl=600)
-#def get_live_ticker_data(tickers_dict):
-  #  tickers = list(tickers_dict.keys())
- #   data = yf.download(tickers, period="2d", interval="1d", progress=False, group_by='ticker')
-#    result = []
-
- #   for ticker in tickers:
-#        try:
-#            last = data[ticker]['Close'].iloc[-1]
-   #         prev = data[ticker]['Close'].iloc[-2]
- #           change = (last - prev) / prev * 100
-  #          kleur = "#00FF00" if change > 0 else "#FF0000" if change < 0 else "#808080"
-  #          naam = tickers_dict[ticker]
-   #         result.append((ticker, naam, last, change, kleur))
-  #      except Exception:
-   #         continue
-
-#    return result
 
 # --- Weergave dropdown met live info ---
 live_info = get_live_ticker_data(tabs_mapping[selected_tab])
@@ -318,7 +296,7 @@ def advies_wordt_geladen(ticker, interval, risk_aversion):
 df, huidig_advies = advies_wordt_geladen(ticker, interval, risk_aversion)
 # Keuze welke adviezen worden meegenomen in SAM-rendement
 signaalkeuze = st.radio(
-    "Toon SAM-rendement voor:",
+    "Signaalkeuze: Toon SAT+SAM-rendement voor:",
     options=["Beide", "Koop", "Verkoop"],
     index=0,
     horizontal=True
@@ -347,12 +325,6 @@ with col2:
         unsafe_allow_html=True
     )
     
-#    st.markdown(
-#    f"""
-#    <h3><span style='color:#3366cc'>{ticker_name},["Close"].iloc[-1]</span</h3>
-#    """,
-#    unsafe_allow_html=True
-#   )
 
 # Titel met kleur en grootte tonen - advies
 col1, col2 = st.columns([1, 2])
