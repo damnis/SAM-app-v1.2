@@ -267,14 +267,14 @@ def plot_sat_debug(df, interval):
 # actual matrix based on fixed calendar structure         
 
 def toon_adviesmatrix_html(ticker, risk_aversion=2):
-    toon_matrix = st.toggle("🟩🟥 Toon Adviesmatrix (HTML)", value=False)
+    toon_matrix = st.toggle("🟩🟥 Toon Adviesmatrix", value=False)
 #    toon_matrix = st.toggle("📊 Toon Adviesmatrix (HTML)", value=False)
     if not toon_matrix:
         return
 
     matrix, intervallen_gekozen = genereer_adviesmatrix(ticker, risk_aversion)
   
-    # HTML rendering - long#
+    # HTML rendering - long style #
 #    html = "<div style='font-family: monospace;'>"
 #    html += "<div style='display: flex;'>"
 
