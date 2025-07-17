@@ -227,7 +227,7 @@ def toon_fundamentals(ticker):
             st.dataframe(df_ratio_fmt.set_index("Jaar")[["K/W", "ROE (%)", "Debt/Equity"]])
 
 
-            # 🔹 Extra ratio's over de jaren
+        # 🔹 Extra ratio's over de jaren
         if ratio_data:
             col_renames = {
                 "currentRatio": "Current ratio",
@@ -254,7 +254,7 @@ def toon_fundamentals(ticker):
                     st.dataframe(df_extra.set_index("Jaar")[met_ratios])
 
         
-            # 🔹 Kwartaalratio's
+        # 🔹 Alle ratio's per jaar
         try:
             df_qr = get_ratios(ticker + "?period=quarter")
             if isinstance(df_qr, list) and len(df_qr) > 0:
@@ -285,13 +285,52 @@ def toon_fundamentals(ticker):
                     except:
                         pass
     
-                with st.expander("🧮 Ratio’s per kwartaal"):
+                with st.expander("🧮 Alle ratio’s per jaar"):
                     st.dataframe(df_qr.set_index("Kwartaal"))
             else:
                 st.info("📭 Geen kwartaalratio's gevonden.")
         except Exception as e:
             st.warning(f"⚠️ Fout bij kwartaalratio's: {e}")
-                
+
+    # 🔹 Alle ratio's per kwartaal 
+        try:
+            df_qr = get_quarterly_eps(ticker + "?period=quarter")
+            if isinstance(df_qr, list) and len(df_qr) > 0:
+                df_qr = pd.DataFrame(df_qr)
+                col_renames = {
+                    "currentRatio": "Current ratio",
+                    "quickRatio": "Quick ratio",
+                    "grossProfitMargin": "Bruto marge",
+                    "operatingProfitMargin": "Operationele marge",
+                    "netProfitMargin": "Netto marge",
+                    "returnOnAssets": "Rentabiliteit",
+                    "inventoryTurnover": "Omloopsnelheid",
+                }
+    
+                df_qr.rename(columns=col_renames, inplace=True)
+                df_qr.rename(columns={"date": "Kwartaal"}, inplace=True)
+                df_qr["Kwartaal"] = pd.to_datetime(df_qr["Kwartaal"]).dt.date
+    
+                # Format alle numerieke kolommen
+                for col in df_qr.columns:
+                    if col == "Kwartaal":
+                        continue
+                    try:
+                        if "marge" in col.lower() or "margin" in col.lower() or "Rate" in col or "%" in col or "Yield" in col:
+                            df_qr[col] = df_qr[col].apply(lambda x: format_value(x, is_percent=True))
+                        else:
+                            df_qr[col] = df_qr[col].apply(format_value)
+                    except:
+                        pass
+    
+                with st.expander("🧮 Alle ratio’s per jaar"):
+                    st.dataframe(df_qr.set_index("Kwartaal"))
+            else:
+                st.info("📭 Geen kwartaalratio's gevonden.")
+        except Exception as e:
+            st.warning(f"⚠️ Fout bij kwartaalratio's: {e}")
+
+    
 
     # 🔹 Earnings & Dividends
     with st.expander("📅 Belangrijke datums"):
