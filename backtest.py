@@ -121,6 +121,15 @@ def backtest_functie(df, signaalkeuze, selected_tab, interval):
 
         metric_sam = (df_trades["Rendement (%)"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
 
+        rendement_koop = (df_trades["SAM-% Koop"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
+        rendement_verkoop = (df_trades["SAM-% Verkoop"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
+        aantal_trades = len(df_trades)
+        aantal_koop = df_trades["SAM-% Koop"].notna().sum()
+        aantal_verkoop = df_trades["SAM-% Verkoop"].notna().sum()
+        aantal_succesvol = (df_trades["Rendement (%)"] > 0).sum()
+        aantal_succesvol_koop = (df_trades["SAM-% Koop"] > 0).sum()
+        aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
+
         col1, col2 = st.columns(2)
         col1.metric("Marktrendement (Buy & Hold)", f"{marktrendement:+.2f}%" if marktrendement is not None else "n.v.t.")
         if signaalkeuze == "Koop":
@@ -138,15 +147,7 @@ def backtest_functie(df, signaalkeuze, selected_tab, interval):
   #      col2.metric("SAM-rendement", f"{metric_sam:+.2f}%" if isinstance(sam_rendement, (int, float)) else "n.o.t.")
    #      col2.metric("SAM-rendement", f"{sam_rendement:+.2f}%" if isinstance(sam_rendement, (int, float)) else "n.v.t.")
  
-        rendement_koop = (df_trades["SAM-% Koop"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
-        rendement_verkoop = (df_trades["SAM-% Verkoop"].dropna().apply(lambda x: 1 + x / 100).prod() - 1) * 100
-        aantal_trades = len(df_trades)
-        aantal_koop = df_trades["SAM-% Koop"].notna().sum()
-        aantal_verkoop = df_trades["SAM-% Verkoop"].notna().sum()
-        aantal_succesvol = (df_trades["Rendement (%)"] > 0).sum()
-        aantal_succesvol_koop = (df_trades["SAM-% Koop"] > 0).sum()
-        aantal_succesvol_verkoop = (df_trades["SAM-% Verkoop"] > 0).sum()
-
+        
                        
         st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{metric_sam:+.2f}%**, succesvol: **{aantal_succesvol}**")
         st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
