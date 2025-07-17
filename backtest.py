@@ -70,7 +70,7 @@ def bereken_sam_rendement(df_signalen, signaal_type="Beide", close_col="Close", 
     return sam_rendement, trades, rendementen
 
 def backtest_functie(df, signaalkeuze, selected_tab, interval):
-    st.subheader("Vergelijk Marktrendement en SAM-rendement")
+    st.subheader("Marktrendement VS SAT+SAM-rendement")
 
     # Gebruik dezelfde logica als in grafiekweergave
     grafiek_periode = bepaal_grafiekperiode(interval)
@@ -94,7 +94,7 @@ def backtest_functie(df, signaalkeuze, selected_tab, interval):
         st.error("❌ Geen geldige 'Close'-kolom gevonden in deze dataset.")
         st.stop()
 
-    st.text(f"Signaalkeuze (instelling gebruiker): {signaalkeuze}")
+    st.text(f"Geselecteerde signaalkeuze (bij risk aversion): {signaalkeuze}")
     
     df_period[close_col] = pd.to_numeric(df_period[close_col], errors="coerce")
     df_valid = df_period[close_col].dropna()
@@ -139,7 +139,7 @@ def backtest_functie(df, signaalkeuze, selected_tab, interval):
         else:
             waarde = metric_sam
 
-        col2.metric(f"SAM-rendement ({signaalkeuze})", f"{waarde:+.2f}%" if waarde is not None else "n.v.t.")
+        col2.metric(f"SAT+SAM-rendement ({signaalkeuze})", f"{waarde:+.2f}%" if waarde is not None else "n.v.t.")
 
    #     col2.metric(f"SAM-rendement ({signaalkeuze})", f"{sam_rendement:+.2f}%" if isinstance(sam_rendement, (int, float)) else "n.v.t.")
         
@@ -149,9 +149,9 @@ def backtest_functie(df, signaalkeuze, selected_tab, interval):
  
         
                        
-        st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAM-%: **{metric_sam:+.2f}%**, succesvol: **{aantal_succesvol}**")
-        st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
-        st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
+        st.caption(f"Aantal afgeronde **trades**: **{aantal_trades}**, totaal resultaat SAT+SAM-%: **{metric_sam:+.2f}%**, succesvol: **{aantal_succesvol}**")
+        st.caption(f"Aantal **koop** trades: **{aantal_koop}**, SAT+SAM-% koop: **{rendement_koop:+.2f}%**, succesvol: **{aantal_succesvol_koop}**")
+        st.caption(f"Aantal **verkoop** trades: **{aantal_verkoop}**, SAT+SAM-% verkoop: **{rendement_verkoop:+.2f}%**, succesvol: **{aantal_succesvol_verkoop}**")
 
         
 
@@ -179,17 +179,7 @@ def backtest_functie(df, signaalkeuze, selected_tab, interval):
             "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"
         ]]
         
-        # ✅ Afronding en formattering op 2 decimalen met plusteken
-    #    df_display = df_trades.rename(columns={"Rendement (%)": "SAM-% tot."})[[
-  #          "Open datum", "Open prijs", "Sluit datum", "Sluit prijs", "Dagen",
-     #       "Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]]
-
-        # Bereken het aantal dagen tussen open en sluit datum
-        # Bereken het aantal dagen tussen open en sluit datum
-  #      df_display["Dagen"] = (
-  #          pd.to_datetime(df_display["Sluit datum"]) - pd.to_datetime(df_display["Open datum"])
-   #     ).dt.days
-
+        
         # ➕ Afronding op 2 decimalen
         for col in ["Markt-%", "SAM-% tot.", "SAM-% Koop", "SAM-% Verkoop"]:
             df_display[col] = df_display[col].astype(float).map("{:+.2f}%".format)
