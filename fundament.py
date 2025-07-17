@@ -293,7 +293,7 @@ def toon_fundamentals(ticker):
 #        except Exception as e:
  #           st.warning(f"⚠️ Fout bij kwartaalratio's: {e}")
 
-    # 🔹 Alle ratio's per jaar. ?! 
+    # 🔹 Resultatenrekening plus per jaar! 
         try:
             df_qr = get_quarterly_eps(ticker + "?period=quarter")
             if isinstance(df_qr, list) and len(df_qr) > 0:
@@ -324,12 +324,12 @@ def toon_fundamentals(ticker):
                     except:
                         pass
     
-                with st.expander("🧮 Alle ratio’s per jaar"):
+                with st.expander("🧮 Resultatenrekening per jaar"):
                     st.dataframe(df_qr.set_index("Kwartaal"))
             else:
-                st.info("📭 Geen ratio's gevonden.")
+                st.info("📭 Geen resultaten gevonden.")
         except Exception as e:
-            st.warning(f"⚠️ Fout bij ratio's: {e}")
+            st.warning(f"⚠️ Fout bij resultaten: {e}")
 
     
 
