@@ -445,9 +445,6 @@ def toon_fundamentals(ticker):
             df_all = pd.merge(df_epsq, df_forecast, on="Datum", how="outer").sort_values("Datum")
             df_all.set_index("Datum", inplace=True)
 
-            # Surprise percentage berekenen
-            df_all["Surprise %"] = ((df_all["EPS"] - df_all["EPS (Avg, est.)"]) / df_all["EPS (Avg, est.)"]) * 100
-
             # Voor grafiek: aggregeer per maand, zodat lijnen netjes aansluiten
             df_all_plot = df_all.copy()
             df_all_plot['Datum_Grafiek'] = df_all_plot.index.to_period('M').to_timestamp()  # eerste van de maand
@@ -496,12 +493,14 @@ def toon_fundamentals(ticker):
                 .agg({
                     "Datum": "max",  # de laatste datum van deze maand
                     "EPS": last_valid,
-                    "Surprise %": last_valid,
                     "EPS (Avg, est.)": last_valid,
                     "EPS (Low, est.)": last_valid,
                     "EPS (High, est.)": last_valid,
                 })
             )
+
+            # Surprise % pas NA samenvoegen berekenen
+            df_month["Surprise %"] = ((df_month["EPS"] - df_month["EPS (Avg, est.)"]) / df_month["EPS (Avg, est.)"]) * 100
 
             # Zet index op 'Datum' (de laatste datum van de maand met data)
             df_month = df_month.set_index("Datum")
@@ -518,6 +517,7 @@ def toon_fundamentals(ticker):
                     .assign(**{"Surprise %": df_month["Surprise %"].apply(format_surprise)})
                     .applymap(lambda x: format_value(x) if not isinstance(x, str) or "%" not in x else x)
             )
+            
 
 
 
