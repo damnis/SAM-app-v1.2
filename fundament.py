@@ -422,9 +422,8 @@ def toon_fundamentals(ticker):
             st.bar_chart(df_eps_q)
             st.line_chart(df_eps_q)
 
-
-     # nieuwe eps analyse grafiek
-        with st.expander("📈 EPS analyse"):
+     # nieuwe EPS grafiek
+     with st.expander("📈 EPS analyse"):
             # Zet dataframes klaar voor werkelijk & forecast
             df_epsq = pd.DataFrame(eps_quarters)[["date", "eps"]]
             df_epsq.columns = ["Datum", "EPS"]
@@ -470,7 +469,7 @@ def toon_fundamentals(ticker):
 
             # --- Plot ---
             import matplotlib.pyplot as plt
-            fig, ax = plt.subplots(figsize=(14, 6))
+            fig, ax = plt.subplots(figsize=(10, 4))
             df_plot["EPS"].plot(ax=ax, marker="o", label="Werkelijke EPS", linewidth=2, color="black")
             df_plot["EPS (Avg, est.)"].plot(ax=ax, marker="o", linestyle="--", label="EPS (Avg, est.)", color="#1e90ff")
             df_plot["EPS (Low, est.)"].plot(ax=ax, marker=".", linestyle=":", label="EPS (Low, est.)", color="#ff6347")
@@ -482,22 +481,47 @@ def toon_fundamentals(ticker):
             fig.tight_layout()
             st.pyplot(fig)
 
-            # --- Originele tabel, met nieuwste datum bovenaan, surprise % erbij ---
+            # ---- SAMENVOEGEN PER MAAND VOOR DE TABEL ---
+            df_all["Maand"] = df_all.index.to_period('M')
+            def last_valid(s):
+                # Geef de laatste niet-NA waarde per maand
+                s = s.dropna()
+                return s.iloc[-1] if not s.empty else None
+
+            df_month = (
+                df_all
+                .reset_index()
+                .groupby("Maand")
+                .agg({
+                    "Datum": "max",  # de laatste datum van deze maand
+                    "EPS": last_valid,
+                    "Surprise %": last_valid,
+                    "EPS (Avg, est.)": last_valid,
+                    "EPS (Low, est.)": last_valid,
+                    "EPS (High, est.)": last_valid,
+                })
+            )
+
+            # Zet index op 'Datum' (de laatste datum van de maand met data)
+            df_month = df_month.set_index("Datum")
+            df_month = df_month.sort_index(ascending=False)
+
+            # Tabel tonen
             kol_volgorde = ["EPS", "Surprise %", "EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"]
             def format_surprise(val):
                 if pd.isna(val):
                     return "-"
                 return f"{val:+.2f}%"
-
             st.dataframe(
-                df_all[kol_volgorde]
-                .sort_index(ascending=False)
-                .assign(**{"Surprise %": df_all["Surprise %"].apply(format_surprise)})
-                .applymap(lambda x: format_value(x) if not isinstance(x, str) or "%" not in x else x)
-                                            
-            
-            
-            )
+                df_month[kol_volgorde]
+                    .assign(**{"Surprise %": df_month["Surprise %"].apply(format_surprise)})
+                    .applymap(lambda x: format_value(x) if not isinstance(x, str) or "%" not in x else x)
+         )
+
+
+
+
+
             
 
         
