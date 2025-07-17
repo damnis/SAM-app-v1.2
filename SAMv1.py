@@ -98,9 +98,9 @@ st.markdown("""
   </div>
   <div style='width: 40%; text-align: right;'>
     <details>
-      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg Indicator</summary>
+      <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg indicator</summary>
       <div style='margin-top: 10px;'>
-        <p style='font-size: 12px; color: #333; text-align: left'>
+        <p style='font-size: 13px; color: #333; text-align: left'>
         Gebruik de <strong>SAT+SAM Trading Indicator</strong> door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
         de trendlijn. De groene en rode SAM waarden (vaak perioden) geven het momentum weer...<br><br>
         Het advies is hiervan afgeleid en kan bijgesteld worden door de gevoeligheid aan te passen.<br>
@@ -266,7 +266,7 @@ st.markdown("""
     <details>
       <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg risk aversion</summary>
       <div style='margin-top: 10px;'>
-        <p style='font-size: 12px; color: #333; text-align: left'>
+        <p style='font-size: 13px; color: #333; text-align: left'>
         Deze instelling bepaalt hoe voorzichtig het advies reageert op marktbewegingen.<br><br>
         - <strong>0 - Geen</strong>: Advies puur op basis van SAM (standaard trailing logica).<br>
         - <strong>1 - Laag</strong>: SAT moet 2 dagen positief/negatief zijn én trend stijgend/dalend.<br>
