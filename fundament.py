@@ -435,15 +435,18 @@ def toon_fundamentals(ticker):
             forecast_cols = ["date", "estimatedEpsAvg", "estimatedEpsLow", "estimatedEpsHigh"]
             if isinstance(eps_forecast, list) and len(eps_forecast) > 0:
                 df_forecast = pd.DataFrame(eps_forecast)[forecast_cols].copy()
-                df_forecast.columns = ["Datum", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"]
+                df_forecast.columns = ["Datum", "EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"]
                 df_forecast["Datum"] = pd.to_datetime(df_forecast["Datum"])
                 df_forecast = df_forecast.sort_values("Datum")
             else:
-                df_forecast = pd.DataFrame(columns=["Datum", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"])
+                df_forecast = pd.DataFrame(columns=["Datum", "EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"])
 
             # Merge: alle datums uit werkelijk en forecast
             df_all = pd.merge(df_epsq, df_forecast, on="Datum", how="outer").sort_values("Datum")
             df_all.set_index("Datum", inplace=True)
+
+            # Surprise percentage berekenen
+            df_all["Surprise %"] = ((df_all["EPS"] - df_all["EPS (Avg, est.)"]) / df_all["EPS (Avg, est.)"]) * 100
 
             # Voor grafiek: aggregeer per maand, zodat lijnen netjes aansluiten
             df_all_plot = df_all.copy()
@@ -451,9 +454,15 @@ def toon_fundamentals(ticker):
             df_plot = df_all_plot.groupby('Datum_Grafiek').mean(numeric_only=True)
             df_plot = df_plot.interpolate(method="linear", limit_direction="both")
 
-            # --- FIX: werkelijke EPS mag niet verder lopen dan laatste echte waarde
+            # --- FIX 1: werkelijke EPS mag niet verder lopen dan laatste echte waarde
             laatste_werkelijke = df_epsq["Datum"].max()
             df_plot.loc[df_plot.index > laatste_werkelijke, "EPS"] = None
+
+            # --- FIX 2: forecast EPS mag niet vóór de eerste forecast waarde lopen
+            eerste_forecast = df_forecast["Datum"].min() if not df_forecast.empty else None
+            for col in ["EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"]:
+                if eerste_forecast is not None:
+                    df_plot.loc[df_plot.index < eerste_forecast, col] = None
 
             # Toon alleen tot max 3 jaar in de toekomst
             cutoff = pd.Timestamp.now() + pd.DateOffset(years=3)
@@ -463,9 +472,9 @@ def toon_fundamentals(ticker):
             import matplotlib.pyplot as plt
             fig, ax = plt.subplots(figsize=(10, 4))
             df_plot["EPS"].plot(ax=ax, marker="o", label="Werkelijke EPS", linewidth=2, color="black")
-            df_plot["EPS (Avg, forecast)"].plot(ax=ax, marker="o", linestyle="--", label="EPS Forecast (Avg)", color="#1e90ff")
-            df_plot["EPS (Low, forecast)"].plot(ax=ax, marker=".", linestyle=":", label="EPS Forecast (Low)", color="#ff6347")
-            df_plot["EPS (High, forecast)"].plot(ax=ax, marker=".", linestyle=":", label="EPS Forecast (High)", color="#2ecc71")
+            df_plot["EPS (Avg, est.)"].plot(ax=ax, marker="o", linestyle="--", label="EPS (Avg, est.)", color="#1e90ff")
+            df_plot["EPS (Low, est.)"].plot(ax=ax, marker=".", linestyle=":", label="EPS (Low, est.)", color="#ff6347")
+            df_plot["EPS (High, est.)"].plot(ax=ax, marker=".", linestyle=":", label="EPS (High, est.)", color="#2ecc71")
             ax.set_title("Werkelijke EPS en Verwachte EPS (Low/Avg/High)")
             ax.set_ylabel("EPS")
             ax.set_xlabel("Datum")
@@ -473,12 +482,23 @@ def toon_fundamentals(ticker):
             fig.tight_layout()
             st.pyplot(fig)
 
-            # --- Originele tabel, met nieuwste datum bovenaan ---
+            # --- Originele tabel, met nieuwste datum bovenaan, surprise % erbij ---
+            kol_volgorde = ["EPS", "Surprise %", "EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"]
+            def format_surprise(val):
+                if pd.isna(val):
+                    return "-"
+                return f"{val:+.2f}%"
+
             st.dataframe(
-                df_all[["EPS", "EPS (Avg, forecast)", "EPS (Low, forecast)", "EPS (High, forecast)"]]
+                df_all[kol_volgorde]
                 .sort_index(ascending=False)
-                .applymap(format_value)
+                .assign(**{"Surprise %": df_all["Surprise %"].apply(format_surprise)})
+                .applymap(lambda x: format_value(x) if not isinstance(x, str) or "%" not in x else x)
+                                            
+            
+            
             )
+            
 
         
       #🔹 oude EPS-analyse (grafiek met verwacht & werkelijk)
