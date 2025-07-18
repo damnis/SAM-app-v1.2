@@ -353,11 +353,11 @@ def toon_fundamentals(ticker):
         col1, col2 = st.columns(2)
         with col1:
             try:
-                df_earn_graph = (df_income.set_index("date")[["revenue", "netIncome"]].copy)
-                df_earn_graph.rename(column={
+                df_earn_graph = (df_income.set_index("date")[["revenue", "netIncome"]].copy()
+                df_earn_graph.rename(columns={
                     "revenue": "Omzet",
                     "netIncome": "Netto winst"
-                })
+                }, inplac=True)
                 st.line_chart(df_earn_graph)
                 
  #               st.line_chart(df_income.set_index("date")[["revenue", "netIncome"]])
