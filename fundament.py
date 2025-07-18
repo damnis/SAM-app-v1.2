@@ -367,8 +367,8 @@ def toon_fundamentals(ticker):
             except:
                 st.info("📉 Geen ratio grafiek beschikbaar.")
 
-        with
-#    with st.expander("📊 Grafieken per aandeel"):
+        
+    with # st.expander("📊 Grafieken per aandeel"):
             col1, col2 = st.columns(2)
             raw_data = key_metrics
             if isinstance(raw_data, list) and len(raw_data) > 0:
