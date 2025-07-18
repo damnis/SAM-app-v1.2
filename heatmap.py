@@ -59,7 +59,7 @@ def genereer_sector_heatmap(interval, risk_aversion=2, sorteer_op="marktkapitali
 
         # ✅ Uitklapbare sectie
      #   with st.expander(f"📊 {sector}", expanded=(i < 2)):  # Eerste 2 open
-   #         html += "<div style='display: flex; flex-wrap: wrap; max-width: 600px;'>"
+        html += "<div style='display: flex; flex-wrap: wrap; max-width: 600px;'>"
 
         for ticker in gesorteerde_tickers:
             try:
