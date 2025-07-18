@@ -87,7 +87,7 @@ def get_eps_forecast(ticker):
 
 # https://financialmodelingprep.com/api/v3/analyst-estimates/AAPL?apikey=D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5
 #https://financialmodelingprep.com/api/v3/analyst-stock-recommendations/AAPL?apikey=D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5
-
+# balans score https://financialmodelingprep.com/api/v4/score?symbol=AAPL&apikey=D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5
 
 def get_news_fmp(ticker):
     url = f"{BASE_URL}/stock_news/{ticker}?limit=10&apikey={API_KEY}"
