@@ -100,8 +100,8 @@ def genereer_sector_heatmap(interval, risk_aversion=2, sorteer_op="marktkapitali
 
         html += "</div><hr style='margin: 20px 0;'>"
 
-html += "</div>"
-return html
+    html += "</div>"
+    return html
 
 def toon_sector_heatmap(interval, risk_aversion=2, sorteer_op="marktkapitalisatie"):
     st.markdown("### 🔥 Sector Heatmap")
