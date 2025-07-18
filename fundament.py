@@ -353,7 +353,13 @@ def toon_fundamentals(ticker):
         col1, col2 = st.columns(2)
         with col1:
             try:
-                st.line_chart(df_income.set_index("date")[["revenue", "netIncome"]])
+                df_earn_graph = (df_income.set_index("date")[["revenue", "netIncome"]])
+                df_earn_graph.rename(column={
+                    "revenue": "Omzet",
+                    "netIncome": "Netto winst"
+                st.line_chart(df_earn_graph)
+                
+ #               st.line_chart(df_income.set_index("date")[["revenue", "netIncome"]])
             except:
                 st.info("📉 Geen omzet/winst grafiek beschikbaar.")
         with col2:
@@ -362,7 +368,7 @@ def toon_fundamentals(ticker):
                 df_ratio_graph["returnOnEquity"] *= 100
                 df_ratio_graph.rename(columns={
                     "priceEarningsRatio": "K/W",
-                    "returnOnEquity": "ROE (%)"
+                    "returnOnEquity": "Rentabiliteit (%)"
                 }, inplace=True)
                 st.line_chart(df_ratio_graph)
             except:
