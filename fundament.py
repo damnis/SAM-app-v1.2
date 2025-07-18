@@ -349,6 +349,7 @@ def toon_fundamentals(ticker):
 
     # 🔹 Grafieken
     with st.expander("📊 Grafieken"):
+        # Eerste rij
         col1, col2 = st.columns(2)
         with col1:
             try:
@@ -367,38 +368,42 @@ def toon_fundamentals(ticker):
             except:
                 st.info("📉 Geen ratio grafiek beschikbaar.")
 
-        
-    with # st.expander("📊 Grafieken per aandeel"):
-            col1, col2 = st.columns(2)
+        # Tweede rij
+        col3, col4 = st.columns(2)
+        with col3:
             raw_data = key_metrics
             if isinstance(raw_data, list) and len(raw_data) > 0:
-                df_ratio = pd.DataFrame(raw_data)
-    # Alleen verder als df_ratio kolommen bevat
-                if "date" in df_ratio.columns:
-                    df_ratio["date"] = pd.to_datetime(df_ratio["date"])
-                    df_ratio = df_ratio.sort_values("date")
-          
-        # Links: K/W en WPA/EPS
-                with col1:
+                df_ratio2 = pd.DataFrame(raw_data)
+                if "date" in df_ratio2.columns:
+                    df_ratio2["date"] = pd.to_datetime(df_ratio2["date"])
+                    df_ratio2 = df_ratio2.sort_values("date")
                     try:
-                        cols1 = [col for col in ["grahamNetNet", "netIncomePerShare"] if col in df_ratio.columns]
+                        cols1 = [col for col in ["grahamNetNet", "netIncomePerShare"] if col in df_ratio2.columns]
                         if cols1:
-                            df_ratio1_graph = df_ratio.set_index("date")[cols1].copy()
+                            df_ratio1_graph = df_ratio2.set_index("date")[cols1].copy()
                             df_ratio1_graph.rename(columns={
                                 "grahamNetNet": "NCAV Graham",
                                 "netIncomePerShare": "WPA/EPS"
                             }, inplace=True)
-                        st.line_chart(df_ratio1_graph)
+                            st.line_chart(df_ratio1_graph)
+                        else:
+                            st.info("📉 Geen NCAV/WPA grafiek data.")
                     except Exception as e:
-                        st.info(f"📉 Geen ratio grafiek beschikbaar. ({e})") 
-         #       else:
-         #           st.info("📉 Geen grafiek beschikbaar (kolommen ontbreken).")
-    
-                    
-        # Rechts: FCF/aandeel en Boekwaarde/aandeel
-                with col2:
+                        st.info(f"📉 Geen ratio grafiek beschikbaar. ({e})")
+                else:
+                    st.info("📉 Geen grafiek beschikbaar (kolommen ontbreken).")
+            else:
+                st.info("Geen grafiek data gevonden voor dit aandeel.")
+
+        with col4:
+            raw_data = key_metrics
+            if isinstance(raw_data, list) and len(raw_data) > 0:
+                df_ratio2 = pd.DataFrame(raw_data)
+                if "date" in df_ratio2.columns:
+                    df_ratio2["date"] = pd.to_datetime(df_ratio2["date"])
+                    df_ratio2 = df_ratio2.sort_values("date")
                     try:
-                        df_ratio2_graph = df_ratio.set_index("date")[["freeCashFlowPerShare", "bookValuePerShare"]].copy()
+                        df_ratio2_graph = df_ratio2.set_index("date")[["freeCashFlowPerShare", "bookValuePerShare"]].copy()
                         df_ratio2_graph.rename(columns={
                             "freeCashFlowPerShare": "Cash Flow p/a",
                             "bookValuePerShare": "Eigen vermogen p/a"
@@ -406,8 +411,11 @@ def toon_fundamentals(ticker):
                         st.line_chart(df_ratio2_graph)
                     except Exception as e:
                         st.info(f"📉 Geen grafiek beschikbaar. ({e})")
+                else:
+                    st.info("📉 Geen grafiek beschikbaar (kolommen ontbreken).")
             else:
                 st.info("Geen grafiek data gevonden voor dit aandeel.")
+
 
 
     
