@@ -48,7 +48,7 @@ def haal_laatste_koers(ticker):
 def plaats_order(client, ticker, bedrag, last_price, order_type="Market Buy", trailing_pct=None, aantal=None, limietkoers=None):
     symbol = convert_ticker_for_alpaca(ticker)
     _aantal = int(bedrag / last_price) if aantal is None else aantal
-    if _aantal <= 0:
+    if _aantal <= 0.0000001:
         st.warning("❌ Te klein bedrag of aantal voor order.")
         return
     try:
