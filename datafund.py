@@ -89,12 +89,14 @@ def get_eps_forecast(ticker):
 # aanbevelingen er zijn meerdere https://financialmodelingprep.com/api/v3/analyst-stock-recommendations/AAPL?apikey=
 # balans score https://financialmodelingprep.com/api/v4/score?symbol=AAPL&apikey=
 # dcf https://financialmodelingprep.com/api/v3/discounted-cash-flow/AAPL?apikey=
+# dcf stable https://financialmodelingprep.com/stable/discounted-cash-flow?symbol=AAPL&apikey=
+
 # new real https://financialmodelingprep.com/api/v3/fmp/articles?page=0&size=5&apikey=.....
 # news ticker https://financialmodelingprep.com/api/v3/press-releases/AAPL?apikey=
 # stocks news https://financialmodelingprep.com/api/v3/stock_news?tickers=AAPL,FB&page=3&from=2024-01-01&to=2024-03-01&apikey=
 # crypto news https://financialmodelingprep.com/api/v4/crypto_news?page=0&apikey=
-# press https://financialmodelingprep.com/api/v3/press-releases?page=0&apikey=D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5
-# press ticker https://financialmodelingprep.com/api/v3/press-releases/AAPL?apikey=D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5
+# press https://financialmodelingprep.com/api/v3/press-releases?page=0&apikey=
+# press ticker https://financialmodelingprep.com/api/v3/press-releases/AAPL?apikey=
 
 
 
