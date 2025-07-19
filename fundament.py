@@ -439,100 +439,100 @@ def toon_fundamentals(ticker):
 
      # nieuwe EPS grafiek
         
-with st.expander("📈 EPS analyse"):
-    try:
+    with st.expander("📈 EPS analyse"):
+        try:
         # -------- Check op aanwezigheid van data --------
-        if not (isinstance(eps_quarters, list) and len(eps_quarters) > 0):
-            st.info("📭 Geen EPS-data beschikbaar voor deze ticker.")
-            st.stop()
-        if not (isinstance(eps_forecast, list) and len(eps_forecast) > 0):
-            eps_forecast = []
+            if not (isinstance(eps_quarters, list) and len(eps_quarters) > 0):
+                st.info("📭 Geen EPS-data beschikbaar voor deze ticker.")
+                st.stop()
+            if not (isinstance(eps_forecast, list) and len(eps_forecast) > 0):
+                eps_forecast = []
 
         # -------- Dataframes opbouwen --------
-        df_epsq = pd.DataFrame(eps_quarters)
-        if not {"date", "eps"}.issubset(df_epsq.columns):
-            st.info("📭 EPS-data niet compleet voor deze ticker.")
-            st.stop()
-        df_epsq = df_epsq[["date", "eps"]]
-        df_epsq.columns = ["Datum", "EPS"]
-        df_epsq["Datum"] = pd.to_datetime(df_epsq["Datum"])
-        df_epsq = df_epsq.sort_values("Datum")
+            df_epsq = pd.DataFrame(eps_quarters)
+            if not {"date", "eps"}.issubset(df_epsq.columns):
+                st.info("📭 EPS-data niet compleet voor deze ticker.")
+                st.stop()
+            df_epsq = df_epsq[["date", "eps"]]
+            df_epsq.columns = ["Datum", "EPS"]
+            df_epsq["Datum"] = pd.to_datetime(df_epsq["Datum"])
+            df_epsq = df_epsq.sort_values("Datum")
 
-        forecast_cols = ["date", "estimatedEpsAvg", "estimatedEpsLow", "estimatedEpsHigh"]
-        if len(eps_forecast) > 0 and all(col in pd.DataFrame(eps_forecast).columns for col in forecast_cols):
-            df_forecast = pd.DataFrame(eps_forecast)[forecast_cols].copy()
-            df_forecast.columns = ["Datum", "EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"]
-            df_forecast["Datum"] = pd.to_datetime(df_forecast["Datum"])
-            df_forecast = df_forecast.sort_values("Datum")
-        else:
-            df_forecast = pd.DataFrame(columns=["Datum", "EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"])
+            forecast_cols = ["date", "estimatedEpsAvg", "estimatedEpsLow", "estimatedEpsHigh"]
+            if len(eps_forecast) > 0 and all(col in pd.DataFrame(eps_forecast).columns for col in forecast_cols):
+                df_forecast = pd.DataFrame(eps_forecast)[forecast_cols].copy()
+                df_forecast.columns = ["Datum", "EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"]
+                df_forecast["Datum"] = pd.to_datetime(df_forecast["Datum"])
+                df_forecast = df_forecast.sort_values("Datum")
+            else:
+                df_forecast = pd.DataFrame(columns=["Datum", "EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"])
 
         # -------- Mergen en plotten --------
-        df_all = pd.merge(df_epsq, df_forecast, on="Datum", how="outer").sort_values("Datum")
-        df_all.set_index("Datum", inplace=True)
-        df_all_plot = df_all.copy()
-        df_all_plot['Datum_Grafiek'] = df_all_plot.index.to_period('M').to_timestamp()
-        df_plot = df_all_plot.groupby('Datum_Grafiek').mean(numeric_only=True)
-        df_plot = df_plot.interpolate(method="linear", limit_direction="both")
+            df_all = pd.merge(df_epsq, df_forecast, on="Datum", how="outer").sort_values("Datum")
+            df_all.set_index("Datum", inplace=True)
+            df_all_plot = df_all.copy()
+            df_all_plot['Datum_Grafiek'] = df_all_plot.index.to_period('M').to_timestamp()
+            df_plot = df_all_plot.groupby('Datum_Grafiek').mean(numeric_only=True)
+            df_plot = df_plot.interpolate(method="linear", limit_direction="both")
 
-        laatste_werkelijke = df_epsq["Datum"].max()
-        df_plot.loc[df_plot.index > laatste_werkelijke, "EPS"] = None
-        eerste_forecast = df_forecast["Datum"].min() if not df_forecast.empty else None
-        for col in ["EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"]:
-            if eerste_forecast is not None:
-                df_plot.loc[df_plot.index < eerste_forecast, col] = None
+            laatste_werkelijke = df_epsq["Datum"].max()
+            df_plot.loc[df_plot.index > laatste_werkelijke, "EPS"] = None
+            eerste_forecast = df_forecast["Datum"].min() if not df_forecast.empty else None
+            for col in ["EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"]:
+                if eerste_forecast is not None:
+                    df_plot.loc[df_plot.index < eerste_forecast, col] = None
 
-        cutoff = pd.Timestamp.now() + pd.DateOffset(years=3)
-        df_plot = df_plot[df_plot.index <= cutoff]
+            cutoff = pd.Timestamp.now() + pd.DateOffset(years=3)
+            df_plot = df_plot[df_plot.index <= cutoff]
 
-        fig, ax = plt.subplots(figsize=(14, 6))
-        df_plot["EPS"].plot(ax=ax, marker="o", label="Werkelijke EPS", linewidth=2, color="black")
-        df_plot["EPS (Avg, est.)"].plot(ax=ax, marker="o", linestyle="--", label="EPS (Avg, est.)", color="#1e90ff")
-        df_plot["EPS (Low, est.)"].plot(ax=ax, marker=".", linestyle=":", label="EPS (Low, est.)", color="#ff6347")
-        df_plot["EPS (High, est.)"].plot(ax=ax, marker=".", linestyle=":", label="EPS (High, est.)", color="#2ecc71")
-        ax.set_title("Werkelijke EPS en Verwachte EPS (Low/Avg/High)")
-        ax.set_ylabel("EPS")
-        ax.set_xlabel("Datum")
-        ax.legend()
-        fig.tight_layout()
-        st.pyplot(fig)
+            fig, ax = plt.subplots(figsize=(14, 6))
+            df_plot["EPS"].plot(ax=ax, marker="o", label="Werkelijke EPS", linewidth=2, color="black")
+            df_plot["EPS (Avg, est.)"].plot(ax=ax, marker="o", linestyle="--", label="EPS (Avg, est.)", color="#1e90ff")
+            df_plot["EPS (Low, est.)"].plot(ax=ax, marker=".", linestyle=":", label="EPS (Low, est.)", color="#ff6347")
+            df_plot["EPS (High, est.)"].plot(ax=ax, marker=".", linestyle=":", label="EPS (High, est.)", color="#2ecc71")
+            ax.set_title("Werkelijke EPS en Verwachte EPS (Low/Avg/High)")
+            ax.set_ylabel("EPS")
+            ax.set_xlabel("Datum")
+            ax.legend()
+            fig.tight_layout()
+            st.pyplot(fig)
 
         # ----- SAMENVOEGEN PER MAAND VOOR DE TABEL -----
-        df_all["Maand"] = df_all.index.to_period('M')
-        def last_valid(s):
-            s = s.dropna()
-            return s.iloc[-1] if not s.empty else None
+            df_all["Maand"] = df_all.index.to_period('M')
+            def last_valid(s):
+                s = s.dropna()
+                return s.iloc[-1] if not s.empty else None
 
-        df_month = (
-            df_all
-            .reset_index()
-            .groupby("Maand")
-            .agg({
-                "Datum": "max",
-                "EPS": last_valid,
-                "EPS (Avg, est.)": last_valid,
-                "EPS (Low, est.)": last_valid,
-                "EPS (High, est.)": last_valid,
-            })
-        )
-        df_month["Surprise %"] = ((df_month["EPS"] - df_month["EPS (Avg, est.)"]) / df_month["EPS (Avg, est.)"]) * 100
-        df_month = df_month.set_index("Datum")
-        df_month = df_month.sort_index(ascending=False)
+            df_month = (
+                df_all
+                .reset_index()
+                .groupby("Maand")
+                .agg({
+                    "Datum": "max",
+                    "EPS": last_valid,
+                    "EPS (Avg, est.)": last_valid,
+                    "EPS (Low, est.)": last_valid,
+                    "EPS (High, est.)": last_valid,
+                })
+            )
+            df_month["Surprise %"] = ((df_month["EPS"] - df_month["EPS (Avg, est.)"]) / df_month["EPS (Avg, est.)"]) * 100
+            df_month = df_month.set_index("Datum")
+            df_month = df_month.sort_index(ascending=False)
 
-        kol_volgorde = ["EPS", "Surprise %", "EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"]
-        def format_surprise(val):
-            if pd.isna(val):
-                return "-"
-            return f"{val:+.2f}%"
-        st.dataframe(
-            df_month[kol_volgorde]
-                .assign(**{"Surprise %": df_month["Surprise %"].apply(format_surprise)})
-                .applymap(lambda x: format_value(x) if not isinstance(x, str) or "%" not in x else x)
-        )
+            kol_volgorde = ["EPS", "Surprise %", "EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"]
+            def format_surprise(val):
+                if pd.isna(val):
+                    return "-"
+                return f"{val:+.2f}%"
+            st.dataframe(
+                df_month[kol_volgorde]
+                    .assign(**{"Surprise %": df_month["Surprise %"].apply(format_surprise)})
+                    .applymap(lambda x: format_value(x) if not isinstance(x, str) or "%" not in x else x)
+            )
 
-    except Exception as e:
-        st.info("📭 Geen bruikbare EPS-data of fout in verwerking. Foutmelding:")
-        st.text(str(e))            
+        except Exception as e:
+            st.info("📭 Geen bruikbare EPS-data of fout in verwerking. Foutmelding:")
+            st.text(str(e))            
 
 
 
