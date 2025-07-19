@@ -35,7 +35,7 @@ def _coinex_headers(api_key, api_secret, method, path, body_str=""):
 # --- BALANCES (GET) ---
 def get_balances(api_key, api_secret):
     method = "GET"
-    path = "/v2/assets/spot"
+    path = "/v2/assets/balance"
     headers, _ = _coinex_headers(api_key, api_secret, method, path)
     r = requests.get(BASE_URL + path, headers=headers)
     r.raise_for_status()
