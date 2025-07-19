@@ -17,17 +17,18 @@ def get_coinex_headers(api_key, api_secret, method, params):
         "X-CoinEx-Tonce": tonce
     }
 
-def coinex_request(endpoint, api_key, api_secret, method="GET", params=None):
-    url = f"{BASE_URL}{endpoint}"
-    params = params or {}
-    headers = get_coinex_headers(api_key, api_secret, method, params)
-    if method == "GET":
-        r = requests.get(url, headers=headers, params=params)
-    else:
-        r = requests.post(url, headers=headers, json=params)
-    r.raise_for_status()
-    return r.json()
-
+def coinex_request(path, api_key, api_secret, params=None):
+    url = f"https://api.coinex.com/v1{path}"
+    headers, data = coinex_sign_request(path, api_key, api_secret, params)
+    try:
+        # Probeer GET (zoals voor balances vereist)
+        r = requests.get(url, headers=headers, params=data)
+        r.raise_for_status()
+        return r.json()
+    except Exception as e:
+        st.error(f"CoinEx API error: {e}")
+        st.code(r.text)  # Dit toont de volledige foutmelding uit de API response!
+        return None
 # Balances ophalen (alle coins)
 def get_balances(api_key, api_secret):
     return coinex_request("/assets/spot", api_key, api_secret)
