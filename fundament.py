@@ -439,7 +439,7 @@ def toon_fundamentals(ticker):
 
      # nieuwe EPS grafiek
         
-    with st.expander("📈 EPS analyse"):
+with st.expander("📈 EPS analyse"):
     try:
         # -------- Check op aanwezigheid van data --------
         if not (isinstance(eps_quarters, list) and len(eps_quarters) > 0):
