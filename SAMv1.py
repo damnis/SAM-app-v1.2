@@ -50,6 +50,10 @@ from fundament import toon_fundamentals
 from backtest import backtest_functie, bereken_sam_rendement
 # trading bot
 from bot import toon_trading_bot_interface
+from coinex import (
+    get_balances, get_open_orders, get_order_history,
+    place_market_order, place_limit_order, cancel_all_orders
+)
 #from optiebot import toon_optie_trading_bot_interface 
 from bot import verbind_met_alpaca, convert_ticker_for_alpaca, crypto_slash_to_plain, haal_laatste_koers, plaats_order, sluit_positie
 from alpaca.data.historical import StockHistoricalDataClient
@@ -456,6 +460,38 @@ toon_trading_bot_interface(selected_ticker, huidig_advies)
 # 📌 Verbinding met Alpaca testen (optioneel, pas uit te voeren als gebruiker dit wil)
 # optiebot
 #toon_optie_trading_bot_interface(selected_ticker, huidig_advies)
+# cryptobot coinex 
+api_key = st.secrets["coinex"]["coin_api_key"]
+api_secret = st.secrets["coinex"]["coin_api_secret"]
+
+st.title("CoinEx Trading Bot")
+
+# Balances
+if st.button("Toon saldo"):
+    st.write(get_balances(api_key, api_secret))
+
+market = st.text_input("Trading pair (bv. BTCUSDT):", "BTCUSDT")
+side = st.radio("Side", ["buy", "sell"])
+amount = st.number_input("Aantal", min_value=0.00001, value=0.01)
+prijs = st.number_input("Limit prijs (optioneel, laat leeg voor market order)", min_value=0.0, value=0.0)
+
+if st.button("Plaats order"):
+    if prijs > 0:
+        res = place_limit_order(api_key, api_secret, market, side, amount, prijs)
+        st.write(res)
+    else:
+        res = place_market_order(api_key, api_secret, market, side, amount)
+        st.write(res)
+
+# Openstaande orders tonen + annuleren
+if st.button("Toon open orders"):
+    st.write(get_open_orders(api_key, api_secret, market))
+
+if st.button("Annuleer ALLE open orders in deze market"):
+    results = cancel_all_orders(api_key, api_secret, market)
+    st.write(results)
+
+
 #FMP testapi
 if st.sidebar.checkbox("🧪 FMP Test Tool"):
     test_fmp_endpoint()
