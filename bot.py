@@ -350,25 +350,38 @@ def toon_trading_bot_interface(ticker, huidig_advies):
 
     st.markdown("---")
 
+
+
+    # Verkooppositie 
     st.subheader("📤 Verkooppositie controleren en sluiten")
     with st.expander(f"{'💵' if trade_mode=='Live' else '🧪'} Positie check en verkoopactie"):
         posities = client.get_all_positions()
-        symbol_dash = ticker.upper()
-        symbol_slash = convert_ticker_for_alpaca(ticker)   # Bijv: 'ETH/USD'
-        symbol_plain = crypto_slash_to_plain(symbol_slash)  # Bijv: 'ETHUSD'
+    # Zet mogelijke namen in een lijst
+        mogelijke_namen = [
+            ticker.upper(),
+            convert_ticker_for_alpaca(ticker),
+            crypto_slash_to_plain(convert_ticker_for_alpaca(ticker))
+        ]
+    # Voeg ook mogelijke CRYPTO:-prefix toe
+        for naam in mogelijke_namen[:]:
+            if not naam.startswith("CRYPTO:"):
+                mogelijke_namen.append("CRYPTO:" + naam)
         positie = None
+        gevonden = []
         for pos in posities:
-            if pos.symbol.upper() in [symbol_dash, symbol_slash, symbol_plain]:
+            st.write(f"DEBUG: gevonden {pos.symbol} qty {pos.qty}")
+            if pos.symbol.upper() in mogelijke_namen:
                 positie = pos
-                break
-
+                gevonden.append(pos.symbol)
+        st.write(f"DEBUG: mogelijke_namen: {mogelijke_namen}")
+        st.write(f"DEBUG: gevonden: {gevonden}")
+        st.write("ALLE POSITIES:", [p.symbol for p in posities])
         if positie is not None:
-            huidige_qty = int(float(positie.qty))
+            huidige_qty = float(positie.qty)
             avg_price = float(positie.avg_entry_price)
             st.write(f"📦 Je bezit momenteel **{huidige_qty}x {positie.symbol}** @ ${avg_price:.2f} gemiddeld.")
         else:
-            st.info(f"📭 Geen open positie gevonden in deze ticker (ook niet als '{symbol_plain}').")
-            st.write(f"🔎 Gezocht op: {symbol_dash}, {symbol_slash}, {symbol_plain}")
+            st.info("📭 Geen open positie gevonden in deze ticker (ook niet als '{mogelijke_namen}').")
             st.write("📦 GEVONDEN POSITIES:", [p.symbol for p in posities])
             return
 
@@ -381,6 +394,7 @@ def toon_trading_bot_interface(ticker, huidig_advies):
         with col2:
             if st.button("🚨 Sluit ALLES direct (noodstop)"):
                 sluit_alles(client)
+
 
 
 #def sluit_positie(client, ticker, advies, force=False):
