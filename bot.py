@@ -110,7 +110,7 @@ def plaats_order(client, ticker, bedrag, last_price, order_type="Market Buy", tr
 def koop_en_trailing_stop(client, ticker, bedrag, last_price, trailing_pct, aantal=None):
     symbol = convert_ticker_for_alpaca(ticker)
     _aantal = int(bedrag / last_price) if aantal is None else aantal
-    if _aantal <= 0:
+    if _aantal <= 0.0000001:
         st.warning("❌ Bedrag of aantal te klein voor aankoop.")
         return
     try:
