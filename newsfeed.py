@@ -9,7 +9,7 @@ def get_finviz_news(ticker, max_items=6):
     url = f"https://finviz.com/quote.ashx?t={ticker}"
     headers = {"User-Agent": "Mozilla/5.0"}
     try:
-        resp = requests.get(url, headers=headers, timeout=8)
+        resp = requests.get(url, headers=headers, timeout=2)
         soup = BeautifulSoup(resp.content, "html.parser")
         table = soup.find("table", class_="fullview-news-outer")
         news_list = []
@@ -37,7 +37,7 @@ def get_finviz_market_news(max_items=20):
     url = "https://finviz.com/news.ashx"
     headers = {"User-Agent": "Mozilla/5.0"}
     try:
-        resp = requests.get(url, headers=headers, timeout=10)
+        resp = requests.get(url, headers=headers, timeout=2)
         soup = BeautifulSoup(resp.content, "html.parser")
         news_list = []
         news_blocks = soup.find_all("div", class_="news-link-box")
@@ -63,7 +63,7 @@ def get_finviz_market_news(max_items=20):
 def get_google_news(ticker, max_items=5, lang="en"):
     url = f"https://news.google.com/rss/search?q={ticker}+stock&hl={lang}-US&gl=US&ceid=US:en"
     try:
-        resp = requests.get(url, timeout=10)
+        resp = requests.get(url, timeout=2)
         soup = BeautifulSoup(resp.content, "xml")
         items = soup.find_all("item")[:max_items]
         news_list = []
