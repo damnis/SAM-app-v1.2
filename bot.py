@@ -267,7 +267,8 @@ def sluit_alles(client):
                         symbol=symbol,
                         qty=aantal,
                         side=OrderSide.SELL,
-                        time_in_force="GTC"   # Altijd Good Til Canceled
+                        time_in_force=TimeInForce.GTC
+                        
                     )
                     response = client.submit_order(order)
                     st.success(f"✅ Market sell geplaatst voor {aantal}x {symbol}.")
