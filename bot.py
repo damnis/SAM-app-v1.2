@@ -47,7 +47,8 @@ def haal_laatste_koers(ticker):
 
 def plaats_order(client, ticker, bedrag, last_price, order_type="Market Buy", trailing_pct=None, aantal=None, limietkoers=None):
     symbol = convert_ticker_for_alpaca(ticker)
-    _aantal = int(bedrag / last_price) if aantal is None else aantal
+    _aantal = float(bedrag) / float(last_price) if aantal is None else float(aantal)
+#    _aantal = int(bedrag / last_price) if aantal is None else aantal
     if _aantal <= 0.0000001:
         st.warning("❌ Te klein bedrag of aantal voor order.")
         return
@@ -319,7 +320,7 @@ def toon_trading_bot_interface(ticker, huidig_advies):
         keuze_bedrag_of_aantal = st.radio("Wil je een bedrag of een exact aantal opgeven?", ["Bedrag", "Aantal"], horizontal=True)
         if keuze_bedrag_of_aantal == "Bedrag":
             bedrag = st.number_input("💰 Te investeren bedrag ($)", min_value=10.0, value=1000.0, step=10.0)
-            aantal = 0.0
+            aantal = None
         else:
             aantal = st.number_input("Aantal stuks", min_value=0.000001, value=1.0, step=1.0)
             bedrag = 0.0
