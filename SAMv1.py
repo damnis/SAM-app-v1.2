@@ -50,8 +50,7 @@ from fundament import toon_fundamentals
 from backtest import backtest_functie, bereken_sam_rendement
 # trading bot
 from bot import toon_trading_bot_interface
-from coinex import get_spot_balance, get_spot_market, put_limit_order, put_market_order
-
+#from coinex import get_spot_balance, get_spot_market, put_limit_order, put_market_order
 #from optiebot import toon_optie_trading_bot_interface 
 from bot import verbind_met_alpaca, convert_ticker_for_alpaca, crypto_slash_to_plain, haal_laatste_koers, plaats_order, sluit_positie
 from alpaca.data.historical import StockHistoricalDataClient
@@ -461,27 +460,27 @@ toon_trading_bot_interface(selected_ticker, huidig_advies)
 
 # -----------------
 # cryptobot coinex 
-api_key = st.secrets["coinex"]["coin_api_key"]
-api_secret = st.secrets["coinex"]["coin_api_secret"]
+#api_key = st.secrets["coinex"]["coin_api_key"]
+#api_secret = st.secrets["coinex"]["coin_api_secret"]
 
-st.title("CoinEx Trading Bot")
+#st.title("CoinEx Trading Bot")
 
-if st.button("Toon saldo"):
-    res = get_spot_balance(api_key, api_secret)
-    st.write(res)
+#if st.button("Toon saldo"):
+#    res = get_spot_balance(api_key, api_secret)
+#    st.write(res)
 
-market = st.text_input("Trading pair (bv. BTCUSDT):", "BTCUSDT")
-side = st.radio("Side", ["buy", "sell"])
-amount = st.number_input("Aantal", min_value=0.00001, value=0.01, format="%.6f")
-price = st.number_input("Limit prijs (optioneel, leeg=market order)", min_value=0.0, value=0.0, format="%.2f")
+#market = st.text_input("Trading pair (bv. BTCUSDT):", "BTCUSDT")
+#side = st.radio("Side", ["buy", "sell"])
+#amount = st.number_input("Aantal", min_value=0.00001, value=0.01, format="%.6f")
+#price = st.number_input("Limit prijs (optioneel, leeg=market order)", min_value=0.0, value=0.0, format="%.2f")
 
-if st.button("Plaats order"):
-    if price > 0:
-        res = put_limit_order(api_key, api_secret, market, side, amount, price)
-        st.write(res)
-    else:
-        res = put_market_order(api_key, api_secret, market, side, amount)
-        st.write(res)
+#if st.button("Plaats order"):
+#    if price > 0:
+#        res = put_limit_order(api_key, api_secret, market, side, amount, price)
+ #       st.write(res)
+ #   else:
+#        res = put_market_order(api_key, api_secret, market, side, amount)
+  #      st.write(res)
 
 
 
