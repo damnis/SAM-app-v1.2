@@ -18,6 +18,10 @@ def convert_ticker_for_alpaca(ticker):
         return ticker.upper().replace("-", "/")
     return ticker.upper()
 
+def crypto_slash_to_plain(ticker):
+    """Verwijdert alleen de '/' uit een cryptoticker, bijvoorbeeld ETH/USD → ETHUSD"""
+    return ticker.replace("/", "")
+
 def verbind_met_alpaca(mode):
     try:
         sectie = "alpaca_paper" if mode == "Paper" else "alpaca_live"
