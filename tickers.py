@@ -64,7 +64,7 @@ amx_tickers = {
 }
 
 crypto_tickers = {
-    "BTCUSD": "Bitcoin",
+    "BTC/USD": "Bitcoin",
     "ETHUSD": "Ethereum",
     "BNB-USD": "BNB",
     "SOL-USD": "Solana",
