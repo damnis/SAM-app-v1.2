@@ -206,10 +206,15 @@ def sluit_positie(client, ticker, advies, force=False):
         st.info("📭 Geen open positie gevonden in deze ticker (controleer spelling!).")
         return
 
-    aantal = int(float(positie.qty))
-    if aantal == 0:
+    aantal = float(positie.qty)  # Geen int()!
+    if aantal <= 0.0000001:  # Gebruik een zeer kleine epsilon
         st.info("ℹ️ Geen open positie om te sluiten.")
         return
+    
+#    aantal = int(float(positie.qty))
+#    if aantal == 0:
+#        st.info("ℹ️ Geen open positie om te sluiten.")
+#        return
     if not force and advies != "Verkopen":
         st.info("ℹ️ Huidig advies is geen 'Verkopen'. Geen actie ondernomen.")
         return
