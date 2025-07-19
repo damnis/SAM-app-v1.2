@@ -52,7 +52,8 @@ from backtest import backtest_functie, bereken_sam_rendement
 from bot import toon_trading_bot_interface
 from coinex import (
     get_balances, coinex_sign_request, get_open_orders, get_order_history,
-    place_market_order, place_limit_order, cancel_all_orders
+    place_market_order, place_limit_order, cancel_all_orders,
+    _coinex_signature
 )
 #from optiebot import toon_optie_trading_bot_interface 
 from bot import verbind_met_alpaca, convert_ticker_for_alpaca, crypto_slash_to_plain, haal_laatste_koers, plaats_order, sluit_positie
