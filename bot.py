@@ -226,32 +226,6 @@ def sluit_positie(client, ticker, advies, force=False):
     st.write(response)
     
 
-#def sluit_positie(client, ticker, advies, force=False):
-#    symbol = convert_ticker_for_alpaca(ticker)
-#    try:
-#        positie = client.get_open_position(symbol)
-#        aantal = int(float(positie.qty))
- #       if aantal == 0:
-#            st.info("ℹ️ Geen open positie om te sluiten.")
- #           return
- #       if not force and advies != "Verkopen":
- #           st.info("ℹ️ Huidig advies is geen 'Verkopen'. Geen actie ondernomen.")
- #           return
-#        aantal_geannuleerd = annuleer_alle_orders_ticker(client, symbol)
- #       if aantal_geannuleerd > 0:
-  #          st.info("⏳ Wachten 8 seconden zodat de stukken vrijkomen...")
- #           time.sleep(8)
-  #      order = MarketOrderRequest(
-  #          symbol=symbol,
-   #         qty=aantal,
-  #          side=OrderSide.SELL,
- #           time_in_force=TimeInForce.DAY
-  #      )
-  #      response = client.submit_order(order)
-  #      st.success(f"✅ Verkooporder geplaatst voor {aantal}x {symbol}")
-#        st.write(response)
-#    except Exception as e:
-#        st.info("📭 Geen open positie of fout bij ophalen: " + str(e))
 
 def sluit_alles(client):
     st.warning("⚠️ Noodfunctie actief: alle posities en open orders worden nu gesloten/geannuleerd!")
@@ -375,23 +349,65 @@ def toon_trading_bot_interface(ticker, huidig_advies):
     st.subheader("📤 Verkooppositie controleren en sluiten")
     with st.expander(f"{'💵' if trade_mode=='Live' else '🧪'} Positie check en verkoopactie"):
         posities = client.get_all_positions()
-        symbol_dash = ticker.upper()
-        symbol_slash = convert_ticker_for_alpaca(ticker)
+        variants = all_crypto_ticker_variants(ticker)
         positie = None
+    # Zoek de positie op ALLE mogelijke varianten!
         for pos in posities:
-            if pos.symbol.upper() in [symbol_dash, symbol_slash]:
+            if pos.symbol.upper() in variants:
                 positie = pos
                 break
 
         if positie is not None:
             huidige_qty = int(float(positie.qty))
             avg_price = float(positie.avg_entry_price)
-            st.write(f"📦 Je bezit momenteel **{huidige_qty}x {ticker}** @ ${avg_price:.2f} gemiddeld.")
-        # rest van verkoop-UI...
+            st.write(f"📦 Je bezit momenteel **{huidige_qty}x {positie.symbol}** @ ${avg_price:.2f} gemiddeld.")
         else:
-            st.info("📭 Geen open positie gevonden in deze ticker.")
+            st.info("📭 Geen open positie gevonden in deze ticker (mogelijk naam-issue).")
+            st.write(f"🔎 Gezocht op: {', '.join(sorted(variants))}")
+            st.write("📦 GEVONDEN POSITIES:", [p.symbol for p in posities])
             return
-        
+
+        st.write(f"📌 Huidig advies: **{huidig_advies}**")
+        force_verkoop = st.checkbox("🔒 Forceer verkoop, ongeacht advies")
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("❗ Verkooppositie sluiten"):
+                sluit_positie(client, positie.symbol, huidig_advies, force=force_verkoop)
+        with col2:
+            if st.button("🚨 Sluit ALLES direct (noodstop)"):
+                sluit_alles(client)
+            
+
+
+#def sluit_positie(client, ticker, advies, force=False):
+#    symbol = convert_ticker_for_alpaca(ticker)
+#    try:
+#        positie = client.get_open_position(symbol)
+#        aantal = int(float(positie.qty))
+ #       if aantal == 0:
+#            st.info("ℹ️ Geen open positie om te sluiten.")
+ #           return
+ #       if not force and advies != "Verkopen":
+ #           st.info("ℹ️ Huidig advies is geen 'Verkopen'. Geen actie ondernomen.")
+ #           return
+#        aantal_geannuleerd = annuleer_alle_orders_ticker(client, symbol)
+ #       if aantal_geannuleerd > 0:
+  #          st.info("⏳ Wachten 8 seconden zodat de stukken vrijkomen...")
+ #           time.sleep(8)
+  #      order = MarketOrderRequest(
+  #          symbol=symbol,
+   #         qty=aantal,
+  #          side=OrderSide.SELL,
+ #           time_in_force=TimeInForce.DAY
+  #      )
+  #      response = client.submit_order(order)
+  #      st.success(f"✅ Verkooporder geplaatst voor {aantal}x {symbol}")
+#        st.write(response)
+#    except Exception as e:
+#        st.info("📭 Geen open positie of fout bij ophalen: " + str(e))
+
+# -----‐------------
+
 #    with st.expander(f"{'💵' if trade_mode=='Live' else '🧪'} Positie check en verkoopactie"):
 #        try:
 #            positie = client.get_open_position(convert_ticker_for_alpaca(ticker))
@@ -402,20 +418,37 @@ def toon_trading_bot_interface(ticker, huidig_advies):
 #            st.info("📭 Geen open positie gevonden in deze ticker.")
   #          return
 
-        st.write(f"📌 Huidig advies: **{huidig_advies}**")
-        force_verkoop = st.checkbox("🔒 Forceer verkoop, ongeacht advies")
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("❗ Verkooppositie sluiten"):
-                sluit_positie(client, convert_ticker_for_alpaca(ticker), huidig_advies, force=force_verkoop)
-        with col2:
-            if st.button("🚨 Sluit ALLES direct (noodstop)"):
-                sluit_alles(client)
 
+#st.subheader("📤 Verkooppositie controleren en sluiten")
+#    with st.expander(f"{'💵' if trade_mode=='Live' else '🧪'} Positie check en verkoopactie"):
+#        posities = client.get_all_positions()
+#        symbol_dash = ticker.upper()
+#        symbol_slash = convert_ticker_for_alpaca(ticker)
+#        positie = None
+ #       for pos in posities:
+ #           if pos.symbol.upper() in [symbol_dash, symbol_slash]:
+ #               positie = pos
+  #              break
 
+ #       if positie is not None:
+ #           huidige_qty = int(float(positie.qty))
+  #          avg_price = float(positie.avg_entry_price)
+ #           st.write(f"📦 Je bezit momenteel **{huidige_qty}x {ticker}** @ ${avg_price:.2f} gemiddeld.")
+        # rest van verkoop-UI...
+ #       else:
+#            st.info("📭 Geen open positie gevonden in deze ticker.")
+ #           return
+        
 
-
-
+ #       st.write(f"📌 Huidig advies: **{huidig_advies}**")
+ #       force_verkoop = st.checkbox("🔒 Forceer verkoop, ongeacht advies")
+ #       col1, col2 = st.columns(2)
+  #      with col1:
+ #           if st.button("❗ Verkooppositie sluiten"):
+#                sluit_positie(client, convert_ticker_for_alpaca(ticker), huidig_advies, force=force_verkoop)
+ #       with col2:
+  #          if st.button("🚨 Sluit ALLES direct (noodstop)"):
+  #              sluit_alles(client)
 
 
 
