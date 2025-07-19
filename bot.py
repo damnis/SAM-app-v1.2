@@ -242,7 +242,7 @@ def sluit_alles(client):
         open_orders = client.get_orders()
         canceled = 0
         for order in open_orders:
-            if order.status in ("open", "new", "pending"):
+            if order.status in ("open", "new", "pending", "accepted"):
                 try:
                     client.cancel_order_by_id(order.id)
                     st.info(f"🗑️ Order {order.id} ({order.symbol}, {order.side}) geannuleerd.")
