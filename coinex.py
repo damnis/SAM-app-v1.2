@@ -52,7 +52,7 @@ def coinex_request(path, api_key, api_secret, params=None, method="GET"):
 
 # --- API functies ---
 def get_balances(api_key, api_secret):
-    return coinex_request("/assets/spot", api_key, api_secret, method="GET")
+    return coinex_request("/assets/balance", api_key, api_secret, method="GET")
 
 def get_open_orders(api_key, api_secret, market):
     return coinex_request("/order/pending", api_key, api_secret, params={"market": market}, method="GET")
