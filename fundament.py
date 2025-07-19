@@ -440,15 +440,26 @@ def toon_fundamentals(ticker):
      # nieuwe EPS grafiek
         
     with st.expander("📈 EPS analyse"):
-            # Zet dataframes klaar voor werkelijk & forecast
-        df_epsq = pd.DataFrame(eps_quarters)[["date", "eps"]]
+    try:
+        # -------- Check op aanwezigheid van data --------
+        if not (isinstance(eps_quarters, list) and len(eps_quarters) > 0):
+            st.info("📭 Geen EPS-data beschikbaar voor deze ticker.")
+            st.stop()
+        if not (isinstance(eps_forecast, list) and len(eps_forecast) > 0):
+            eps_forecast = []
+
+        # -------- Dataframes opbouwen --------
+        df_epsq = pd.DataFrame(eps_quarters)
+        if not {"date", "eps"}.issubset(df_epsq.columns):
+            st.info("📭 EPS-data niet compleet voor deze ticker.")
+            st.stop()
+        df_epsq = df_epsq[["date", "eps"]]
         df_epsq.columns = ["Datum", "EPS"]
         df_epsq["Datum"] = pd.to_datetime(df_epsq["Datum"])
         df_epsq = df_epsq.sort_values("Datum")
 
-            # Forecast data
         forecast_cols = ["date", "estimatedEpsAvg", "estimatedEpsLow", "estimatedEpsHigh"]
-        if isinstance(eps_forecast, list) and len(eps_forecast) > 0:
+        if len(eps_forecast) > 0 and all(col in pd.DataFrame(eps_forecast).columns for col in forecast_cols):
             df_forecast = pd.DataFrame(eps_forecast)[forecast_cols].copy()
             df_forecast.columns = ["Datum", "EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"]
             df_forecast["Datum"] = pd.to_datetime(df_forecast["Datum"])
@@ -456,31 +467,24 @@ def toon_fundamentals(ticker):
         else:
             df_forecast = pd.DataFrame(columns=["Datum", "EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"])
 
-            # Merge: alle datums uit werkelijk en forecast
+        # -------- Mergen en plotten --------
         df_all = pd.merge(df_epsq, df_forecast, on="Datum", how="outer").sort_values("Datum")
         df_all.set_index("Datum", inplace=True)
-
-            # Voor grafiek: aggregeer per maand, zodat lijnen netjes aansluiten
         df_all_plot = df_all.copy()
-        df_all_plot['Datum_Grafiek'] = df_all_plot.index.to_period('M').to_timestamp()  # eerste van de maand
+        df_all_plot['Datum_Grafiek'] = df_all_plot.index.to_period('M').to_timestamp()
         df_plot = df_all_plot.groupby('Datum_Grafiek').mean(numeric_only=True)
         df_plot = df_plot.interpolate(method="linear", limit_direction="both")
 
-            # --- FIX 1: werkelijke EPS mag niet verder lopen dan laatste echte waarde
         laatste_werkelijke = df_epsq["Datum"].max()
         df_plot.loc[df_plot.index > laatste_werkelijke, "EPS"] = None
-
-            # --- FIX 2: forecast EPS mag niet vóór de eerste forecast waarde lopen
         eerste_forecast = df_forecast["Datum"].min() if not df_forecast.empty else None
         for col in ["EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"]:
             if eerste_forecast is not None:
                 df_plot.loc[df_plot.index < eerste_forecast, col] = None
 
-            # Toon alleen tot max 3 jaar in de toekomst
         cutoff = pd.Timestamp.now() + pd.DateOffset(years=3)
         df_plot = df_plot[df_plot.index <= cutoff]
 
-            # --- Plot ---
         fig, ax = plt.subplots(figsize=(14, 6))
         df_plot["EPS"].plot(ax=ax, marker="o", label="Werkelijke EPS", linewidth=2, color="black")
         df_plot["EPS (Avg, est.)"].plot(ax=ax, marker="o", linestyle="--", label="EPS (Avg, est.)", color="#1e90ff")
@@ -493,10 +497,9 @@ def toon_fundamentals(ticker):
         fig.tight_layout()
         st.pyplot(fig)
 
-            # ---- SAMENVOEGEN PER MAAND VOOR DE TABEL ---
+        # ----- SAMENVOEGEN PER MAAND VOOR DE TABEL -----
         df_all["Maand"] = df_all.index.to_period('M')
         def last_valid(s):
-             # Geef de laatste niet-NA waarde per maand
             s = s.dropna()
             return s.iloc[-1] if not s.empty else None
 
@@ -505,22 +508,17 @@ def toon_fundamentals(ticker):
             .reset_index()
             .groupby("Maand")
             .agg({
-                "Datum": "max",  # de laatste datum van deze maand
+                "Datum": "max",
                 "EPS": last_valid,
                 "EPS (Avg, est.)": last_valid,
                 "EPS (Low, est.)": last_valid,
                 "EPS (High, est.)": last_valid,
             })
         )
-
-            # Surprise % pas NA samenvoegen berekenen
         df_month["Surprise %"] = ((df_month["EPS"] - df_month["EPS (Avg, est.)"]) / df_month["EPS (Avg, est.)"]) * 100
-
-            # Zet index op 'Datum' (de laatste datum van de maand met data)
         df_month = df_month.set_index("Datum")
         df_month = df_month.sort_index(ascending=False)
 
-            # Tabel tonen
         kol_volgorde = ["EPS", "Surprise %", "EPS (Avg, est.)", "EPS (Low, est.)", "EPS (High, est.)"]
         def format_surprise(val):
             if pd.isna(val):
@@ -531,7 +529,10 @@ def toon_fundamentals(ticker):
                 .assign(**{"Surprise %": df_month["Surprise %"].apply(format_surprise)})
                 .applymap(lambda x: format_value(x) if not isinstance(x, str) or "%" not in x else x)
         )
-            
+
+    except Exception as e:
+        st.info("📭 Geen bruikbare EPS-data of fout in verwerking. Foutmelding:")
+        st.text(str(e))            
 
 
 
