@@ -206,33 +206,33 @@ def sluit_positie(client, ticker, advies, force=False):
         st.info("📭 Geen open positie gevonden in deze ticker (controleer spelling!).")
         return
 
-    aantal = float(positie.qty)  # Geen int()!
-    if aantal <= 0.000000001:  # Gebruik een zeer kleine epsilon
+    aantal = float(positie.qty)
+    if aantal <= 0.0000001:
         st.info("ℹ️ Geen open positie om te sluiten.")
         return
-    
-#    aantal = int(float(positie.qty))
-#    if aantal == 0:
-#        st.info("ℹ️ Geen open positie om te sluiten.")
-#        return
     if not force and advies != "Verkopen":
         st.info("ℹ️ Huidig advies is geen 'Verkopen'. Geen actie ondernomen.")
         return
 
     aantal_geannuleerd = annuleer_alle_orders_ticker(client, symbol_slash)
     if aantal_geannuleerd > 0:
-        st.info("⏳ Wachten 8 seconden zodat de stukken vrijkomen...")
-        time.sleep(8)
+        st.info("⏳ Wachten 5 seconden zodat de stukken vrijkomen...")
+        time.sleep(5)
 
+    # Afronden op 9 decimalen en als string
+    aantal_afronden = round(aantal, 9)
+    qty_value = str(aantal_afronden)
     order = MarketOrderRequest(
         symbol=symbol_slash,
-        qty=aantal,
+        qty=qty_value,
         side=OrderSide.SELL,
-        time_in_force=TimeInForce.DAY
+        time_in_force=TimeInForce.GTC  # Probeer GTC voor crypto!
     )
     response = client.submit_order(order)
-    st.success(f"✅ Verkooporder geplaatst voor {aantal}x {symbol_slash}")
+    st.success(f"✅ Verkooporder geplaatst voor {qty_value}x {symbol_slash}")
     st.write(response)
+
+
     
 
 
