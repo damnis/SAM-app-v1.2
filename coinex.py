@@ -4,7 +4,8 @@ import hmac
 import hashlib
 import requests
 
-BASE_URL = "https://api.coinex.com/v2"
+BASE_URL = "https://socket.coinex.com/v2"  # /spot waarschijnlijk
+
 
 def get_coinex_headers(api_key, api_secret, method, params):
     tonce = str(int(time.time() * 1000))
