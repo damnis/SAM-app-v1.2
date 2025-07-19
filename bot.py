@@ -321,7 +321,7 @@ def toon_trading_bot_interface(ticker, huidig_advies):
             bedrag = st.number_input("💰 Te investeren bedrag ($)", min_value=10.0, value=1000.0, step=10.0)
             aantal = None
         else:
-            aantal = st.number_input("Aantal stuks", min_value=1, value=1, step=1)
+            aantal = st.number_input("Aantal stuks", min_value=0.000001, value=1, step=1)
             bedrag = 0.0
 
         st.write(f"📌 Actueel advies voor {ticker}: **{huidig_advies}**")
