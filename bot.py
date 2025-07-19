@@ -207,7 +207,7 @@ def sluit_positie(client, ticker, advies, force=False):
         return
 
     aantal = float(positie.qty)  # Geen int()!
-    if aantal <= 0.0000001:  # Gebruik een zeer kleine epsilon
+    if aantal <= 0.000000001:  # Gebruik een zeer kleine epsilon
         st.info("ℹ️ Geen open positie om te sluiten.")
         return
     
