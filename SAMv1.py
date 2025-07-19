@@ -331,7 +331,7 @@ advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies =
 # --- Check op koersdata beschikbaarheid ---
 if df is None or df.empty or "Close" not in df.columns or df["Close"].dropna().empty:
     st.warning("⚠️ Geen koersdata beschikbaar voor deze ticker. Analyse en adviezen zijn niet mogelijk.")
-    return # st.stop()  # Of gewoon return als dit in een functie zit
+#    return # st.stop()  # Of gewoon return als dit in een functie zit
 else:
     # Titel met kleur en grootte tonen - indicator
     col1, col2 = st.columns([1, 2])
