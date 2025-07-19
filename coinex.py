@@ -17,6 +17,28 @@ def get_coinex_headers(api_key, api_secret, method, params):
         "X-CoinEx-Tonce": tonce
     }
 
+
+def coinex_sign_request(path, api_key, api_secret, params=None):
+    # CoinEx expects these headers for every signed API request:
+    # 'authorization' (API Key), 'signature', 'tonce'
+    if params is None:
+        params = {}
+    tonce = str(int(time.time() * 1000))
+    # Sort params alphabetically
+    sorted_params = "&".join([f"{k}={params[k]}" for k in sorted(params)]) if params else ""
+    # Build signature string
+    signature_str = f"{path}?{sorted_params}&access_id={api_key}&tonce={tonce}"
+    signature = hashlib.sha256((signature_str + api_secret).encode()).hexdigest()
+    headers = {
+        "Authorization": api_key,
+        "Content-Type": "application/json",
+        "AccessId": api_key,
+        "tonce": tonce,
+        "signature": signature,
+    }
+    return headers, params
+    
+
 def coinex_request(path, api_key, api_secret, params=None):
     url = f"https://api.coinex.com/v1{path}"
     headers, data = coinex_sign_request(path, api_key, api_secret, params)
