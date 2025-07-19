@@ -262,18 +262,21 @@ def sluit_alles(client):
             symbol = positie.symbol
             aantal = int(float(positie.qty))
             if aantal > 0:
+        # Detecteer of dit crypto is
+                is_crypto = symbol.endswith("USD") and len(symbol) in (6, 7) and not symbol.startswith("USD")
                 try:
                     order = MarketOrderRequest(
                         symbol=symbol,
                         qty=aantal,
                         side=OrderSide.SELL,
-                        time_in_force=TimeInForce.DAY
+                        time_in_force=TimeInForce.GTC if is_crypto else TimeInForce.DAY
                     )
                     response = client.submit_order(order)
                     st.success(f"✅ Market sell geplaatst voor {aantal}x {symbol}.")
                     closed += 1
                 except Exception as e:
                     st.warning(f"⚠️ Fout bij sluiten van positie {symbol}: {e}")
+        
         if closed == 0:
             st.info("ℹ️ Geen posities om te sluiten.")
         else:
