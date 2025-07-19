@@ -6,57 +6,59 @@ from sectorticker import sector_tickers_news  # <-- jouw dict!
 # ---- Finviz news per ticker ----
 @st.cache_data(ttl=600)
 def get_finviz_news(ticker, max_items=6):
-    url = f"https://finviz.com/quote.ashx?t={ticker}"
-    headers = {"User-Agent": "Mozilla/5.0"}
-    try:
-        resp = requests.get(url, headers=headers, timeout=2)
-        soup = BeautifulSoup(resp.content, "html.parser")
-        table = soup.find("table", class_="fullview-news-outer")
-        news_list = []
-        if table:
-            for row in table.find_all("tr")[:max_items]:
-                cols = row.find_all("td")
-                if len(cols) == 2:
-                    dt = cols[0].get_text(" ", strip=True)
-                    a = cols[1].find("a")
-                    title = a.get_text(strip=True)
-                    link = a["href"]
-                    news_list.append({
-                        "title": title,
-                        "url": link,
-                        "datetime": dt,
-                        "site": "Finviz"
-                    })
-        return news_list
-    except Exception:
-        return []
+    pass # of return[]
+#    url = f"https://finviz.com/quote.ashx?t={ticker}"
+#    headers = {"User-Agent": "Mozilla/5.0"}
+ #   try:
+#        resp = requests.get(url, headers=headers, timeout=2)
+ #       soup = BeautifulSoup(resp.content, "html.parser")
+#        table = soup.find("table", class_="fullview-news-outer")
+ #       news_list = []
+#        if table:
+ #           for row in table.find_all("tr")[:max_items]:
+#                cols = row.find_all("td")
+#                if len(cols) == 2:
+  #                  dt = cols[0].get_text(" ", strip=True)
+ #                   a = cols[1].find("a")
+#                    title = a.get_text(strip=True)
+#                    link = a["href"]
+#                    news_list.append({
+ #                       "title": title,
+#                        "url": link,
+#                        "datetime": dt,
+ #                       "site": "Finviz"
+#                    })
+#        return news_list
+#    except Exception:
+#        return []
 
 # ---- Finviz market news ----
 @st.cache_data(ttl=600)
 def get_finviz_market_news(max_items=20):
-    url = "https://finviz.com/news.ashx"
-    headers = {"User-Agent": "Mozilla/5.0"}
-    try:
-        resp = requests.get(url, headers=headers, timeout=2)
-        soup = BeautifulSoup(resp.content, "html.parser")
-        news_list = []
-        news_blocks = soup.find_all("div", class_="news-link-box")
-        for block in news_blocks[:max_items]:
-            a = block.find("a")
-            if a:
-                title = a.get_text(strip=True)
-                link = a["href"]
-                timebox = block.find("div", class_="news-link-right")
-                dt = timebox.get_text(strip=True) if timebox else ""
-                news_list.append({
-                    "title": title,
-                    "url": link,
-                    "datetime": dt,
-                    "site": "Finviz (Market)"
-                })
-        return news_list
-    except Exception:
-        return []
+    pass 
+#    url = "https://finviz.com/news.ashx"
+#    headers = {"User-Agent": "Mozilla/5.0"}
+#    try:
+#        resp = requests.get(url, headers=headers, timeout=2)
+#        soup = BeautifulSoup(resp.content, "html.parser")
+#        news_list = []
+#        news_blocks = soup.find_all("div", class_="news-link-box")
+#        for block in news_blocks[:max_items]:
+ #           a = block.find("a")
+ #           if a:
+#                title = a.get_text(strip=True)
+#                link = a["href"]
+ #               timebox = block.find("div", class_="news-link-right")
+#                dt = timebox.get_text(strip=True) if timebox else ""
+ #               news_list.append({
+#                    "title": title,
+#                    "url": link,
+#                    "datetime": dt,
+ #                   "site": "Finviz (Market)"
+#                })
+#        return news_list
+#    except Exception:
+#        return []
 
 # ---- Google News fallback per ticker ----
 @st.cache_data(ttl=600)
