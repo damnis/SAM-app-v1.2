@@ -357,7 +357,11 @@ def toon_trading_bot_interface(ticker, huidig_advies):
         symbol_slash = convert_ticker_for_alpaca(ticker)   # Bijvoorbeeld: 'ETH/USD'
         symbol_plain = crypto_slash_to_plain(symbol_slash)  # Bijvoorbeeld: 'ETHUSD'
         positie = None
+        posities = client.get_all_positions()
         for pos in posities:
+            st.write(f"DEBUG: {pos.symbol}, qty: {pos.qty}")
+    
+ #       for pos in posities:
             if pos.symbol.upper() in [symbol_dash, symbol_slash, symbol_plain]:
                 positie = pos
                 break
