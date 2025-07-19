@@ -50,11 +50,8 @@ from fundament import toon_fundamentals
 from backtest import backtest_functie, bereken_sam_rendement
 # trading bot
 from bot import toon_trading_bot_interface
-from coinex import (
-    get_balances, get_open_orders, get_order_history,
-    place_market_order, place_limit_order, cancel_all_orders,
-    _coinex_signature, _coinex_headers
-)
+from coinex import get_spot_balance, get_spot_market, put_limit_order, put_market_order
+
 #from optiebot import toon_optie_trading_bot_interface 
 from bot import verbind_met_alpaca, convert_ticker_for_alpaca, crypto_slash_to_plain, haal_laatste_koers, plaats_order, sluit_positie
 from alpaca.data.historical import StockHistoricalDataClient
@@ -469,30 +466,27 @@ api_secret = st.secrets["coinex"]["coin_api_secret"]
 
 st.title("CoinEx Trading Bot")
 
-# Balances
 if st.button("Toon saldo"):
-    st.write(get_balances(api_key, api_secret))
+    res = get_spot_balance(api_key, api_secret)
+    st.write(res)
 
 market = st.text_input("Trading pair (bv. BTCUSDT):", "BTCUSDT")
 side = st.radio("Side", ["buy", "sell"])
-amount = st.number_input("Aantal", min_value=0.00001, value=0.01)
-prijs = st.number_input("Limit prijs (optioneel, laat leeg voor market order)", min_value=0.0, value=0.0)
+amount = st.number_input("Aantal", min_value=0.00001, value=0.01, format="%.6f")
+price = st.number_input("Limit prijs (optioneel, leeg=market order)", min_value=0.0, value=0.0, format="%.2f")
 
 if st.button("Plaats order"):
-    if prijs > 0:
-        res = place_limit_order(api_key, api_secret, market, side, amount, prijs)
+    if price > 0:
+        res = put_limit_order(api_key, api_secret, market, side, amount, price)
         st.write(res)
     else:
-        res = place_market_order(api_key, api_secret, market, side, amount)
+        res = put_market_order(api_key, api_secret, market, side, amount)
         st.write(res)
 
-# Openstaande orders tonen + annuleren
-if st.button("Toon open orders"):
-    st.write(get_open_orders(api_key, api_secret, market))
 
-if st.button("Annuleer ALLE open orders in deze market"):
-    results = cancel_all_orders(api_key, api_secret, market)
-    st.write(results)
+
+
+
 
 # -----------------------------
 #FMP testapi
