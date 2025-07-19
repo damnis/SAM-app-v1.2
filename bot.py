@@ -4,7 +4,13 @@ import pandas as pd
 import time
 from alpaca.trading.client import TradingClient
 from alpaca.trading.enums import OrderSide, TimeInForce
-from alpaca.trading.requests import MarketOrderRequest, TrailingStopOrderRequest, LimitOrderRequest
+from alpaca.trading.requests import (
+    MarketOrderRequest,
+    TrailingStopOrderRequest,
+    LimitOrderRequest
+)
+
+# -------------- HELPER FUNCTIES --------------
 
 def convert_ticker_for_alpaca(ticker):
     """Converteer crypto tickers naar het juiste Alpaca formaat (BTC-USD → BTC/USD)."""
@@ -33,10 +39,10 @@ def haal_laatste_koers(ticker):
         return None
     return None
 
+# -------------- ORDER FUNCTIES --------------
+
 def plaats_order(client, ticker, bedrag, last_price, order_type="Market Buy", trailing_pct=None, aantal=None, limietkoers=None):
-    # --- Crypto rename
     symbol = convert_ticker_for_alpaca(ticker)
-    # Aantal berekenen, tenzij handmatig opgegeven
     _aantal = int(bedrag / last_price) if aantal is None else aantal
     if _aantal <= 0:
         st.warning("❌ Te klein bedrag of aantal voor order.")
@@ -98,7 +104,6 @@ def plaats_order(client, ticker, bedrag, last_price, order_type="Market Buy", tr
         st.error(f"❌ Order kon niet worden geplaatst: {e}")
 
 def koop_en_trailing_stop(client, ticker, bedrag, last_price, trailing_pct, aantal=None):
-    # --- Crypto rename
     symbol = convert_ticker_for_alpaca(ticker)
     _aantal = int(bedrag / last_price) if aantal is None else aantal
     if _aantal <= 0:
@@ -116,7 +121,7 @@ def koop_en_trailing_stop(client, ticker, bedrag, last_price, trailing_pct, aant
         st.info(f"⏳ Wachten tot kooporder ({_aantal}x {symbol}) is uitgevoerd...")
 
         # Pollen tot filled (of failed)
-        max_wait = 30  # seconden
+        max_wait = 30
         waited = 0
         order_status = None
         while waited < max_wait:
@@ -153,7 +158,107 @@ def koop_en_trailing_stop(client, ticker, bedrag, last_price, trailing_pct, aant
     except Exception as e:
         st.error(f"❌ Fout bij OTO trailing stop: {e}")
 
-# --- De rest van je functies zoals sluit_positie, sluit_alles, annuleer_alle_orders_ticker etc. kunnen ongewijzigd blijven (want werken nu met crypto!)
+# -------------- SLUITEN & ANNULEREN FUNCTIES --------------
+
+def annuleer_alle_orders_ticker(client, ticker):
+    symbol = convert_ticker_for_alpaca(ticker)
+    try:
+        orders = client.get_orders()
+        canceled = 0
+        found = 0
+        for order in orders:
+            if order.symbol == symbol and order.status in ("open", "new", "pending"):
+                found += 1
+                try:
+                    client.cancel_order_by_id(order.id)
+                    st.info(f"🗑️ Order {order.id} voor {symbol} geannuleerd ({getattr(order,'type','')})")
+                    canceled += 1
+                except Exception as e:
+                    st.warning(f"⚠️ Fout bij annuleren van order {order.id}: {e}")
+        if found == 0:
+            st.info(f"ℹ️ Geen open/pending orders gevonden voor {symbol}.")
+        elif canceled == 0:
+            st.warning(f"⚠️ Geen orders konden worden geannuleerd voor {symbol}.")
+        else:
+            st.success(f"✅ {canceled} order(s) geannuleerd voor {symbol}.")
+        return canceled
+    except Exception as e:
+        st.error(f"❌ Fout bij ophalen of annuleren van orders: {e}")
+        return 0
+
+def sluit_positie(client, ticker, advies, force=False):
+    symbol = convert_ticker_for_alpaca(ticker)
+    try:
+        positie = client.get_open_position(symbol)
+        aantal = int(float(positie.qty))
+        if aantal == 0:
+            st.info("ℹ️ Geen open positie om te sluiten.")
+            return
+        if not force and advies != "Verkopen":
+            st.info("ℹ️ Huidig advies is geen 'Verkopen'. Geen actie ondernomen.")
+            return
+        aantal_geannuleerd = annuleer_alle_orders_ticker(client, symbol)
+        if aantal_geannuleerd > 0:
+            st.info("⏳ Wachten 8 seconden zodat de stukken vrijkomen...")
+            time.sleep(8)
+        order = MarketOrderRequest(
+            symbol=symbol,
+            qty=aantal,
+            side=OrderSide.SELL,
+            time_in_force=TimeInForce.DAY
+        )
+        response = client.submit_order(order)
+        st.success(f"✅ Verkooporder geplaatst voor {aantal}x {symbol}")
+        st.write(response)
+    except Exception as e:
+        st.info("📭 Geen open positie of fout bij ophalen: " + str(e))
+
+def sluit_alles(client):
+    st.warning("⚠️ Noodfunctie actief: alle posities en open orders worden nu gesloten/geannuleerd!")
+    try:
+        open_orders = client.get_orders()
+        canceled = 0
+        for order in open_orders:
+            if order.status in ("open", "new", "pending"):
+                try:
+                    client.cancel_order_by_id(order.id)
+                    st.info(f"🗑️ Order {order.id} ({order.symbol}, {order.side}) geannuleerd.")
+                    canceled += 1
+                except Exception as e:
+                    st.warning(f"⚠️ Fout bij annuleren van order {order.id}: {e}")
+        if canceled == 0:
+            st.info("ℹ️ Geen open orders om te annuleren.")
+        else:
+            st.success(f"✅ {canceled} order(s) geannuleerd.")
+            st.info("⏳ Wachten 8 seconden zodat alle stukken worden vrijgegeven...")
+            time.sleep(8)
+
+        posities = client.get_all_positions()
+        closed = 0
+        for positie in posities:
+            symbol = positie.symbol
+            aantal = int(float(positie.qty))
+            if aantal > 0:
+                try:
+                    order = MarketOrderRequest(
+                        symbol=symbol,
+                        qty=aantal,
+                        side=OrderSide.SELL,
+                        time_in_force=TimeInForce.DAY
+                    )
+                    response = client.submit_order(order)
+                    st.success(f"✅ Market sell geplaatst voor {aantal}x {symbol}.")
+                    closed += 1
+                except Exception as e:
+                    st.warning(f"⚠️ Fout bij sluiten van positie {symbol}: {e}")
+        if closed == 0:
+            st.info("ℹ️ Geen posities om te sluiten.")
+        else:
+            st.success(f"✅ {closed} positie(s) gesloten.")
+    except Exception as e:
+        st.error(f"❌ Fout bij 'sluit alles': {e}")
+
+# -------------- TRADING BOT INTERFACE (UI) --------------
 
 def toon_trading_bot_interface(ticker, huidig_advies):
     st.subheader("📥 Plaats live/paper trade op basis van advies")
@@ -247,6 +352,7 @@ def toon_trading_bot_interface(ticker, huidig_advies):
         with col2:
             if st.button("🚨 Sluit ALLES direct (noodstop)"):
                 sluit_alles(client)
+
 
 
 
