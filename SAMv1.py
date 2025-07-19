@@ -51,7 +51,7 @@ from backtest import backtest_functie, bereken_sam_rendement
 # trading bot
 from bot import toon_trading_bot_interface
 from coinex import (
-    get_balances, get_open_orders, get_order_history,
+    get_balances, coinex_sign_request, get_open_orders, get_order_history,
     place_market_order, place_limit_order, cancel_all_orders
 )
 #from optiebot import toon_optie_trading_bot_interface 
