@@ -461,6 +461,8 @@ toon_trading_bot_interface(selected_ticker, huidig_advies)
 # 📌 Verbinding met Alpaca testen (optioneel, pas uit te voeren als gebruiker dit wil)
 # optiebot
 #toon_optie_trading_bot_interface(selected_ticker, huidig_advies)
+
+# -----------------
 # cryptobot coinex 
 api_key = st.secrets["coinex"]["coin_api_key"]
 api_secret = st.secrets["coinex"]["coin_api_secret"]
@@ -492,7 +494,7 @@ if st.button("Annuleer ALLE open orders in deze market"):
     results = cancel_all_orders(api_key, api_secret, market)
     st.write(results)
 
-
+# -----------------------------
 #FMP testapi
 if st.sidebar.checkbox("🧪 FMP Test Tool"):
     test_fmp_endpoint()
