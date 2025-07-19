@@ -53,7 +53,7 @@ def search_ticker_fmp(query):
         return []
 
 # ✅ Ophalen historische koersdata
-def fetch_data_fmp(ticker, periode="1y"):
+def fetch_data_fmp(ticker, periode="10y"):
     st.write(f"📡 Ophalen FMP-data voor: {ticker} ({periode})")
     url = f"https://financialmodelingprep.com/api/v3/historical-price-full/{ticker}?serietype=line&timeseries=1000&apikey={fmp_api_key}"
     try:
