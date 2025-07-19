@@ -328,37 +328,40 @@ signaalkeuze = st.radio(
 # Kleur bepalen op basis van advies
 advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies == "Verkopen" else "gray"
 
-# Titel met kleur en grootte tonen - indicator
-col1, col2 = st.columns([1, 2])
-with col1:
-    st.markdown("### Advies voor:")
+# --- Check op koersdata beschikbaarheid ---
+if df is None or df.empty or "Close" not in df.columns or df["Close"].dropna().empty:
+    st.warning("⚠️ Geen koersdata beschikbaar voor deze ticker. Analyse en adviezen zijn niet mogelijk.")
+    return # st.stop()  # Of gewoon return als dit in een functie zit
+else:
+    # Titel met kleur en grootte tonen - indicator
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        st.markdown("### Advies voor:")
 
-with col2:
-    laatste_koers = df["Close"].iloc[-1] if not df.empty else 0.0
-    st.markdown(
+    with col2:
+        laatste_koers = df["Close"].iloc[-1]
+        st.markdown(
+            f"""
+            <h3>
+                <span style='color:#3366cc'>{ticker_name}</span>
+                <span style='color:#3366dd;font-weight:400;'>| {valutasymbool}{laatste_koers:,.2f}</span>
+            </h3>
+            """,
+            unsafe_allow_html=True
+        )
+
+    # Titel met kleur en grootte tonen - advies
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        st.markdown("### Huidig advies:")
+
+    with col2:
+        st.markdown(
         f"""
-        <h3>
-            <span style='color:#3366cc'>{ticker_name}</span>
-            <span style='color:#3366dd;font-weight:400;'>| {valutasymbool}{laatste_koers:,.2f}</span>
-        </h3>
+        <h2 style='color:{advies_kleur}'>{huidig_advies}</h2>
         """,
         unsafe_allow_html=True
-    )
-    
-
-# Titel met kleur en grootte tonen - advies
-col1, col2 = st.columns([1, 2])
-with col1:
-    st.markdown("### Huidig advies:")
-
-with col2:
-    st.markdown(
-    f"""
-    <h2 style='color:{advies_kleur}'>{huidig_advies}</h2>
-    """,
-    unsafe_allow_html=True
-    )
-
+        )
 # ------- Toggle voor sector-heatmap (bijv. onder je matrix/tabellen) ---
 if st.toggle("🔥 Toon sector heatmap"):
     sortering_nice = st.radio(
