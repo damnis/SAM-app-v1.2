@@ -1,105 +1,102 @@
-import streamlit as st
 import time
 import hmac
 import hashlib
-import requests
 import json
+import requests
+from urllib.parse import urlparse, urlencode
 
-# BASE_URL = "https://api.coinex.com/v2"
+BASE_URL = "https://api.coinex.com/v2"
 
-
-
-BASE_URL = "https://api.coinex.com"
-
-def _coinex_signature(method, path, body_str, timestamp, api_secret):
-    """Maakt CoinEx signature string volgens v2 docs."""
-    prestr = method + path + body_str + timestamp
+def gen_sign(method, request_path, body, timestamp, api_secret):
+    """Genereer CoinEx signature-string volgens docs"""
+    prepared_str = f"{method}{request_path}{body}{timestamp}"
     signature = hmac.new(
-        api_secret.encode("utf-8"),
-        prestr.encode("utf-8"),
-        hashlib.sha256
+        bytes(api_secret, 'latin-1'),
+        msg=bytes(prepared_str, 'latin-1'),
+        digestmod=hashlib.sha256
     ).hexdigest().lower()
     return signature
 
-def _coinex_headers(api_key, api_secret, method, path, body_str=""):
+def coinex_request(method, endpoint, api_key, api_secret, params=None, data=None):
+    url = f"{BASE_URL}{endpoint}"
+    if params is None: params = {}
+    if data is None: data = ""
+    else: data = json.dumps(data)
+
+    req = urlparse(url)
+    request_path = req.path
+
     timestamp = str(int(time.time() * 1000))
-    signature = _coinex_signature(method, path, body_str, timestamp, api_secret)
+    query_str = ""
+    # GET: query params in path + signature
+    if method.upper() == "GET" and params:
+        query_str = "?" + urlencode({k: v for k, v in params.items() if v is not None})
+        request_path += query_str
+    # POST: nothing in path, only body is signed
+
+    sign = gen_sign(method.upper(), request_path, body=(data if method.upper()=="POST" else ""), timestamp=timestamp, api_secret=api_secret)
     headers = {
-        "X-COINEX-APIKEY": api_key,
+        "Content-Type": "application/json; charset=utf-8",
+        "Accept": "application/json",
+        "X-COINEX-KEY": api_key,
+        "X-COINEX-SIGN": sign,
         "X-COINEX-TIMESTAMP": timestamp,
-        "X-COINEX-SIGNATURE": signature,
-        "Content-Type": "application/json"
     }
-    return headers, timestamp
+    # API call
+    if method.upper() == "GET":
+        resp = requests.get(url + query_str, headers=headers, params=None)
+    else:
+        resp = requests.post(url, headers=headers, data=data)
+    try:
+        resp.raise_for_status()
+    except Exception as e:
+        # API fout/debug info
+        print(f"CoinEx API error: {e}")
+        print(resp.text)
+        return None
+    return resp.json()
 
-# --- BALANCES (GET) ---
-def get_balances(api_key, api_secret):
-    method = "GET"
-    path = "/v2/assets/balance"
-    headers, _ = _coinex_headers(api_key, api_secret, method, path)
-    r = requests.get(BASE_URL + path, headers=headers)
-    r.raise_for_status()
-    return r.json()
+# ✅ Easy-use wrappers:
 
-# --- OPEN ORDERS (GET) ---
-def get_open_orders(api_key, api_secret, market, limit=50):
-    method = "GET"
-    path = f"/v2/spot/pending-order?market={market}&limit={limit}"
-    headers, _ = _coinex_headers(api_key, api_secret, method, path)
-    r = requests.get(BASE_URL + path, headers=headers)
-    r.raise_for_status()
-    return r.json()
+def get_spot_balance(api_key, api_secret):
+    """Spot balances voor alle coins"""
+    return coinex_request("GET", "/assets/spot/balance", api_key, api_secret)
 
-# --- MARKET ORDER (POST) ---
-def place_market_order(api_key, api_secret, market, side, amount):
-    method = "POST"
-    path = "/v2/order/market"
-    body = {"market": market, "side": side, "amount": str(amount)}
-    body_str = json.dumps(body, separators=(",", ":"))
-    headers, _ = _coinex_headers(api_key, api_secret, method, path, body_str)
-    r = requests.post(BASE_URL + path, headers=headers, data=body_str)
-    r.raise_for_status()
-    return r.json()
+def get_spot_market(api_key, api_secret, market="BTCUSDT"):
+    return coinex_request("GET", "/spot/market", api_key, api_secret, params={"market": market})
 
-# --- LIMIT ORDER (POST) ---
-def place_limit_order(api_key, api_secret, market, side, amount, price):
-    method = "POST"
-    path = "/v2/order/limit"
-    body = {"market": market, "side": side, "amount": str(amount), "price": str(price)}
-    body_str = json.dumps(body, separators=(",", ":"))
-    headers, _ = _coinex_headers(api_key, api_secret, method, path, body_str)
-    r = requests.post(BASE_URL + path, headers=headers, data=body_str)
-    r.raise_for_status()
-    return r.json()
+def put_limit_order(api_key, api_secret, market, side, amount, price, client_id=None, is_hide=False):
+    data = {
+        "market": market,
+        "market_type": "SPOT",
+        "side": side,
+        "type": "limit",
+        "amount": str(amount),
+        "price": str(price),
+        "is_hide": is_hide,
+    }
+    if client_id:
+        data["client_id"] = client_id
+    return coinex_request("POST", "/spot/order", api_key, api_secret, data=data)
 
-# --- CANCEL ORDER (POST) ---
-def cancel_order(api_key, api_secret, market, order_id):
-    method = "POST"
-    path = "/v2/order/cancel"
-    body = {"market": market, "id": str(order_id)}
-    body_str = json.dumps(body, separators=(",", ":"))
-    headers, _ = _coinex_headers(api_key, api_secret, method, path, body_str)
-    r = requests.post(BASE_URL + path, headers=headers, data=body_str)
-    r.raise_for_status()
-    return r.json()
+def put_market_order(api_key, api_secret, market, side, amount, client_id=None):
+    data = {
+        "market": market,
+        "market_type": "SPOT",
+        "side": side,
+        "type": "market",
+        "amount": str(amount)
+    }
+    if client_id:
+        data["client_id"] = client_id
+    return coinex_request("POST", "/spot/order", api_key, api_secret, data=data)
 
-# --- ORDER HISTORY (GET) ---
-def get_order_history(api_key, api_secret, market, limit=50):
-    method = "GET"
-    path = f"/v2/order/finished?market={market}&limit={limit}"
-    headers, _ = _coinex_headers(api_key, api_secret, method, path)
-    r = requests.get(BASE_URL + path, headers=headers)
-    r.raise_for_status()
-    return r.json()
 
-# --- Cancel ALL open orders for a market (convenience) ---
-def cancel_all_orders(api_key, api_secret, market):
-    open_orders = get_open_orders(api_key, api_secret, market)
-    results = []
-    for order in open_orders.get("data", {}).get("records", []):
-        result = cancel_order(api_key, api_secret, market, order["id"])
-        results.append(result)
-    return results
+
+
+
+
+
 
 
 
