@@ -311,7 +311,7 @@ def toon_trading_bot_interface(ticker, huidig_advies):
     with st.expander(f"{'💵' if trade_mode=='Live' else '🧪'} Order plaatsen via Alpaca {trade_mode} Account"):
         last = haal_laatste_koers(ticker)
         if last:
-            st.write(f"📉 Laatste koers voor {ticker}: **${last:.2f}**")
+            st.write(f"📉 Laatste koers voor {ticker}: **${last:.4f}**")
         else:
             st.warning("⚠️ Geen geldige koers beschikbaar voor dit aandeel/crypto.")
             return
@@ -319,7 +319,7 @@ def toon_trading_bot_interface(ticker, huidig_advies):
         keuze_bedrag_of_aantal = st.radio("Wil je een bedrag of een exact aantal opgeven?", ["Bedrag", "Aantal"], horizontal=True)
         if keuze_bedrag_of_aantal == "Bedrag":
             bedrag = st.number_input("💰 Te investeren bedrag ($)", min_value=10.0, value=1000.0, step=10.0)
-            aantal = None
+            aantal = 0.0
         else:
             aantal = st.number_input("Aantal stuks", min_value=0.000001, value=1.0, step=1.0)
             bedrag = 0.0
