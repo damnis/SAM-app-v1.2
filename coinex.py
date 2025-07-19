@@ -4,7 +4,7 @@ import hmac
 import hashlib
 import requests
 
-BASE_URL = "https://socket.coinex.com/v2"  # /spot waarschijnlijk
+BASE_URL = "https://api.coinex.com/v2"  # checked
 
 
 def get_coinex_headers(api_key, api_secret, method, params):
@@ -41,7 +41,7 @@ def coinex_sign_request(path, api_key, api_secret, params=None):
     
 
 def coinex_request(path, api_key, api_secret, params=None):
-    url = f"https://api.coinex.com/v1{path}"
+    url = f"https://api.coinex.com/v2{path}"
     headers, data = coinex_sign_request(path, api_key, api_secret, params)
     try:
         # Probeer GET (zoals voor balances vereist)
