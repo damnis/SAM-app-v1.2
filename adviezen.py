@@ -153,3 +153,30 @@ def determine_advice(df, threshold, risk_aversion=0):
     return df, huidig_advies
 
             
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# w
