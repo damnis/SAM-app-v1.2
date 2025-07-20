@@ -374,6 +374,40 @@ if st.button("🔎 Zoek koopwaardige aandelen"):
     screeneresult = screen_tickers(tickers_screening, min_momentum=2)
     st.dataframe(screeneresult)
 
+    if not screeneresult.empty:
+        st.markdown("### 💡 Analistenadviezen (FMP):")
+        tickers = list(screeneresult["Ticker"])
+
+        # Ophalen en combineren
+        def get_latest_analyst_rec(ticker):
+            data = get_analyst_recommendations(ticker)
+            if data:
+                last = data[0]
+                return {
+                    "Buy": last.get("buy", None),
+                    "Hold": last.get("hold", None),
+                    "Sell": last.get("sell", None),
+                    "Consensus": last.get("consensus", "")
+                }
+            else:
+                return {"Buy": None, "Hold": None, "Sell": None, "Consensus": ""}
+
+        analyst_data = []
+        for ticker in tickers:
+            row = {"Ticker": ticker}
+            row.update(get_latest_analyst_rec(ticker))
+            analyst_data.append(row)
+        df_analyst = pd.DataFrame(analyst_data)
+
+        # Merge met screeningresultaat
+        result = screeneresult.merge(df_analyst, on="Ticker", how="left")
+        st.dataframe(result)
+
+
+#if st.button("🔎 Zoek koopwaardige aandelen"):
+#    screeneresult = screen_tickers(tickers_screening, min_momentum=2)
+#    st.dataframe(screeneresult)
+
 
 
 # ------- Toggle voor sector-heatmap (bijv. onder je matrix/tabellen) ---
