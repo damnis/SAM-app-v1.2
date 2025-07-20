@@ -380,6 +380,7 @@ if st.button("🔎 Zoek stijgers met koop advies (1 wk)"):
         tickers = list(screeneresult["Ticker"])
 
         # Ophalen en combineren
+        @st.cache_data(ttl=3600)
         def get_latest_analyst_rec(ticker):
             data = get_analyst_recommendations(ticker)
             if data:
