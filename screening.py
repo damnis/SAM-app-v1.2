@@ -38,7 +38,6 @@ def screen_tickers(
             naam = profile.get("companyName", "") if profile else ""
 
             df = fetch_data_fmp(ticker, periode="2y")
- #           df = fetch_data_fmp(ticker, years=2)
             if debug: 
                 print(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
                 st.write(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
@@ -58,29 +57,21 @@ def screen_tickers(
             df = calculate_sat(df)
             df = calculate_sam(df)
             advies = determine_advice(df, threshold=threshold, risk_aversion=risk_aversion)
-                st.write("Advies:", advies)
-                if isinstance(advies, tuple):
-                    _, advies_tekst = advies
-                else:
-                    advies_tekst = advies
-                st.write("Advies tekst:", advies_tekst)
-                if advies_tekst not in adviezen_toevoegen:
-                    st.write(f"⛔ Advies niet toegestaan ({advies_tekst}) voor {ticker}")
-                    continue
-    #        advies = determine_advice(df, threshold=threshold, risk_aversion=risk_aversion)
-#            advies = determine_advice(df, interval="1wk")
-            if debug: print(f"Advies: {advies}")
-            if debug: st.write(f"Advies: {advies}")
-            if advies not in adviezen_toevoegen:
-                print(f"⛔ Advies niet toegestaan ({advies}) voor {ticker}")
-                st.write(f"⛔ Advies niet toegestaan ({advies}) voor {ticker}")
+            st.write("Advies:", advies)
+            if isinstance(advies, tuple):
+                _, advies_tekst = advies
+            else:
+                advies_tekst = advies
+            st.write("Advies tekst:", advies_tekst)
+            if advies_tekst not in adviezen_toevoegen:
+                st.write(f"⛔ Advies niet toegestaan ({advies_tekst}) voor {ticker}")
                 continue
 
             results.append({
                 "Ticker": ticker,
                 "Naam": naam,
                 "Momentum(1w%)": momentum,
-                "Advies": advies,
+                "Advies": advies_tekst,
             })
             print(f"✅ Toegevoegd: {ticker}")
             st.write(f"✅ Toegevoegd: {ticker}")
@@ -94,6 +85,10 @@ def screen_tickers(
         print("Resultaat:\n", df_result)
         st.write("Resultaat:", df_result)
     return df_result
+
+
+
+
 
 
 
