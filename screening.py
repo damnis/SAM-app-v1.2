@@ -32,8 +32,9 @@ def screen_tickers(
             if debug: print("Profile:", profile)
             if debug: st.write("Profile:", profile)
             naam = profile.get("companyName", "") if profile else ""
-            
-            df = fetch_data_fmp(ticker, years=2, interval="1wk")
+
+            df = fetch_data_fmp(ticker, periode="2y")
+ #           df = fetch_data_fmp(ticker, years=2)
             if debug: 
                 print(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
                 st.write(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
