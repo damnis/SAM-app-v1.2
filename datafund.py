@@ -86,20 +86,42 @@ def get_eps_forecast(ticker):
         return []
 
 # Koersdata per jaar (high, low, close etc.)
+#@st.cache_data(ttl=3600)
+#def get_historical_prices_yearly(ticker, years=20):
+#    url = f"{BASE_URL}/historical-price-full/{ticker}?serietype=year&apikey={API_KEY}"
+#    try:
+#        data = requests.get(url).json()
+        # De koersdata zit onder 'historical' als lijst
+#        return data.get("historical", [])[:years]
+#    except:
+#        return []
+
+# Koersdata per jaar (high, low, close etc.)
 @st.cache_data(ttl=3600)
 def get_historical_prices_yearly(ticker, years=20):
-    url = f"{BASE_URL}/historical-price-full/{ticker}?serietype=year&apikey={API_KEY}"
+    url = f"{BASE_URL}/historical-price-eod/{ticker}?serietype=year&apikey={API_KEY}"
     try:
         data = requests.get(url).json()
         # De koersdata zit onder 'historical' als lijst
         return data.get("historical", [])[:years]
     except:
         return []
+#https://financialmodelingprep.com/stable/historical-price-eod/full?symbol=AAPL&apikey=D2MyI4eYNXDNJzpYT4N6nTQ2amVbJaG5
+# DCF-data (historisch, meestal jaarlijks, soms kwartaal)
+#@st.cache_data(ttl=3600)
+#def get_historical_dcf(ticker, years=20):
+#    url = f"{BASE_URL}/historical-discounted-cash-flow-statement/{ticker}?limit={years}&apikey={API_KEY}"
+#    try:
+#        return requests.get(url).json()[:years]
+#    except:
+ #       return []
+
+
 
 # DCF-data (historisch, meestal jaarlijks, soms kwartaal)
 @st.cache_data(ttl=3600)
 def get_historical_dcf(ticker, years=20):
-    url = f"{BASE_URL}/historical-discounted-cash-flow-statement/{ticker}?limit={years}&apikey={API_KEY}"
+    url = f"{BASE_URL}/discounted-cash-flow/{ticker}?limit={years}&apikey={API_KEY}"
     try:
         return requests.get(url).json()[:years]
     except:
