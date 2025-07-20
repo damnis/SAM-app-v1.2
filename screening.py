@@ -47,8 +47,8 @@ def screen_tickers(
                 continue
 
             momentum = get_momentum(df, periode="1w")
-            if debug: print(f"Momentum: {momentum}")
-            if debug: st.write(f"Momentum: {momentum}")
+  #          if debug: print(f"Momentum: {momentum}")
+   #         if debug: st.write(f"Momentum: {momentum}")
             if momentum is None or momentum < min_momentum:
                 print(f"⛔ Momentum te laag of None voor {ticker}: {momentum}")
                 st.write(f"⛔ Momentum te laag of None voor {ticker}: {momentum}")
@@ -81,9 +81,9 @@ def screen_tickers(
             st.write(f"🚨 Fout bij {ticker}: {e}")
             continue
     df_result = pd.DataFrame(results)
-    if debug: 
-        print("Resultaat:\n", df_result)
-        st.write("Resultaat:", df_result)
+#    if debug: 
+ #       print("Resultaat:\n", df_result)
+#        st.write("Resultaat:", df_result)
     return df_result
 
 
