@@ -137,12 +137,13 @@ st.markdown("""
 
 
 # --- Update tab labels en bijbehorende mapping ---
+
 # ---- BEURZEN & DROPDOWN ----
 tab_labels = list(tabs_mapping.keys())
 selected_tab = st.radio("Kies beurs", tab_labels, horizontal=True)
 tickers = tabs_mapping[selected_tab]
 valutasymbool = valutasymbool[selected_tab]
- }.get(selected_tab, "")
+}.get(selected_tab, "")
 
 #def get_live_ticker_data(tickers_dict):
 # --- Data ophalen voor dropdown live view ---
