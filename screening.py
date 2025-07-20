@@ -51,7 +51,8 @@ def screen_tickers(
                 st.write(f"⛔ Momentum te laag of None voor {ticker}: {momentum}")
                 continue
 
-            advies = determine_advice(df, interval="1wk")
+            advies = determine_advice(df, threshold=threshold, risk_aversion=risk_aversion)
+#            advies = determine_advice(df, interval="1wk")
             if debug: print(f"Advies: {advies}")
             if debug: st.write(f"Advies: {advies}")
             if advies not in adviezen_toevoegen:
