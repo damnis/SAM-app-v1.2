@@ -171,8 +171,17 @@ mijn_lijst = {
 
 tickers_screening = [
     "AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSLA", "AMD", "NFLX", "INTC",
-#    "ASML", "ADYEN.AS", "AIR.PA", "SIE.DE", "SAP.DE", "LVMH.PA", "OR.PA",
-#    "SHOP", "PLTR", "SMCI", "BITF", "COIN"
+    "ASM", "ASML", "SMCI", "PLTR", "ORCL", "AVGO", "SHOP", "BITF", "COIN",
+    "SNOW", "MDB", "DDOG", "CRWD", "ZS", "CSCO", "ADBE", "CMCSA", "PEP", "COST",
+    "QCOM", "TMUS", "TXN", "AMAT",
+    'MMM', 'AXP', 'AMGN', 'BA', 'CAT', 'CVX', 'CSCO', 'KO', 'DIS'
+#    'GS': 'Goldman Sachs', 'HD': 'Home Depot', 'HON': 'Honeywell', 'IBM': 'IBM', 'INTC': 'Intel',
+#    'JPM': 'JPMorgan Chase', 'JNJ': 'Johnson & Johnson', 'MCD': 'McDonaldâ€™s', 'MRK': 'Merck',
+#    'MSFT': 'Microsoft', 'NKE': 'Nike', 'PG': 'Procter & Gamble', 'CRM': 'Salesforce',
+#    'TRV': 'Travelers', 'UNH': 'UnitedHealth', 'VZ': 'Verizon', 'V': 'Visa', 'WMT': 'Walmart',
+#    'DOW': 'Dow', 'RTX': 'RTX Corp.', 'WBA': 'Walgreens Boots'
+}
+}
     # ... vul zelf aan, maximaal ±200 is nog prima
 ]
 
