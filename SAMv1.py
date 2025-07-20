@@ -18,7 +18,7 @@ from sectorticker import sector_tickers, sector_tickers_news
 from tickers import (
     aex_tickers, amx_tickers, dow_tickers, eurostoxx_tickers,
     nasdaq_tickers, ustech_tickers, crypto_tickers, mijn_lijst, 
-    tabs_mapping, tab_labels, valutasymbool
+    tabs_mapping, tab_labels, valutasymbool, tickers_screening 
 )
 # Indicatoren berekening
 from yffetch import fetch_data, fetch_data_cached 
