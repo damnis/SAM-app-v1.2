@@ -54,7 +54,7 @@ def search_ticker_fmp(query):
 
 # ✅ Ophalen historische koersdata
 def fetch_data_fmp(ticker, periode="10y"):
-    st.write(f"📡 Ophalen FMP-data voor: {ticker} ({periode})")
+  #  st.write(f"📡 Ophalen FMP-data voor: {ticker} ({periode})")
     url = f"https://financialmodelingprep.com/api/v3/historical-price-full/{ticker}?serietype=line&timeseries=1000&apikey={fmp_api_key}"
     try:
         response = requests.get(url)
@@ -68,7 +68,7 @@ def fetch_data_fmp(ticker, periode="10y"):
         df.set_index("date", inplace=True)
         df.sort_index(inplace=True)
 
-        st.write("📊 Rijen vóór filtering:", len(df))
+#        st.write("📊 Rijen vóór filtering:", len(df))
 
         # 📅 Weekdagenfilter (ma-vr)
         df = df[df.index.dayofweek < 5]
@@ -83,7 +83,7 @@ def fetch_data_fmp(ticker, periode="10y"):
                 schedule = cal.schedule(start_date=start_date, end_date=end_date)
                 valid_days = set(schedule.index.normalize())
                 df = df[df.index.normalize().isin(valid_days)]
-                st.write("✅ Na filtering:", len(df))
+#                st.write("✅ Na filtering:", len(df))
             except Exception as e:
                 st.error(f"❌ Kalenderfout: {e}")
         else:
@@ -104,9 +104,31 @@ def fetch_data_fmp(ticker, periode="10y"):
         df["BB_upper"] = df["BB_middle"] + 2 * df["BB_std"]
         df["BB_lower"] = df["BB_middle"] - 2 * df["BB_std"]
 
-        st.write("📉 Laatste datum:", df.index[-1])
+#        st.write("📉 Laatste datum:", df.index[-1])
         return df
     except Exception as e:
         st.error(f"❌ Fout bij ophalen FMP-data: {e}")
         return pd.DataFrame()
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# w
