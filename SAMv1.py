@@ -142,15 +142,19 @@ tab_labels = list(tabs_mapping.keys())
 selected_tab = st.radio("Kies beurs", tab_labels, horizontal=True)
 tickers = tabs_mapping[selected_tab]
 valutasymbool = valutasymbool[selected_tab]
+ }.get(selected_tab, "")
 
-# --- Live tickerdata ophalen ---
+#def get_live_ticker_data(tickers_dict):
+# --- Data ophalen voor dropdown live view ---
 def get_live_ticker_data(tickers_dict):
     tickers = list(tickers_dict.keys())
     data = yf.download(tickers, period="2d", interval="1d", progress=False, group_by='ticker')
     result = []
+
     for ticker in tickers:
         try:
             df = data[ticker]
+            # Forceer DataFrame indien Series
             if isinstance(df, pd.Series):
                 df = df.to_frame().T
             last = df['Close'].iloc[-1]
@@ -162,147 +166,62 @@ def get_live_ticker_data(tickers_dict):
             kleur = "#00FF00" if change > 0 else "#FF0000" if change < 0 else "#808080"
             naam = tickers_dict[ticker]
             result.append((ticker, naam, last, change, kleur))
-        except Exception:
+        except Exception as e:
+            # st.write(f"Ticker {ticker} error: {e}") # Debug, mag weg
             continue
-    return result
 
-# --- Dropdown voorbereiden ---
+    return result
+    
+
+# --- Weergave dropdown met live info ---
 live_info = get_live_ticker_data(tabs_mapping[selected_tab])
-dropdown_dict = {}
+# --- Dropdown dictionary voorbereiden ---
+dropdown_dict = {}  # key = ticker, value = (display_tekst, naam)
+
 for t, naam, last, change, kleur in live_info:
     emoji = "🟢" if change > 0 else "🔴" if change < 0 else "⚪"
     display = f"{t} - {naam} | {valutasymbool}{last:.2f} {emoji} {change:+.2f}%"
     dropdown_dict[t] = (display, naam)
 
+# --- Bepalen van de juiste default key voor selectie
+# Herstel vorige selectie als deze nog bestaat
 default_ticker_key = st.session_state.get(f"ticker_select_{selected_tab}")
 if default_ticker_key not in dropdown_dict:
-    default_ticker_key = list(dropdown_dict.keys())[0]
+    default_ticker_key = list(dropdown_dict.keys())[0]  # fallback naar eerste
 
+# --- Dropdown zelf ---
+# --- Dropdown zelf ---
 selected_ticker = st.selectbox(
     f"Selecteer {selected_tab} ticker:",
-    options=list(dropdown_dict.keys()),
-    format_func=lambda x: dropdown_dict[x][0],
+    options=list(dropdown_dict.keys()),  # alleen tickers als stabiele optie-key
+    format_func=lambda x: dropdown_dict[x][0],  # toon koers etc.
     key=f"ticker_select_{selected_tab}",
     index=list(dropdown_dict.keys()).index(default_ticker_key)
 )
-dropdown_name = dropdown_dict[selected_ticker][1]
 
-# ---- FMP ZOEKVELD ("vrije keuze") ----
-st.markdown("---")
-zoekterm = st.text_input("🔍 Zoek op naam of ticker (FMP vrije keuze):", value="").strip()
-suggesties = search_ticker_fmp(zoekterm) if zoekterm else []
+# --- Ophalen ticker info ---
+ticker = selected_ticker
+ticker_name = dropdown_dict[ticker][1]
 
-# ---- BEPAAL ACTIEVE TICKER ----
-actieve_ticker = selected_ticker
-actieve_ticker_name = dropdown_name
-via_fmp = False
+# --- Live koers opnieuw ophalen voor de geselecteerde ticker ---
+try:
+    live_data = yf.download(ticker, period="1d", interval="1d", progress=False)
+    last = live_data["Close"].iloc[-1]
+except Exception:
+    last = 0.0  # fallback
+
+# --- Andere instellingen ---
+zoekterm = st.text_input("🔍 Gebruik 'Vrije keuze...' uit mijn lijst en zoek op naam of ticker", value="Dream finder").strip()
+
+suggesties = search_ticker_fmp(zoekterm)
 
 if suggesties:
     ticker_opties = [f"{sym} - {naam}" for sym, naam in suggesties]
-    selectie = st.selectbox("Kies FMP-ticker", ticker_opties, index=0, key="fmp_ticker_select")
-    fmp_ticker, fmp_name = selectie.split(" - ", 1)
-    actieve_ticker = fmp_ticker
-    actieve_ticker_name = fmp_name
-    via_fmp = True
-
-# ---- INFO BADGE ----
-st.info(f"Actieve ticker: **{actieve_ticker}** ({actieve_ticker_name}) {'[FMP zoekresultaat]' if via_fmp else ''}")
-
-# ---- LAATSTE KOERS OPHALEN ----
-try:
-    live_data = yf.download(actieve_ticker, period="1d", interval="1d", progress=False)
-    last = live_data["Close"].iloc[-1]
-except Exception:
-    last = 0.0
-
-# ---- ALLES DAARNA MET ACTIEVE_TICKER ----
-# Voor je bot:
-#toon_trading_bot_interface(actieve_ticker, huidig_advies)
-
-# tab_labels = list(tabs_mapping.keys())
-#selected_tab = st.radio("Kies beurs", tab_labels, horizontal=True)
-#tickers = tabs_mapping[selected_tab]
-#valutasymbool = valutasymbool[selected_tab]
-# }.get(selected_tab, "")
-
-#def get_live_ticker_data(tickers_dict):
-# --- Data ophalen voor dropdown live view ---
-#def get_live_ticker_data(tickers_dict):
-#    tickers = list(tickers_dict.keys())
-#    data = yf.download(tickers, period="2d", interval="1d", progress=False, group_by='ticker')
-#    result = []
-
-#    for ticker in tickers:
-#        try:
-#            df = data[ticker]
-            # Forceer DataFrame indien Series
-#            if isinstance(df, pd.Series):
-#                df = df.to_frame().T
-#            last = df['Close'].iloc[-1]
- #           if len(df) >= 2:
-#                prev = df['Close'].iloc[-2]
-#            else:
-#                prev = df['Open'].iloc[-1]
-#            change = (last - prev) / prev * 100
- #           kleur = "#00FF00" if change > 0 else "#FF0000" if change < 0 else "#808080"
-#            naam = tickers_dict[ticker]
-#            result.append((ticker, naam, last, change, kleur))
-#        except Exception as e:
-            # st.write(f"Ticker {ticker} error: {e}") # Debug, mag weg
-#            continue
-
-#    return result
-    
-
-# --- Weergave dropdown met live info ---
-#live_info = get_live_ticker_data(tabs_mapping[selected_tab])
-# --- Dropdown dictionary voorbereiden ---
-#dropdown_dict = {}  # key = ticker, value = (display_tekst, naam)
-
-#for t, naam, last, change, kleur in live_info:
-#    emoji = "🟢" if change > 0 else "🔴" if change < 0 else "⚪"
-#    display = f"{t} - {naam} | {valutasymbool}{last:.2f} {emoji} {change:+.2f}%"
-#    dropdown_dict[t] = (display, naam)
-
-# --- Bepalen van de juiste default key voor selectie
-# Herstel vorige selectie als deze nog bestaat
-#default_ticker_key = st.session_state.get(f"ticker_select_{selected_tab}")
-#if default_ticker_key not in dropdown_dict:
-#    default_ticker_key = list(dropdown_dict.keys())[0]  # fallback naar eerste
-
-# --- Dropdown zelf ---
-# --- Dropdown zelf ---
-#selected_ticker = st.selectbox(
-#    f"Selecteer {selected_tab} ticker:",
-#    options=list(dropdown_dict.keys()),  # alleen tickers als stabiele optie-key
-#    format_func=lambda x: dropdown_dict[x][0],  # toon koers etc.
-#    key=f"ticker_select_{selected_tab}",
-#    index=list(dropdown_dict.keys()).index(default_ticker_key)
-#)
-
-# --- Ophalen ticker info ---
-#ticker = selected_ticker
-#ticker_name = dropdown_dict[ticker][1]
-
-# --- Live koers opnieuw ophalen voor de geselecteerde ticker ---
-#try:
-#    live_data = yf.download(ticker, period="1d", interval="1d", progress=False)
-#    last = live_data["Close"].iloc[-1]
-#except Exception:
-#    last = 0.0  # fallback
-
-# --- Andere instellingen ---
-#zoekterm = st.text_input("🔍 Gebruik 'Vrije keuze...' uit mijn lijst en zoek op naam of ticker", value="Dream finder").strip()
-
-#suggesties = search_ticker_fmp(zoekterm)
-
-#if suggesties:
-#    ticker_opties = [f"{sym} - {naam}" for sym, naam in suggesties]
-#    selectie = st.selectbox("Kies ticker", ticker_opties, index=0)
-#    query = selectie.split(" - ")[0]  # extract ticker
-#else:
-#    st.warning("⚠️ Geen resultaten gevonden.")
-#    query = ""
+    selectie = st.selectbox("Kies ticker", ticker_opties, index=0)
+    query = selectie.split(" - ")[0]  # extract ticker
+else:
+    st.warning("⚠️ Geen resultaten gevonden.")
+    query = ""
     
 # overige
 # --- Intervalopties ---
@@ -495,7 +414,7 @@ toon_newsfeed()
 #toon_newsfeed(ticker)
 
 # Toon Fundamentals
-toon_fundamentals(actieve_ticker)
+toon_fundamentals(ticker)
 #toon_fundamentals(ticker)
 
 
@@ -536,7 +455,7 @@ backtest_functie(df, signaalkeuze=signaalkeuze, selected_tab=selected_tab, inter
 
 # …na de adviezen en grafiek, etc.
 # trading bot
-toon_trading_bot_interface(selected_ticker, huidig_advies)
+toon_trading_bot_interface(ticker, huidig_advies)
 # 📌 Verbinding met Alpaca testen (optioneel, pas uit te voeren als gebruiker dit wil)
 # optiebot
 #toon_optie_trading_bot_interface(selected_ticker, huidig_advies)
