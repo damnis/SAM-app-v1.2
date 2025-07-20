@@ -32,7 +32,7 @@ from grafieken import toon_adviesmatrix_html
 from sam_tabel import toon_sam_tabel 
 from heatmap import toon_sector_heatmap
 # screening
-from screening import screen_tickers, get_latest_analyst_rec
+from screening import screen_tickers
 # nieuws
 from newsfeed import toon_newsfeed
 # --- Fundamentele data ophalen en tonen ---
@@ -370,6 +370,7 @@ else:
 
 
 # screening tool
+
 if st.button("🔎 Zoek koopwaardige aandelen"):
     screeneresult = screen_tickers(tickers_screening, min_momentum=2)
     st.dataframe(screeneresult)
