@@ -605,8 +605,9 @@ def toon_fundamentals(ticker):
             st.info("📭 Geen bruikbare EPS-data of fout in verwerking. Foutmelding:")
             st.text(str(e))            
 
-    with st.expander("📈 Koers / DCF analyse"):
-        plot_price_and_dcf_plotly(df_merge, ticker)
+# werkt niet geen data
+#    with st.expander("📈 Koers / DCF analyse"):
+ #       plot_price_and_dcf_plotly(df_merge, ticker)
     
       
 # ---------------------------
