@@ -346,7 +346,7 @@ def toon_trading_bot_interface(ticker, huidig_advies):
     alpaca_ticker = map_ticker_for_alpaca(ticker)
     asset_info = check_alpaca_ticker(alpaca_ticker, api_key, secret_key)
     if asset_info is None:
-        st.error(f"❌ Ticker '{alpaca_ticker}' niet gevonden bij Alpaca (alleen US stocks en grote crypto's zijn toegestaan)")
+        st.error(f"❌ Ticker '{alpaca_ticker}' niet (direct) gevonden bij Alpaca, probeer vrije selectie (alleen in VS genoteerde stocks)")
         return
     else:
         st.success(
