@@ -371,7 +371,7 @@ else:
 
 # screening tool
 if st.button("🔎 Zoek koopwaardige aandelen"):
-    screeneresult = screen_tickers(tickers_screening, min_marketcap, min_momentum)
+    screeneresult = screen_tickers(tickers_screening, min_marketcap=min_marketcap, min_momentum=min_momentum)
     st.dataframe(screeneresult)
 
 
