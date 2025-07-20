@@ -27,7 +27,7 @@ def screen_tickers(tickers_screening, min_marketcap=1e9, min_momentum=5):
             if momentum < min_momentum:
                 continue
 
-            advies = calculate_sam_signal(df, interval="1wk")  # je eigen signaal logica
+            advies = determine_advice(df, interval="1wk")  # je eigen signaal logica
             if advies != "Kopen":
                 continue
 
