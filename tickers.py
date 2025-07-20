@@ -22,7 +22,7 @@ dow_tickers = {
     '^DJI': 'Dow Jones index', 'MMM': '3M', 'AXP': 'American Express', 'AMGN': 'Amgen', 'AAPL': 'Apple', 'BA': 'Boeing',
     'CAT': 'Caterpillar', 'CVX': 'Chevron', 'CSCO': 'Cisco', 'KO': 'Coca-Cola', 'DIS': 'Disney',
     'GS': 'Goldman Sachs', 'HD': 'Home Depot', 'HON': 'Honeywell', 'IBM': 'IBM', 'INTC': 'Intel',
-    'JPM': 'JPMorgan Chase', 'JNJ': 'Johnson & Johnson', 'MCD': 'McDonaldâ€™s', 'MRK': 'Merck',
+    'JPM': 'JPMorgan Chase', 'JNJ': 'Johnson & Johnson', 'MCD': 'McDonalds', 'MRK': 'Merck',
     'MSFT': 'Microsoft', 'NKE': 'Nike', 'PG': 'Procter & Gamble', 'CRM': 'Salesforce',
     'TRV': 'Travelers', 'UNH': 'UnitedHealth', 'VZ': 'Verizon', 'V': 'Visa', 'WMT': 'Walmart',
     'DOW': 'Dow', 'RTX': 'RTX Corp.', 'WBA': 'Walgreens Boots'
@@ -174,15 +174,20 @@ tickers_screening = [
     "ASM", "ASML", "SMCI", "PLTR", "ORCL", "AVGO", "SHOP", "BITF", "COIN",
     "SNOW", "MDB", "DDOG", "CRWD", "ZS", "CSCO", "ADBE", "CMCSA", "PEP", "COST",
     "QCOM", "TMUS", "TXN", "AMAT",
-    'MMM', 'AXP', 'AMGN', 'BA', 'CAT', 'CVX', 'CSCO', 'KO', 'DIS'
-#    'GS': 'Goldman Sachs', 'HD': 'Home Depot', 'HON': 'Honeywell', 'IBM': 'IBM', 'INTC': 'Intel',
-#    'JPM': 'JPMorgan Chase', 'JNJ': 'Johnson & Johnson', 'MCD': 'McDonaldâ€™s', 'MRK': 'Merck',
-#    'MSFT': 'Microsoft', 'NKE': 'Nike', 'PG': 'Procter & Gamble', 'CRM': 'Salesforce',
-#    'TRV': 'Travelers', 'UNH': 'UnitedHealth', 'VZ': 'Verizon', 'V': 'Visa', 'WMT': 'Walmart',
-#    'DOW': 'Dow', 'RTX': 'RTX Corp.', 'WBA': 'Walgreens Boots'
+    'MMM', 'AXP', 'AMGN', 'BA', 'CAT', 'CVX', 'CSCO', 'KO', 'DIS',
+    'GS', 'HD', 'HON', 'IBM', 'JPM', 'JNJ', 'MCD', 'MRK',
+    'NKE', 'PG', 'CRM', 'TRV', 'UNH', 'VZ', 'V', 'WMT', 'DOW', 'RTX', 'WBA',
+    "ABN.AS", "ADYEN.AS", "AGN.AS", "AD.AS", "AKZA.AS", "MT.AS", "ASM.AS", "ASML.AS", "ASRNL.AS",
+    "BESI.AS", "DSFIR.AS", "GLPG.AS", "HEIA.AS", "IMCD.AS", "INGA.AS", "TKWY.AS", "KPN.AS",
+    "NN.AS", "PHIA.AS", "PRX.AS", "RAND.AS", "REN.AS", "SHELL.AS", "UNA.AS", "WKL.AS",
+    "AF.PA", "APAM.AS", "ARCAD.AS", "BAMNB.AS", "BESI.AS",
+    "BFIT.AS", "CRBN.AS", "ECMPA.AS", "FAGR.BR", "FLOW.AS", "FUR.AS",
+    "LIGHT.AS", "NSI.AS", "OCI.AS", "PHARM.AS", "PNL.AS", "SBMO.AS", "TWEKA.AS",
+    "VPK.AS", "WDP.BR", "AMG.AS", "AALB.AS", "KENDR.AS", "VASTN.AS"
+
 
 ]
-    # ... vul zelf aan, maximaal ±200 is nog prima
+    # ... vul zelf aan, maximaal ±150 is nog prima
 
 
 
