@@ -8,7 +8,7 @@ import yfinance as yf
 
 
 
-@st.cache_data(ttl=900)
+@st.cache_data(ttl=360)
 def fetch_data_cached(ticker, interval, period):
     return yf.download(ticker, interval=interval, period=period)
 
