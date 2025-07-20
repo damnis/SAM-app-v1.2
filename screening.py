@@ -13,8 +13,8 @@ def get_momentum(df, periode="1w"):
             try:
                 return (df["Close"].iloc[-1] - df["Close"].iloc[-6]) / df["Close"].iloc[-6] * 100
             except Exception as e:
-                print(f"Momentum exceptie bij indexering: {e}")
-                st.write(f"Momentum exceptie bij indexering: {e}")
+#                print(f"Momentum exceptie bij indexering: {e}")
+ #               st.write(f"Momentum exceptie bij indexering: {e}")
                 return None
     return None
 
@@ -62,7 +62,7 @@ def screen_tickers(
                 _, advies_tekst = advies
             else:
                 advies_tekst = advies
-            st.write("Advies tekst:", advies_tekst)
+#            st.write("Advies tekst:", advies_tekst)
             if advies_tekst not in adviezen_toevoegen:
                 st.write(f"⛔ Advies niet toegestaan ({advies_tekst}) voor {ticker}")
                 continue
