@@ -422,20 +422,29 @@ def toon_trading_bot_interface(ticker, huidig_advies):
     st.subheader("📤 Verkooppositie controleren en sluiten")
     with st.expander(f"{'💵' if trade_mode=='Live' else '🧪'} Positie check en verkoopactie"):
         posities = client.get_all_positions()
-        symbol = map_ticker_for_alpaca(ticker)
+        # Maak lijst van mogelijke ticker-namen
+        mogelijk = set([
+            ticker.upper(),
+            map_ticker_for_alpaca(ticker),
+            map_ticker_for_alpaca(ticker).replace("/", ""),
+            map_ticker_for_alpaca(ticker).replace(".", ""),  # extra defensief
+        ])
         positie = None
+        gevonden = []
         for pos in posities:
-            if pos.symbol.upper() == symbol.upper():
+            if pos.symbol.upper() in mogelijk:
                 positie = pos
-                break
+                gevonden.append(pos.symbol)
+        st.write(f"DEBUG: mogelijke_namen: {mogelijk}")
+        st.write(f"DEBUG: gevonden: {gevonden}")
+        st.write("📦 GEVONDEN POSITIES:", [p.symbol for p in posities])
 
         if positie is not None:
             huidige_qty = float(positie.qty)
             avg_price = float(positie.avg_entry_price)
             st.write(f"📦 Je bezit momenteel **{huidige_qty}x {positie.symbol}** @ ${avg_price:.2f} gemiddeld.")
         else:
-            st.info(f"📭 Geen open positie gevonden in deze ticker ({symbol}).")
-            st.write("📦 GEVONDEN POSITIES:", [p.symbol for p in posities])
+            st.info(f"📭 Geen open positie gevonden in deze ticker ({', '.join(mogelijk)}).")
             return
 
         st.write(f"📌 Huidig advies: **{huidig_advies}**")
@@ -443,7 +452,29 @@ def toon_trading_bot_interface(ticker, huidig_advies):
         col1, col2 = st.columns(2)
         with col1:
             if st.button("❗ Verkooppositie sluiten"):
-                sluit_positie(client, symbol, huidig_advies, force=force_verkoop)
+                sluit_positie(client, positie.symbol, huidig_advies, force=force_verkoop)
         with col2:
             if st.button("🚨 Sluit ALLES direct (noodstop)"):
                 sluit_alles(client)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        # w
+        
