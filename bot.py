@@ -92,8 +92,18 @@ def haal_laatste_koers(ticker):
 
 # ---------- ORDER FUNCTIES -----------
 def plaats_order(client, ticker, bedrag, last_price, order_type="Market Buy", trailing_pct=None, aantal=None, limietkoers=None):
+#    symbol = map_ticker_for_alpaca(ticker)
     symbol = map_ticker_for_alpaca(ticker)
-    _aantal = float(bedrag) / float(last_price) if aantal is None else float(aantal)
+    is_crypto = ticker.upper().endswith("-USD") or "/" in ticker
+    if aantal is None:
+        if is_crypto:
+            _aantal = float(bedrag) / float(last_price)
+        else:
+            _aantal = int(float(bedrag) // float(last_price))
+    else:
+        _aantal = float(aantal)
+    
+#    _aantal = float(bedrag) / float(last_price) if aantal is None else float(aantal)
     if _aantal <= 0.0000001:
         st.warning("❌ Te klein bedrag of aantal voor order.")
         return
