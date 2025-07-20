@@ -29,18 +29,18 @@ def screen_tickers(
     results = []
     for ticker in tickers_screening:
         try:
-            if debug: print(f"\n▶️ Screening {ticker} ...")
-            if debug: st.write(f"\n▶️ Screening {ticker} ...")
+#            if debug: print(f"\n▶️ Screening {ticker} ...")
+#            if debug: st.write(f"\n▶️ Screening {ticker} ...")
             
             profile = get_profile(ticker)
-            if debug: print("Profile:", profile)
-            if debug: st.write("Profile:", profile)
+#            if debug: print("Profile:", profile)
+#            if debug: st.write("Profile:", profile)
             naam = profile.get("companyName", "") if profile else ""
 
             df = fetch_data_fmp(ticker, periode="2y")
-            if debug: 
-                print(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
-                st.write(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
+#            if debug: 
+#                print(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
+#                st.write(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
             if df is None or df.empty or "Close" not in df.columns:
                 print(f"⛔ Geen geldige dataframe voor {ticker}")
                 st.write(f"⛔ Geen geldige dataframe voor {ticker}")
