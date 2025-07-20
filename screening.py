@@ -57,7 +57,7 @@ def screen_tickers(
             df = calculate_sat(df)
             df = calculate_sam(df)
             advies = determine_advice(df, threshold=threshold, risk_aversion=risk_aversion)
-            st.write("Advies:", advies)
+#            st.write("Advies:", advies)
             if isinstance(advies, tuple):
                 _, advies_tekst = advies
             else:
