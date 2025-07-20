@@ -386,7 +386,7 @@ if st.button("🔎 Zoek koopwaardige aandelen"):
                 last = data[0]
                 return {
 #                    "Symbol": ticker,
-                    "Date": last.get("date", None),
+                    "Analistenadviezen": last.get("date", None),
                     "Buy": last.get("analystRatingsbuy", 0) + last.get("analystRatingsStrongBuy", 0),
                     "Hold": last.get("analystRatingsHold", 0),
                     "Sell": last.get("analystRatingsSell", 0) + last.get("analystRatingsStrongSell", 0),
