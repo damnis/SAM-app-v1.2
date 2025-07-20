@@ -58,6 +58,16 @@ def screen_tickers(
             df = calculate_sat(df)
             df = calculate_sam(df)
             advies = determine_advice(df, threshold=threshold, risk_aversion=risk_aversion)
+                st.write("Advies:", advies)
+                if isinstance(advies, tuple):
+                    _, advies_tekst = advies
+                else:
+                    advies_tekst = advies
+                st.write("Advies tekst:", advies_tekst)
+                if advies_tekst not in adviezen_toevoegen:
+                    st.write(f"⛔ Advies niet toegestaan ({advies_tekst}) voor {ticker}")
+                    continue
+    #        advies = determine_advice(df, threshold=threshold, risk_aversion=risk_aversion)
 #            advies = determine_advice(df, interval="1wk")
             if debug: print(f"Advies: {advies}")
             if debug: st.write(f"Advies: {advies}")
