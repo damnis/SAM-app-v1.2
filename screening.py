@@ -55,6 +55,8 @@ def screen_tickers(
                 st.write(f"⛔ Momentum te laag of None voor {ticker}: {momentum}")
                 continue
 
+            df = calculate_sat(df)
+            df = calculate_sam(df)
             advies = determine_advice(df, threshold=threshold, risk_aversion=risk_aversion)
 #            advies = determine_advice(df, interval="1wk")
             if debug: print(f"Advies: {advies}")
