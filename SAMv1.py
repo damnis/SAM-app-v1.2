@@ -371,7 +371,7 @@ else:
 
 # screening tool
 
-if st.button("🔎 Zoek stijgers met koop advies"):
+if st.button("🔎 Zoek stijgers met koop advies (1 wk)"):
     screeneresult = screen_tickers(tickers_screening, min_momentum=2)
 #    st.dataframe(screeneresult)
 
