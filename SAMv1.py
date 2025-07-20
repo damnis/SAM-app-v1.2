@@ -373,7 +373,7 @@ else:
 
 if st.button("🔎 Zoek koopwaardige aandelen"):
     screeneresult = screen_tickers(tickers_screening, min_momentum=2)
-    st.dataframe(screeneresult)
+#    st.dataframe(screeneresult)
 
     if not screeneresult.empty:
         st.markdown("### 💡 Analistenadviezen (FMP):")
@@ -385,7 +385,7 @@ if st.button("🔎 Zoek koopwaardige aandelen"):
             if data:
                 last = data[0]
                 return {
-                    "Symbol": ticker,
+#                    "Symbol": ticker,
                     "Date": last.get("date", None),
                     "Buy": last.get("analystRatingsbuy", 0) + last.get("analystRatingsStrongBuy", 0),
                     "Hold": last.get("analystRatingsHold", 0),
