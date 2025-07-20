@@ -24,7 +24,7 @@ def screen_tickers(
         adviezen_toevoegen=("Kopen", "Verkopen"),
         threshold=2,
         risk_aversion=1,
-        debug=True
+        debug=False 
     ):
     results = []
     for ticker in tickers_screening:
