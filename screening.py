@@ -1,6 +1,6 @@
 import pandas as pd
 from datafund import get_profile
-from fmpfetch import fetch_data_fmp   # <-- deze was je vergeten in de vorige voorbeelden
+from fmpfetch import fetch_data_fmp   # <-- ChatGPT was deze vergeten in de vorige voorbeelden
 from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
 from adviezen import determine_advice, weighted_moving_average 
@@ -45,6 +45,20 @@ def screen_tickers(tickers_screening, min_momentum=5, adviezen_toevoegen=("Kopen
             # st.write(f"Fout bij {ticker}: {e}")
             continue
     return pd.DataFrame(results)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
