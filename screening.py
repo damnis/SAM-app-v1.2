@@ -4,6 +4,7 @@ from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
 from adviezen import determine_advice, weighted_moving_average 
 from tickers import tickers_screening
+from fmpfetch import fetch_data_fmp 
 
 def get_momentum(df, periode="1w"):
     # df is OHLC dataframe (let op: moet minstens 7 rijen zijn)
@@ -24,7 +25,7 @@ def screen_tickers(tickers_screening, min_momentum=5):
                 print(f"DEBUG: Geen profiel voor {ticker}")
                 continue
 
-            df = fetch_ohlc_data(ticker)
+            df = fetch_data_fmp(ticker)
             if df is None or "Close" not in df.columns or len(df) < 7:
                 print(f"DEBUG: Geen of te weinig koersdata voor {ticker}")
                 continue
