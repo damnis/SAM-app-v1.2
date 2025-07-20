@@ -15,7 +15,7 @@ def get_momentum(df, periode="1w"):
                 return None
     return None
 
-def screen_tickers(tickers_screening, min_momentum=5, adviezen_toevoegen=("Kopen", "Verkopen")):
+def screen_tickers(tickers_screening, min_momentum=1, adviezen_toevoegen=("Kopen", "Verkopen")):
     results = []
     for ticker in tickers_screening:
         try:
