@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
-from datafund import get_profile
+import requests
+from datafund import get_profile, get_analyst_recommendations
 from fmpfetch import fetch_data_fmp
 from adviezen import determine_advice, weighted_moving_average 
 from sam_indicator import calculate_sam 
@@ -85,6 +86,42 @@ def screen_tickers(
  #       print("Resultaat:\n", df_result)
 #        st.write("Resultaat:", df_result)
     return df_result
+
+
+
+def analyst_recs_for_screened(screened_tickers, base_url, api_key):
+    results = []
+    for ticker in screened_tickers:
+        try:
+            recs = get_analyst_recommendations(ticker)
+            # recs = requests.get(f"{base_url}/analyst-stock-recommendations/{ticker}?apikey={api_key}").json()
+            if not recs or isinstance(recs, dict) and recs.get("error"):
+                results.append({
+                    "Ticker": ticker,
+                    "Buy": None,
+                    "Hold": None,
+                    "Sell": None,
+                    "Consensus": "Onbekend"
+                })
+                continue
+            # Pak de laatste entry (meest recente maand)
+            last = recs[0] if isinstance(recs, list) and recs else {}
+            results.append({
+                "Ticker": ticker,
+                "Buy": last.get("buy", 0),
+                "Hold": last.get("hold", 0),
+                "Sell": last.get("sell", 0),
+                "Consensus": last.get("consensus", "n.v.t.")
+            })
+        except Exception as e:
+            results.append({
+                "Ticker": ticker,
+                "Buy": None,
+                "Hold": None,
+                "Sell": None,
+                "Consensus": f"Fout: {e}"
+            })
+    return pd.DataFrame(results)
 
 
 
