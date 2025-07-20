@@ -469,14 +469,15 @@ if st.toggle("🔥 Toon sector heatmap"):
 # ----------------------------
 
 # advies matrix
-toon_adviesmatrix_html(ticker, risk_aversion=risk_aversion)
+toon_adviesmatrix_html(actieve_ticker, risk_aversion=risk_aversion)
 # weergave grafieken via py
+plot_overlay_grafiek(df, actieve_ticker_name, interval) 
 
-plot_overlay_grafiek(df, ticker_name, interval) 
+#plot_overlay_grafiek(df, ticker_name, interval) 
 
 # 🟢 Toon koersgrafiek (toggle)
 #if st.toggle("📈 Toon koersgrafiek", value=False):
-plot_koersgrafiek(df, ticker_name, interval)
+plot_koersgrafiek(df, actieve_ticker_name, interval)
 
 # 🔵 Toon SAM + Trend grafiek
 plot_sam_trend(df, interval)
@@ -536,7 +537,7 @@ backtest_functie(df, signaalkeuze=signaalkeuze, selected_tab=selected_tab, inter
 
 # …na de adviezen en grafiek, etc.
 # trading bot
-toon_trading_bot_interface(selected_ticker, huidig_advies)
+toon_trading_bot_interface(actieve_ticker, huidig_advies)
 # 📌 Verbinding met Alpaca testen (optioneel, pas uit te voeren als gebruiker dit wil)
 # optiebot
 #toon_optie_trading_bot_interface(selected_ticker, huidig_advies)
@@ -579,7 +580,7 @@ if st.sidebar.checkbox("🧪 yfinance Test Tool"):
     test_yfinance()
     if testbron == "yfinance":
         ...
-        test_analyst_data_yf(ticker)
+        test_analyst_data_yf(actieve_ticker)
 
  
 ###### oud
