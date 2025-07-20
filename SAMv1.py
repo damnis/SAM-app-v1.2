@@ -32,7 +32,7 @@ from grafieken import toon_adviesmatrix_html
 from sam_tabel import toon_sam_tabel 
 from heatmap import toon_sector_heatmap
 # screening
-from screening import screen_tickers
+from screening import screen_tickers, get_latest_analyst_rec
 # nieuws
 from newsfeed import toon_newsfeed
 # --- Fundamentele data ophalen en tonen ---
