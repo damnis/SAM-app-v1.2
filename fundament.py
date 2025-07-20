@@ -135,66 +135,66 @@ def toon_datums(earnings, dividends):
             st.subheader("Dividend historie:")
             st.dataframe(df_div.set_index("Datum"))
 
+# werkt niet Geen data 
+#def merge_price_and_dcf(prices, dcfs):
+#    df_prices = pd.DataFrame(prices)
+#    df_dcfs = pd.DataFrame(dcfs)
+#    df_prices["year"] = pd.to_datetime(df_prices["date"]).dt.year
+ #   df_dcfs["year"] = pd.to_datetime(df_dcfs["date"]).dt.year
+#    df_merged = pd.merge(df_prices, df_dcfs[["year", "dcf"]], on="year", how="left")
+#    df_merged = df_merged.sort_values("year")
+#    return df_merged[["year", "close", "high", "low", "dcf"]]
 
-def merge_price_and_dcf(prices, dcfs):
-    df_prices = pd.DataFrame(prices)
-    df_dcfs = pd.DataFrame(dcfs)
-    df_prices["year"] = pd.to_datetime(df_prices["date"]).dt.year
-    df_dcfs["year"] = pd.to_datetime(df_dcfs["date"]).dt.year
-    df_merged = pd.merge(df_prices, df_dcfs[["year", "dcf"]], on="year", how="left")
-    df_merged = df_merged.sort_values("year")
-    return df_merged[["year", "close", "high", "low", "dcf"]]
+#def plot_price_and_dcf_plotly(df, ticker):
+ #   if df.empty:
+ #       st.warning("Geen gecombineerde koers en DCF data gevonden.")
+ #       return
 
-def plot_price_and_dcf_plotly(df, ticker):
-    if df.empty:
-        st.warning("Geen gecombineerde koers en DCF data gevonden.")
-        return
-
-    fig = go.Figure()
+#    fig = go.Figure()
 
     # Slotkoers lijn
-    fig.add_trace(go.Scatter(
-        x=df["year"],
-        y=df["close"],
-        mode="lines+markers",
-        name="Slotkoers",
-        line=dict(width=2)
-    ))
+#    fig.add_trace(go.Scatter(
+#        x=df["year"],
+#        y=df["close"],
+ #       mode="lines+markers",
+ #       name="Slotkoers",
+#        line=dict(width=2)
+#    ))
 
     # High-Low band (area fill)
-    fig.add_trace(go.Scatter(
-        x=pd.concat([df["year"], df["year"][::-1]]),
-        y=pd.concat([df["high"], df["low"][::-1]]),
-        fill="toself",
-        fillcolor="rgba(0,100,200,0.12)",
-        line=dict(color="rgba(255,255,255,0)"),
-        hoverinfo="skip",
-        showlegend=True,
-        name="Bereik (high/low)"
-    ))
+#    fig.add_trace(go.Scatter(
+  #      x=pd.concat([df["year"], df["year"][::-1]]),
+  #      y=pd.concat([df["high"], df["low"][::-1]]),
+#        fill="toself",
+ #       fillcolor="rgba(0,100,200,0.12)",
+#        line=dict(color="rgba(255,255,255,0)"),
+  #      hoverinfo="skip",
+ #       showlegend=True,
+ #       name="Bereik (high/low)"
+ #   ))
 
     # DCF lijn
-    if "dcf" in df.columns:
-        fig.add_trace(go.Scatter(
-            x=df["year"],
-            y=df["dcf"],
-            mode="lines+markers",
-            name="DCF-waarde",
-            line=dict(dash="dash", color="green", width=2),
-            marker=dict(symbol="square")
-        ))
+#    if "dcf" in df.columns:
+ #       fig.add_trace(go.Scatter(
+#            x=df["year"],
+  #          y=df["dcf"],
+#            mode="lines+markers",
+ #           name="DCF-waarde",
+  #          line=dict(dash="dash", color="green", width=2),
+#            marker=dict(symbol="square")
+   #     ))
 
-    fig.update_layout(
-        title=f"{ticker} | Slotkoers, High/Low en DCF per jaar",
-        xaxis_title="Jaar",
-        yaxis_title="Prijs / DCF ($)",
-        legend=dict(yanchor="top", y=0.98, xanchor="left", x=0.01),
-        hovermode="x unified",
-        template="plotly_white",
-        margin=dict(l=40, r=40, t=60, b=40)
-    )
+ #   fig.update_layout(
+ #       title=f"{ticker} | Slotkoers, High/Low en DCF per jaar",
+#        xaxis_title="Jaar",
+#        yaxis_title="Prijs / DCF ($)",
+   #     legend=dict(yanchor="top", y=0.98, xanchor="left", x=0.01),
+  #      hovermode="x unified",
+  #      template="plotly_white",
+#        margin=dict(l=40, r=40, t=60, b=40)
+  #  )
 
-    st.plotly_chart(fig, use_container_width=True)
+#    st.plotly_chart(fig, use_container_width=True)
     
 
 
@@ -221,9 +221,9 @@ def toon_fundamentals(ticker):
         dividends = get_dividend_history(ticker)
         eps_quarters = get_quarterly_eps(ticker)
         eps_forecast = get_eps_forecast(ticker)
-        prices = get_historical_prices_yearly(ticker, years=20)
-        dcfs = get_historical_dcf(ticker, years=20)
-        df_merge = merge_price_and_dcf(prices, dcfs)
+#        prices = get_historical_prices_yearly(ticker, years=20)
+#        dcfs = get_historical_dcf(ticker, years=20)
+#        df_merge = merge_price_and_dcf(prices, dcfs)
 
 
         
