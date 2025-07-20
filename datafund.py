@@ -127,7 +127,30 @@ def get_historical_dcf(ticker, years=20):
     except:
         return []
 
+@st.cache_data(ttl=3600)
+def get_analyst_recommendations(ticker):
+    url = f"{BASE_URL}/analyst-stock-recommendations/{ticker}?apikey={API_KEY}"
+    try:
+        return requests.get(url).json()
+    except:
+        return []
 
+@st.cache_data(ttl=3600)
+def get_analyst_estimates(ticker):
+    url = f"{BASE_URL}/analyst-estimates/{ticker}?apikey={API_KEY}"
+    try:
+        return requests.get(url).json()
+    except:
+        return []
+
+@st.cache_data(ttl=3600)
+def get_price_target_consensus(ticker):
+    url = f"https://financialmodelingprep.com/api/v4/price-target-consensus?symbol={ticker}&apikey={API_KEY}"
+    try:
+        return requests.get(url).json()
+    except:
+        return []
+        
 
 # est eps https://financialmodelingprep.com/api/v3/analyst-estimates/AAPL?apikey=
 # aanbevelingen er zijn meerdere https://financialmodelingprep.com/api/v3/analyst-stock-recommendations/AAPL?apikey=
