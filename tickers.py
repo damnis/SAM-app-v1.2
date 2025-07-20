@@ -169,7 +169,12 @@ mijn_lijst = {
     "GOOGL": "Alphabet (GOOGL)", "MSFT": "Microsoft", "META": "Meta Platforms"
 }
 
-
+tickers_screening = [
+    "AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSLA", "AMD", "NFLX", "INTC",
+    "ASML", "ADYEN.AS", "AIR.PA", "SIE.DE", "SAP.DE", "LVMH.PA", "OR.PA",
+    "SHOP", "PLTR", "SMCI", "BITF", "COIN"
+    # ... vul zelf aan, maximaal ±200 is nog prima
+]
 
 
 # --- Mapping beurs tabs en tickers ---
