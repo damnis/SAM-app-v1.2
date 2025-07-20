@@ -40,7 +40,7 @@ from datafund import get_income_statement, get_ratios
 from datafund import (
     get_profile, get_key_metrics, get_earning_calendar,
     get_dividend_history, get_quarterly_eps, get_eps_forecast,
-    get_news_fmp, get_news_yahoo  
+    get_news_fmp, get_news_yahoo, get_analyst_recommendations 
 )
 from fundament import (
     toon_profiel_en_kerninfo, toon_omzet_winst_eps, toon_ratios,
