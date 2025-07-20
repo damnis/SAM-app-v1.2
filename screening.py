@@ -8,6 +8,8 @@ from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat 
 from tickers import tickers_screening
 
+
+@st.cache_data(ttl=3600)
 def get_momentum(df, periode="1w"):
     if periode == "1w":
         if df is not None and len(df) >= 7 and "Close" in df.columns:
@@ -19,6 +21,7 @@ def get_momentum(df, periode="1w"):
                 return None
     return None
 
+@st.cache_data(ttl=3600)
 def screen_tickers(
         tickers_screening, 
         min_momentum=1, 
