@@ -367,6 +367,15 @@ else:
         """,
         unsafe_allow_html=True
         )
+
+
+# screening tool
+if st.button("🔎 Zoek koopwaardige aandelen"):
+    screeneresult = screen_tickers(jouw_ticker_lijst, min_marketcap=2e9, min_momentum=8)
+    st.dataframe(screeneresult)
+
+
+
 # ------- Toggle voor sector-heatmap (bijv. onder je matrix/tabellen) ---
 if st.toggle("🔥 Toon sector heatmap"):
     sortering_nice = st.radio(
@@ -390,10 +399,6 @@ if st.toggle("🔥 Toon sector heatmap"):
   #if st.toggle("📌 Toon sector-heatmap"):
 # ----------------------------
 
-# screening tool
-if st.button("🔎 Zoek koopwaardige aandelen"):
-    screeneresult = screen_tickers(jouw_ticker_lijst, min_marketcap=2e9, min_momentum=8)
-    st.dataframe(screeneresult)
 # advies matrix
 toon_adviesmatrix_html(ticker, risk_aversion=risk_aversion)
 # weergave grafieken via py
