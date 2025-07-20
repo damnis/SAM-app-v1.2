@@ -42,16 +42,16 @@ def screen_tickers(
 #                print(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
 #                st.write(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
             if df is None or df.empty or "Close" not in df.columns:
-                print(f"⛔ Geen geldige dataframe voor {ticker}")
-                st.write(f"⛔ Geen geldige dataframe voor {ticker}")
+   #             print(f"⛔ Geen geldige dataframe voor {ticker}")
+  #              st.write(f"⛔ Geen geldige dataframe voor {ticker}")
                 continue
 
             momentum = get_momentum(df, periode="1w")
   #          if debug: print(f"Momentum: {momentum}")
    #         if debug: st.write(f"Momentum: {momentum}")
             if momentum is None or momentum < min_momentum:
-                print(f"⛔ Momentum te laag of None voor {ticker}: {momentum}")
-                st.write(f"⛔ Momentum te laag of None voor {ticker}: {momentum}")
+   #             print(f"⛔ Momentum te laag of None voor {ticker}: {momentum}")
+    #            st.write(f"⛔ Momentum te laag of None voor {ticker}: {momentum}")
                 continue
 
             df = calculate_sat(df)
@@ -73,8 +73,8 @@ def screen_tickers(
                 "Momentum(1w%)": momentum,
                 "Advies": advies_tekst,
             })
-            print(f"✅ Toegevoegd: {ticker}")
-            st.write(f"✅ Toegevoegd: {ticker}")
+ #           print(f"✅ Toegevoegd: {ticker}")
+#            st.write(f"✅ Toegevoegd: {ticker}")
 
         except Exception as e:
             print(f"🚨 Fout bij {ticker}: {e}")
