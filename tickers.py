@@ -180,10 +180,10 @@ tickers_screening = [
 #    'MSFT': 'Microsoft', 'NKE': 'Nike', 'PG': 'Procter & Gamble', 'CRM': 'Salesforce',
 #    'TRV': 'Travelers', 'UNH': 'UnitedHealth', 'VZ': 'Verizon', 'V': 'Visa', 'WMT': 'Walmart',
 #    'DOW': 'Dow', 'RTX': 'RTX Corp.', 'WBA': 'Walgreens Boots'
-}
-}
-    # ... vul zelf aan, maximaal ±200 is nog prima
+
 ]
+    # ... vul zelf aan, maximaal ±200 is nog prima
+
 
 
 # --- Mapping beurs tabs en tickers ---
