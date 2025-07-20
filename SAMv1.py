@@ -371,12 +371,12 @@ else:
 
 # screening tool
 
-if st.button("🔎 Zoek koopwaardige aandelen"):
+if st.button("🔎 Zoek stijgers met koop advies"):
     screeneresult = screen_tickers(tickers_screening, min_momentum=2)
 #    st.dataframe(screeneresult)
 
     if not screeneresult.empty:
-        st.markdown("### 💡 Analistenadviezen (FMP):")
+        st.markdown("### 💡 SAT + SAM Advies en Marktadvies (analisten):")
         tickers = list(screeneresult["Ticker"])
 
         # Ophalen en combineren
