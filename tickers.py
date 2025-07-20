@@ -171,8 +171,8 @@ mijn_lijst = {
 
 tickers_screening = [
     "AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSLA", "AMD", "NFLX", "INTC",
-    "ASML", "ADYEN.AS", "AIR.PA", "SIE.DE", "SAP.DE", "LVMH.PA", "OR.PA",
-    "SHOP", "PLTR", "SMCI", "BITF", "COIN"
+#    "ASML", "ADYEN.AS", "AIR.PA", "SIE.DE", "SAP.DE", "LVMH.PA", "OR.PA",
+#    "SHOP", "PLTR", "SMCI", "BITF", "COIN"
     # ... vul zelf aan, maximaal ±200 is nog prima
 ]
 
