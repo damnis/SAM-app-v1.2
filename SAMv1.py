@@ -385,13 +385,15 @@ if st.button("🔎 Zoek koopwaardige aandelen"):
             if data:
                 last = data[0]
                 return {
-                    "Buy": last.get("buy", None),
-                    "Hold": last.get("hold", None),
-                    "Sell": last.get("sell", None),
-                    "Consensus": last.get("consensus", "")
+                    "Symbol": ticker,
+                    "Date": last.get("date", None),
+                    "Buy": last.get("analystRatingsbuy", 0) + last.get("analystRatingsStrongBuy", 0),
+                    "Hold": last.get("analystRatingsHold", 0),
+                    "Sell": last.get("analystRatingsSell", 0) + last.get("analystRatingsStrongSell", 0),
                 }
+                
             else:
-                return {"Buy": None, "Hold": None, "Sell": None, "Consensus": ""}
+                return {"Buy": None, "Hold": None, "Sell": None}
 
         analyst_data = []
         for ticker in tickers:
