@@ -71,7 +71,7 @@ def screen_tickers(
             results.append({
                 "Ticker": ticker,
                 "Naam": naam,
-                "Momentum(1w%)": momentum,
+                "1wk (%)": momentum,
                 "Advies": advies_tekst,
             })
  #           print(f"✅ Toegevoegd: {ticker}")
@@ -88,7 +88,7 @@ def screen_tickers(
     return df_result
 
 
-
+# wordt hiet gebruikt, voor later
 def analyst_recs_for_screened(screened_tickers, base_url, api_key):
     results = []
     for ticker in screened_tickers:
