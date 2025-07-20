@@ -1,6 +1,9 @@
 import pandas as pd
 from datafund import get_ratios, get_profile
-from sam_module import calculate_sam_signal  # of hoe jouw signaalmodule ook heet
+from sam_indicator import calculate_sam
+from sat_indicator import calculate_sat
+from adviezen import determine_advice, weighted_moving_average 
+
 
 def get_momentum(df, periode="1w"):
     # df is OHLC dataframe
