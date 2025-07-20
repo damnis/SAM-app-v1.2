@@ -31,6 +31,8 @@ from genereer import genereer_adviesmatrix
 from grafieken import toon_adviesmatrix_html
 from sam_tabel import toon_sam_tabel 
 from heatmap import toon_sector_heatmap
+# screening
+from screening import screen_tickers
 # nieuws
 from newsfeed import toon_newsfeed
 # --- Fundamentele data ophalen en tonen ---
@@ -388,6 +390,10 @@ if st.toggle("🔥 Toon sector heatmap"):
   #if st.toggle("📌 Toon sector-heatmap"):
 # ----------------------------
 
+# screening tool
+if st.button("🔎 Zoek koopwaardige aandelen"):
+    screeneresult = screen_tickers(jouw_ticker_lijst, min_marketcap=2e9, min_momentum=8)
+    st.dataframe(screeneresult)
 # advies matrix
 toon_adviesmatrix_html(ticker, risk_aversion=risk_aversion)
 # weergave grafieken via py
