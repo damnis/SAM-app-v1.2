@@ -52,7 +52,7 @@ from backtest import backtest_functie, bereken_sam_rendement
 from bot import toon_trading_bot_interface
 #from coinex import get_spot_balance, get_spot_market, put_limit_order, put_market_order
 #from optiebot import toon_optie_trading_bot_interface 
-from bot import verbind_met_alpaca, convert_ticker_for_alpaca, crypto_slash_to_plain, haal_laatste_koers, plaats_order, sluit_positie
+from bot import verbind_met_alpaca, map_ticker_for_alpaca, crypto_slash_to_plain, haal_laatste_koers, plaats_order, sluit_positie
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
