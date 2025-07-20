@@ -12,7 +12,7 @@ def get_momentum(df, periode="1w"):
     # Voeg hier extra periodes toe indien nodig
     return None
 
-def screen_tickers(tickers_screening, min_marketcap=1e9, min_momentum=5):
+def screen_tickers(tickers_screening, min_marketcap=1e6, min_momentum=5):
     results = []
     for ticker in tickers_screening:
         try:
