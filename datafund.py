@@ -127,13 +127,24 @@ def get_historical_dcf(ticker, years=20):
     except:
         return []
 
+
 @st.cache_data(ttl=3600)
 def get_analyst_recommendations(ticker):
     url = f"{BASE_URL}/analyst-stock-recommendations/{ticker}?apikey={API_KEY}"
     try:
-        return requests.get(url).json()
-    except:
+        resp = requests.get(url)
+        data = resp.json()
+        return data if isinstance(data, list) else []
+    except Exception:
         return []
+        
+#@st.cache_data(ttl=3600)
+#def get_analyst_recommendations(ticker):
+#    url = f"{BASE_URL}/analyst-stock-recommendations/{ticker}?apikey={API_KEY}"
+#    try:
+#        return requests.get(url).json()
+#    except:
+#        return []
 
 @st.cache_data(ttl=3600)
 def get_analyst_estimates(ticker):
