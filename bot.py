@@ -1,4 +1,5 @@
 import yfinance as yf
+from fmpfetch import fetch_data_fmp, search_ticker_fmp
 import streamlit as st
 import pandas as pd
 import time
