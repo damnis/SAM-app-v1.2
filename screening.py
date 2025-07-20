@@ -2,7 +2,9 @@ import pandas as pd
 import streamlit as st
 from datafund import get_profile
 from fmpfetch import fetch_data_fmp
-from adviezen import determine_advice
+from adviezen import determine_advice, weighted_moving_average 
+from sam_indicator import calculate_sam 
+from sat_indicator import calculate_sat 
 from tickers import tickers_screening
 
 def get_momentum(df, periode="1w"):
