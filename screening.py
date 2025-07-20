@@ -4,6 +4,7 @@ from sam_indicator import calculate_sam
 from sat_indicator import calculate_sat
 from adviezen import determine_advice, weighted_moving_average 
 from tickers import tickers_screening
+from fmpfetch import fetch_data_fmp 
 
 def get_momentum(df, periode="1w"):
     # df is OHLC dataframe
@@ -21,7 +22,9 @@ def screen_tickers(tickers_screening, min_marketcap=1e6, min_momentum=5):
                 continue
 
             # Hier kun je koersdata ophalen, bv via yfinance of FMP
-            df = fetch_ohlc_data(ticker)
+#            df = fetch_ohlc_data(ticker)
+
+            df = fetch_data_fmp(ticker)
             momentum = get_momentum(df, periode="1w")
 
             if momentum < min_momentum:
