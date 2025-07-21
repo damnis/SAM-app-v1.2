@@ -516,7 +516,7 @@ def toon_fundamentals(ticker):
         # -------- Check op aanwezigheid van data --------
             if not (isinstance(eps_quarters, list) and len(eps_quarters) > 0):
                 st.info("📭 Geen EPS-data beschikbaar voor deze ticker.")
-                st.stop()
+ #               st.stop()
             if not (isinstance(eps_forecast, list) and len(eps_forecast) > 0):
                 eps_forecast = []
 
@@ -524,7 +524,7 @@ def toon_fundamentals(ticker):
             df_epsq = pd.DataFrame(eps_quarters)
             if not {"date", "eps"}.issubset(df_epsq.columns):
                 st.info("📭 EPS-data niet compleet voor deze ticker.")
-                st.stop()
+#                st.stop()
             df_epsq = df_epsq[["date", "eps"]]
             df_epsq.columns = ["Datum", "EPS"]
             df_epsq["Datum"] = pd.to_datetime(df_epsq["Datum"])
