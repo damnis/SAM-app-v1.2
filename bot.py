@@ -158,10 +158,22 @@ def plaats_order(client, ticker, bedrag, last_price, order_type="Market Buy", tr
 
 def koop_en_trailing_stop(client, ticker, bedrag, last_price, trailing_pct, aantal=None):
     symbol = map_ticker_for_alpaca(ticker)
-    _aantal = float(bedrag / last_price) if aantal is None else float(aantal)
+    is_crypto = ticker.upper().endswith("-USD") or "/" in ticker
+    if aantal is None:
+        if is_crypto:
+            _aantal = float(bedrag) / float(last_price)
+        else:
+            _aantal = int(float(bedrag) // float(last_price))
+    else:
+        _aantal = float(aantal)
     if _aantal <= 0.0000001:
-        st.warning("❌ Bedrag of aantal te klein voor aankoop.")
+        st.warning("❌ Te klein bedrag of aantal voor order.")
         return
+        
+#    _aantal = float(bedrag / last_price) if aantal is None else float(aantal)
+#    if _aantal <= 0.0000001:
+#        st.warning("❌ Bedrag of aantal te klein voor aankoop.")
+#        return
     try:
         kooporder = MarketOrderRequest(
             symbol=symbol,
