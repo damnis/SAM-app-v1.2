@@ -593,7 +593,7 @@ def toon_fundamentals(ticker):
                 werkelijk = row["EPS"]
                 if verwacht == 0 or pd.isna(verwacht):
                     return np.nan
-                surprise = (werkelijk - verwacht) / abs(verwacht) * 100
+                surprise = (werkelijk - verwacht) / (verwacht) * 100
                 if verwacht < 0:
                     surprise = -surprise
                 return surprise
