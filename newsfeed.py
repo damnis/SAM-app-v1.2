@@ -85,10 +85,10 @@ def get_google_news(ticker, max_items=4, lang="en"):
 
 # ---- Google News market fallback ----
 @st.cache_data(ttl=600)
-def get_google_market_news(max_items=15 lang="en"):
+def get_google_market_news(max_items=25 lang="en"):
     url = f"https://news.google.com/rss/search?q=US+stock+market&hl={lang}-US&gl=US&ceid=US:en"
     try:
-        resp = requests.get(url, timeout=2)
+        resp = requests.get(url, timeout=1)
         soup = BeautifulSoup(resp.content, "xml")
         items = soup.find_all("item")[:max_items]
         news_list = []
