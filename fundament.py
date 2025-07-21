@@ -590,7 +590,7 @@ def toon_fundamentals(ticker):
                 verwacht = row["EPS (Avg, est.)"]
                 werkelijk = row["EPS"]
                 # normale formule:
-                surprise = (werkelijk - verwacht) / abs(verwacht) * 100
+                surprise = (werkelijk - verwacht) / (verwacht) * 100
                 # als verwacht < 0, draai teken om (zodat minder verlies positief is)
                 if verwacht < 0:
                     surprise = -surprise
