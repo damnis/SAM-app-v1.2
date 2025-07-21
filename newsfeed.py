@@ -62,10 +62,10 @@ def get_finviz_market_news(max_items=20):
 
 # ---- Google News fallback per ticker ----
 @st.cache_data(ttl=600)
-def get_google_news(ticker, max_items=5, lang="en"):
+def get_google_news(ticker, max_items=4, lang="en"):
     url = f"https://news.google.com/rss/search?q={ticker}+stock&hl={lang}-US&gl=US&ceid=US:en"
     try:
-        resp = requests.get(url, timeout=2)
+        resp = requests.get(url, timeout=1)
         soup = BeautifulSoup(resp.content, "xml")
         items = soup.find_all("item")[:max_items]
         news_list = []
@@ -85,7 +85,7 @@ def get_google_news(ticker, max_items=5, lang="en"):
 
 # ---- Google News market fallback ----
 @st.cache_data(ttl=600)
-def get_google_market_news(max_items=20, lang="en"):
+def get_google_market_news(max_items=15 lang="en"):
     url = f"https://news.google.com/rss/search?q=US+stock+market&hl={lang}-US&gl=US&ceid=US:en"
     try:
         resp = requests.get(url, timeout=2)
@@ -163,8 +163,8 @@ def toon_newsfeed():
 
         unique_news.sort(key=lambda x: parse_date(x.get("datetime", "")), reverse=True)
 
-        # Max 32 tonen
-        unique_news = unique_news[:32]
+        # Max 20 tonen
+        unique_news = unique_news[:20]
 
         if unique_news:
             for itm in unique_news:
@@ -173,7 +173,7 @@ def toon_newsfeed():
             st.info("Geen nieuws gevonden voor deze selectie.")
         
         
-        # Dedupe, max 32 items, stijlvaste weergave
+        # Dedupe, max 20 items, stijlvaste weergave
 #        seen = set()
  #       unique_news = []
 #        for itm in news_items:
@@ -181,7 +181,7 @@ def toon_newsfeed():
     #        if key and key not in seen:
   #              seen.add(key)
    #             unique_news.append(itm)
-  #          if len(unique_news) >= 32:
+  #          if len(unique_news) >= 20:
    #             break
 
   #      if unique_news:
