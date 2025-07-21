@@ -58,7 +58,7 @@ def fetch_data(ticker, interval):
         df[col] = df[col].fillna(method="ffill").fillna(method="bfill")
 
     # 🧪 Check minimale lengte
-    if len(df) < 30:
+    if len(df) < 20:
         st.warning(f"⚠️ Slechts {len(df)} datapunten opgehaald — mogelijk te weinig voor indicatoren.")
         return pd.DataFrame()
 
