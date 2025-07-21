@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 from datafund import get_income_statement, get_ratios
 from datafund import (
     get_profile, get_key_metrics, get_earning_calendar,
@@ -586,17 +587,19 @@ def toon_fundamentals(ticker):
                     "EPS (High, est.)": last_valid,
                 })
             )
+           
             def calc_surprise(row):
                 verwacht = row["EPS (Avg, est.)"]
                 werkelijk = row["EPS"]
-                # normale formule:
-                surprise = (werkelijk - verwacht) / (verwacht) * 100
-                # als verwacht < 0, draai teken om (zodat minder verlies positief is)
+                if verwacht == 0 or pd.isna(verwacht):
+                    return np.nan
+                surprise = (werkelijk - verwacht) / abs(verwacht) * 100
                 if verwacht < 0:
                     surprise = -surprise
                 return surprise
             
             df_month["Surprise %"] = df_month.apply(calc_surprise, axis=1)
+
 
 
  #           df_month["Surprise %"] = ((df_month["EPS"] - df_month["EPS (Avg, est.)"]) / df_month["EPS (Avg, est.)"]) * 100
