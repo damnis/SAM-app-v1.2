@@ -336,7 +336,7 @@ advies_kleur = "green" if huidig_advies == "Kopen" else "red" if huidig_advies =
 # --- Check op koersdata beschikbaarheid ---
 if df is None or df.empty or "Close" not in df.columns or df["Close"].dropna().empty:
     st.warning("⚠️ Geen koersdata beschikbaar voor deze ticker. Analyse en adviezen zijn niet mogelijk.")
-    st.stop()  # Of gewoon return als dit in een functie zit
+#    st.stop()  # Of gewoon return als dit in een functie zit
 else:
     # Titel met kleur en grootte tonen - indicator
     col1, col2 = st.columns([1, 2])
@@ -498,7 +498,7 @@ toon_fundamentals(ticker)
 df_signalen = df.copy()
 if "Advies" not in df_signalen.columns:
     st.error("Kolom 'Advies' ontbreekt in de data.")
-    st.stop()
+#    st.stop()
 backtest_functie(df, signaalkeuze=signaalkeuze, selected_tab=selected_tab, interval=interval)  
 # ✅ #backtest_functie(df, selected_tab, signaalkeuze)
 
