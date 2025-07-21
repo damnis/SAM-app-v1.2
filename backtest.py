@@ -92,7 +92,7 @@ def backtest_functie(df, signaalkeuze, selected_tab, interval):
     close_col = next((col for col in df_period.columns if col.lower().startswith("close")), None)
     if not close_col:
         st.error("❌ Geen geldige 'Close'-kolom gevonden in deze dataset.")
-        st.stop()
+#        st.stop()
 
     st.text(f"Geselecteerde signaalkeuze (bij risk aversion): {signaalkeuze}")
     
