@@ -344,9 +344,9 @@ def toon_trading_bot_interface(ticker, huidig_advies):
     if client is None:
         return
 
-     if trade_mode == "Live":
+    if trade_mode == "Live":
         st.warning("⚠️ LIVE TRADING - ECHT GELD! Dubbelcheck bedrag & ticker!")
-     else:
+    else:
         st.info("🧪 Paper Trading (virtueel geld, geen risico)")
 
     # Live asset feedback (ticker mapping + Alpaca check)
