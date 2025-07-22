@@ -47,9 +47,6 @@ def toon_profiel_en_kerninfo(profile, key_metrics, income_statement=None):
             latest_metrics = key_metrics[0] if key_metrics and isinstance(key_metrics, list) and len(key_metrics) > 0 else {}
             col2.metric("Dividendrendement", format_value(latest_metrics.get("dividendYield", 0), is_percent=True) if latest_metrics else "-")
             col3.metric("Payout Ratio", format_value(latest_metrics.get("payoutRatio", 0), is_percent=True) if latest_metrics else "-")
-
-    #        col2.metric("Dividendrendement", format_value(key_metrics.get("dividendYield", 0), is_percent=True))
-     #       col3.metric("Payout Ratio", format_value(key_metrics.get("payoutRatio", 0), is_percent=True))
             col3.metric("Aantal medewerkers", format_value(profile.get("fullTimeEmployees")))
 
             # ➕ Derde rij uit income_statement
@@ -62,11 +59,6 @@ def toon_profiel_en_kerninfo(profile, key_metrics, income_statement=None):
                 col3.metric("Bruto winst %", format_value(laatste.get("grossProfitRatio", 0), is_percent=True))
 
                 st.markdown(f"**Beschrijving:** {profile.get('description', '')}")
-
-            
-
-
-
 
 # omzet en winst
 def toon_omzet_winst_eps(income_data):
@@ -118,8 +110,6 @@ def toon_ratios(ratio_data):
             if isinstance(df_qr, list) and len(df_qr) > 0:
                 df_qr = pd.DataFrame(df_qr)
 
-
-        
 
 # belangrijke datums 
 def toon_datums(earnings, dividends):
@@ -200,8 +190,6 @@ def toon_datums(earnings, dividends):
 
 
 
-
-
 # fundamentals voor main
 def toon_fundamentals(ticker):
     st.subheader("🏛️ Fundamentals")
@@ -253,9 +241,6 @@ def toon_fundamentals(ticker):
         latest_metrics = key_metrics[0] if key_metrics and isinstance(key_metrics, list) and len(key_metrics) > 0 else {}
         col2.metric("Dividendrendement", format_value(latest_metrics.get("dividendYield", 0), is_percent=True) if latest_metrics else "-")
         col3.metric("Payout Ratio", format_value(latest_metrics.get("payoutRatio", 0), is_percent=True) if latest_metrics else "-")
-
-  #      col2.metric("Dividendrendement", format_value(key_metrics.get("dividendYield", 0), is_percent=True) if key_metrics else "-")
-   #     col3.metric("Payout Ratio", format_value(key_metrics.get("payoutRatio", 0), is_percent=True) if key_metrics else "-")
         col3.metric("Aantal medewerkers", format_value(profile.get("fullTimeEmployees")))
         
         # ➕ Derde rij uit income_statement
@@ -327,44 +312,7 @@ def toon_fundamentals(ticker):
                     st.dataframe(df_extra.set_index("Jaar")[met_ratios])
 
         
-        # 🔹 Alle ratio's per jaar
- #       try:
-#            df_qr = get_ratios(ticker + "?period=quarter")
-#            if isinstance(df_qr, list) and len(df_qr) > 0:
-#                df_qr = pd.DataFrame(df_qr)
- #               col_renames = {
-#                    "currentRatio": "Current ratio",
-#                    "quickRatio": "Quick ratio",
- #                   "grossProfitMargin": "Bruto marge",
-#                    "operatingProfitMargin": "Operationele marge",
-#                    "netProfitMargin": "Netto marge",
-#                    "returnOnAssets": "Rentabiliteit",
-#                    "inventoryTurnover": "Omloopsnelheid",
-#                }
-    
-#                df_qr.rename(columns=col_renames, inplace=True)
-#                df_qr.rename(columns={"date": "Kwartaal"}, inplace=True)
- #               df_qr["Kwartaal"] = pd.to_datetime(df_qr["Kwartaal"]).dt.date
-    
-                # Format alle numerieke kolommen
-#                for col in df_qr.columns:
-#                    if col == "Kwartaal":
-#                        continue
-#                    try:
- #                       if "marge" in col.lower() or "margin" in col.lower() or "Rate" in col or "%" in col or "Yield" in col:
-  #                          df_qr[col] = df_qr[col].apply(lambda x: format_value(x, is_percent=True))
-   #                     else:
- #                           df_qr[col] = df_qr[col].apply(format_value)
-  #                  except:
- #                       pass
-    
- #               with st.expander("🧮 Alle ratio’s per jaar"):
-#                    st.dataframe(df_qr.set_index("Kwartaal"))
-#            else:
-#                st.info("📭 Geen kwartaalratio's gevonden.")
-#        except Exception as e:
- #           st.warning(f"⚠️ Fout bij kwartaalratio's: {e}")
-
+  
     # 🔹 Resultatenrekening plus per jaar! 
         try:
             df_qr = get_quarterly_eps(ticker + "?period=quarter")
@@ -432,8 +380,7 @@ def toon_fundamentals(ticker):
                 }, inplace=True)
                 st.line_chart(df_earn_graph)
                 
- #               st.line_chart(df_income.set_index("date")[["revenue", "netIncome"]])
-            except:
+             except:
                 st.info("📉 Geen omzet/winst grafiek beschikbaar.")
         with col2:
             try:
@@ -600,9 +547,6 @@ def toon_fundamentals(ticker):
             
             df_month["Surprise %"] = df_month.apply(calc_surprise, axis=1)
 
-
-
- #           df_month["Surprise %"] = ((df_month["EPS"] - df_month["EPS (Avg, est.)"]) / df_month["EPS (Avg, est.)"]) * 100
             df_month = df_month.set_index("Datum")
             df_month = df_month.sort_index(ascending=False)
 
