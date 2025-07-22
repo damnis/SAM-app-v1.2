@@ -115,27 +115,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-#<div class="sam-uitleg" style='display: flex; justify-content: space-between; align-items: top;'>
-#  <div style='flex: 2; min-width:220px; max-width:700px;'>
-#    <h5 style='margin: 0;'>Stage and Trend Simple Alert Monitor</h5>
-#  </div>
-#  <div style='flex: 1; text-align: right;'>
-#    <details>
- #     <summary style='cursor: pointer; font-weight: bold; color: #555;text-align: right;'>ℹ️ Uitleg Indicator</summary>
-  #    <div style='margin-top: 10px;'>
-#        <p style='font-size: 12px; color: #333; text-align: left'>
-#        Gebruik de <strong>SAT+SAM Trading Indicator</strong> door voornamelijk te sturen op de blauwe lijn in de SAM en Trend grafiek,
- #       de trendlijn. De groene en rode SAM waarden (vaak perioden) geven het momentum weer...<br><br>
-  #      Het advies is hiervan afgeleid en kan bijgesteld worden door de gevoeligheid aan te passen.<br>
-#        De indicator is oorspronkelijk bedoeld voor de <strong>middellange termijn belegger</strong>.
-#        </p>
-#      </div>
-#    </details>
-#  </div>
-#</div>
-#""", unsafe_allow_html=True)
-
-
 
 
 # --- Update tab labels en bijbehorende mapping ---
@@ -470,24 +449,6 @@ toon_fundamentals(ticker)
 
 
 
-#st.subheader("Fundamentals")
-#st.write("✅ Profiel:", profile)
-#st.write("✅ Key metrics:", key_metrics)
-#st.write("✅ Income data:", income_data[:1])  # eerste record
-#st.write("✅ Ratio data:", ratio_data[:1])
-
-# Bedrijfsprofiel fmp (fundamental):
-#profile = get_profile(ticker)
-#key_metrics = get_key_metrics(ticker)
-#income_data = get_income_statement(ticker)
-#ratio_data = get_ratios(ticker)
-#earnings = get_earning_calendar(ticker)
-#dividends = get_dividend_history(ticker)
-
-#toon_profiel_en_kerninfo(profile, key_metrics)
-#toon_omzet_winst_eps(income_data)
-#toon_ratios(ratio_data)
-#toon_datums(earnings, dividends)
 
 
 #st.write("DEBUG signaalkeuze boven Backtest:", signaalkeuze)
@@ -541,69 +502,17 @@ toon_trading_bot_interface(ticker, huidig_advies)
 
 # -----------------------------
 #FMP testapi
-if st.sidebar.checkbox("🧪 FMP Test Tool"):
-    test_fmp_endpoint()
+#if st.sidebar.checkbox("🧪 FMP Test Tool"):
+#    test_fmp_endpoint()
 #yfinance testapi
-if st.sidebar.checkbox("🧪 yfinance Test Tool"):
-    test_yfinance()
-    if testbron == "yfinance":
+#if st.sidebar.checkbox("🧪 yfinance Test Tool"):
+#    test_yfinance()
+#    if testbron == "yfinance":
         ...
-        test_analyst_data_yf(ticker)
+#        test_analyst_data_yf(ticker)
 
  
 ###### oud
-
-#    for i in range(2, len(df)):
-#            sam_1 = df["SAM"].iloc[i]
-#            trends_1 = df["Trend"].iloc[i]
-#            trends_2 = df["Trend"].iloc[i - 1]
-#            trend_1 = df["SAT_Trend"].iloc[i]
-#            trend_2 = df["SAT_Trend"].iloc[i - 1]
-#            trend_3 = df["SAT_Trend"].iloc[i - 2]
-#            stage_1 = df["SAT_Stage"].iloc[i]
-#            stage_2 = df["SAT_Stage"].iloc[i - 1]
-#            stage_3 = df["SAT_Stage"].iloc[i - 2]
-
-#            if trend_1 >= trend_2 and trend_2 >= trend_3 and stage_1 > 0 or (trends_1 - trends_2 >= 0) and sam_1 >= 0:
-#                df.at[df.index[i], "Advies"] = "Kopen"
- #           elif trend_1 < trend_2 and stage_1 < 0 and stage_2 < 0: # optie and trend_2 < trend_3 
- #               df.at[df.index[i], "Advies"] = "Verkopen"
-
-#        df["Advies"] = df["Advies"].ffill()
-
-    
-#    elif risk_aversion == 2:
-#        for i in range(2, len(df)):
-#            trend_1 = df["SAT_Trend"].iloc[i]
-#            trend_2 = df["SAT_Trend"].iloc[i - 1]
- #           trend_3 = df["SAT_Trend"].iloc[i - 2]
-#            stage_1 = df["SAT_Stage"].iloc[i]
- #           stage_2 = df["SAT_Stage"].iloc[i - 1]
- #           stage_3 = df["SAT_Stage"].iloc[i - 2]
-
-#            if trend_1 >= trend_2 and trend_2 >= trend_3 and stage_1 > 0 and stage_2 > 0:
-#                df.at[df.index[i], "Advies"] = "Kopen"
- #           elif trend_1 < trend_2 and stage_1 < 0: # optie and trend_2 < trend_3 
-  #              df.at[df.index[i], "Advies"] = "Verkopen"
-
-#        df["Advies"] = df["Advies"].ffill()
-
-#    elif risk_aversion == 3:
-#        for i in range(2, len(df)):
-#            trend_1 = df["SAT_Trend"].iloc[i]
- #           trend_2 = df["SAT_Trend"].iloc[i - 1]
-#            trend_3 = df["SAT_Trend"].iloc[i - 2]
-#            stage_1 = df["SAT_Stage"].iloc[i]
-#            stage_2 = df["SAT_Stage"].iloc[i - 1]
- #           stage_3 = df["SAT_Stage"].iloc[i - 2]
-            
-  #          if trend_1 > 0 and stage_1 > 0:
-  #              df.at[df.index[i], "Advies"] = "Kopen"
-  #          elif trend_1 < trend_2 and stage_1 < 0 and stage_2 < 0:
-  #              df.at[df.index[i], "Advies"] = "Verkopen"
-
-  #      df["Advies"] = df["Advies"].ffill()
-
 
 
 
