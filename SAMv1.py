@@ -508,7 +508,7 @@ toon_trading_bot_interface(ticker, huidig_advies)
 #if st.sidebar.checkbox("🧪 yfinance Test Tool"):
 #    test_yfinance()
 #    if testbron == "yfinance":
-        ...
+#        ...
 #        test_analyst_data_yf(ticker)
 
  
