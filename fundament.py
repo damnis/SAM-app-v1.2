@@ -380,7 +380,7 @@ def toon_fundamentals(ticker):
                 }, inplace=True)
                 st.line_chart(df_earn_graph)
                 
-             except:
+            except:
                 st.info("📉 Geen omzet/winst grafiek beschikbaar.")
         with col2:
             try:
