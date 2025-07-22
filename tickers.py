@@ -173,7 +173,7 @@ tickers_screening = [
     "AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSLA", "AMD", "NFLX", "INTC",
     "ASM", "ASML", "SMCI", "PLTR", "ORCL", "AVGO", "SHOP", "BITF", "COIN",
     "SNOW", "MDB", "DDOG", "CRWD", "ZS", "CSCO", "ADBE", "CMCSA", "PEP", "COST",
-    "QCOM", "TMUS", "TXN", "AMAT",
+    "QCOM", "TMUS", "TXN", "AMAT", "DKNG", "RYTM",
     'MMM', 'AXP', 'AMGN', 'BA', 'CAT', 'CVX', 'CSCO', 'KO', 'DIS',
     'GS', 'HD', 'HON', 'IBM', 'JPM', 'JNJ', 'MCD', 'MRK',
     'NKE', 'PG', 'CRM', 'TRV', 'UNH', 'VZ', 'V', 'WMT', 'DOW', 'RTX', 'WBA',
