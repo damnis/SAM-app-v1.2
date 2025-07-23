@@ -184,6 +184,10 @@ tickers_screening = [
 #    "BFIT.AS", "CRBN.AS", "ECMPA.AS", "FAGR.BR", "FLOW.AS", "FUR.AS",
 #    "LIGHT.AS", "NSI.AS", "OCI.AS", "PHARM.AS", "PNL.AS", "SBMO.AS", "TWEKA.AS",
 #    "VPK.AS", "WDP.BR", "AMG.AS", "AALB.AS", "KENDR.AS", "VASTN.AS"
+     "LLY","JNJ","ABBV","MRK","AMGN","PFE","GILD","AZN","NVO","BMY","VKTX",
+     "VRTX","REGN","ALNY","BNTX","BIIB","BEAM","CRSP","EXEL","MRNA","BGNE",
+     "ARGX","GMAB","BRMN","CRMD","RIGL","TGTX","ABVX","ACAD","VKTX","ONCT",
+     "IONS","PTCT","CRNX","FRCT","NBIX","JUNS", "AMRN"
 
 
 ]
