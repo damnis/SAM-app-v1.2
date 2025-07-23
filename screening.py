@@ -25,7 +25,7 @@ def get_momentum(df, periode="1w"):
 def screen_tickers(
         tickers_screening, 
         min_momentum=1, 
-        adviezen_toevoegen=("Kopen", "Verkopen"),
+        adviezen_toevoegen=("Kopen"),
         threshold=2,
         risk_aversion=1,
         debug=False 
