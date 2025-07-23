@@ -390,7 +390,7 @@ if st.button("🔎 Zoek stijgers met koop advies (1 wk)"):
 
 # Screening volume
 if st.button("🔎 Zoek hoog volume met koop advies (1 wk)"):
-    screeneresult = screen_tickers_vol(tickers_screening, min_momentum=2)
+    screeneresult = screen_tickers_vol(tickers_screening, min_momentum=30)
 #    st.dataframe(screeneresult)
 
     if not screeneresult.empty:
