@@ -21,10 +21,12 @@ def get_volume_momentum(df, periode="1w"):
                 if prev_28 == 0:  # Voorkom delen door nul
                     return None
                 # Relatief verschil in %
-                rel = (last_7 - prev_28/4) / (prev_28/4) * 100  # t.o.v. weekgemiddelde
+#               rel = (last_7 - prev_28/4) / (prev_28/4) * 100  # t.o.v. weekgemiddelde
+              
+                return (last_7 - prev_28/4) / (prev_28/4)
                 # Of als je echt de ratio wilt:
                 # rel = last_7 / (prev_28 / 4)
-                return rel
+ #               return rel
             except Exception as e:
                 # st.write(f"Volume-momentum exceptie: {e}")
                 return None
@@ -32,20 +34,20 @@ def get_volume_momentum(df, periode="1w"):
 
 
 
-@st.cache_data(ttl=3600)
-def get_momentum(df, periode="1w"):
-    if periode == "1w":
-        if df is not None and len(df) >= 7 and "Close" in df.columns:
-            try:
-                return (df["Close"].iloc[-1] - df["Close"].iloc[-6]) / df["Close"].iloc[-6] * 100
-            except Exception as e:
+#@st.cache_data(ttl=3600)
+#def get_momentum(df, periode="1w"):
+#    if periode == "1w":
+#        if df is not None and len(df) >= 7 and "Close" in df.columns:
+#            try:
+#                return (df["Close"].iloc[-1] - df["Close"].iloc[-6]) / df["Close"].iloc[-6] * 100
+#            except Exception as e:
 #                print(f"Momentum exceptie bij indexering: {e}")
  #               st.write(f"Momentum exceptie bij indexering: {e}")
-                return None
-    return None
+ #               return None
+ #   return None
 
 @st.cache_data(ttl=3600)
-def screen_tickers(
+def screen_tickers_vol(
         tickers_screening, 
         min_momentum=1, 
         adviezen_toevoegen=("Kopen", "Verkopen"),
