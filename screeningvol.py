@@ -27,6 +27,7 @@ def get_volume_momentum(df, periode="1w"):
                 # Of als je echt de ratio wilt:
                 # rel = last_7 / (prev_28 / 4)
  #               return rel
+            if debug: st.write(f"{ticker}: {len(df)} rijen, kolommen: {df.columns}")
             except Exception as e:
                 
                 st.write(f"Volume-momentum exceptie: {e}")
