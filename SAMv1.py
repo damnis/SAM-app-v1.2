@@ -351,8 +351,8 @@ else:
 # screeners in kolommen verbeterd
 # 📌 Twee knoppen in kolommen
 col1, col2 = st.columns(2)
-zoek_stijgers = col1.button("🔎 Zoek stijgers met koop advies (1 wk)")
-zoek_hoog_volume = col2.button("🔎 Zoek hoog volume met koop advies (1 wk)")
+zoek_stijgers = col1.button("🔎 Zoek stijgers met koop advies")
+zoek_hoog_volume = col2.button("🔎 Zoek hoog volume met koop advies")
 
 def get_analyst_rec_batch(tickers):
     @st.cache_data(ttl=3600)
