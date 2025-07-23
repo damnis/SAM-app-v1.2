@@ -37,9 +37,9 @@ nasdaq_tickers = {
 
 ustech_tickers = {
     "SMCI": "Super Micro Computer", "PLTR": "Palantir", "ORCL": "Oracle", "SNOW": "Snowflake",
-    "NVDA": "NVIDIA", "AMD": "AMD", "MDB": "MongoDB", "DDOG": "Datadog", "CRWD": "CrowdStrike",
+    "NVDA": "NVIDIA", "AMD": "AMD", "MDB": "MongoDB", "META": "Meta Platforms", "DDOG": "Datadog", "CRWD": "CrowdStrike",
     "ZS": "Zscaler", "TSLA": "Tesla", "AAPL": "Apple", "GOOGL": "Alphabet (GOOGL)",
-    "MSFT": "Microsoft"
+    "MSFT": "Microsoft", 'AVGO': 'Broadcom', 'QCOM': 'Qualcomm'
 }
 eurostoxx_tickers = {
     '^STOXX50E': 'Eurostoxx index', 'ASML.AS': 'ASML Holding', 'AIR.PA': 'Airbus', 'BAS.DE': 'BASF', 'BAYN.DE': 'Bayer',
