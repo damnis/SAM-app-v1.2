@@ -349,81 +349,85 @@ else:
         )
 
 
-# screening tool koers
 
-if st.button("🔎 Zoek stijgers met koop advies (1 wk)"):
-    screeneresult = screen_tickers(tickers_screening, min_momentum=2)
+# 📌 Screeners in kolommen
+col1, col2 = st.columns([3, 4])
+with col1:
+    # screening tool koers
+
+    if st.button("🔎 Zoek stijgers met koop advies (1 wk)"):
+        screeneresult = screen_tickers(tickers_screening, min_momentum=2)
 #    st.dataframe(screeneresult)
 
-    if not screeneresult.empty:
-        st.markdown("### 💡 SAT + SAM Advies en Marktadvies (analisten):")
-        tickers = list(screeneresult["Ticker"])
+        if not screeneresult.empty:
+            st.markdown("### 💡 SAT + SAM Advies en Marktadvies (analisten):")
+            tickers = list(screeneresult["Ticker"])
 
         # Ophalen en combineren
-        @st.cache_data(ttl=3600)
-        def get_latest_analyst_rec(ticker):
-            data = get_analyst_recommendations(ticker)
-            if data:
-                last = data[0]
-                return {
+            @st.cache_data(ttl=3600)
+            def get_latest_analyst_rec(ticker):
+                data = get_analyst_recommendations(ticker)
+                if data:
+                    last = data[0]
+                    return {
 #                    "Symbol": ticker,
-                    "Markt advies": last.get("date", None),
-                    "Buy": last.get("analystRatingsbuy", 0) + last.get("analystRatingsStrongBuy", 0),
-                    "Hold": last.get("analystRatingsHold", 0),
-                    "Sell": last.get("analystRatingsSell", 0) + last.get("analystRatingsStrongSell", 0),
-                }
+                        "Markt advies": last.get("date", None),
+                        "Buy": last.get("analystRatingsbuy", 0) + last.get("analystRatingsStrongBuy", 0),
+                        "Hold": last.get("analystRatingsHold", 0),
+                        "Sell": last.get("analystRatingsSell", 0) + last.get("analystRatingsStrongSell", 0),
+                    }
                 
-            else:
-                return {"Buy": None, "Hold": None, "Sell": None}
+                else:
+                    return {"Buy": None, "Hold": None, "Sell": None}
 
-        analyst_data = []
-        for ticker in tickers:
-            row = {"Ticker": ticker}
-            row.update(get_latest_analyst_rec(ticker))
-            analyst_data.append(row)
-        df_analyst = pd.DataFrame(analyst_data)
+            analyst_data = []
+            for ticker in tickers:
+                row = {"Ticker": ticker}
+                row.update(get_latest_analyst_rec(ticker))
+                analyst_data.append(row)
+            df_analyst = pd.DataFrame(analyst_data)
 
         # Merge met screeningresultaat
-        result = screeneresult.merge(df_analyst, on="Ticker", how="left")
-        st.dataframe(result)
+            result = screeneresult.merge(df_analyst, on="Ticker", how="left")
+            st.dataframe(result)
 
-
-# Screening volume
-if st.button("🔎 Zoek hoog volume met koop advies (1 wk)"):
-    screeneresult = screen_tickers_vol(tickers_screening, min_momentum=30)
+with col2:
+ # Screening volume
+    if st.button("🔎 Zoek hoog volume met koop advies (1 wk)"):
+        screeneresult = screen_tickers_vol(tickers_screening, min_momentum=30)
 #    st.dataframe(screeneresult)
 
-    if not screeneresult.empty:
-        st.markdown("### 💡 SAT + SAM Advies en Marktadvies (analisten):")
-        tickers = list(screeneresult["Ticker"])
+        if not screeneresult.empty:
+            st.markdown("### 💡 SAT + SAM Advies en Marktadvies (analisten):")
+            tickers = list(screeneresult["Ticker"])
 
         # Ophalen en combineren
-        @st.cache_data(ttl=3600)
-        def get_latest_analyst_rec(ticker):
-            data = get_analyst_recommendations(ticker)
-            if data:
-                last = data[0]
-                return {
+            @st.cache_data(ttl=3600)
+            def get_latest_analyst_rec(ticker):
+                data = get_analyst_recommendations(ticker)
+                if data:
+                    last = data[0]
+                    return {
 #                    "Symbol": ticker,
-                    "Markt advies": last.get("date", None),
-                    "Buy": last.get("analystRatingsbuy", 0) + last.get("analystRatingsStrongBuy", 0),
-                    "Hold": last.get("analystRatingsHold", 0),
-                    "Sell": last.get("analystRatingsSell", 0) + last.get("analystRatingsStrongSell", 0),
-                }
+                        "Markt advies": last.get("date", None),
+                        "Buy": last.get("analystRatingsbuy", 0) + last.get("analystRatingsStrongBuy", 0),
+                        "Hold": last.get("analystRatingsHold", 0),
+                        "Sell": last.get("analystRatingsSell", 0) + last.get("analystRatingsStrongSell", 0),
+                    }
                 
-            else:
-                return {"Buy": None, "Hold": None, "Sell": None}
+                else:
+                    return {"Buy": None, "Hold": None, "Sell": None}
 
-        analyst_data = []
-        for ticker in tickers:
-            row = {"Ticker": ticker}
-            row.update(get_latest_analyst_rec(ticker))
-            analyst_data.append(row)
-        df_analyst = pd.DataFrame(analyst_data)
+            analyst_data = []
+            for ticker in tickers:
+                row = {"Ticker": ticker}
+                row.update(get_latest_analyst_rec(ticker))
+                analyst_data.append(row)
+            df_analyst = pd.DataFrame(analyst_data)
 
         # Merge met screeningresultaat
-        result = screeneresult.merge(df_analyst, on="Ticker", how="left")
-        st.dataframe(result)
+            result = screeneresult.merge(df_analyst, on="Ticker", how="left")
+            st.dataframe(result)
 
 
 
