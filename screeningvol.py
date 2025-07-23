@@ -111,11 +111,11 @@ def screen_tickers_vol(
         except Exception as e:
             st.write(f"🚨 Fout bij {ticker}: {e}")
             continue
-#    df_result = pd.DataFrame(results)
-#    if debug: 
-#        st.write("Resultaat screening:")
-#        st.write(df_result)
-#    return df_result
+    df_result = pd.DataFrame(results)
+    if debug: 
+        st.write("Resultaat screening:")
+        st.write(df_result)
+    return df_result
 
 # ------------------------------
 # Voorbeeld aanroep:
