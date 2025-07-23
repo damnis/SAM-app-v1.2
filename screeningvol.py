@@ -53,7 +53,7 @@ def screen_tickers_vol(
         adviezen_toevoegen=("Kopen", "Verkopen"),
         threshold=2,
         risk_aversion=1,
-        debug=False 
+        debug=True 
     ):
     results = []
     for ticker in tickers_screening:
@@ -76,8 +76,8 @@ def screen_tickers_vol(
                 continue
 
             momentum = get_volume_momentum(df, periode="1w")
-  #          if debug: print(f"Momentum: {momentum}")
-   #         if debug: st.write(f"Momentum: {momentum}")
+            if debug: print(f"Momentum: {momentum}")
+            if debug: st.write(f"Momentum: {momentum}")
             if momentum is None or momentum < min_momentum:
    #             print(f"⛔ Momentum te laag of None voor {ticker}: {momentum}")
     #            st.write(f"⛔ Momentum te laag of None voor {ticker}: {momentum}")
