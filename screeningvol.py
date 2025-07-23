@@ -48,7 +48,7 @@ def get_volume_momentum(df, periode="1w", debug=False, ticker=None):
 @st.cache_data(ttl=3600)
 def screen_tickers_vol(
         tickers_screening, 
-        min_momentum=50,     # = 50% stijging t.o.v. weekgemiddelde 4wk
+        min_momentum=20,     # = 50% stijging t.o.v. weekgemiddelde 4wk
         adviezen_toevoegen=("Kopen"),
         threshold=2,
         risk_aversion=1,
