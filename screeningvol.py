@@ -23,7 +23,7 @@ def get_volume_momentum(df, periode="1w"):
                 # Relatief verschil in %
 #               rel = (last_7 - prev_28/4) / (prev_28/4) * 100  # t.o.v. weekgemiddelde
               
-                return (last_7 - prev_28/4) / (prev_28/4)
+                return (last_7 - prev_28/4) / (prev_28/4) *100
                 # Of als je echt de ratio wilt:
                 # rel = last_7 / (prev_28 / 4)
  #               return rel
