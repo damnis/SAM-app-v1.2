@@ -49,10 +49,10 @@ def get_volume_momentum(df, periode="1w", debug=False, ticker=None):
 def screen_tickers_vol(
         tickers_screening, 
         min_momentum=50,     # = 50% stijging t.o.v. weekgemiddelde 4wk
-        adviezen_toevoegen=("Kopen", "Verkopen"),
+        adviezen_toevoegen=("Kopen"),
         threshold=2,
         risk_aversion=1,
-        debug=True 
+        debug=False 
     ):
     results = []
     for ticker in tickers_screening:
