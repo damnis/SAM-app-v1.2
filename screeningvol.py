@@ -28,7 +28,8 @@ def get_volume_momentum(df, periode="1w"):
                 # rel = last_7 / (prev_28 / 4)
  #               return rel
             except Exception as e:
-                # st.write(f"Volume-momentum exceptie: {e}")
+                
+                st.write(f"Volume-momentum exceptie: {e}")
                 return None
     return None
 
@@ -47,7 +48,7 @@ def screen_tickers_vol(
     results = []
     for ticker in tickers_screening:
         try:
-#            if debug: print(f"\n▶️ Screening {ticker} ...")
+            if debug: print(f"\n▶️ Screening {ticker} ...")
 #            if debug: st.write(f"\n▶️ Screening {ticker} ...")
             
             profile = get_profile(ticker)
@@ -57,7 +58,7 @@ def screen_tickers_vol(
 
             df = fetch_data_fmp(ticker, periode="2y")
 #            if debug: 
-#                print(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
+                print(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
 #                st.write(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
             if df is None or df.empty or "Close" not in df.columns:
    #             print(f"⛔ Geen geldige dataframe voor {ticker}")
@@ -68,7 +69,7 @@ def screen_tickers_vol(
             if debug: print(f"Momentum: {momentum}")
             if debug: st.write(f"Momentum: {momentum}")
             if momentum is None or momentum < min_momentum:
-   #             print(f"⛔ Momentum te laag of None voor {ticker}: {momentum}")
+                print(f"⛔ Momentum te laag of None voor {ticker}: {momentum}")
     #            st.write(f"⛔ Momentum te laag of None voor {ticker}: {momentum}")
                 continue
 
