@@ -187,7 +187,8 @@ tickers_screening = [
      "LLY","JNJ","ABBV","MRK","AMGN","PFE","GILD","AZN","NVO","BMY","VKTX",
      "VRTX","REGN","ALNY","BNTX","BIIB","BEAM","CRSP","EXEL","MRNA","BGNE",
      "ARGX","GMAB","BRMN","CRMD","RIGL","TGTX","ABVX","ACAD","VKTX","ONCT",
-     "IONS","PTCT","CRNX","FRCT","NBIX","JUNS", "AMRN"
+     "IONS","PTCT","CRNX","FRCT","NBIX","JUNS", "AMRN", "LIXT", "YHC", "VOR", 
+     "CIGL"
 
 
 ]
