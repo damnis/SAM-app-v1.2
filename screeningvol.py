@@ -57,7 +57,7 @@ def screen_tickers_vol(
             naam = profile.get("companyName", "") if profile else ""
 
             df = fetch_data_fmp(ticker, periode="2y")
-#            if debug: 
+            if debug: 
                 print(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
 #                st.write(f"FMP-data voor {ticker}: leeg? {df is None or df.empty}, columns: {df.columns if df is not None else None}")
             if df is None or df.empty or "Close" not in df.columns:
