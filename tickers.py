@@ -180,14 +180,14 @@ tickers_screening = [
 #    "ABN.AS", "ADYEN.AS", "AGN.AS", "AD.AS", "AKZA.AS", "MT.AS", "ASM.AS", "ASML.AS", "ASRNL.AS",
 #    "BESI.AS", "DSFIR.AS", "GLPG.AS", "HEIA.AS", "IMCD.AS", "INGA.AS", "TKWY.AS", "KPN.AS",
 #    "NN.AS", "PHIA.AS", "PRX.AS", "RAND.AS", "REN.AS", "SHELL.AS", "UNA.AS", "WKL.AS",
-    "AF.PA", "APAM.AS", "ARCAD.AS", "BAMNB.AS", "BESI.AS", "ABVX"
+    "AF.PA", "APAM.AS", "ARCAD.AS", "BAMNB.AS", "BESI.AS", "ABVX", 
 #    "BFIT.AS", "CRBN.AS", "ECMPA.AS", "FAGR.BR", "FLOW.AS", "FUR.AS",
 #    "LIGHT.AS", "NSI.AS", "OCI.AS", "PHARM.AS", "PNL.AS", "SBMO.AS", "TWEKA.AS",
 #    "VPK.AS", "WDP.BR", "AMG.AS", "AALB.AS", "KENDR.AS", "VASTN.AS"
      "LLY","JNJ","ABBV","MRK","AMGN","PFE","GILD","AZN","NVO","BMY","VKTX",
      "VRTX","REGN","ALNY","BNTX","BIIB","BEAM","CRSP","EXEL","MRNA","BGNE",
-     "ARGX","GMAB","BRMN","CRMD","RIGL","TGTX","ABVX","ACAD","VKTX","ONCT",
-     "IONS","PTCT","CRNX","FRCT","NBIX","JUNS", "AMRN", "LIXT", "YHC", "VOR", 
+     "ARGX","GMAB","CRMD","RIGL","TGTX","ABVX","ACAD","VKTX","ONCT",
+     "IONS","PTCT","CRNX","NBIX","JUNS", "AMRN", "LIXT", "YHC", "VOR", 
      "CIGL"
 
 
