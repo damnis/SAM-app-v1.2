@@ -52,7 +52,7 @@ def screen_tickers_vol(
         adviezen_toevoegen=("Kopen", "Verkopen"),
         threshold=2,
         risk_aversion=1,
-        debug=False 
+        debug=True 
     ):
     results = []
     for ticker in tickers_screening:
