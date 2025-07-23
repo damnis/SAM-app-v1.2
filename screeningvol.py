@@ -10,6 +10,29 @@ from tickers import tickers_screening
 
 
 @st.cache_data(ttl=3600)
+def get_volume_momentum(df, periode="1w"):
+    if periode == "1w":
+        if df is not None and len(df) >= 35 and "Volume" in df.columns:
+            try:
+                # Laatste 7 dagen
+                last_7 = df["Volume"].iloc[-7:].sum()
+                # 28 dagen daarvoor
+                prev_28 = df["Volume"].iloc[-35:-7].sum()
+                if prev_28 == 0:  # Voorkom delen door nul
+                    return None
+                # Relatief verschil in %
+                rel = (last_7 - prev_28/4) / (prev_28/4) * 100  # t.o.v. weekgemiddelde
+                # Of als je echt de ratio wilt:
+                # rel = last_7 / (prev_28 / 4)
+                return rel
+            except Exception as e:
+                # st.write(f"Volume-momentum exceptie: {e}")
+                return None
+    return None
+
+
+
+@st.cache_data(ttl=3600)
 def get_momentum(df, periode="1w"):
     if periode == "1w":
         if df is not None and len(df) >= 7 and "Close" in df.columns:
@@ -50,7 +73,7 @@ def screen_tickers(
   #              st.write(f"⛔ Geen geldige dataframe voor {ticker}")
                 continue
 
-            momentum = get_momentum(df, periode="1w")
+            momentum = get_volume_momentum(df, periode="1w")
   #          if debug: print(f"Momentum: {momentum}")
    #         if debug: st.write(f"Momentum: {momentum}")
             if momentum is None or momentum < min_momentum:
