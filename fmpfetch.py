@@ -94,7 +94,7 @@ def fetch_data_fmp(ticker, periode="10y"):
         df["Open"] = df["Close"]
         df["High"] = df["Close"]
         df["Low"] = df["Close"]
-        df["Volume"] = df["Volume"]
+        df["Volume"] = df["Close"]
 
         # 📉 Indicatoren
         df["MA35"] = df["Close"].rolling(window=35, min_periods=1).mean()
