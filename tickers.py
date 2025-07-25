@@ -175,7 +175,7 @@ tickers_screening = [
     "SNOW", "MDB", "DDOG", "CRWD", "ZS", "CSCO", "ADBE", "CMCSA", "PEP", "COST",
     "QCOM", "TMUS", "TXN", "AMAT", "DKNG", "RYTM",
     'MMM', 'AXP', 'AMGN', 'BA', 'CAT', 'CVX', 'CSCO', 'KO', 'DIS',
-    'GS', 'HD', 'HON', 'IBM', 'JPM', 'JNJ', 'MCD', 'MRK',
+    'GS', 'HD', 'HON', 'IBM', 'JPM', 'JNJ', 'MCD',
     'NKE', 'PG', 'CRM', 'TRV', 'UNH', 'VZ', 'V', 'WMT', 'DOW', 'RTX', 'WBA',
     "ABN.AS", "ADYEN.AS", "AGN.AS", "AD.AS", "AKZA.AS", "MT.AS", "ASM.AS", "ASML.AS", "ASRNL.AS",
     "BESI.AS", "DSFIR.AS", "GLPG.AS", "HEIA.AS", "IMCD.AS", "INGA.AS", "TKWY.AS", "KPN.AS",
