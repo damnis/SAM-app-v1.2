@@ -359,7 +359,7 @@ def toon_trading_bot_interface(ticker, huidig_advies):
         st.success(
             f"✅ {alpaca_ticker} ({asset_info['name']}, {asset_info['exchange']}) "
             f"— {'✔️' if asset_info['tradable'] else '❌'} tradable — "
-            f"Prijs: {asset_info['price'] if asset_info['price'] else 'n.v.t.'}"
+#            f"Prijs: {asset_info['price'] if asset_info['price'] else 'n.v.t.'}"
         )
 
     if account:
