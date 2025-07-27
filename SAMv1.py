@@ -32,8 +32,7 @@ from grafieken import toon_adviesmatrix_html
 from sam_tabel import toon_sam_tabel 
 from heatmap import toon_sector_heatmap
 # screening
-from screening import screen_tickers, screen_tickers_combined_full
-from screeningvol import screen_tickers_vol
+from screening import screen_tickers_combined_full
 # nieuws
 from newsfeed import toon_newsfeed
 # --- Fundamentele data ophalen en tonen ---
@@ -391,51 +390,6 @@ if zoek_stijgers:
         st.dataframe(result)
     else:
         st.info("Geen tickers voldoen aan minimaal één momentumcriterium én een koopadvies.")
-
-
-# oudere
-# 📌 Twee knoppen in kolommen
-col1, col2 = st.columns(2)
-zoek_stijgers = col1.button("🔎 Zoek stijgers met koop advies")
-zoek_hoog_volume = col2.button("🔎 Zoek hoog volume met koop advies")
-
-def get_analyst_rec_batch(tickers):
-    @st.cache_data(ttl=3600)
-    def get_latest_analyst_rec(ticker):
-        data = get_analyst_recommendations(ticker)
-        if data:
-            last = data[0]
-            return {
-                "Markt advies": last.get("date", None),
-                "Buy": last.get("analystRatingsbuy", 0) + last.get("analystRatingsStrongBuy", 0),
-                "Hold": last.get("analystRatingsHold", 0),
-                "Sell": last.get("analystRatingsSell", 0) + last.get("analystRatingsStrongSell", 0),
-            }
-        else:
-            return {"Buy": None, "Hold": None, "Sell": None}
-    analyst_data = []
-    for ticker in tickers:
-        row = {"Ticker": ticker}
-        row.update(get_latest_analyst_rec(ticker))
-        analyst_data.append(row)
-    return pd.DataFrame(analyst_data)
-
-# 📊 Toon resultaten onder de knoppen, over volledige breedte
-if zoek_stijgers:
-    screeneresult = screen_tickers(tickers_screening, min_momentum=6)
-    if not screeneresult.empty:
-        st.markdown("### 💡 SAT + SAM Advies en Marktadvies (analisten): (Koers-momentum)")
-        df_analyst = get_analyst_rec_batch(list(screeneresult["Ticker"]))
-        result = screeneresult.merge(df_analyst, on="Ticker", how="left")
-        st.dataframe(result)
-
-if zoek_hoog_volume:
-    screeneresult = screen_tickers_vol(tickers_screening, min_momentum=30)
-    if not screeneresult.empty:
-        st.markdown("### 💡 SAT + SAM Advies en Marktadvies (analisten): (Volume-momentum)")
-        df_analyst = get_analyst_rec_batch(list(screeneresult["Ticker"]))
-        result = screeneresult.merge(df_analyst, on="Ticker", how="left")
-        st.dataframe(result)
 
 
 
