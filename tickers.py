@@ -164,9 +164,9 @@ crypto_tickers = {
 
 mijn_lijst = {
     "": "Vrije keuze...", "ASM.AS": "ASM International", "ASML.AS": "ASML Holding", "AMZN": "Amazon",
-    "SMCI": "Super Micro Computer", "PLTR": "Palantir", "ORCL": "Oracle",
+    "SMCI": "Super Micro Computer", "PLTR": "Palantir", "ORCL": "Oracle", "SNOW": "Snowflake", "MDB": "MongoDB", 
     "NVDA": "NVIDIA", "AVGO": "Broadcom", "TSLA": "Tesla", "AAPL": "Apple",
-    "GOOGL": "Alphabet (GOOGL)", "MSFT": "Microsoft", "META": "Meta Platforms"
+    "GOOGL": "Alphabet (GOOGL)", "MSFT": "Microsoft", "META": "Meta Platforms", "BITF": "Bitfarms ltd."
 }
 
 tickers_screening = [
