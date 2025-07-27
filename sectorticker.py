@@ -44,11 +44,14 @@ sector_tickers_screening = {
     "VRTX","REGN","ALNY","BNTX","BIIB","BEAM","CRSP","EXEL","MRNA","BGNE",
     "ARGX","GMAB","CRMD","RIGL","TGTX","ABVX","ACAD","VKTX","ONCT",
     "IONS","PTCT","CRNX","NBIX","JUNS","AMRN","LIXT","YHC","VOR", 
-    "CIGL"
+    "CIGL", "BTCY"
     ],
     "Financials": ["JPM", "BAC", "WFC", "C", "GS", "MS", "AXP", "BK", "USB", "SCHW", "TFC", "COF", "MTB", "FITB", "HBAN", "PNC"],
     "Energy": ["XOM", "CVX", "COP", "EOG", "PSX", "VLO", "MPC", "HES", "OKE", "PXD", "WMB", "KMI", "SLB", "BKR", "HAL", "APA"],
-    "Crypto stocks": ["BITF", "COIN", "MSTR", "MARA", "RIOT", "BTCS", "CIFR", "HIVE", "SQ", "BKKT", "BSTR", "CEP", "CLSK", "IREN"],
+    "Crypto stocks": [
+    "BITF", "COIN", "MSTR", "MARA", "RIOT", "BTCS", "CIFR", "HIVE", "SQ", "BKKT", "BSTR", "CEP", "CLSK", "BTCM", "BTC", "BTCW", "OBTC", "FBTC", "IREN",
+    "ETHF", "ETH", 
+    ],
     "Nederland": [
     "ABN.AS", "ADYEN.AS", "AGN.AS", "AD.AS", "AKZA.AS", "MT.AS", "ASM.AS", "ASML.AS", "ASRNL.AS",
     "BESI.AS", "DSFIR.AS", "GLPG.AS", "HEIA.AS", "IMCD.AS", "INGA.AS", "TKWY.AS", "KPN.AS",
