@@ -23,7 +23,7 @@ def fetch_data(ticker, interval):
     if interval == "1m":
         period = "5d"
     elif interval == "5m":
-        period = "10d"
+        period = "30d"
     elif interval == "15m":
         period = "30d"
     elif interval == "1h":
