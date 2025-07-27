@@ -252,7 +252,7 @@ def screen_tickers_vol(
 
 
 @st.cache_data(ttl=3600)
-def screen_tickers_combined(
+def screen_tickers_combined_full(
         tickers_screening, 
         min_momentum=1, 
         min_volume_momentum=20,
@@ -273,12 +273,11 @@ def screen_tickers_combined(
                 if debug: st.write(f"⛔ Geen geldige dataframe voor {ticker}")
                 continue
 
-            # --- Koersmomentum ---
             koers_momentum = get_momentum(df, periode="1w")
-            # --- Volumemomentum ---
             volume_momentum = get_volume_momentum(df, periode="1w", ticker=ticker, debug=debug)
 
-            # --- Check of aan tenminste één criterium voldaan is
+            # ➡️ Nieuw: altijd beide waardes berekenen en tonen
+            # Bepaal of minimaal 1 van beide criteria gehaald is
             koers_ok = koers_momentum is not None and koers_momentum >= min_momentum
             volume_ok = volume_momentum is not None and volume_momentum >= min_volume_momentum
 
@@ -300,8 +299,8 @@ def screen_tickers_combined(
             results.append({
                 "Ticker": ticker,
                 "Naam": naam,
-                "1wk (%)": f"{koers_momentum:.2f}%" if koers_ok else "–",
-                "1wk Volume-momentum (%)": f"{volume_momentum:.1f}%" if volume_ok else "–",
+                "1wk (%)": f"{koers_momentum:.2f}%" if koers_momentum is not None else "n.v.t.",
+                "1wk Volume-momentum (%)": f"{volume_momentum:.1f}%" if volume_momentum is not None else "n.v.t.",
                 "Advies": advies_tekst,
             })
             if debug: st.write(f"✅ Toegevoegd: {ticker}")
@@ -314,8 +313,6 @@ def screen_tickers_combined(
         st.write("Resultaat screening gecombineerd:")
         st.write(df_result)
     return df_result
-
-
 
 
 
