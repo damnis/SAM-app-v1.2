@@ -41,8 +41,12 @@ def bepaal_grafiekperiode(interval):
 
 # periode voor heatmap
 def bepaal_grafiekperiode_heat(interval):        
- # time delta version       
-    if interval == "15m":
+ # time delta version    
+    if interval == "1m":
+        return timedelta(days=1)
+    elif interval == "5m":
+        return timedelta(days=5)
+    elif interval == "15m":
         return timedelta(days=14)
     elif interval == "1h":
         return timedelta(days=45)
@@ -53,7 +57,7 @@ def bepaal_grafiekperiode_heat(interval):
     elif interval == "1wk":
         return timedelta(weeks=240)     # 104=2 jaar aan weekly candles (104 candles)
     else:
-        return timedelta(weeks=260)  # bijv. bij weekly/monthly data
+        return timedelta(weeks=240)  # bijv. bij weekly/monthly data
         
 # no time delta version
 #    if interval == "15m":
