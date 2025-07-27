@@ -24,7 +24,7 @@ def bepaal_grafiekperiode(interval):
         return timedelta(days=5)
     elif interval == "5m":
         return timedelta(days=10)
-    if interval == "15m":
+    elif interval == "15m":
         return timedelta(days=15)        # 7 dagen à ~96 candles per dag = ±672 punten
     elif interval == "1h":
         return timedelta(days=30)        # 5 dagen à ~7 candles = ±35 punten
