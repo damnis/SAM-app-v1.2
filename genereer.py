@@ -33,7 +33,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
         "1d": {"stappen": 15, "breedte": 44.58, "hoogte": 20, "label": "Dag", "show_text": True},
         "4h": {"stappen": 45, "breedte": 14.76, "hoogte": 10, "label": "4u", "show_text": True},
         "1h": {"stappen": 135, "breedte": 4.825, "hoogte": 10, "label": "1u", "show_text": True},
-        "15m": {"stappen": 540, "breedte": 1.1, "hoogte": 6, "label": "15m", "show_text": False}
+        "15m": {"stappen": 540, "breedte": 1.1, "hoogte": 6, "label": "15m", "show_text": False},
         "5m": {"stappen": 1620, "breedte": 0.3, "hoogte": 6, "label": "5m", "show_text": False}
     }
 
