@@ -154,7 +154,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
                 stap = pd.Timedelta("4h") if interval == "4h" else pd.Timedelta("1h") if interval == "1h" else pd.Timedelta("15min")
                 laatste_dag = df.index.max().normalize()
                 dagen = []
-                blokjes_per_dag = (6 if interval == "4h" else 24 if interval == "1h" else 96) if markt == "crypto" else (3 if interval == "4h" else 9 if interval == "1h" else 36)
+                blokjes_per_dag = (6 if interval == "4h" else 24 if interval == "1h" else 96 if interval == "15m" else 288) if markt == "crypto" else (3 if interval == "4h" else 9 if interval == "1h" else 36 if interval == "15m" else 108)
 
                 while len(dagen) < int(stappen / blokjes_per_dag):
                     if markt == "crypto" or laatste_dag.weekday() < 5:
