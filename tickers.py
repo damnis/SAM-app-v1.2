@@ -81,8 +81,8 @@ crypto_stocks_tickers = {
     "BTCW": "WisdomTree Bitcoin Fund (ETF)",
     "OBTC": "Osprey Bitcoin Trust (ETF)",
     "FBTC": "Fidelity Wise Origin Bitcoin Fund (ETF)",
-    "IREN", "Iren Ltd."
-    "ETHA", "iShares Ethereum trust (ETF)
+    "IREN": "Iren Ltd.",
+    "ETHA": "iShares Ethereum trust (ETF),
     "ETH": "Grayscale Ethereum Mini Trust"
 }
    
