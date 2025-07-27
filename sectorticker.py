@@ -36,14 +36,15 @@ sector_tickers_screening = {
     "Financials": ["JPM", "BAC", "WFC", "C", "GS", "MS", "AXP", "BK", "USB", "SCHW", "TFC", "COF", "MTB", "FITB", "HBAN", "PNC"],
     "Energy": ["XOM", "CVX", "COP", "EOG", "PSX", "VLO", "MPC", "HES", "OKE", "PXD", "WMB", "KMI", "SLB", "BKR", "HAL", "APA"],
     "Crypto": ["BTC-USD", "ETH-USD", "SOL-USD", "BNB-USD", "XRP-USD", "ADA-USD", "DOGE-USD", "LINK-USD", "LTC-USD", "XLM-USD"],
-    "Nederland": 
-    ["ABN.AS", "ADYEN.AS", "AGN.AS", "AD.AS", "AKZA.AS", "MT.AS", "ASM.AS", "ASML.AS", "ASRNL.AS",
+    "Nederland": [
+    "ABN.AS", "ADYEN.AS", "AGN.AS", "AD.AS", "AKZA.AS", "MT.AS", "ASM.AS", "ASML.AS", "ASRNL.AS",
     "BESI.AS", "DSFIR.AS", "GLPG.AS", "HEIA.AS", "IMCD.AS", "INGA.AS", "TKWY.AS", "KPN.AS",
     "NN.AS", "PHIA.AS", "PRX.AS", "RAND.AS", "REN.AS", "SHELL.AS", "UNA.AS", "WKL.AS",
     "AF.PA", "APAM.AS", "ARCAD.AS", "BAMNB.AS",  
     "BFIT.AS", "CRBN.AS", "ECMPA.AS", "FAGR.BR", "FLOW.AS", "FUR.AS",
     "LIGHT.AS", "NSI.AS", "OCI.AS", "PHARM.AS", "PNL.AS", "SBMO.AS", "TWEKA.AS",
-    "VPK.AS", "WDP.BR", "AMG.AS", "AALB.AS", "KENDR.AS", "VASTN.AS"]
+    "VPK.AS", "WDP.BR", "AMG.AS", "AALB.AS", "KENDR.AS", "VASTN.AS"
+    ]
     
     
     # Voeg eenvoudig meer sectoren toe in hetzelfde formaat
