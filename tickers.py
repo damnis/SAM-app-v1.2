@@ -63,6 +63,31 @@ amx_tickers = {
     "AMG.AS": "AMG", "AALB.AS": "Aalberts N.V.", "KENDR.AS": "Kendrion", "TKWY.AS": "Just Eat", "VASTN.AS": "Vastned Retail"
 }
 
+crypto_stocks_tickers = {
+    "BITF": "Bitfarms Ltd.",
+    "COIN": "Coinbase Global Inc.",
+    "MSTR": "MicroStrategy Inc.",
+    "MARA": "Marathon Digital Holdings, Inc.",
+    "RIOT": "Riot Platforms, Inc.",
+    "BTCS": "BTCS, Inc.",
+    "CIFR": "Cipher Mining Inc.",
+    "HIVE": "HIVE Digital Technologies Ltd.",
+    "SQ": "Block, Inc. (Square / Cash App)",
+    "BAKKT": "Bakkt Holdings, Inc.",
+    "BSTR": "Bitcoin Standard Treasury Co.",
+    "CEP": "21Shares Bitcoin ETP (XXII, previously listed as CEP)",
+    "CLSK": "CleanSpark, Inc.",
+    "BTCM": "BIT Mining Limited",
+    "BTCW": "WisdomTree Bitcoin Fund (ETF)",
+    "OBTC": "Osprey Bitcoin Trust (ETF)",
+    "FBTC": "Fidelity Wise Origin Bitcoin Fund (ETF)",
+    "IREN", "Iren Ltd."
+    "ETHA", "iShares Ethereum trust (ETF)
+    "ETH": "Grayscale Ethereum Mini Trust"
+}
+   
+    
+
 crypto_tickers = {
     "BTC-USD": "Bitcoin",
     "ETH-USD": "Ethereum",
@@ -205,6 +230,7 @@ tabs_mapping = {
     "📌 Mijn lijst": mijn_lijst,
     "🇳🇱 AEX index": aex_tickers,
     "🇳🇱 AMX index": amx_tickers,
+    "🌐 Crypto stocks": crypto_stocks_tickers,
     "🌐 Crypto": crypto_tickers
 }
 
@@ -218,6 +244,7 @@ valutasymbool = {
     "🇪🇺 Eurostoxx": "€ ",
     "🇺🇸 US Tech": "$ ",
     "📌 Mijn lijst": "",
+    "🌐 Crypto stocks": "",
     "🌐 Crypto": ""
 }
 
