@@ -90,7 +90,7 @@ crypto_stocks_tickers = {
     "BTCW": "WisdomTree Bitcoin Fund",
     "BRRR": "Valkyrie Bitcoin Fund",
     "SPLK": "Sharplink Gaming Inc. (ETH treasury exposure)",  # Alt‑coin treasury firm :contentReference[oaicite:2]{index=2}
-    "DFDEV": "DeFi Development Corp. (Solana treasury exposure)",  # :contentReference[oaicite:3]{index=3}
+#    "DFDEV": "DeFi Development Corp. (Solana treasury exposure)",  # :contentReference[oaicite:3]{index=3}
     # eventueel extra
     "GBTC": "Grayscale Bitcoin Trust",
     "BTCW": "WisdomTree Bitcoin Fund (ETF)",
