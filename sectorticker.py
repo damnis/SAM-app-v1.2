@@ -50,7 +50,7 @@ sector_tickers_screening = {
     "Energy": ["XOM", "CVX", "COP", "EOG", "PSX", "VLO", "MPC", "HES", "OKE", "PXD", "WMB", "KMI", "SLB", "BKR", "HAL", "APA"],
     "Crypto stocks": [
     "BITF", "COIN", "MSTR", "MARA", "RIOT", "BTCS", "CIFR", "HIVE", "SQ", "BKKT", "BSTR", "CEP", "CLSK", "BTCM", "BTC", "BTCW", "OBTC", "FBTC", "IREN",
-    "ETHF", "ETH" 
+    "ETHA", "ETH", "GLXY", "HUT", "IBIT", "BITB", "ARKB", "HODL", "BTCO", "BRRR", "GBTC" 
     ],
     "Nederland": [
     "ABN.AS", "ADYEN.AS", "AGN.AS", "AD.AS", "AKZA.AS", "MT.AS", "ASM.AS", "ASML.AS", "ASRNL.AS",
