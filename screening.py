@@ -299,8 +299,10 @@ def toppers_worden_gezocht(
             results.append({
                 "Ticker": ticker,
                 "Naam": naam,
-                "Koers (1wk %)": f"{koers_momentum:.2f}%" if koers_momentum is not None else "n.v.t.",
-                "Volume (1wk %)": f"{volume_momentum:.1f}%" if volume_momentum is not None else "n.v.t.",
+                "Koers (1wk %)": koers_momentum if koers_momentum is not None else None,
+                "Volume (1wk %)": volume_momentum if volume_momentum is not None else None,
+ #               "Koers (1wk %)": f"{koers_momentum:.2f}%" if koers_momentum is not None else "n.v.t.",
+  #              "Volume (1wk %)": f"{volume_momentum:.1f}%" if volume_momentum is not None else "n.v.t.",
                 "Advies": advies_tekst,
             })
             if debug: st.write(f"✅ Toegevoegd: {ticker}")
