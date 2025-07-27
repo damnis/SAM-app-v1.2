@@ -353,10 +353,20 @@ else:
 
 # screeners in kolommen verbeterd
 st.subheader("📰 Zoek toppers")
-with st.expander("📰 Kies sector of land", expanded=False):
+with st.expander("📰 Kies sector(en) of land(en)", expanded=False):
     opties = list(sector_tickers_screening.keys())
-    keuze = st.selectbox("Selecteer sector", opties, index=0)
-    tickers_screening = sector_tickers_screening[keuze]
+    keuzes = st.multiselect("Selecteer sector(en)", opties, default=[opties[0]])
+    # Combineer de tickers uit alle gekozen sectoren
+    tickers_screening = []
+    for sector in keuzes:
+        tickers_screening.extend(sector_tickers_screening[sector])
+    # (Of: tickers_screening = sum([sector_tickers_screening[s] for s in keuzes], []) )
+
+#st.subheader("📰 Zoek toppers")
+#with st.expander("📰 Kies sector of land", expanded=False):
+#    opties = list(sector_tickers_screening.keys())
+#    keuze = st.selectbox("Selecteer sector", opties, index=0)
+#    tickers_screening = sector_tickers_screening[keuze]
 
 # 🔎 Eén knop voor gecombineerde screening
 zoek_stijgers = st.button("🔎 Zoek stijgers en volume met koop advies")
