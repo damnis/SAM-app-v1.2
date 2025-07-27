@@ -32,7 +32,7 @@ from grafieken import toon_adviesmatrix_html
 from sam_tabel import toon_sam_tabel 
 from heatmap import toon_sector_heatmap
 # screening
-from screening import screen_tickers, screen_tickers_combined
+from screening import screen_tickers, screen_tickers_combined_full
 from screeningvol import screen_tickers_vol
 # nieuws
 from newsfeed import toon_newsfeed
@@ -378,7 +378,7 @@ def get_analyst_rec_batch(tickers):
     return pd.DataFrame(analyst_data)
 
 if zoek_stijgers:
-    screeneresult = screen_tickers_combined(
+    screeneresult = screen_tickers_combined_full(
         tickers_screening,
         min_momentum=6,           # jouw gekozen drempel koers-momentum
         min_volume_momentum=30,   # jouw gekozen drempel volume-momentum
@@ -391,6 +391,7 @@ if zoek_stijgers:
         st.dataframe(result)
     else:
         st.info("Geen tickers voldoen aan minimaal één momentumcriterium én een koopadvies.")
+
 
 # oudere
 # 📌 Twee knoppen in kolommen
