@@ -210,16 +210,19 @@ else:
 # --- Intervalopties ---
 interval_optie = st.selectbox(
     "Kies de interval",
-    ["Wekelijks", "Dagelijks", "4-uur", "1-uur", "15-minuten"]
+    ["Maandelijks", "Wekelijks", "Dagelijks", "4-uur", "1-uur", "15-minuten", "5-minuten", "1-minuut"]
 )
 
 # Vertaal gebruikerskeuze naar Yahoo Finance intervalcode
 interval_mapping = {
     "Dagelijks": "1d",
     "Wekelijks": "1wk",
+    "Maandelijks": "1mo",
     "4-uur": "4h",
     "1-uur": "1h",
-    "15-minuten": "15m"
+    "15-minuten": "15m",
+    "5-minuten": "5m",
+    "1-minuut": "1m"
 }
 
 interval = interval_mapping[interval_optie]
