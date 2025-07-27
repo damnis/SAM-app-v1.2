@@ -21,13 +21,13 @@ from streamlit.components.v1 import html as st_html
 # 📆 Periode voor SAM-grafiek op basis van interval
 def bepaal_grafiekperiode(interval):
     if interval == "15m":
-        return timedelta(days=7)        # 7 dagen à ~96 candles per dag = ±672 punten
+        return timedelta(days=10)        # 7 dagen à ~96 candles per dag = ±672 punten
     elif interval == "1h":
-        return timedelta(days=15)        # 5 dagen à ~7 candles = ±35 punten
+        return timedelta(days=25)        # 5 dagen à ~7 candles = ±35 punten
     elif interval == "4h":
-        return timedelta(days=75)       # 3 maanden à ~6 candles per week
+        return timedelta(days=125)       # 3 maanden à ~6 candles per week
     elif interval == "1d":
-        return timedelta(days=180)      # 180=6 maanden à 1 candle per dag
+        return timedelta(days=280)      # 180=6 maanden à 1 candle per dag
     elif interval == "1wk":
         return timedelta(weeks=240)     # 104=2 jaar aan weekly candles (104 candles)
     elif interval == "1mo":
