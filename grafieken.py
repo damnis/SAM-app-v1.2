@@ -43,7 +43,7 @@ def bepaal_grafiekperiode(interval):
 def bepaal_grafiekperiode_heat(interval):        
  # time delta version    
     if interval == "1m":
-        return timedelta(days=1)
+        return timedelta(days=3)
     elif interval == "5m":
         return timedelta(days=5)
     elif interval == "15m":
