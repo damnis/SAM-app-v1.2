@@ -355,12 +355,16 @@ else:
 st.subheader("📰 Zoek toppers")
 with st.expander("📰 Kies sector(en) of land(en)", expanded=False):
     opties = list(sector_tickers_screening.keys())
-    keuzes = st.multiselect("Selecteer sector(en)", opties, default=[opties[0]])
-    # Combineer de tickers uit alle gekozen sectoren
-    tickers_screening = []
-    for sector in keuzes:
-        tickers_screening.extend(sector_tickers_screening[sector])
-    # (Of: tickers_screening = sum([sector_tickers_screening[s] for s in keuzes], []) )
+    labels = [f"{sector} ({len(sector_tickers_screening[sector])})" for sector in opties]
+    label2sector = {label: sector for label, sector in zip(labels, opties)}
+
+    keuze_labels = st.multiselect(
+        "Selecteer sector(en)", 
+        labels, 
+        default=[labels[0]]
+    )
+    geselecteerde_sectoren = [label2sector[lbl] for lbl in keuze_labels]
+    tickers_screening = sum([sector_tickers_screening[s] for s in geselecteerde_sectoren], [])
 
 #st.subheader("📰 Zoek toppers")
 #with st.expander("📰 Kies sector of land", expanded=False):
