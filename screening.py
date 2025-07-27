@@ -259,7 +259,7 @@ def toppers_worden_gezocht(
         adviezen_toevoegen=("Kopen",),
         threshold=2,
         risk_aversion=1,
-        debug=True
+        debug=False
     ):
     results = []
     for ticker in tickers_screening:
