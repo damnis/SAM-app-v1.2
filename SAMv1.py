@@ -366,8 +366,8 @@ with st.expander("📰 Kies sector(en) of land(en)", expanded=False):
     geselecteerde_sectoren = [label2sector[lbl] for lbl in keuze_labels]
     tickers_screening = sum([sector_tickers_screening[s] for s in geselecteerde_sectoren], [])
 
-#st.subheader("📰 Zoek toppers")
-#with st.expander("📰 Kies sector of land", expanded=False):
+#st.subheader("🔎 Zoek toppers")
+#with st.expander("🔎 Kies sector of land", expanded=False):
 #    opties = list(sector_tickers_screening.keys())
 #    keuze = st.selectbox("Selecteer sector", opties, index=0)
 #    tickers_screening = sector_tickers_screening[keuze]
@@ -399,8 +399,8 @@ def get_analyst_rec_batch(tickers):
 if zoek_stijgers:
     screeneresult = toppers_worden_gezocht(
         tickers_screening,
-        min_momentum=6,           # jouw gekozen drempel koers-momentum
-        min_volume_momentum=30,   # jouw gekozen drempel volume-momentum
+        min_momentum=5,           # jouw gekozen drempel koers-momentum
+        min_volume_momentum=25,   # jouw gekozen drempel volume-momentum
         adviezen_toevoegen=("Kopen",)
     )
     if not screeneresult.empty:
