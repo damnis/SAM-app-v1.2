@@ -14,7 +14,7 @@ from ta.trend import ADXIndicator
 #from ta.momentum import TRIXIndicator
 # from .py imports
 #-- Volledige tickerlijsten ---
-from sectorticker import sector_tickers, sector_tickers_news 
+from sectorticker import sector_tickers, sector_tickers_news, sector_tickers_screening  
 from tickers import (
     aex_tickers, amx_tickers, dow_tickers, eurostoxx_tickers,
     nasdaq_tickers, ustech_tickers, crypto_tickers, mijn_lijst, 
