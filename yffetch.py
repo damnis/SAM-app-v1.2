@@ -20,7 +20,11 @@ def fetch_data_cached(ticker, interval, period):
 # ✅ Wrapper-functie met dataschoonmaak en fallback
 def fetch_data(ticker, interval):
     # 🔁 Interval naar periode
-    if interval == "15m":
+    if interval == "1m":
+        period = "5d"
+    elif interval == "5m":
+        period = "10d"
+    elif interval == "15m":
         period = "30d"
     elif interval == "1h":
         period = "720d"
