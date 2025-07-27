@@ -32,10 +32,23 @@ sector_tickers_news = {
 
 # Elke sector bevat een lijst van 16 tickers (of minder bij opstarten)
 sector_tickers_screening = {
-    "US Tech": ["AAPL", "PLTR", "SMCI", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "ADBE", "CRM", "INTC", "CSCO", "UBER", "TSLA", "AMD", "ORCL", "AVGO", "TXN", "QCOM", "IBM"],
+    "US Tech": [
+    "AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSLA", "AMD", "NFLX", "INTC",
+    "SMCI", "PLTR", "ORCL", "AVGO", "SHOP", 
+    "SNOW", "MDB", "DDOG", "CRWD", "ZS", "CSCO", "ADBE", "CMCSA", "PEP", "COST",
+    "QCOM", "TMUS", "TXN", "AMAT", "DKNG", 
+    'MMM', "MSFT", "IBM", "CRM", "INTC", "UBER",
+    ],
+    "Pharma": [
+    "LLY","ABBV","MRK","PFE","GILD","AZN","NVO","BMY", "RYTM",
+    "VRTX","REGN","ALNY","BNTX","BIIB","BEAM","CRSP","EXEL","MRNA","BGNE",
+    "ARGX","GMAB","CRMD","RIGL","TGTX","ABVX","ACAD","VKTX","ONCT",
+    "IONS","PTCT","CRNX","NBIX","JUNS","AMRN","LIXT","YHC","VOR", 
+    "CIGL"
+    ],
     "Financials": ["JPM", "BAC", "WFC", "C", "GS", "MS", "AXP", "BK", "USB", "SCHW", "TFC", "COF", "MTB", "FITB", "HBAN", "PNC"],
     "Energy": ["XOM", "CVX", "COP", "EOG", "PSX", "VLO", "MPC", "HES", "OKE", "PXD", "WMB", "KMI", "SLB", "BKR", "HAL", "APA"],
-    "Crypto": ["BTC-USD", "ETH-USD", "SOL-USD", "BNB-USD", "XRP-USD", "ADA-USD", "DOGE-USD", "LINK-USD", "LTC-USD", "XLM-USD"],
+    "Crypto stocks": ["BITF", "COIN", "MSTR", "MARA", "RIOT", "BTCS", "CIFR", "HIVE", "SQ", "BAKKT", "BSTR",  "CEP", "CLSK", "IREN"],
     "Nederland": [
     "ABN.AS", "ADYEN.AS", "AGN.AS", "AD.AS", "AKZA.AS", "MT.AS", "ASM.AS", "ASML.AS", "ASRNL.AS",
     "BESI.AS", "DSFIR.AS", "GLPG.AS", "HEIA.AS", "IMCD.AS", "INGA.AS", "TKWY.AS", "KPN.AS",
@@ -52,22 +65,27 @@ sector_tickers_screening = {
 
 
 tickers_screening = [
-    "AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSLA", "AMD", "NFLX", "INTC",
-    "ASM", "ASML", "SMCI", "PLTR", "ORCL", "AVGO", "SHOP", "BITF", "COIN",
-    "SNOW", "MDB", "DDOG", "CRWD", "ZS", "CSCO", "ADBE", "CMCSA", "PEP", "COST",
-    "QCOM", "TMUS", "TXN", "AMAT", "DKNG", "RYTM",
-    'MMM', 'AXP', 'AMGN', 'BA', 'CAT', 'CVX', 'CSCO', 'KO', 'DIS',
+     
+    
+    'AXP', 'AMGN', 'BA', 'CAT', 'CVX', 'CSCO', 'KO', 'DIS',
     'GS', 'HD', 'HON', 'IBM', 'JPM', 'JNJ', 'MCD',
     'NKE', 'PG', 'CRM', 'TRV', 'UNH', 'VZ', 'V', 'WMT', 'DOW', 'RTX', 'WBA',
+  
     
-    "LLY","ABBV","MRK","PFE","GILD","AZN","NVO","BMY",
-    "VRTX","REGN","ALNY","BNTX","BIIB","BEAM","CRSP","EXEL","MRNA","BGNE",
-    "ARGX","GMAB","CRMD","RIGL","TGTX","ABVX","ACAD","VKTX","ONCT",
-    "IONS","PTCT","CRNX","NBIX","JUNS","AMRN","LIXT","YHC","VOR", 
-    "CIGL"
 ]
 
 
+# MSTR	MicroStrategy	Grote BTC-reserves
+# MARA	MARA Holdings / Marathon Digital	Bitcoin mining & grote BTC reserves
+# RIOT	Riot Platforms Inc.	Bitcoin mining in VS
+# BITF	Bitfarms Ltd.	Bitcoin mining in Canada
+# BTCS	BTCS Inc.	Blockchain technologie & BTC-dividend
+# CIFR	Cipher Mining Inc.	Miningbedrijf
+# HIVE	HIVE Digital Technologies	Miningtechnologie
+# SQ	Block, Inc. (Square/Cash App)	Crypto-wallets & producten
+# BAKKT	Bakkt Holdings, Inc.	Crypto SaaS platform
+# BSTR	Bitcoin Standard Treasury Co.	BTC treasury holdings
+# CEP	XXI	Publiek bedrijf met BTC holdings
 
 
 
