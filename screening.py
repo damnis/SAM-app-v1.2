@@ -252,14 +252,14 @@ def screen_tickers_vol(
 
 
 @st.cache_data(ttl=3600)
-def screen_tickers_combined_full(
+def toppers_worden_gezocht(
         tickers_screening, 
         min_momentum=1, 
         min_volume_momentum=20,
         adviezen_toevoegen=("Kopen",),
         threshold=2,
         risk_aversion=1,
-        debug=False
+        debug=True
     ):
     results = []
     for ticker in tickers_screening:
