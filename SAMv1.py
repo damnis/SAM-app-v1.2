@@ -351,9 +351,14 @@ else:
         unsafe_allow_html=True
         )
 
-# screeners in kolommen verbeterd
-st.subheader("📰 Zoek toppers")
-with st.expander("📰 Kies sector(en) of land(en)", expanded=False):
+# screeners all-in-1 verbeterd
+def format_percentage(val):
+    if pd.isna(val):
+        return "-"
+    return f"{val:.2f}%"
+
+st.subheader("🔎 Zoek toppers")
+with st.expander("🔎 Kies sector(en) of land(en)", expanded=False):
     opties = list(sector_tickers_screening.keys())
     labels = [f"{sector} ({len(sector_tickers_screening[sector])})" for sector in opties]
     label2sector = {label: sector for label, sector in zip(labels, opties)}
@@ -366,11 +371,6 @@ with st.expander("📰 Kies sector(en) of land(en)", expanded=False):
     geselecteerde_sectoren = [label2sector[lbl] for lbl in keuze_labels]
     tickers_screening = sum([sector_tickers_screening[s] for s in geselecteerde_sectoren], [])
 
-#st.subheader("🔎 Zoek toppers")
-#with st.expander("🔎 Kies sector of land", expanded=False):
-#    opties = list(sector_tickers_screening.keys())
-#    keuze = st.selectbox("Selecteer sector", opties, index=0)
-#    tickers_screening = sector_tickers_screening[keuze]
 
 # 🔎 Eén knop voor gecombineerde screening
 zoek_stijgers = st.button("🔎 Zoek stijgers en volume met koop advies")
@@ -395,21 +395,30 @@ def get_analyst_rec_batch(tickers):
         row.update(get_latest_analyst_rec(ticker))
         analyst_data.append(row)
     return pd.DataFrame(analyst_data)
+    
 
 if zoek_stijgers:
     screeneresult = toppers_worden_gezocht(
         tickers_screening,
-        min_momentum=5,           # jouw gekozen drempel koers-momentum
-        min_volume_momentum=25,   # jouw gekozen drempel volume-momentum
+        min_momentum=5,
+        min_volume_momentum=25,
         adviezen_toevoegen=("Kopen",)
     )
     if not screeneresult.empty:
         st.markdown("### 💡 SAT + SAM Advies en Marktadvies (analisten): (Koers- **of** volume-momentum)")
         df_analyst = get_analyst_rec_batch(list(screeneresult["Ticker"]))
         result = screeneresult.merge(df_analyst, on="Ticker", how="left")
+        
+        # ---- HIER FORMATTEREN ----
+        momentum_kolommen = ["1wk (%)", "1wk Volume-momentum (%)"]
+        for col in momentum_kolommen:
+            if col in result.columns:
+                result[col] = result[col].apply(format_percentage)
+        
         st.dataframe(result)
     else:
         st.info("Geen tickers voldoen aan minimaal één momentumcriterium én een koopadvies.")
+
 
 
 
