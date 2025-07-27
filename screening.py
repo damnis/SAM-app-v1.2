@@ -251,6 +251,69 @@ def screen_tickers_vol(
 
 
 
+@st.cache_data(ttl=3600)
+def screen_tickers_combined(
+        tickers_screening, 
+        min_momentum=1, 
+        min_volume_momentum=20,
+        adviezen_toevoegen=("Kopen",),
+        threshold=2,
+        risk_aversion=1,
+        debug=False
+    ):
+    results = []
+    for ticker in tickers_screening:
+        try:
+            if debug: st.write(f"\n▶️ Screening {ticker} ...")
+            profile = get_profile(ticker)
+            naam = profile.get("companyName", "") if profile else ""
+
+            df = fetch_data_fmp(ticker, periode="2y")
+            if df is None or df.empty:
+                if debug: st.write(f"⛔ Geen geldige dataframe voor {ticker}")
+                continue
+
+            # --- Koersmomentum ---
+            koers_momentum = get_momentum(df, periode="1w")
+            # --- Volumemomentum ---
+            volume_momentum = get_volume_momentum(df, periode="1w", ticker=ticker, debug=debug)
+
+            # --- Check of aan tenminste één criterium voldaan is
+            koers_ok = koers_momentum is not None and koers_momentum >= min_momentum
+            volume_ok = volume_momentum is not None and volume_momentum >= min_volume_momentum
+
+            if not (koers_ok or volume_ok):
+                if debug: st.write(f"⛔ Geen momentum voor {ticker} (koers: {koers_momentum}, volume: {volume_momentum})")
+                continue
+
+            df = calculate_sat(df)
+            df = calculate_sam(df)
+            advies = determine_advice(df, threshold=threshold, risk_aversion=risk_aversion)
+            if isinstance(advies, tuple):
+                _, advies_tekst = advies
+            else:
+                advies_tekst = advies
+            if advies_tekst not in adviezen_toevoegen:
+                if debug: st.write(f"⛔ Advies niet toegestaan ({advies_tekst}) voor {ticker}")
+                continue
+
+            results.append({
+                "Ticker": ticker,
+                "Naam": naam,
+                "1wk (%)": f"{koers_momentum:.2f}%" if koers_ok else "–",
+                "1wk Volume-momentum (%)": f"{volume_momentum:.1f}%" if volume_ok else "–",
+                "Advies": advies_tekst,
+            })
+            if debug: st.write(f"✅ Toegevoegd: {ticker}")
+
+        except Exception as e:
+            st.write(f"🚨 Fout bij {ticker}: {e}")
+            continue
+    df_result = pd.DataFrame(results)
+    if debug:
+        st.write("Resultaat screening gecombineerd:")
+        st.write(df_result)
+    return df_result
 
 
 
