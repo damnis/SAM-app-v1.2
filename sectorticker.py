@@ -65,6 +65,7 @@ tickers_screening = [
     "ARGX","GMAB","CRMD","RIGL","TGTX","ABVX","ACAD","VKTX","ONCT",
     "IONS","PTCT","CRNX","NBIX","JUNS","AMRN","LIXT","YHC","VOR", 
     "CIGL"
+]
 
 
 
