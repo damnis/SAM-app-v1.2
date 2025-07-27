@@ -34,6 +34,7 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
         "4h": {"stappen": 45, "breedte": 14.76, "hoogte": 10, "label": "4u", "show_text": True},
         "1h": {"stappen": 135, "breedte": 4.825, "hoogte": 10, "label": "1u", "show_text": True},
         "15m": {"stappen": 540, "breedte": 1.1, "hoogte": 6, "label": "15m", "show_text": False}
+        "5m": {"stappen": 1620, "breedte": 0.3, "hoogte": 6, "label": "5m", "show_text": False}
     }
 
     INTERVALLEN_L = {
@@ -50,6 +51,8 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
         "4h": {"stappen": 126, "breedte": 19.735, "hoogte": 10, "label": "4u", "show_text": True},
         "1h": {"stappen": 504, "breedte": 4.8275, "hoogte": 10, "label": "1u", "show_text": True},
         "15m": {"stappen": 2016, "breedte": 1.1, "hoogte": 6, "label": "15m", "show_text": False}
+#        "5m": {"stappen": 6048, "breedte": 0.3, "hoogte": 6, "label": "5m", "show_text": False}
+
     }
 
 
@@ -182,6 +185,13 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
                             totale_minuten = start_uur * 60 + i * 15
                             tijdstip = dag + pd.Timedelta(minutes=totale_minuten)
                             tijdvakken.append(tijdstip)
+                    
+                    elif interval == "5m":
+                        stappen = int(eind_uur * 60 / 5)  # aantal 5-minuten
+                        for i in range(stappen):
+                            totale_minuten = start_uur * 60 + i * 5
+                            tijdstip = dag + pd.Timedelta(minutes=totale_minuten)
+                            tijdvakken.append(tijdstip)
 
                     tijdvak_entries = []
                     for ts in tijdvakken:
@@ -208,22 +218,6 @@ def genereer_adviesmatrix(ticker, risk_aversion=2):
 
 
 
-#             for dag in dagen:
-    #                advies = df.loc[df.index.normalize() == dag, "Advies"].values
-    #                kleur = "🟩" if "Kopen" in advies else "🟥" if "Verkopen" in advies else "⬛"
-     #               tekst = dag.strftime("%A")<br>dag.strftime("%Y-%m-%d")<br>{ if specs["show_text"] else ""
-    #                waarden.append({"kleur": kleur, "tekst": tekst})
-
-
-
-#           matrix[interval] = [{"kleur": "⚠️", "tekst": ""} for _ in range(specs.get("stappen", 10))]
- #       except Exception as e:
-  #          st.warning(f"\u26A0\ufe0f Fout bij interval {interval}: {e}")
-   #         matrix[interval] = [{"kleur": "\u26A0\ufe0f", "tekst": ""} for _ in range(specs.get("stappen", 10))]
-
-#    st.write(f"Interval: {interval} | kleur: {kleur} | tekst: {tekst}")
-    # Debug: controleer alle intervallen en adviesresultaten
-#    st.write("🔍 Adviesmatrix Debug Output")
 
 #    for interval, waarden_lijst in matrix.items():
  #       st.write(f"📈 Interval: {interval} | Aantal blokken: {len(waarden_lijst)}")
