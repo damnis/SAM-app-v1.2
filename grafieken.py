@@ -21,7 +21,7 @@ from streamlit.components.v1 import html as st_html
 # 📆 Periode voor SAM-grafiek op basis van interval
 def bepaal_grafiekperiode(interval):
     if interval == "1m":
-        return timedelta(days=2)
+        return timedelta(days=1)
     elif interval == "5m":
         return timedelta(days=5)
     elif interval == "15m":
