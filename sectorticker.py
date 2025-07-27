@@ -48,7 +48,7 @@ sector_tickers_screening = {
     ],
     "Financials": ["JPM", "BAC", "WFC", "C", "GS", "MS", "AXP", "BK", "USB", "SCHW", "TFC", "COF", "MTB", "FITB", "HBAN", "PNC"],
     "Energy": ["XOM", "CVX", "COP", "EOG", "PSX", "VLO", "MPC", "HES", "OKE", "PXD", "WMB", "KMI", "SLB", "BKR", "HAL", "APA"],
-    "Crypto stocks": ["BITF", "COIN", "MSTR", "MARA", "RIOT", "BTCS", "CIFR", "HIVE", "SQ", "BAKKT", "BSTR", "CEP", "CLSK", "IREN"],
+    "Crypto stocks": ["BITF", "COIN", "MSTR", "MARA", "RIOT", "BTCS", "CIFR", "HIVE", "SQ", "BKKT", "BSTR", "CEP", "CLSK", "IREN"],
     "Nederland": [
     "ABN.AS", "ADYEN.AS", "AGN.AS", "AD.AS", "AKZA.AS", "MT.AS", "ASM.AS", "ASML.AS", "ASRNL.AS",
     "BESI.AS", "DSFIR.AS", "GLPG.AS", "HEIA.AS", "IMCD.AS", "INGA.AS", "TKWY.AS", "KPN.AS",
