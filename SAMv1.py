@@ -211,6 +211,7 @@ else:
 interval_optie = st.selectbox(
     "Kies de interval",
     ["Maandelijks", "Wekelijks", "Dagelijks", "4-uur", "1-uur", "15-minuten", "5-minuten", "1-minuut"]
+    index=1
 )
 
 # Vertaal gebruikerskeuze naar Yahoo Finance intervalcode
