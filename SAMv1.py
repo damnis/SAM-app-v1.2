@@ -17,7 +17,7 @@ from ta.trend import ADXIndicator
 from sectorticker import sector_tickers, sector_tickers_news, sector_tickers_screening  
 from tickers import (
     aex_tickers, amx_tickers, dow_tickers, eurostoxx_tickers,
-    nasdaq_tickers, ustech_tickers, crypto_tickers, mijn_lijst, 
+    nasdaq_tickers, ustech_tickers, crypto_tickers, mijn_lijst, crypto_stocks_tickers, 
     tabs_mapping, tab_labels, valutasymbool, tickers_screening 
 )
 # Indicatoren berekening
