@@ -32,7 +32,7 @@ from grafieken import toon_adviesmatrix_html
 from sam_tabel import toon_sam_tabel 
 from heatmap import toon_sector_heatmap
 # screening
-from screening import screen_tickers_combined_full
+from screening import toppers_worden_gezocht
 # nieuws
 from newsfeed import toon_newsfeed
 # --- Fundamentele data ophalen en tonen ---
@@ -377,7 +377,7 @@ def get_analyst_rec_batch(tickers):
     return pd.DataFrame(analyst_data)
 
 if zoek_stijgers:
-    screeneresult = screen_tickers_combined_full(
+    screeneresult = toppers_worden_gezocht(
         tickers_screening,
         min_momentum=6,           # jouw gekozen drempel koers-momentum
         min_volume_momentum=30,   # jouw gekozen drempel volume-momentum
