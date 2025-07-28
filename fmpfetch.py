@@ -8,7 +8,7 @@ import pandas_market_calendars as mcal
 
 fmp_api_key = st.secrets["FMP_API_KEY"]
 
-@st.cache_data(ttl=360)
+@st.cache_data(ttl=60)
 def search_ticker(query, fmp_api_key):
     query = query.upper().strip()
 
