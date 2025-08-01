@@ -1,4 +1,4 @@
-
+# Autheur: Dennis Gerding
 # oudere
 # 📌 Twee knoppen in kolommen
 col1, col2 = st.columns(2)
